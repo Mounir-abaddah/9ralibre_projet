@@ -11,7 +11,8 @@ const UserSchema = new mongoose.Schema({
     },
     type:{
         type:String,
-        required:true
+        required:true,
+        enum:['Etudiant','Etudiante']
     },
     email:{
         type:String,
