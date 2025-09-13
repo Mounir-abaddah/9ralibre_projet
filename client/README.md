@@ -1,69 +1,101 @@
-# React + TypeScript + Vite
+# Ce que j’ai appris aujourd’hui
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aujourd’hui j’ai appris plusieurs notions importantes en JavaScript et React.
 
-Currently, two official plugins are available:
+**1. test() vs match()**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `test()` : retourne un boolean (`true` ou `false`)  
+  Exemple : `/na/.test("banane"); // true`  
 
-## Expanding the ESLint configuration
+- `match()` : retourne un tableau avec les résultats trouvés, ou `null` si rien n’est trouvé  
+  Exemple : `"banane".match(/na/g); // ["na", "na"]`  
+  `"banane".match(/z/g);  // null`  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**2. .trim()**
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Supprime seulement les espaces au début et à la fin :  
+  Exemple : `"   fff   ".trim(); // "fff"`  
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Pour enlever tous les espaces (y compris au milieu) :  
+  Exemple : `"ff fff".replace(/\s+/g, ""); // "fffff"`  
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**3. .Erreur TypeScript avec disabled dans React :**
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+disabled={isDisabled || Loading} 
+Impossible d'assigner le type 'string | boolean' au type 'boolean | undefined'.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Explication : 
+- La propriété `disabled` attend un boolean (true/false). 
+- Si isDisabled contient une string (ex : "erreur"), TypeScript se plaint.
+
+Solution : 
+- Transformer toutes les chaînes en boolean avec `!!` :
+
+const isDisabled =
+  !nom.trim() ||
+  !prenom.trim() ||
+  !email.trim() ||
+  !!ErrNom ||
+  !!ErrPrenom ||
+  !!ErrEmail;
+
+<button disabled={isDisabled || Loading}>
+  Inscrivez-vous
+</button>
+
+## 4. Composant `Input` réutilisable
+
+Pour éviter la répétition des classes dans les formulaires, nous avons créé un composant `Input` réutilisable.
+
+### ✅ Props du composant `Input`
+
+| Prop         | Type                                     | Description |
+| ------------ | --------------------------------------- | ----------- |
+| `id`         | `string`                                 | Identifiant unique de l’input (lié au label) |
+| `label`      | `string`                                 | Texte du label affiché au-dessus de l’input |
+| `type`       | `"text"` \| `"email"` \| `"password"`   | Type de l’input HTML (`text`, `email`, `password`). Par défaut `"text"` |
+| `value`      | `string`                                 | Valeur de l’input (state du formulaire) |
+| `placeholder`| `string` (optionnel)                     | Texte affiché quand l’input est vide |
+| `error`      | `string` (optionnel)                     | Message d’erreur à afficher sous l’input |
+| `icon`       | `"mail"` \| `"lock"` (optionnel)        | Icone affichée à gauche de l’input |
+| `onChange`   | `(value: string) => void`                | Fonction appelée à chaque changement de valeur |
+| `onFocus`    | `() => void` (optionnel)                 | Fonction appelée quand l’input reçoit le focus |
+
+### 🔹 Exemple d’utilisation
+
+```tsx
+<Input
+  id="email"
+  label="Email"
+  type="email"
+  value={email}
+  placeholder="Entrez votre email"
+  icon="mail"
+  onChange={setEmail}
+  onFocus={() => setErrEmail("")}
+  error={ErrEmail}
+/>
+
+<Input
+  id="password"
+  label="Mot de passe"
+  type="password"
+  value={password}
+  placeholder="Votre mot de passe"
+  icon="lock"
+  onChange={setPassword}
+  onFocus={() => setErrPassword("")}
+  error={ErrPassword}
+/>
+
+
+**Résumé rapide :**  
+- `test()` → oui/non (boolean)  
+- `match()` → résultat trouvé (array ou null)  
+- `.trim()` → enlève les espaces début/fin (pas au milieu)  
+- `disabled` sur un bouton → basé sur la validation du formulaire  
+- Pour éviter l’erreur TypeScript, utiliser `!!` pour convertir les strings en boolean
+
+
+
