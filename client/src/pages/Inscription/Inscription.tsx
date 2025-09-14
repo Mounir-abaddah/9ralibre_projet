@@ -1,4 +1,5 @@
-import logo from '@/assets/images/inscription/Exams-rafiki.png';
+import logo_inscription from '@/assets/images/inscription/Exams-rafiki.png';
+import logo from '@/assets/images/logo.png';
 import { LogIn , ChevronDown} from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -142,11 +143,12 @@ const isDisabled =
     <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
         <div className='flex items-center gap-2 justify-around w-full lg:h-screen md:h-screen h-auto p-4'>
             <div className='w-full lg:block hidden'>
-                <img src={logo} alt="logo_inscription" width={700} height={700}/>
+                <img src={logo_inscription} alt="logo_inscription" width={700} height={700}/>
             </div>
-            <div className='flex items-start gap-3 flex-col w-full shadow-xl p-5 rounded-md bg-amber-50'>
+            <div className='relative flex items-start gap-3 flex-col w-full shadow-xl p-5 rounded-md bg-amber-50'>
+                <img src={logo} alt="" width={50} className='absolute right-0 -top-2.5 rotate-6'/>
                 <div className='w-full'>
-                    <h2 className='text-3xl font-medium'>Commençons <br />à apprendre avec <span className='text-amber-400 font-semibold'>9ralibre</span></h2>
+                    <h2 className='text-3xl font-medium'>Commençons <br />à apprendre avec <span className='text-amber-500 font-semibold'>9ral<span className='text-sky-500'>ibre</span></span></h2>
                     <p className='text-sm'>Veuillez vous inscrire ou vous connecter pour continuer</p>
                 </div>
                 <div className='flex items-center gap-3 w-full'>
@@ -239,7 +241,7 @@ const isDisabled =
                         onChange={setComfirmPassword}
                     />
                 </div>
-                <button onClick={tt} disabled={Loading || isDisabled} className='disabled:bg-slate-50 disabled:shadow w-full flex items-center justify-center gap-2 bg-amber-300 rounded-md hover:bg-amber-400 cursor-pointer text-black dark:text-white p-3 font-semibold text-base hover:shadow-md transition-all duration-300'>
+                <button onClick={tt} disabled={Loading || isDisabled} className='disabled:bg-slate-50 disabled:text-slate-300 disabled:cursor-not-allowed disabled:shadow w-full flex items-center justify-center gap-2 bg-amber-300 rounded-md hover:bg-amber-400 cursor-pointer text-black dark:text-white p-3 font-semibold text-base hover:shadow-md transition-all duration-300'>
                     {Loading ? <Loadering  /> : '' }
                     <h2>Inscrivez-vous</h2>
                     <LogIn />
