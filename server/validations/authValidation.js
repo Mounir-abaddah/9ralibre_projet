@@ -21,4 +21,9 @@ const registerShema = z.object({
     ),
 });
 
-module.exports = { registerShema };
+const loginSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Mot de passe trop court" ),
+});
+
+module.exports = { registerShema ,loginSchema };
