@@ -26,9 +26,8 @@ router.post('/register',async(req,res)=>{
     }catch(err){
         if(err.name === "ZodError"){
             return res.status(400).send({
-                message:"Validation échouée",
                 success:false,
-                error:err.issues.map(e => e.message)
+                message:err.issues.map(e => e.message)
             })
         }
         res.status(500).send({message:'Une erreure est survenue',success:false})
@@ -41,11 +40,11 @@ router.post('/connexion',async(req,res)=>{
         const {email,password} = loginSchema.parse(req.body);
         const user = await User.findOne({email})
         if(!user){
-            return res.status(400).send({message:"Authfailed",success:false})
+            return res.status(400).send({message:"Email ou mot de passe incorrect",success:false})
         }
         const passwordMatch = await bcrypt.compare(password,user.password)
         if(!passwordMatch){
-            return res.status(400).send({message:"Mot de passe incorecte",success:false})
+            return res.status(400).send({message:"Email ou mot de passe incorrect",success:false})
         }
         const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{
             expiresIn : "1d"
@@ -60,9 +59,8 @@ router.post('/connexion',async(req,res)=>{
   }catch(err){
         if(err.name === "ZodError"){
             return res.status(400).send({
-                message:"Validation échouée",
                 success:false,
-                error:err.issues.map(e => e.message)
+                message:err.issues.map(e => e.message)
             })
         }
         res.status(500).send({message:'Une erreure est survenue',success:false})
