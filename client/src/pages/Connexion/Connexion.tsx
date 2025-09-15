@@ -28,7 +28,7 @@ const Connexion = () => {
             setLoading(true)
 
             if(!email.trim() ||!regexEmail.test(email)){
-                setErrEmail("Email not valid")
+                setErrEmail("Email invalide")
                 Valid=false
             }else{
                 setErrEmail("")
@@ -48,6 +48,7 @@ const Connexion = () => {
                     email,
                     password
                 },{withCredentials:true})
+
                 if(response.data.success){
                     toast.success(response.data.message)
                     navigate('/Dashboard')
@@ -55,13 +56,15 @@ const Connexion = () => {
             }catch(err){
                 if(axios.isAxiosError(err) && err.response) {
                     toast.error(err.response.data.message);
+                    setErrPassword("Email ou mot de passe incorrect")
+                    setErrEmail("Email ou mot de passe incorrect");
                 }
             }
             setLoading(false);
         }
   return (
 <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-        <div className='flex items-center gap-2 justify-around w-full lg:h-screen md:h-screen h-auto p-4'>
+        <div className='flex items-center gap-2 justify-around w-full h-screen md:h-screen p-4'>
             <div className='w-full lg:block hidden'>
                 <img src={img_login} alt="logo_inscription" width={700} height={700}/>
             </div>
@@ -69,7 +72,7 @@ const Connexion = () => {
                 <img src={logo} alt="logo_de_site" width={50} className='absolute right-0 -top-3 rotate-6'/>
                 <div className='w-full'>
                     <h2 className='text-3xl font-medium'>Commençons <br />à apprendre avec <span className='text-amber-500 font-semibold'>9ral<span className='text-sky-500'>ibre</span></span></h2>
-                    <p className='text-sm'>Veuillez vous inscrire ou vous connecter pour continuer</p>
+                    <p className='text-sm'>Veuillez vous se connecter ou s'inscrire pour continuer</p>
                 </div>
                 <div className='flex flex-col items-center gap-3 w-full'>
                 <div className='flex items-start flex-col gap-1 w-full'>
@@ -98,14 +101,19 @@ const Connexion = () => {
                         error={ErrPassword}
                     />
                 </div>
+                <div className='flex items-end justify-end w-full'>
+                    <p>
+                        <Link to={'/forgot-password'} className='text-sky-500 font-semibold border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>Mot de passe oublié ?</Link>
+                    </p>
+                </div>
                 <button onClick={handleForm} disabled={Loading} className='disabled:bg-slate-50 disabled:shadow w-full flex items-center justify-center gap-2 bg-amber-300 rounded-md hover:bg-amber-400 cursor-pointer text-black dark:text-white p-3 font-semibold text-base hover:shadow-md transition-all duration-300'>
                     {Loading ? <Loadering  /> : '' }
                     <h2>Connectez-vous</h2>
                     <LogIn />
                 </button>
-                <div className='flex items-end justify-end w-full'>
+                <div className='flex items-center justify-center w-full'>
                     <p>
-                         Pas encore de compte ? <Link to={'/inscription'} className='text-blue-200 border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>S'inscrire</Link>
+                        Pas encore de compte ? <Link to={'/inscription'} className='text-blue-200 border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>inscrivez-vous</Link>
                     </p>
                 </div>
                 <div className='flex items-center justify-around w-full gap-4'>
