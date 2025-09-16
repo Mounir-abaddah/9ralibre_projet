@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, type FormEvent } from 'react'
 import img_login from '@/assets/images/connexion/Thesis-pana.png'
 import logo from '@/assets/images/logo.png';
 
@@ -21,7 +21,8 @@ const Connexion = () => {
         const [password,setPassword] = useState<string>("");
         const [ErrPassword,setErrPassword] = useState<string>("");
 
-        const handleForm = async()=>{
+        const handleForm = async(e:FormEvent)=>{
+            e.preventDefault()
             let Valid = true
             const regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
             const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
@@ -75,42 +76,44 @@ const Connexion = () => {
                     <p className='text-sm'>Veuillez vous se connecter ou s'inscrire pour continuer</p>
                 </div>
                 <div className='flex flex-col items-center gap-3 w-full'>
-                <div className='flex items-start flex-col gap-1 w-full'>
-                    <Input
-                        placeholder='e.g@email.ma' 
-                        label='Email' 
-                        id='monEmail'
-                        value={email}
-                        type='email'
-                        onChange={setEmail} 
-                        onFocus={()=>setErrEmail("")}
-                        icon='mail' 
-                        error={ErrEmail}
-                    />
-                </div>
-                <div className='flex items-start flex-col gap-1 w-full'>
-                    <Input
-                        placeholder='Votre Mot de passe' 
-                        label='Mot de passe' 
-                        id='password' 
-                        value={password}
-                        type='password'
-                        onChange={setPassword} 
-                        onFocus={()=>setErrPassword("")}
-                        icon='lock' 
-                        error={ErrPassword}
-                    />
-                </div>
-                <div className='flex items-end justify-end w-full'>
-                    <p>
-                        <Link to={'/forgot-password'} className='text-sky-500 font-semibold border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>Mot de passe oublié ?</Link>
-                    </p>
-                </div>
-                <button onClick={handleForm} disabled={Loading} className='disabled:bg-slate-50 disabled:shadow w-full flex items-center justify-center gap-2 bg-amber-300 rounded-md hover:bg-amber-400 cursor-pointer text-black dark:text-white p-3 font-semibold text-base hover:shadow-md transition-all duration-300'>
-                    {Loading ? <Loadering  /> : '' }
-                    <h2>Connectez-vous</h2>
-                    <LogIn />
-                </button>
+                    <form onSubmit={handleForm} className='w-full flex flex-col gap-1.5'>
+                        <div className='flex items-start flex-col gap-1 w-full'>
+                        <Input
+                            placeholder='e.g@email.ma' 
+                            label='Email' 
+                            id='monEmail'
+                            value={email}
+                            type='email'
+                            onChange={setEmail} 
+                            onFocus={()=>setErrEmail("")}
+                            icon='mail' 
+                            error={ErrEmail}
+                        />
+                    </div>
+                    <div className='flex items-start flex-col gap-1 w-full'>
+                        <Input
+                            placeholder='Votre Mot de passe' 
+                            label='Mot de passe' 
+                            id='password' 
+                            value={password}
+                            type='password'
+                            onChange={setPassword} 
+                            onFocus={()=>setErrPassword("")}
+                            icon='lock' 
+                            error={ErrPassword}
+                        />
+                    </div>
+                    <div className='flex items-end justify-end w-full'>
+                        <p>
+                            <Link to={'/forgot-password'} className='text-sky-500 font-semibold border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>Mot de passe oublié ?</Link>
+                        </p>
+                    </div>
+                    <button type='submit' disabled={Loading} className='disabled:bg-slate-50 disabled:shadow w-full flex items-center justify-center gap-2 bg-amber-300 rounded-md hover:bg-amber-400 cursor-pointer text-black dark:text-white p-3 font-semibold text-base hover:shadow-md transition-all duration-300'>
+                        {Loading ? <Loadering  /> : '' }
+                        <h2>Connectez-vous</h2>
+                        <LogIn />
+                    </button>
+                    </form>
                 <div className='flex items-center justify-center w-full'>
                     <p>
                         Pas encore de compte ? <Link to={'/inscription'} className='text-blue-200 border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>inscrivez-vous</Link>
