@@ -1,271 +1,316 @@
-import logo_inscription from '@/assets/images/inscription/Exams-rafiki.png';
-import logo from '@/assets/images/logo.png';
-import { LogIn , ChevronDown} from 'lucide-react';
-import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Googles from '@/components/Oauth/Google';
-import Microsofts from '@/components/Oauth/Microsoft';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import Loadering from '@/components/Loadering/Loadering';
-import Input from '@/components/Form/Input';
-
+import logo_inscription from "@/assets/images/inscription/Exams-rafiki.png";
+import gralibre from "@/assets/images/9ralibre.png";
+import { LogIn, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import OAuth from "@/components/Oauth/OAuth";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Loadering from "@/components/Loadering/Loadering";
+import Input from "@/components/Form/Input";
+import { RoughNotation } from "react-rough-notation";
 
 const Inscription = () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const navigate = useNavigate();
-    const [Loading,setLoading] = useState<boolean>(false);
-    const [showOption,setshowOption] = useState<boolean>(false);
+  document.title = 'Inscription gratuite | 9ralibre'
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+  const [Loading, setLoading] = useState<boolean>(false);
+  const [showOption, setshowOption] = useState<boolean>(false);
+  const ref = useRef<HTMLDivElement>(null);
+  
+  const handleShow = () => {
+    setshowOption(!showOption);
+  };
+  const option = [
+    {
+      name: "Etudiant",
+      icon: "👦",
+    },
+    {
+      name: "Etudiante",
+      icon: "👩🏽‍",
+    },
+  ];
 
-    const handleShow = ()=>{
-        setshowOption(!showOption)
-    }
-    const option = [
-        {
-            name:'Etudiant',
-            icon:'👦'
-        },
-        {
-            name:"Etudiante",
-            icon:'👩🏽‍'
-        }
-    ]
-    
-    const [nom,setNom] = useState<string>("");
-    const [ErrNom,setErrNom] = useState<string>("");
+  const [nom, setNom] = useState<string>("");
+  const [ErrNom, setErrNom] = useState<string>("");
 
-    const [prenom,setPrenom] = useState<string>("");
-    const [ErrPrenom,setErrPrenom] = useState<string>("");
+  const [prenom, setPrenom] = useState<string>("");
+  const [ErrPrenom, setErrPrenom] = useState<string>("");
 
-    const [email,setEmail] = useState<string>("");
-    const [ErrEmail,setErrEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [ErrEmail, setErrEmail] = useState<string>("");
 
-    const [type,settype] = useState<string>("");
-    const [errType,seterrType] = useState<string>("")
+  const [type, settype] = useState<string>("");
+  const [errType, seterrType] = useState<string>("");
 
-    const [password,setPassword] = useState<string>("");
-    const [ErrPassword,setErrPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [ErrPassword, setErrPassword] = useState<string>("");
 
-    const [ComfirmPassword,setComfirmPassword] = useState<string>("");
-    const [ErrComfirmPassword,setErrComfirmPassword] = useState<string>("");
+  const [ComfirmPassword, setComfirmPassword] = useState<string>("");
+  const [ErrComfirmPassword, setErrComfirmPassword] = useState<string>("");
 
-
-   const tt = async (e: FormEvent) => {
+  const handleForm = async (e: FormEvent) => {
     e.preventDefault();
     let Valid = true;
     const regexNames = /^[A-Za-z ]+$/;
     const regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    const passwordRegex =
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     setLoading(true);
 
     if (!nom.trim() || !regexNames.test(nom)) {
-        setErrNom("Nom invalide");
-        Valid = false;
+      setErrNom("Nom invalide");
+      Valid = false;
     } else {
-        setErrNom("");
+      setErrNom("");
     }
 
     if (!prenom.trim() || !regexNames.test(prenom)) {
-        setErrPrenom("Prénom invalide");
-        Valid = false;
+      setErrPrenom("Prénom invalide");
+      Valid = false;
     } else {
-        setErrPrenom("");
+      setErrPrenom("");
     }
 
     if (!email.trim() || !regexEmail.test(email)) {
-        setErrEmail("Email invalide");
-        Valid = false;
+      setErrEmail("Email invalide");
+      Valid = false;
     } else {
-        setErrEmail("");
+      setErrEmail("");
     }
 
     if (!type) {
-        seterrType("Veuillez sélectionner votre statut");
-        Valid = false;
+      seterrType("Veuillez sélectionner votre statut");
+      Valid = false;
     } else {
-        seterrType("");
+      seterrType("");
     }
 
     if (!passwordRegex.test(password)) {
-        setErrPassword("Minimum huit caractères, une majuscule, une minuscule, un chiffre et un caractère spécial");
-        Valid = false;
+      setErrPassword(
+        "Minimum huit caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+      );
+      Valid = false;
     } else {
-        setErrPassword("");
+      setErrPassword("");
     }
 
     if (password !== ComfirmPassword || !ComfirmPassword) {
-        setErrComfirmPassword("Les mots de passe ne correspondent pas");
-        Valid = false;
+      setErrComfirmPassword("Les mots de passe ne correspondent pas");
+      Valid = false;
     } else {
-        setErrComfirmPassword("");
+      setErrComfirmPassword("");
     }
 
     if (!Valid) {
-        setLoading(false);
-        return;
+      setLoading(false);
+      return;
     }
 
     try {
-        const response = await axios.post(`${apiUrl}/auth/register`, {
-            nom,
-            prenom,
-            type,
-            email,
-            password
-        });
-        if (response.data.success) {
-            navigate('/connexion');
-            toast.success('Vous êtes bien inscrit', { icon: '🎉' });
-        }
+      const response = await axios.post(`${apiUrl}/auth/register`, {
+        nom,
+        prenom,
+        type,
+        email,
+        password,
+      });
+      if (response.data.success) {
+        navigate("/connexion");
+        toast.success("Vous êtes bien inscrit", { icon: "🎉" });
+      }
     } catch (err) {
-        if (axios.isAxiosError(err) && err.response) {
-            toast.error(err.response.data.message);
-        }
+      if (axios.isAxiosError(err) && err.response) {
+        toast.error(err.response.data.message);
+      }
     }
     setLoading(false);
-}
+  };
 
-const isDisabled =
-  !nom.trim() ||
-  !prenom.trim() ||
-  !email.trim() ||
-  !type.trim() ||
-  !password.trim() ||
-  !ComfirmPassword.trim() ||
-  !!ErrNom ||
-  !!ErrPrenom ||
-  !!ErrEmail ||
-  !!ErrPassword ||
-  !!ErrComfirmPassword ||
-  !!errType;
+  useEffect(()=>{
+    const handleClick = (event : MouseEvent)=>{
+      if(ref.current && !ref.current.contains(event.target as Node)){
+        setshowOption(false)
+      }
+    }
+    document.addEventListener("mousedown",handleClick);
+    return ()=>{
+    document.removeEventListener("mousedown", handleClick);
+    }
+  },[])
 
   return (
-    <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-        <div className='flex items-center gap-2 justify-around w-full lg:h-screen md:h-screen h-auto p-4'>
-            <div className='w-full lg:block hidden'>
-                <img src={logo_inscription} alt="logo_inscription" width={700} height={700}/>
-            </div>
-            <div className='relative flex items-start gap-3 flex-col w-full shadow-xl p-5 rounded-md bg-amber-50'>
-                <img src={logo} alt="" width={50} className='absolute right-0 -top-2.5 rotate-6'/>
-                <div className='w-full'>
-                    <h2 className='text-3xl font-medium'>Commençons <br />à apprendre avec <span className='text-amber-500 font-semibold'>9ral<span className='text-sky-500'>ibre</span></span></h2>
-                    <p className='text-sm'>Veuillez vous inscrire ou vous connecter pour continuer</p>
-                </div>
-                <div className='flex items-center gap-3 w-full'>
-                    <div className='flex items-start flex-col gap-1 w-full'>
-                        <Input 
-                            label='Nom' 
-                            id='Nom' 
-                            type='text' 
-                            placeholder='Votre Nom' 
-                            onFocus={()=>setErrNom("")} 
-                            value={nom} 
-                            onChange={setNom} 
-                            error={ErrNom} 
-                        />
-                    </div>
-                    <div className='flex items-start flex-col gap-1 w-full'>
-                        <Input 
-                            label='Prenom' 
-                            id='prenom' 
-                            type='text' 
-                            placeholder='Votre Prenom' 
-                            onFocus={()=>setErrPrenom("")} 
-                            value={prenom} 
-                            onChange={setPrenom} 
-                            error={ErrPrenom} 
-                        />
-                    </div>
-                </div>
-                <div className='flex items-start flex-col gap-1 w-full relative'>
-                        <h3 className='font-semibold'>Votre status</h3>
-                            <div onClick={handleShow}  className={`relative w-full border rounded-md  ${errType && 'border-red-400'} p-2 flex items-center justify-between cursor-pointer`}>
-                                <h3>{type || 'Selectionnez votre status'}</h3>
-                                <ChevronDown size={15}/>
-                        </div>
-                        {showOption &&
-                            <div className='absolute top-17 left-0 z-10 w-full bg-white border-2 rounded-md shadow-lg'>
-                                {option.map((item,index)=>(
-                                    <div key={index}>
-                                    <div id='status' 
-                                        onClick={()=>{
-                                        settype(item.name);
-                                        setshowOption(false)}} className="p-2 hover:bg-amber-100 cursor-pointer transition">
-                                        <span>{item.icon}{item.name}</span>
-                                    </div>
-                                    {option.length -1 && (
-                                        <div className="border-t border-gray-200"></div>
-                                    )}
-                                    </div>
-                                ))}
-                            </div>
-                        }
-                        {errType && <p className='text-red-400 text-sm font-bold'>{errType}</p>}
-                </div>
-                <div className='flex items-start flex-col gap-1 w-full'>
-                    <Input 
-                        icon="mail" 
-                        label='Email' 
-                        id='monEmail' 
-                        type='email' 
-                        placeholder='Votre Email' 
-                        onFocus={()=>setErrEmail("")} 
-                        value={email} 
-                        onChange={setEmail} 
-                        error={ErrEmail} 
-                    />
-                </div>
-                <div className='flex items-start flex-col gap-1 w-full'>
-                    <Input
-                        placeholder='Votre Mot de passe' 
-                        label='Mot de passe' 
-                        id='password' 
-                        value={password}
-                        type='password'
-                        onChange={setPassword} 
-                        onFocus={()=>setErrPassword("")}
-                        icon='lock' 
-                        error={ErrPassword}
-                    />
-                </div>
-                <div className='flex items-start flex-col gap-1 w-full'>
-                    <Input 
-                        id="confirmPassword"
-                        label="Confirmation du mot de passe"
-                        type="password"
-                        value={ComfirmPassword}
-                        placeholder="Confirmez votre mot de passe"
-                        error={ErrComfirmPassword}
-                        icon="lock"
-                        onFocus={()=>setErrComfirmPassword("")}
-                        onChange={setComfirmPassword}
-                    />
-                </div>
-                <button onClick={tt} disabled={Loading || isDisabled} className='disabled:bg-slate-50 disabled:text-slate-300 disabled:cursor-not-allowed disabled:shadow w-full flex items-center justify-center gap-2 bg-amber-300 rounded-md hover:bg-amber-400 cursor-pointer text-black dark:text-white p-3 font-semibold text-base hover:shadow-md transition-all duration-300'>
-                    {Loading ? <Loadering  /> : '' }
-                    <h2>Inscrivez-vous</h2>
-                    <LogIn />
-                </button>
-                <div className='flex items-end justify-end w-full'>
-                    <p>
-                        Déjà un compte ? <Link to={'/connexion'} className='text-blue-200 border-b border-sky-200 hover:text-blue-400 transition-all duration-400'>Se connecter</Link>
-                    </p>
-                </div>
-                <div className='flex items-center justify-around w-full gap-4'>
-                    <hr className='w-full'/>
-                    <h6 className='font-semibold'>OU</h6>
-                    <hr className='w-full'/>
-                </div>
-                <div className='flex flex-wrap gap-4 items-center justify-around w-full'>
-                    <Googles text={`S'inscrire avec Google`}/>
-                    <Microsofts text={`S'inscrire avec Miscrosoft`}/>
-                </div>
-            </div>
-            
+    <div className="flex h-screen min-h-max w-full items-center justify-center gap-2 p-4 lg:h-screen lg:justify-around">
+      <div className="hidden w-full lg:block">
+        <img
+          src={logo_inscription}
+          alt="logo_inscription"
+          width={700}
+          height={700}
+        />
+      </div>
+      <div className="relative flex w-full flex-col items-start gap-3 rounded-md bg-white p-10 shadow-md transition">
+        <Link to={"/"}>
+          <img
+            src={gralibre}
+            alt="logo_9ralibre"
+            width={150}
+            className="absolute -top-2.5 right-0 w-20 rotate-6 cursor-pointer transition-all hover:w-24 md:w-36 hover:md:w-40 lg:w-40 hover:lg:w-44"
+          />
+        </Link>
+        <div className="w-full">
+          <h2 className="text-3xl font-medium">
+            Commençons <br />à apprendre avec{" "}
+            <span className="font-semibold text-amber-500">
+              9ral<span className="text-sky-500">ibre</span>
+            </span>
+          </h2>
+          <p className="text-sm">
+            Veuillez vous inscrire ou vous connecter pour continuer
+          </p>
+        </div>
+        <div className="flex w-full items-start justify-start">
+          <p>
+            Déjà un compte ?{" "}
+            <Link
+              to={"/connexion"}
+              className="text-xs text-sky-300 transition-all duration-400 hover:text-sky-400 md:text-sm lg:text-base"
+            >
+              <RoughNotation
+                strokeWidth={5}
+                type="highlight"
+                show={true}
+                color="oklch(82.8% 0.189 84.429)"
+              >
+                Connectez-vous
+              </RoughNotation>
+            </Link>
+          </p>
+        </div>
+        <div className="flex w-full flex-wrap items-center justify-around gap-4">
+          <OAuth
+            text_1={`S'inscrire avec Google`}
+            text_2={`S'inscrire avec Microft`}
+          />
         </div>
 
- </div>
-  )
-}
+        <form onSubmit={handleForm} className="mt-2 flex w-full flex-col gap-3">
+          <div className="flex w-full items-center gap-3">
+            <div className="flex w-full flex-col items-start gap-1">
+              <Input
+                label="Nom"
+                id="Nom"
+                type="text"
+                placeholder="Votre Nom"
+                onFocus={() => setErrNom("")}
+                value={nom}
+                onChange={setNom}
+                error={ErrNom}
+              />
+            </div>
+            <div className="flex w-full flex-col items-start gap-1">
+              <Input
+                label="Prenom"
+                id="prenom"
+                type="text"
+                placeholder="Votre Prenom"
+                onFocus={() => setErrPrenom("")}
+                value={prenom}
+                onChange={setPrenom}
+                error={ErrPrenom}
+              />
+            </div>
+          </div>
+          <div ref={ref} className="relative flex w-full flex-col items-start gap-1">
+            <h3 className="font-semibold">Votre status</h3>
+            <div
+              onClick={handleShow}
+              className={`relative w-full rounded-md border ${errType && "border-red-400"} flex cursor-pointer items-center justify-between p-2`}
+            >
+              <h3>{type || "Selectionnez votre status"}</h3>
+              <ChevronDown size={15} />
+            </div>
+            {showOption && (
+              <div className="absolute top-17 left-0 z-10 w-full rounded-md border-2 bg-white shadow-lg">
+                {option.map((item, index) => (
+                  <div key={index}>
+                    <div
+                      id="status"
+                      onClick={() => {
+                        settype(item.name);
+                        setshowOption(false);
+                      }}
+                      className="cursor-pointer p-2 transition hover:bg-amber-100"
+                    >
+                      <span>
+                        {item.icon}
+                        {item.name}
+                      </span>
+                    </div>
+                    {option.length - 1 && (
+                      <div className="border-t border-gray-200"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {errType && (
+              <p className="text-sm font-bold text-red-400">{errType}</p>
+            )}
+          </div>
+          <div className="flex w-full flex-col items-start gap-1">
+            <Input
+              icon="mail"
+              label="Email"
+              id="monEmail"
+              type="email"
+              placeholder="Votre Email"
+              onFocus={() => setErrEmail("")}
+              value={email}
+              onChange={setEmail}
+              error={ErrEmail}
+            />
+          </div>
+          <div className="flex w-full flex-col items-start gap-1">
+            <Input
+              placeholder="Votre Mot de passe"
+              label="Mot de passe"
+              id="password"
+              value={password}
+              type="password"
+              onChange={setPassword}
+              onFocus={() => setErrPassword("")}
+              icon="lock"
+              error={ErrPassword}
+            />
+          </div>
+          <div className="flex w-full flex-col items-start gap-1">
+            <Input
+              id="confirmPassword"
+              label="Confirmation du mot de passe"
+              type="password"
+              value={ComfirmPassword}
+              placeholder="Confirmez votre mot de passe"
+              error={ErrComfirmPassword}
+              icon="lock"
+              onFocus={() => setErrComfirmPassword("")}
+              onChange={setComfirmPassword}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={Loading}
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-amber-300 p-3 text-base font-semibold text-black transition-all duration-300 hover:bg-amber-400 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-300 disabled:shadow dark:text-white"
+          >
+            {Loading ? <Loadering /> : ""}
+            <h2>Inscrivez-vous</h2>
+            <LogIn />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-export default Inscription
+export default Inscription;
