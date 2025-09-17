@@ -45,7 +45,7 @@ const isDisabled =
 Inscrivez-vous
 </button>
 
-## 4. Composant `Input` réutilisable
+## 4. Composant `Input` réutilisable`
 
 Pour éviter la répétition des classes dans les formulaires, nous avons créé un composant `Input` réutilisable.
 
