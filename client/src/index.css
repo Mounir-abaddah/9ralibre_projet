@@ -1,9 +1,15 @@
-@import url('https://fonts.cdnfonts.com/css/cera-round-pro-demo');
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
-*{
-  font-family: 'Cera Round Pro DEMO', sans-serif !important;
+* {
+  font-family: "Lexend Deca", serif;
+  font-optical-sizing: auto;
+}
+body {
+  background: #fff;
+  background-image: radial-gradient(#aaa 0.8px, #fff 0.8px);
+  background-size: 24px 24px;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -46,20 +52,23 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --inset-shadow-md: 0px 1px 5px 1px #009ef4;
+
   @keyframes marquee {
-  from {
-    transform: translateX(0);
+    from {
+      transform: translateX(0);
     }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
+
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
+    from {
+      transform: translateY(0);
     }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
