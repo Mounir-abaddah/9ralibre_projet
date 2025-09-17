@@ -175,7 +175,7 @@ const Inscription = () => {
             Déjà un compte ?{" "}
             <Link
               to={"/connexion"}
-              className="text-xs text-sky-300 transition-all duration-400 hover:text-sky-400 md:text-sm lg:text-base"
+              className="text-sm text-sky-300 transition-all duration-400 hover:text-sky-400 md:text-sm lg:text-base"
             >
               <RoughNotation
                 strokeWidth={5}
@@ -191,7 +191,7 @@ const Inscription = () => {
         <div className="flex w-full flex-wrap items-center justify-around gap-4">
           <OAuth
             text_1={`S'inscrire avec Google`}
-            text_2={`S'inscrire avec Microft`}
+            text_2={`S'inscrire avec Microsoft`}
           />
         </div>
 
@@ -228,7 +228,7 @@ const Inscription = () => {
               onClick={handleShow}
               className={`relative w-full rounded-md border ${errType && "border-red-400"} flex cursor-pointer items-center justify-between p-2`}
             >
-              <h3>{type || "Selectionnez votre status"}</h3>
+              <h3 className={`${type ? 'text-black': 'text-gray-500'}`}>{type || "Selectionnez votre status"}</h3>
               <ChevronDown size={15} />
             </div>
             {showOption && (

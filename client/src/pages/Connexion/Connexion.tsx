@@ -1,6 +1,6 @@
 import React, { useState, type FormEvent } from "react";
 import img_login from "@/assets/images/connexion/Thesis-pana.png";
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/9ralibre.png";
 import OAuth from "@/components/Oauth/OAuth";
 import { LogIn } from "lucide-react";
 import Loadering from "@/components/Loadering/Loadering";
@@ -72,8 +72,7 @@ const Connexion = () => {
     setLoading(false);
   };
   return (
-    <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-      <div className="flex h-screen w-full items-center justify-around gap-2 p-4 md:h-screen">
+      <div className="flex h-screen w-full items-center justify-around gap-2 p-4 md:h-screen min-h-max">
         <div className="hidden w-full lg:block">
           <img
             src={img_login}
@@ -82,13 +81,15 @@ const Connexion = () => {
             height={700}
           />
         </div>
-        <div className="relative flex w-full flex-col items-start gap-3 rounded-md bg-amber-50 p-5 shadow-xl">
+        <div className="relative flex w-full flex-col items-start gap-3 rounded-md bg-white p-5 shadow-xl">
+          <Link to={"/"}>
           <img
             src={logo}
-            alt="logo_de_site"
-            width={50}
-            className="absolute -top-3 right-0 rotate-6"
+            alt="logo_9ralibre"
+            width={150}
+            className="absolute -top-2.5 right-0 w-20 rotate-6 cursor-pointer transition-all hover:w-24 md:w-36 hover:md:w-40 lg:w-40 hover:lg:w-44"
           />
+        </Link>
           <div className="w-full">
             <h2 className="text-3xl font-medium">
               Commençons <br />à apprendre avec{" "}
@@ -105,7 +106,7 @@ const Connexion = () => {
                 Pas encore de compte ?{" "}
                 <Link
                   to={"/inscription"}
-                  className="border-b border-sky-200 text-sky-300 transition-all duration-400 hover:text-sky-400"
+                  className="lg:text-base text-sm border-b border-sky-200 text-sky-300 transition-all duration-400 hover:text-sky-400"
                 >
                   <RoughNotation strokeWidth={5} type="highlight" show={true} color="oklch(82.8% 0.189 84.429)">Inscrivez-vous</RoughNotation>
                 </Link>
@@ -171,7 +172,6 @@ const Connexion = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

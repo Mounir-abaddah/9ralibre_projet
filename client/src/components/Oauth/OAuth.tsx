@@ -7,19 +7,19 @@ type OauthType = {
 const OAuth = ({ text_1, text_2 }: OauthType) => {
   return (
     <div className="w-full">
-      <div className="flex w-full justify-around">
-        <div className="flex cursor-pointer items-center gap-2 rounded-md border p-2 font-medium transition-all duration-300 hover:bg-slate-50 hover:inset-shadow-md">
-          <Google size={19} />
+      <div className="flex w-full justify-around lg:flex-row md:flex-row flex-col-reverse gap-3 ">
+        <div className="flex cursor-pointer w-full items-center gap-2 rounded-md border p-2 font-medium transition-all duration-300 hover:bg-slate-50 hover:inset-shadow-md">
+          <Google size={19}/>
           <hr className="h-6 rounded-md border-1" />
-          <p className="hidden md:block lg:block">{text_1}</p>
+          <p>{text_1}</p>
         </div>
-        <div className="flex cursor-pointer items-center gap-2 rounded-md border p-2 font-medium transition-all duration-300 hover:bg-slate-50 hover:inset-shadow-md">
+        <div className="flex cursor-pointer bg-black text-white w-full items-center gap-2 rounded-md border p-2 font-medium transition-all duration-300 hover:inset-shadow-md">
           <Microsoft size={19} />
           <hr className="h-6 rounded-md border-1" />
-          <p className="hidden md:block lg:block">{text_2}</p>
+          <p>{text_2}</p>
         </div>
       </div>
-      <div className="flex w-full items-center justify-around gap-4">
+      <div className="flex w-full items-center justify-around gap-4 mt-3">
         <hr className="w-full" />
         <h6 className="font-semibold">OU</h6>
         <hr className="w-full" />
