@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
-const {registerShema , loginSchema} = require('../validations/authValidation');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer')
+const {registerShema , loginSchema , messageOUblierSchema} = require('../validations/authValidation');
 
 
 router.post('/register',async(req,res)=>{
@@ -61,6 +62,89 @@ router.post('/connexion',async(req,res)=>{
             return res.status(400).send({
                 success:false,
                 message:err.issues.map(e => e.message)
+            })
+        }
+        res.status(500).send({message:'Une erreure est survenue',success:false})
+    }
+})
+
+router.post('/oublierMotdepasse',async(req,res)=>{
+    try{
+        const validationOublierPassword = messageOUblierSchema.parse(req.body);
+        const user = await User.findOne({email:validationOublierPassword.email})
+        if(!user){
+            return res.status(400).send({message:"Impossible de créer un compte avec ces informations" , success:false})
+        }
+        const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{
+            expiresIn : "1d"
+        })
+        const resetLink = `${process.env.FRONTEND_URL}/motdepasseoublier/${token}`
+        var transporter = nodemailer.createTransport({
+            service : 'GMAIL',
+            auth : {
+                user:process.env.EMAIL_CLIENT,
+                pass:process.env.PASSWORD_CLIENT
+            }
+        })
+        var mailOption = {
+            from : process.env.EMAIL_CLIENT,
+            to:validationOublierPassword.email,
+            html:`<!DOCTYPE html>
+                        <html lang="fr">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                            <title>Réinitialisation de mot de passe</title>
+                        </head>
+                        <body style="font-family: Arial, Helvetica, sans-serif; background-color: #f4f4f7; margin: 0; padding: 0; height: 100vh; display: flex; align-items: center;">
+                        <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <tr>
+                            <td style="background-color: #FEBA27; padding: 20px; text-align: center; color: #3F3F3F; font-size: 24px; font-weight: bold;">
+                                🔐 Réinitialisation de mot de passe
+                            </td>
+                            </tr>
+                            <tr>
+                            <td style="padding: 30px; color: #333333;">
+                                <p style="font-size: 18px;">Bonjour,</p>
+                                <p style="font-size: 16px; line-height: 1.5;">
+                                Vous avez demandé à réinitialiser votre mot de passe.  
+                                Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe :
+                                </p>
+                                <div style="text-align: center; margin: 30px 0;">
+                                <a href="${resetLink}" 
+                                    style="background-color: #0ea5e9; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-size: 16px; font-weight: bold; display: inline-block;">
+                                    Réinitialiser mon mot de passe
+                                </a>
+                                </div>
+                                <p style="font-size: 14px; color: #666666;">
+                                ⚠️ Ce lien expirera dans 24 heures pour des raisons de sécurité.
+                                </p>
+                                <p style="font-size: 14px; color: #666666;">
+                                Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet email.
+                                </p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #999999;">
+                                © ${new Date().getFullYear()} 9ralibre. Tous droits réservés.
+                            </td>
+                            </tr>
+                        </table>
+                        </body>
+
+                        </html>`
+        }
+        transporter.sendMail(mailOption, function(error, info){
+        if(error){
+            return console.log(error);
+        }
+         return res.status(200).send({ message: "Lien de réinitialisation envoyé", success: true });
+        });
+    }catch(err){
+        if(err.name === "ZodError"){
+            return res.status(400).send({
+                success:false,
+                message:err.issues.map(e=>e.message)
             })
         }
         res.status(500).send({message:'Une erreure est survenue',success:false})
