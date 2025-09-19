@@ -26,4 +26,8 @@ const loginSchema = z.object({
   password: z.string().min(6, "Mot de passe trop court" ),
 });
 
-module.exports = { registerShema ,loginSchema };
+const messageOUblierSchema = z.object({
+  email:z.string().email("Email invalid")
+})
+
+module.exports = { registerShema ,loginSchema ,messageOUblierSchema };
