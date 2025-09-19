@@ -1,124 +1,141 @@
-# Validation avec Zod et Express
+# 🔐 Reset Password Flow avec JWT et Node.js
 
-Ce projet montre comment utiliser **Zod** pour valider les données envoyées dans `req.body` avec Express.  
-L’exemple est expliqué de deux façons : une version technique (Express) et une version enfantine (l’histoire de la maîtresse 🎒).
+Ce projet implémente une fonctionnalité de réinitialisation de mot de
+passe sécurisée avec **Node.js**, **Express**, **MongoDB**, **bcryptjs**
+et **jsonwebtoken**.
 
----
+------------------------------------------------------------------------
 
-## Qu’est-ce que `parse` ?
+## 🚀 Étapes du processus
 
-👉 `parse()` est une fonction de Zod qui **vérifie** si les données correspondent au schéma que tu as défini.  
-- Si les données sont **valides** → il retourne l’objet validé.  
-- Si les données sont **fausses** → il lance une erreur avec les détails.
+### 1. Génération du lien de réinitialisation
 
-C’est comme un **garde de sécurité** 🔐 pour ton API.
+Quand l'utilisateur clique sur *mot de passe oublié*, on génère un
+**token JWT** contenant l'`userId` :
 
----
-
-## Exemple technique (Express)
-
-### Définir un schéma
-```js
-const { z } = require("zod");
-
-const registerSchema = z.object({
-  name: z.string().min(2),       // Nom = minimum 2 lettres
-  email: z.string().email(),     // Email valide
-  password: z.string().min(6),   // Mot de passe = minimum 6 caractères
-});
+``` js
+const token = jwt.sign(
+  { userId: user._id },
+  process.env.JWT_SECRET,
+  { expiresIn: "1h" }
+);
 ```
 
-### Utilisation dans Express
-```js
-const express = require("express");
-const app = express();
-app.use(express.json());
+➡️ Ce token est envoyé par email sous forme de lien :
 
-app.post("/register", (req, res) => {
-  try {
-    // Vérification du corps de la requête
-    const data = registerSchema.parse(req.body);
+    http://tonsite.com/reset-password/<token>
 
-    // Si tout est bon
-    res.json({ message: "Inscription réussie ✅", data });
-  } catch (err) {
-    // Si erreur → renvoie les détails
-    res.status(400).json({ message: "Erreur ❌", details: err.errors });
-  }
-});
+------------------------------------------------------------------------
 
-app.listen(3000, () => console.log("Serveur démarré sur http://localhost:3000"));
+### 2. Lien cliqué → Route de réinitialisation
+
+Quand l'utilisateur clique sur le lien, il est redirigé vers la route :
+
+``` js
+router.put('/resetPassword/:token', async (req, res) => { ... })
 ```
 
----
+1.  **On vérifie le token** :
 
-## Exemple enfantin (l’histoire de la maîtresse 🎒)
-
-Imagine que tu veux entrer à l’école. Avant d’entrer, la maîtresse vérifie ton **cartable** :  
-- Tu dois avoir **un crayon** ✏️  
-- Tu dois avoir **un cahier** 📒  
-- Tu dois avoir **au moins 1 bonbon** 🍬  
-
-Sinon, tu ne peux pas entrer.
-
-### En code avec Zod
-```js
-const { z } = require("zod");
-
-// La maîtresse définit les règles
-const cartableSchema = z.object({
-  crayon: z.string(),         // il faut un crayon
-  cahier: z.string(),         // il faut un cahier
-  bonbons: z.number().min(1), // au moins 1 bonbon
-});
-
-// Ton cartable (les données)
-const monCartable = {
-  crayon: "bleu",
-  cahier: "maths",
-  bonbons: 3,
-};
-
-// La maîtresse vérifie
-const resultat = cartableSchema.parse(monCartable);
-
-console.log(resultat);
-// ✅ Tu passes, car tout est bon
+``` js
+const payload = jwt.verify(token, process.env.JWT_SECRET);
 ```
 
-### Et si tu triches 😅
-```js
-const mauvaisCartable = {
-  crayon: "rouge",
-  cahier: "dessin",
-  bonbons: 0,  // pas de bonbon !!
-};
+👉 Si invalide ou expiré → erreur.
 
-const resultat = cartableSchema.parse(mauvaisCartable);
-// ❌ Erreur: "bonbons must be greater than or equal to 1"
+2.  **On récupère l'utilisateur** avec `userId` :
+
+``` js
+const user = await User.findById(payload.userId);
 ```
 
-👉 Donc `parse()` = la maîtresse qui vérifie ton cartable 🎒  
-- Si tout est correct → tu rentres à l’école 🎉  
-- Sinon → elle dit "Erreur !" 🚨
+3.  **On compare l'ancien et le nouveau mot de passe** :
 
----
-
-## Différence entre `parse` et `safeParse`
-
-- `parse()`  
-  → lance une erreur si les données sont invalides.  
-
-- `safeParse()`  
-  → ne lance **pas** d’erreur. Il retourne un objet avec `success: true/false`.
-
-### Exemple
-```js
-const result = registerSchema.safeParse(req.body);
-
-if (!result.success) {
-  console.log(result.error.errors); // erreurs
-} else {
-  console.log(result.data); // données valides
+``` js
+const MemeMotdepasse = await bcrypt.compare(req.body.password, user.password);
+if (MemeMotdepasse) {
+  return res.status(400).send({ message: "Impossible de réutiliser l'ancien mot de passe" });
 }
 ```
+
+4.  **On enregistre le nouveau mot de passe** (haché avec `bcrypt`) :
+
+``` js
+user.password = await bcrypt.hash(req.body.password, 10);
+await user.save();
+```
+
+5.  **Réponse finale** :
+
+``` js
+res.status(200).send({ message: "Mot de passe réinitialisé avec succès ✅", success: true });
+```
+
+------------------------------------------------------------------------
+
+## 📑 Exemple complet de la route
+
+``` js
+router.put('/resetPassword/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const validationOublierPassword = passwordResetShema.parse(req.body);
+
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(400).send({ message: "Lien invalide ou expiré", success: false });
+    }
+
+    const user = await User.findById(payload.userId);
+    if (!user) {
+      return res.status(404).send({ message: "Utilisateur introuvable", success: false });
+    }
+
+    const MemeMotdepasse = await bcrypt.compare(validationOublierPassword.password, user.password);
+    if (MemeMotdepasse) {
+      return res.status(400).send({ message: "Impossible de réutiliser l'ancien mot de passe", success: false });
+    }
+
+    user.password = await bcrypt.hash(validationOublierPassword.password, 10);
+    await user.save();
+
+    return res.status(200).send({ message: "Mot de passe réinitialisé avec succès ✅", success: true });
+  } catch (err) {
+    if (err.name === "ZodError") {
+      return res.status(400).send({
+        success: false,
+        message: err.issues.map(e => e.message)
+      });
+    }
+    console.error(err);
+    res.status(500).send({ success: false, message: "Une erreur est survenue" });
+  }
+});
+```
+
+------------------------------------------------------------------------
+
+## 📝 Résumé simple
+
+1.  Génération du lien avec `userId` → Email envoyé ✅\
+2.  L'utilisateur clique → `resetPassword/:token` ✅\
+3.  Vérification du token et récupération de l'utilisateur ✅\
+4.  Vérification que le nouveau mot de passe est différent ✅\
+5.  Sauvegarde en base du mot de passe haché ✅
+
+------------------------------------------------------------------------
+
+## 📌 Points de sécurité
+
+-   Utiliser `expiresIn` pour limiter la durée de validité du token.\
+-   Ne jamais stocker un mot de passe en clair (toujours
+    `bcrypt.hash`).\
+-   Bloquer la réutilisation de l'ancien mot de passe.\
+-   Cacher `JWT_SECRET` dans un fichier `.env`.
+
+------------------------------------------------------------------------
+
+✅ Avec ce système, ton API permet de réinitialiser les mots de passe de
+façon **sécurisée et robuste**.
