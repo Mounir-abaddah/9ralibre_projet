@@ -4,7 +4,7 @@ const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer')
-const {registerShema , loginSchema , messageOUblierSchema} = require('../validations/authValidation');
+const {registerShema , loginSchema , messageOUblierSchema,passwordResetShema} = require('../validations/authValidation');
 
 
 router.post('/register',async(req,res)=>{
@@ -73,7 +73,7 @@ router.post('/oublierMotdepasse',async(req,res)=>{
         const validationOublierPassword = messageOUblierSchema.parse(req.body);
         const user = await User.findOne({email:validationOublierPassword.email})
         if(!user){
-            return res.status(400).send({message:"Impossible de créer un compte avec ces informations" , success:false})
+            return res.status(400).send({message:"Si un compte existe pour cet email, vous allez recevoir un email pour réinitialiser le mot de passe" , success:false})
         }
         const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{
             expiresIn : "1d"
@@ -150,5 +150,43 @@ router.post('/oublierMotdepasse',async(req,res)=>{
         res.status(500).send({message:'Une erreure est survenue',success:false})
     }
 })
+
+
+router.put('/resetPassword/:token', async (req, res) => {
+  try{
+    const {token} = req.params;
+    const validationOublierPassword = passwordResetShema.parse(req.body);
+    let payload;
+    try{
+        payload = jwt.verify(token,process.env.JWT_SECRET)
+    }catch (err) {
+      return res.status(400).send({message: "Lien invalide ou expiré" , success: false });
+    }
+    const user = await User.findById(payload.userId);
+    if(!user){
+        return res.status(404).send({message: "Impossible de réinitialiser le mot de passe avec ce lien",success: false });
+    }
+    const MemeMotdepasse = await bcrypt.compare(validationOublierPassword.password,user.password);
+    if(MemeMotdepasse){
+       return res.status(400).send({
+        message: "Impossible de réinitialiser le mot de passe avec ces informations",
+        success: false,
+      });
+    }
+    user.password = await bcrypt.hash(validationOublierPassword.password,10);
+    await user.save();
+    return res.status(200).send({message: "Mot de passe réinitialisé avec succès ✅",success: true});
+  }catch (err) {
+    if (err.name === "ZodError") {
+      return res.status(400).send({
+        success: false,
+        message: err.issues.map(e => e.message)
+      });
+    }
+    console.error(err);
+    res.status(500).send({ success: false, message: "Une erreur est survenue" });
+  }
+});
+
 
 module.exports = router
