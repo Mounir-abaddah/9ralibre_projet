@@ -117,7 +117,7 @@ router.post('/oublierMotdepasse',async(req,res)=>{
                                 </a>
                                 </div>
                                 <p style="font-size: 14px; color: #666666;">
-                                ⚠️ Ce lien expire dans 30 minute pour des raisons de sécurité.
+                                ⚠️ Ce lien expirera dans 30 minute pour des raisons de sécurité.
                                 </p>
                                 <p style="font-size: 14px; color: #666666;">
                                 Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet email.
