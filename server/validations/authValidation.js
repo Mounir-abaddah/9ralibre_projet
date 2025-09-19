@@ -30,4 +30,13 @@ const messageOUblierSchema = z.object({
   email:z.string().email("Email invalid")
 })
 
-module.exports = { registerShema ,loginSchema ,messageOUblierSchema };
+const passwordResetShema = z.object({
+  password: z.string()
+    .min(8, "le mot de passe doit contenir minimum 8 caractères")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
+    )
+})
+
+module.exports = { registerShema ,loginSchema ,messageOUblierSchema,passwordResetShema};
