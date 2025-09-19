@@ -152,7 +152,7 @@ const Connexion = () => {
               <div className="flex w-full items-end justify-end">
                 <p>
                   <Link
-                    to={"/forgot-password"}
+                    to={"/password/reset"}
                     className="border-b border-sky-200 font-semibold text-sky-500 transition-all duration-400 hover:text-blue-400"
                   >
                     Mot de passe oublié ?
