@@ -76,7 +76,7 @@ router.post('/oublierMotdepasse',async(req,res)=>{
             return res.status(400).send({message:"Si un compte existe pour cet email, vous allez recevoir un email pour réinitialiser le mot de passe" , success:false})
         }
         const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{
-            expiresIn : "1d"
+            expiresIn : "30m"
         })
         const resetLink = `${process.env.FRONTEND_URL}/password/reset/${token}`
         var transporter = nodemailer.createTransport({
@@ -117,7 +117,7 @@ router.post('/oublierMotdepasse',async(req,res)=>{
                                 </a>
                                 </div>
                                 <p style="font-size: 14px; color: #666666;">
-                                ⚠️ Ce lien expirera dans 24 heures pour des raisons de sécurité.
+                                ⚠️ Ce lien expirera dans 30 minute pour des raisons de sécurité.
                                 </p>
                                 <p style="font-size: 14px; color: #666666;">
                                 Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet email.
