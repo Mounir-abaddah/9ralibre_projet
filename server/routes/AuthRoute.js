@@ -78,7 +78,7 @@ router.post('/oublierMotdepasse',async(req,res)=>{
         const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{
             expiresIn : "1d"
         })
-        const resetLink = `${process.env.FRONTEND_URL}/motdepasseoublier/${token}`
+        const resetLink = `${process.env.FRONTEND_URL}/password/reset/${token}`
         var transporter = nodemailer.createTransport({
             service : 'GMAIL',
             auth : {
