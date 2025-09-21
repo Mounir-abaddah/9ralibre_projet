@@ -1,141 +1,50 @@
-# 🔐 Reset Password Flow avec JWT et Node.js
+# 🍪 Cookie vs 📦 Session
 
-Ce projet implémente une fonctionnalité de réinitialisation de mot de
-passe sécurisée avec **Node.js**, **Express**, **MongoDB**, **bcryptjs**
-et **jsonwebtoken**.
+Ce document explique simplement la différence entre **cookie** et **session**.
 
-------------------------------------------------------------------------
+---
 
-## 🚀 Étapes du processus
+## 🍪 Cookie (navigateur)
 
-### 1. Génération du lien de réinitialisation
+* C’est **côté client**, dans ton navigateur.
+* C’est un petit papier/ticket que ton navigateur garde et renvoie au serveur à chaque requête.
+* **Exemple** :
 
-Quand l'utilisateur clique sur *mot de passe oublié*, on génère un
-**token JWT** contenant l'`userId` :
-
-``` js
-const token = jwt.sign(
-  { userId: user._id },
-  process.env.JWT_SECRET,
-  { expiresIn: "1h" }
-);
+```
+Cookie: connect.sid=abc123
 ```
 
-➡️ Ce token est envoyé par email sous forme de lien :
+* Tout seul, le cookie **ne contient pas tes données personnelles**, juste un identifiant.
+* Il permet au serveur de savoir que c’est toi, mais il n’y a pas d’information complète dedans.
 
-    http://tonsite.com/reset-password/<token>
+---
 
-------------------------------------------------------------------------
+## 📦 Session (serveur)
 
-### 2. Lien cliqué → Route de réinitialisation
+* C’est **côté serveur** (en mémoire, dans une base de données ou Redis).
+* C’est une boîte où le serveur **stocke des informations sur toi** (profil, rôle, login…)
+* **Exemple** dans la mémoire du serveur :
 
-Quand l'utilisateur clique sur le lien, il est redirigé vers la route :
-
-``` js
-router.put('/resetPassword/:token', async (req, res) => { ... })
-```
-
-1.  **On vérifie le token** :
-
-``` js
-const payload = jwt.verify(token, process.env.JWT_SECRET);
-```
-
-👉 Si invalide ou expiré → erreur.
-
-2.  **On récupère l'utilisateur** avec `userId` :
-
-``` js
-const user = await User.findById(payload.userId);
-```
-
-3.  **On compare l'ancien et le nouveau mot de passe** :
-
-``` js
-const MemeMotdepasse = await bcrypt.compare(req.body.password, user.password);
-if (MemeMotdepasse) {
-  return res.status(400).send({ message: "Impossible de réutiliser l'ancien mot de passe" });
+```json
+{
+  "abc123": { "name": "Mounir", "email": "mounir@gmail.com" }
 }
 ```
 
-4.  **On enregistre le nouveau mot de passe** (haché avec `bcrypt`) :
+* Quand tu envoies le cookie `abc123`, le serveur regarde dans sa session et sait qui tu es.
 
-``` js
-user.password = await bcrypt.hash(req.body.password, 10);
-await user.save();
-```
+---
 
-5.  **Réponse finale** :
+## 🔗 Comment ça fonctionne ensemble
 
-``` js
-res.status(200).send({ message: "Mot de passe réinitialisé avec succès ✅", success: true });
-```
+1. Tu te connectes → le serveur crée une **session** : `abc123` → `{name: Mounir}`
+2. Le serveur envoie un **cookie** `connect.sid=abc123` au navigateur
+3. Le navigateur renvoie ce cookie à chaque requête → le serveur retrouve la session → sait que c’est toi
 
-------------------------------------------------------------------------
+---
 
-## 📑 Exemple complet de la route
+## 🔹 Résumé simple
 
-``` js
-router.put('/resetPassword/:token', async (req, res) => {
-  try {
-    const { token } = req.params;
-    const validationOublierPassword = passwordResetShema.parse(req.body);
-
-    let payload;
-    try {
-      payload = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
-      return res.status(400).send({ message: "Lien invalide ou expiré", success: false });
-    }
-
-    const user = await User.findById(payload.userId);
-    if (!user) {
-      return res.status(404).send({ message: "Utilisateur introuvable", success: false });
-    }
-
-    const MemeMotdepasse = await bcrypt.compare(validationOublierPassword.password, user.password);
-    if (MemeMotdepasse) {
-      return res.status(400).send({ message: "Impossible de réutiliser l'ancien mot de passe", success: false });
-    }
-
-    user.password = await bcrypt.hash(validationOublierPassword.password, 10);
-    await user.save();
-
-    return res.status(200).send({ message: "Mot de passe réinitialisé avec succès ✅", success: true });
-  } catch (err) {
-    if (err.name === "ZodError") {
-      return res.status(400).send({
-        success: false,
-        message: err.issues.map(e => e.message)
-      });
-    }
-    console.error(err);
-    res.status(500).send({ success: false, message: "Une erreur est survenue" });
-  }
-});
-```
-
-------------------------------------------------------------------------
-
-## 📝 Résumé simple
-
-1.  Génération du lien avec `userId` → Email envoyé ✅\
-2.  L'utilisateur clique → `resetPassword/:token` ✅\
-3.  Vérification du token et récupération de l'utilisateur ✅\
-4.  Vérification que le nouveau mot de passe est différent ✅\
-5.  Sauvegarde en base du mot de passe haché ✅
-
-------------------------------------------------------------------------
-
-## 📌 Points de sécurité
-
--   Utiliser `expiresIn` pour limiter la durée de validité du token.\
--   Ne jamais stocker un mot de passe en clair (toujours
-    `bcrypt.hash`).\
--   Bloquer la réutilisation de l'ancien mot de passe.\
--   Cacher `JWT_SECRET` dans un fichier `.env`.
-
-------------------------------------------------------------------------
-
-✅ Avec ce système, ton API permet de réinitialiser les mots de passe de
-façon **sécurisée et robuste**.
+* **Cookie** = ton ticket côté navigateur
+* **Session** = la mémoire côté serveur qui garde tes infos
+* Ensemble, ils permettent de savoir si un utilisateur est connecté et de garder son état
