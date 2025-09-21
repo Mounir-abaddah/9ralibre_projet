@@ -3,24 +3,23 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     nom:{
         type:String,
-        required:true
+        default : ""
     },
     prenom:{
         type:String,
-        required:true
+        default : ""
     },
     type:{
         type:String,
-        required:true,
-        enum:['Etudiant','Etudiante']
+        enum:['Non renseigné','Etudiant','Etudiante'],
+        default : "Non renseigné"
     },
     email:{
         type:String,
-        required:true
     },
     password:{
         type:String,
-        required:true
+        default : ""
     },
 },{
     timestamps:true
