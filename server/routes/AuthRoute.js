@@ -3,7 +3,8 @@ const router = express.Router();
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
+const passport = require('passport')
 const {registerShema , loginSchema , messageOUblierSchema,passwordResetShema} = require('../validations/authValidation');
 
 
@@ -187,6 +188,22 @@ router.put('/resetPassword/:token', async (req, res) => {
     res.status(500).send({ success: false, message: "Une erreur est survenue" });
   }
 });
+
+
+router.get('/google',passport.authenticate('google', { scope: ['profile','email'] }));
+
+router.get('/google/callback', passport.authenticate('google', {session:false , failureRedirect: `${process.env.FRONTEND_URL}/connexion` }),
+  function(req, res) {
+    const user = req.user;
+    const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn : "1d"});
+    res.cookie("token",token,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV === "production",
+        sameSite:"strict"
+    })
+    res.redirect(`${process.env.FRONTEND_URL}/Dashboard`);
+  });
+  
 
 
 module.exports = router
