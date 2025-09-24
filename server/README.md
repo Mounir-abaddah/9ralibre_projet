@@ -1,50 +1,86 @@
-# 🍪 Cookie vs 📦 Session
+# 🔐 Comprendre les Headers HTTP et le Middleware d'authentification JWT
 
-Ce document explique simplement la différence entre **cookie** et **session**.
+## 📌 1. Les Headers HTTP
 
----
+Un **header HTTP** est une information supplémentaire envoyée dans une
+requête ou une réponse HTTP.\
+Il s'agit de **paires clé/valeur** qui donnent des détails sur la
+requête.
 
-## 🍪 Cookie (navigateur)
+### ✨ Exemples de headers courants :
 
-* C’est **côté client**, dans ton navigateur.
-* C’est un petit papier/ticket que ton navigateur garde et renvoie au serveur à chaque requête.
-* **Exemple** :
+-   `Content-Type: application/json` → indique que le corps est en JSON
+-   `Accept-Language: fr-FR` → indique la langue préférée
+-   `Authorization: Bearer <token>` → sert à l'authentification
 
+### ⚡ Exemple d'une requête avec header Authorization :
+
+    GET /dashboard HTTP/1.1
+    Host: api.exemple.com
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
+
+Ici : - `Authorization` est le header - `Bearer` est le type
+d'authentification (JWT dans notre cas) - Le long texte est le **token
+JWT**
+
+------------------------------------------------------------------------
+
+## 📌 2. Le Middleware JWT
+
+Un **middleware** dans Express est une fonction qui intercepte les
+requêtes avant d'atteindre la route.
+
+Notre middleware sert à :\
+1. Vérifier la présence du token dans les headers\
+2. Vérifier sa validité avec `jwt.verify()`\
+3. Ajouter les infos de l'utilisateur (`req.user`) si le token est
+valide\
+4. Bloquer l'accès sinon
+
+### 🚀 Exemple de code
+
+``` js
+const jwt = require("jsonwebtoken");
+
+const authMiddleware = (req, res, next) => {
+    const authHeaders = req.headers["authorization"];
+    const token = authHeaders && authHeaders.split(" ")[1]; // format: "Bearer <token>"
+
+    if (!token) {
+        return res.status(401).send({
+            message: "⛔ Accès refusé : Token manquant",
+            success: false
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded; // On attache les infos de l’utilisateur
+        next(); // On continue vers la route protégée
+    } catch (err) {
+        return res.status(403).send({
+            message: "❌ Token invalide ou expiré",
+            success: false,
+            error: err.message
+        });
+    }
+};
+
+module.exports = authMiddleware;
 ```
-Cookie: connect.sid=abc123
-```
 
-* Tout seul, le cookie **ne contient pas tes données personnelles**, juste un identifiant.
-* Il permet au serveur de savoir que c’est toi, mais il n’y a pas d’information complète dedans.
+------------------------------------------------------------------------
 
----
+## 📌 3. Résumé du fonctionnement
 
-## 📦 Session (serveur)
+1.  Le client envoie une requête avec `Authorization: Bearer <token>`\
+2.  Le middleware vérifie le token avec `jwt.verify`\
+3.  Si valide → l'utilisateur peut accéder à la route protégée\
+4.  Si invalide/expiré → retour `401` ou `403`
 
-* C’est **côté serveur** (en mémoire, dans une base de données ou Redis).
-* C’est une boîte où le serveur **stocke des informations sur toi** (profil, rôle, login…)
-* **Exemple** dans la mémoire du serveur :
+------------------------------------------------------------------------
 
-```json
-{
-  "abc123": { "name": "Mounir", "email": "mounir@gmail.com" }
-}
-```
-
-* Quand tu envoies le cookie `abc123`, le serveur regarde dans sa session et sait qui tu es.
-
----
-
-## 🔗 Comment ça fonctionne ensemble
-
-1. Tu te connectes → le serveur crée une **session** : `abc123` → `{name: Mounir}`
-2. Le serveur envoie un **cookie** `connect.sid=abc123` au navigateur
-3. Le navigateur renvoie ce cookie à chaque requête → le serveur retrouve la session → sait que c’est toi
-
----
-
-## 🔹 Résumé simple
-
-* **Cookie** = ton ticket côté navigateur
-* **Session** = la mémoire côté serveur qui garde tes infos
-* Ensemble, ils permettent de savoir si un utilisateur est connecté et de garder son état
+✅ **Conclusion :**\
+- Les headers sont des informations attachées à chaque requête HTTP\
+- Le header `Authorization` + JWT est utilisé pour sécuriser l'accès\
+- Le middleware contrôle la validité du token avant d'autoriser l'accès
