@@ -23,6 +23,7 @@ passport.use(
             email,
             type:"Non renseigné",
             password: "",
+            accountVerified:true
           });
         }
 
