@@ -25,7 +25,7 @@ router.post('/register',async(req,res)=>{
             accountVerified:false
         })
         await newUser.save();
-        const verifiedToken = jwt.sign({userId:newUser._id , type:"verifyEmail"},process.env.JWT_SECRET,{expiresIn:"1h"});
+        const verifiedToken = jwt.sign({userId:newUser._id , type:"verifyEmail"},process.env.JWT_SECRET,{expiresIn:"24h"});
         const accountVerifiedUrl = `${process.env.FRONTEND_URL}/inscription/confirm-email/${verifiedToken}`;
 
         var transporter = nodemailer.createTransport({
@@ -66,7 +66,7 @@ router.post('/register',async(req,res)=>{
                         </a>
                         </div>
                         <p style="font-size: 14px; color: #666666;">
-                        ⚠️ Ce lien expirera dans 1 heure pour des raisons de sécurité.
+                        ⚠️ Ce lien expirera dans 24 heure pour des raisons de sécurité.
                         </p>
                         <p style="font-size: 14px; color: #666666;">
                         Si vous n'avez pas créé de compte, ignorez simplement cet email.
