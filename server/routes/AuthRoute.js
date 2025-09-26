@@ -26,7 +26,7 @@ router.post('/register',async(req,res)=>{
         })
         await newUser.save();
         const verifiedToken = jwt.sign({userId:newUser._id , type:"verifyEmail"},process.env.JWT_SECRET,{expiresIn:"1h"});
-        const accountVerifiedUrl = `${process.env.FRONTEND_URL}/register/confirm-email/${verifiedToken}`;
+        const accountVerifiedUrl = `${process.env.FRONTEND_URL}/inscription/confirm-email/${verifiedToken}`;
 
         var transporter = nodemailer.createTransport({
             service : 'GMAIL',
