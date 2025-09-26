@@ -1,83 +1,172 @@
-# 📧 Vérification d'Email avec Node.js, Express et Mongoose
+# 📧 Confirmation d'Email – 9ralibre
 
-## 📌 Objectif
-Mettre en place un système permettant de vérifier l’adresse email d’un utilisateur après son inscription.
-
-- Lors de l’inscription, un email avec un lien de confirmation est envoyé.  
-- L’utilisateur doit cliquer sur ce lien pour activer son compte.  
-- Le champ **accountVerified** dans MongoDB passe alors de `false` → `true`.  
+Ce module permet d'ajouter une **vérification par email** lors de l'inscription d'un utilisateur.  
+Un email contenant un lien de confirmation est envoyé à l'utilisateur.  
+Celui-ci doit cliquer dessus pour activer son compte. ✅
 
 ---
 
-## 🛠️ Modèle utilisateur (Mongoose)
+## 🚀 Fonctionnalités
 
-```js
-const mongoose = require("mongoose");
+- Validation des données d'inscription avec **Zod**.
+- Vérification que l'email n'existe pas déjà dans la base de données.
+- Hachage du mot de passe avec **bcrypt**.
+- Création d'un nouvel utilisateur avec le champ `accountVerified: false`.
+- Génération d’un **token JWT temporaire (1h)** contenant l'ID de l’utilisateur et un type `verifyEmail`.
+- Envoi d’un email avec **Nodemailer** incluant un lien de confirmation.
+- Vérification du token à la réception du lien pour activer le compte.
 
-const userSchema = new mongoose.Schema({
-  nom: { type: String, required: true },
-  prenom: { type: String, required: true },
-  type: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+---
 
-  // ✅ Vérification de compte
-  accountVerified: {
-    type: Boolean,
-    default: false
+## 📂 Code principal
+
+### 1. **Inscription et envoi du mail de confirmation**
+
+\`\`\`js
+router.post('/register', async (req, res) => {
+  try {
+    // 1. Validation des données
+    const registerValidation = registerShema.parse(req.body);
+
+    // 2. Vérification si l'email existe déjà
+    const emailExists = await User.findOne({ email: registerValidation.email });
+    if (emailExists) {
+      return res.status(400).send({ message: 'Impossible de créer un compte avec ces informations', success: false });
+    }
+
+    // 3. Hachage du mot de passe
+    const hashedPassword = await bcrypt.hash(registerValidation.password, 10);
+
+    // 4. Création de l'utilisateur (non vérifié)
+    const newUser = new User({
+      nom: registerValidation.nom,
+      prenom: registerValidation.prenom,
+      type: registerValidation.type,
+      email: registerValidation.email,
+      password: hashedPassword,
+      accountVerified: false
+    });
+    await newUser.save();
+
+    // 5. Génération du token de vérification
+    const verifiedToken = jwt.sign(
+      { userId: newUser._id, type: "verifyEmail" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    const accountVerifiedUrl = \`\${process.env.FRONTEND_URL}/register/confirm-email/\${verifiedToken}\`;
+
+    // 6. Envoi de l’email avec Nodemailer
+    var transporter = nodemailer.createTransport({
+      service: 'GMAIL',
+      auth: {
+        user: process.env.EMAIL_CLIENT,
+        pass: process.env.PASSWORD_CLIENT
+      }
+    });
+
+    var mailOption = {
+      from: process.env.EMAIL_CLIENT,
+      to: registerValidation.email,
+      html: \`<p>Bonjour \${newUser.nom},</p>
+             <p>Merci pour votre inscription sur <b>9ralibre</b>. Veuillez confirmer votre email :</p>
+             <a href="\${accountVerifiedUrl}">Confirmer mon adresse email</a>\`
+    };
+
+    transporter.sendMail(mailOption, (error, info) => {
+      if (error) {
+        console.log(error);
+        return res.status(400).send({ message: "Compte créé, mais erreur lors de l'envoi de l'email de vérification", success: false });
+      }
+      return res.status(200).send({ message: "Lien de confirmation envoyé ✅", success: true });
+    });
+
+  } catch (err) {
+    if (err.name === "ZodError") {
+      return res.status(400).send({ success: false, message: err.issues.map(e => e.message) });
+    }
+    res.status(500).send({ message: 'Une erreur est survenue', success: false });
   }
 });
-
-module.exports = mongoose.model("User", userSchema);
-```
+\`\`\`
 
 ---
 
-## 🚀 Route d’inscription `/register`
+### 2. **Confirmation de l’email**
 
-1. Validation des données (via Zod par exemple).  
-2. Vérification que l’email n’existe pas déjà.  
-3. Hashage du mot de passe et enregistrement en base.  
-4. Génération d’un token JWT.  
-5. Envoi d’un email avec un lien de vérification.  
+\`\`\`js
+router.get('/confirm-email/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Récupération de l'utilisateur
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res.status(400).send({ message: "Lien invalide ou expiré ❌", success: false });
+    }
+
+    // Vérifie si déjà confirmé
+    if (user.accountVerified) {
+      return res.status(200).send({ message: "Votre compte est déjà vérifié ✅", success: true });
+    }
+
+    // Active le compte
+    user.accountVerified = true;
+    await user.save();
+
+    return res.status(200).send({ success: true, message: "Compte vérifié avec succès ✅" });
+
+  } catch (err) {
+    return res.status(400).send({ message: "Une erreur est survenue", success: false });
+  }
+});
+\`\`\`
 
 ---
 
-## ✅ Route de confirmation `/confirm-email/:token`
+## 🛠️ Modèle utilisateur
 
-1. Vérifie et décode le token JWT.  
-2. Recherche l’utilisateur correspondant.  
-3. Si trouvé, met à jour `accountVerified = true`.  
-4. Retourne une réponse confirmant l’activation du compte.  
-
----
-
-## 📂 Exemple de réponse API
-
-### Succès inscription
-```json
-{
-  "success": true,
-  "message": "Lien de confirmation d'email envoyé"
+\`\`\`js
+accountVerified: {
+  type: Boolean,
+  default: false
 }
-```
-
-### Compte déjà vérifié
-```json
-{
-  "success": true,
-  "message": "Votre compte est déjà vérifié ✅"
-}
-```
-
-### Lien invalide ou expiré
-```json
-{
-  "success": false,
-  "message": "Lien invalide ou expiré ❌"
-}
-```
+\`\`\`
 
 ---
 
-## © 9ralibre
+## ✅ Résultat attendu
+
+1. L’utilisateur s’inscrit → reçoit un **email de confirmation**.
+2. Il clique sur le lien → son **compte est activé**.
+3. Tant qu’il n’a pas confirmé son email → \`accountVerified = false\`.
+
+---
+
+## 📌 Variables d’environnement nécessaires
+
+\`\`\`env
+JWT_SECRET=ton_secret_jwt
+FRONTEND_URL=http://localhost:3000
+EMAIL_CLIENT=ton_email@gmail.com
+PASSWORD_CLIENT=mot_de_passe_application
+\`\`\`
+
+---
+
+## 📧 Exemple d’email envoyé
+
+- Sujet : **Vérification du compte – 9ralibre**
+- Contenu : lien de confirmation valable **1 heure**.
+- Style HTML avec bouton personnalisé.
+
+---
+
+## 🔒 Sécurité
+
+- Token JWT avec **expiration de 1h**.
+- Champ \`type: "verifyEmail"\` pour éviter les confusions avec d’autres tokens.
+- Empêche la connexion d’un compte non vérifié.
+
+---
