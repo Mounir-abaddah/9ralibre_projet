@@ -1,86 +1,83 @@
-# 🔐 Comprendre les Headers HTTP et le Middleware d'authentification JWT
+# 📧 Vérification d'Email avec Node.js, Express et Mongoose
 
-## 📌 1. Les Headers HTTP
+## 📌 Objectif
+Mettre en place un système permettant de vérifier l’adresse email d’un utilisateur après son inscription.
 
-Un **header HTTP** est une information supplémentaire envoyée dans une
-requête ou une réponse HTTP.\
-Il s'agit de **paires clé/valeur** qui donnent des détails sur la
-requête.
+- Lors de l’inscription, un email avec un lien de confirmation est envoyé.  
+- L’utilisateur doit cliquer sur ce lien pour activer son compte.  
+- Le champ **accountVerified** dans MongoDB passe alors de `false` → `true`.  
 
-### ✨ Exemples de headers courants :
+---
 
--   `Content-Type: application/json` → indique que le corps est en JSON
--   `Accept-Language: fr-FR` → indique la langue préférée
--   `Authorization: Bearer <token>` → sert à l'authentification
+## 🛠️ Modèle utilisateur (Mongoose)
 
-### ⚡ Exemple d'une requête avec header Authorization :
+```js
+const mongoose = require("mongoose");
 
-    GET /dashboard HTTP/1.1
-    Host: api.exemple.com
-    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
+const userSchema = new mongoose.Schema({
+  nom: { type: String, required: true },
+  prenom: { type: String, required: true },
+  type: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
 
-Ici : - `Authorization` est le header - `Bearer` est le type
-d'authentification (JWT dans notre cas) - Le long texte est le **token
-JWT**
+  // ✅ Vérification de compte
+  accountVerified: {
+    type: Boolean,
+    default: false
+  }
+});
 
-------------------------------------------------------------------------
-
-## 📌 2. Le Middleware JWT
-
-Un **middleware** dans Express est une fonction qui intercepte les
-requêtes avant d'atteindre la route.
-
-Notre middleware sert à :\
-1. Vérifier la présence du token dans les headers\
-2. Vérifier sa validité avec `jwt.verify()`\
-3. Ajouter les infos de l'utilisateur (`req.user`) si le token est
-valide\
-4. Bloquer l'accès sinon
-
-### 🚀 Exemple de code
-
-``` js
-const jwt = require("jsonwebtoken");
-
-const authMiddleware = (req, res, next) => {
-    const authHeaders = req.headers["authorization"];
-    const token = authHeaders && authHeaders.split(" ")[1]; // format: "Bearer <token>"
-
-    if (!token) {
-        return res.status(401).send({
-            message: "⛔ Accès refusé : Token manquant",
-            success: false
-        });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // On attache les infos de l’utilisateur
-        next(); // On continue vers la route protégée
-    } catch (err) {
-        return res.status(403).send({
-            message: "❌ Token invalide ou expiré",
-            success: false,
-            error: err.message
-        });
-    }
-};
-
-module.exports = authMiddleware;
+module.exports = mongoose.model("User", userSchema);
 ```
 
-------------------------------------------------------------------------
+---
 
-## 📌 3. Résumé du fonctionnement
+## 🚀 Route d’inscription `/register`
 
-1.  Le client envoie une requête avec `Authorization: Bearer <token>`\
-2.  Le middleware vérifie le token avec `jwt.verify`\
-3.  Si valide → l'utilisateur peut accéder à la route protégée\
-4.  Si invalide/expiré → retour `401` ou `403`
+1. Validation des données (via Zod par exemple).  
+2. Vérification que l’email n’existe pas déjà.  
+3. Hashage du mot de passe et enregistrement en base.  
+4. Génération d’un token JWT.  
+5. Envoi d’un email avec un lien de vérification.  
 
-------------------------------------------------------------------------
+---
 
-✅ **Conclusion :**\
-- Les headers sont des informations attachées à chaque requête HTTP\
-- Le header `Authorization` + JWT est utilisé pour sécuriser l'accès\
-- Le middleware contrôle la validité du token avant d'autoriser l'accès
+## ✅ Route de confirmation `/confirm-email/:token`
+
+1. Vérifie et décode le token JWT.  
+2. Recherche l’utilisateur correspondant.  
+3. Si trouvé, met à jour `accountVerified = true`.  
+4. Retourne une réponse confirmant l’activation du compte.  
+
+---
+
+## 📂 Exemple de réponse API
+
+### Succès inscription
+```json
+{
+  "success": true,
+  "message": "Lien de confirmation d'email envoyé"
+}
+```
+
+### Compte déjà vérifié
+```json
+{
+  "success": true,
+  "message": "Votre compte est déjà vérifié ✅"
+}
+```
+
+### Lien invalide ou expiré
+```json
+{
+  "success": false,
+  "message": "Lien invalide ou expiré ❌"
+}
+```
+
+---
+
+## © 9ralibre
