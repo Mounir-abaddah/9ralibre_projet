@@ -8,9 +8,9 @@ const VerificationEmail = () => {
   const navigate = useNavigate()
   const { token } = useParams()
   const apiUrl = import.meta.env.VITE_API_URL
-  const [loading, setLoading] = useState(true)
-  const [verified, setVerified] = useState(false)
-  const [countdown, setCountdown] = useState(5)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [verified, setVerified] = useState<boolean>(false)
+  const [countdown, setCountdown] = useState<number>(5)
 
   useEffect(() => {
     const handleValidationEmail = async () => {
