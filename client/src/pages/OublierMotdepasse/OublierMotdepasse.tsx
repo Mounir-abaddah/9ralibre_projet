@@ -1,4 +1,4 @@
-import React, { useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import Input from '@/components/Form/Input';
 import ralibre_logo from '@/assets/images/9ralibre.png';
 import { Link } from 'react-router-dom';
@@ -49,7 +49,7 @@ const OublierMotdepasse = () => {
   return (
     <div className="mx-auto max-w-xl">
       <header>
-        <img src={ralibre_logo} alt="9ralibre_logo" width={200} />
+        <Link to={'/'}><img src={ralibre_logo} alt="9ralibre_logo" width={200} /></Link>
       </header>
 
       {step === 1 && (
@@ -70,6 +70,7 @@ const OublierMotdepasse = () => {
                   id="monemail"
                   onFocus={() => setErrEmail('')}
                   type="email"
+                  icon='mail'
                   placeholder="Saisissez votre adresse e-mail"
                   value={email}
                   onChange={setEmail}
@@ -80,8 +81,8 @@ const OublierMotdepasse = () => {
                 disabled={loading} 
                 type="submit"
                 className={`flex items-center gap-2 p-2 rounded-md ${
-                  loading ? 'bg-slate-200 cursor-not-allowed' : 'bg-amber-500 cursor-pointer'
-                } shadow-md w-full justify-center`}
+                  loading ? 'bg-slate-200 cursor-not-allowed' : 'bg-amber-400 cursor-pointer'
+                } shadow-md w-full justify-center hover:bg-amber-500 transition-all duration-300`}
               >
                 {loading && <Loadering />}
                 <span className="cursor-pointer text-[#3F3F3F]">
