@@ -20,6 +20,7 @@ const Inscription = () => {
   
   const handleShow = () => {
     setshowOption(!showOption);
+    seterrRole("")
   };
   const option = [
     {
@@ -41,8 +42,8 @@ const Inscription = () => {
   const [email, setEmail] = useState<string>("");
   const [ErrEmail, setErrEmail] = useState<string>("");
 
-  const [type, settype] = useState<string>("");
-  const [errType, seterrType] = useState<string>("");
+  const [role, setrole] = useState<string>("");
+  const [errRole, seterrRole] = useState<string>("");
 
   const [password, setPassword] = useState<string>("");
   const [ErrPassword, setErrPassword] = useState<string>("");
@@ -50,41 +51,41 @@ const Inscription = () => {
   const [ComfirmPassword, setComfirmPassword] = useState<string>("");
   const [ErrComfirmPassword, setErrComfirmPassword] = useState<string>("");
 
+
   const handleForm = async (e: FormEvent) => {
     e.preventDefault();
     let Valid = true;
     const regexNames = /^[A-Za-z ]+$/;
     const regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    const passwordRegex =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     setLoading(true);
 
     if (!nom.trim() || !regexNames.test(nom)) {
-      setErrNom("Nom invalide");
+      setErrNom("Veuillez entrer un nom valide");
       Valid = false;
     } else {
       setErrNom("");
     }
 
     if (!prenom.trim() || !regexNames.test(prenom)) {
-      setErrPrenom("Prénom invalide");
+      setErrPrenom("Veuillez entrer un prénom valide");
       Valid = false;
     } else {
       setErrPrenom("");
     }
 
     if (!email.trim() || !regexEmail.test(email)) {
-      setErrEmail("Email invalide");
+      setErrEmail("Veuillez entrer une adresse email valide");
       Valid = false;
     } else {
       setErrEmail("");
     }
 
-    if (!type) {
-      seterrType("Veuillez sélectionner votre statut");
+    if (!role) {
+      seterrRole("Veuillez sélectionner votre statut");
       Valid = false;
     } else {
-      seterrType("");
+      seterrRole("");
     }
 
     if (!passwordRegex.test(password)) {
@@ -112,13 +113,14 @@ const Inscription = () => {
       const response = await axios.post(`${apiUrl}/auth/register`, {
         nom,
         prenom,
-        type,
+        role,
         email,
         password,
       });
       if (response.data.success) {
-        navigate("/connexion");
-        toast.success("Vous êtes bien inscrit", { icon: "🎉" });
+        localStorage.setItem("show-verification","true")
+        navigate("/");
+        toast.success("Vous allez recevoir un email pour verifier votre compte", { icon: "🎉" });
       }
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
@@ -225,10 +227,11 @@ const Inscription = () => {
           <div ref={ref} className="relative flex w-full flex-col items-start gap-1">
             <h3 className="font-semibold">Votre status</h3>
             <div
+              onFocus={()=>seterrRole("")}
               onClick={handleShow}
-              className={`relative w-full rounded-md border ${errType && "border-red-400"} flex cursor-pointer items-center justify-between p-2`}
+              className={`relative w-full rounded-md border ${errRole && "border-red-400 bg-red-100"} flex cursor-pointer items-center justify-between p-2`}
             >
-              <h3 className={`${type ? 'text-black': 'text-gray-500'}`}>{type || "Selectionnez votre status"}</h3>
+              <h3 className={`${role ? 'text-black': 'text-gray-500'}`}>{role || "Selectionnez votre status"}</h3>
               <ChevronDown size={15} />
             </div>
             {showOption && (
@@ -238,7 +241,7 @@ const Inscription = () => {
                     <div
                       id="status"
                       onClick={() => {
-                        settype(item.name);
+                        setrole(item.name);
                         setshowOption(false);
                       }}
                       className="cursor-pointer p-2 transition hover:bg-amber-100"
@@ -255,8 +258,8 @@ const Inscription = () => {
                 ))}
               </div>
             )}
-            {errType && (
-              <p className="text-sm font-bold text-red-400">{errType}</p>
+            {errRole && (
+              <p className="text-sm font-bold text-red-400">{errRole}</p>
             )}
           </div>
           <div className="flex w-full flex-col items-start gap-1">
