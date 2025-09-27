@@ -15,6 +15,7 @@ const Connexion = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [Loading, setLoading] = useState<boolean>(false);
+  const [Message,setMessage] = useState<string>("")
 
 
   const [email, setEmail] = useState<string>("");
@@ -25,17 +26,18 @@ const Connexion = () => {
   const handleForm = async (e: FormEvent) => {
     e.preventDefault();
     let Valid = true;
-    const regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const regexEmail = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const passwordRegex =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     setLoading(true);
 
     if (!email.trim() || !regexEmail.test(email)) {
-      setErrEmail("Email invalide");
+      setErrEmail("Veuillez entrer une adresse email valide");
       Valid = false;
     } else {
       setErrEmail("");
     }
+
     if (!passwordRegex.test(password)) {
       setErrPassword(
         "Minimum huit caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
@@ -44,6 +46,7 @@ const Connexion = () => {
     } else {
       setErrPassword("");
     }
+
     if (!Valid) {
       setLoading(false);
       return;
@@ -64,9 +67,9 @@ const Connexion = () => {
       }
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        toast.error(err.response.data.message);
-        setErrPassword("Email ou mot de passe incorrect");
-        setErrEmail("Email ou mot de passe incorrect");
+        setMessage(err.response.data.message);
+        setErrEmail(" ")
+        setErrPassword(" ")
       }
     }
     setLoading(false);
@@ -118,6 +121,7 @@ const Connexion = () => {
               text_2="Se connecter avec Miscrosoft"
             />
           </div>
+          {Message && <p className="p-2 border-l-2 border-red-500 bg-red-100 text-red-700 rounded-md w-full">{Message}</p>}
           <div className="flex w-full flex-col items-center gap-3">
             <form
               onSubmit={handleForm}
