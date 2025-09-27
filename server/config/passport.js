@@ -21,7 +21,7 @@ passport.use(
             nom: profile.name?.familyName || "",
             prenom: profile.name?.givenName || "",
             email,
-            type:"Non renseigné",
+            role:"Non renseigné",
             password: "",
             accountVerified:true
           });
