@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
         type:String,
         default : ""
     },
-    type:{
+    role:{
         type:String,
         enum:['Non renseigné','Etudiant','Etudiante'],
         default : "Non renseigné"
