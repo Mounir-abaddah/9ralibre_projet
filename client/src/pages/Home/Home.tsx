@@ -16,7 +16,7 @@ const Home = () => {
     if (showVerification === "true") {
       setOpen(true);
     }
-  }, []);
+  }, []); 
 
   const handleClose = () => {
     setOpen(false);
