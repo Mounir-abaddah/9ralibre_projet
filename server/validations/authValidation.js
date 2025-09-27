@@ -3,13 +3,13 @@ const { z } = require("zod");
 const registerShema = z.object({
   nom: z.string()
     .min(2, "le nom doit contenir minimum 2 caractères")
-    .regex(/^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/, "le nom ne doit contenir que des lettres"),
+    .regex(/^(?!.* {2})(?!.*'')[A-Za-zÀ-ÖØ-öø-ÿ]+([ '][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/, "le nom ne doit contenir que des lettres"),
   
   prenom: z.string()
     .min(2, "le prénom doit contenir minimum 2 caractères")
-    .regex(/^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/, "le prénom ne doit contenir que des lettres"),
+    .regex(/^(?!.* {2})(?!.*'')[A-Za-zÀ-ÖØ-öø-ÿ]+([ '][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/, "le prénom ne doit contenir que des lettres"),
   
-  type: z.enum(["Etudiant", "Etudiante"]),
+  role: z.enum(["Etudiant", "Etudiante"]),
 
   email: z.string().email("Email invalide"),
 
