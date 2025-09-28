@@ -147,9 +147,7 @@ const Inscription = () => {
         />
       </div>
 
-      {/* Form section */}
       <div className="relative flex w-full flex-col gap-3 rounded-md bg-white p-10 shadow-md">
-        {/* Logo */}
         <Link to="/">
           <img
             src={gralibre}
@@ -159,7 +157,6 @@ const Inscription = () => {
           />
         </Link>
 
-        {/* Title */}
         <div>
           <h2 className="text-3xl font-medium">
             Commençons <br /> à apprendre avec{" "}
@@ -170,7 +167,6 @@ const Inscription = () => {
           <p className="text-sm">Veuillez vous inscrire ou vous connecter</p>
         </div>
 
-        {/* Link to login */}
         <p>
           Déjà un compte ?{" "}
           <Link
@@ -188,15 +184,12 @@ const Inscription = () => {
           </Link>
         </p>
 
-        {/* OAuth */}
         <OAuth
           text_1={`S'inscrire avec Google`}
           text_2={`S'inscrire avec Microsoft`}
         />
 
-        {/* Form */}
         <form onSubmit={handleForm} className="mt-2 flex flex-col gap-3">
-          {/* Nom & Prenom */}
           <div className="flex gap-3">
             <Input
               label="Nom"
@@ -229,7 +222,7 @@ const Inscription = () => {
                 errors.role && "border-red-400 bg-red-100"
               }`}
             >
-              <span className={errors.role ? "text-black" : "text-gray-500"}>
+              <span className={errors.role ? "text-red-400" : formData.role ? "text-black" : "text-gray-500"}>
                 {formData.role || "Sélectionnez votre statut"}
               </span>
               <ChevronDown size={15} />
@@ -259,7 +252,7 @@ const Inscription = () => {
           <Input
             icon="mail"
             label="Email"
-            id="email"
+            id="MonEmail"
             type="email"
             placeholder="Votre Email"
             onFocus={() => handleFocus("email")}
