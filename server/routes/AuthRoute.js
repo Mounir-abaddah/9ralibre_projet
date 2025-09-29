@@ -20,7 +20,6 @@ router.post('/register',async(req,res)=>{
         const newUser = new User({
             nom : registerValidation.nom,
             prenom : registerValidation.prenom,
-            role : registerValidation.type,
             email : registerValidation.email,
             password : hashedPassword,
             accountVerified:false
