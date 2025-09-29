@@ -9,8 +9,6 @@ const registerShema = z.object({
     .min(2, "le prénom doit contenir minimum 2 caractères")
     .regex(/^(?!.* {2})(?!.*'')[A-Za-zÀ-ÖØ-öø-ÿ]+([ '][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/, "le prénom ne doit contenir que des lettres"),
   
-  role: z.enum(["Etudiant", "Etudiante"]),
-
   email: z.string().email("Email invalide"),
 
   password: z.string()
