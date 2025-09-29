@@ -1,7 +1,7 @@
 import logo_inscription from "@/assets/images/inscription/Exams-rafiki.png";
 import gralibre from "@/assets/images/9ralibre.png";
-import { LogIn, ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { LogIn} from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "@/components/Oauth/OAuth";
 import axios from "axios";
@@ -20,13 +20,10 @@ const Inscription = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [showOption, setShowOption] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
-    role: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -35,16 +32,11 @@ const Inscription = () => {
   const [errors, setErrors] = useState({
     nom: "",
     prenom: "",
-    role: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const options = [
-    { name: "Etudiant", icon: "👦" },
-    { name: "Etudiante", icon: "👩🏽‍" },
-  ];
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -71,11 +63,6 @@ const Inscription = () => {
 
     if (!formData.email.trim() || !regexEmail.test(formData.email)) {
       newErrors.email = "Veuillez entrer une adresse email valide";
-      valid = false;
-    }
-
-    if (!formData.role) {
-      newErrors.role = "Veuillez sélectionner votre statut";
       valid = false;
     }
 
@@ -125,19 +112,8 @@ const Inscription = () => {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setShowOption(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
     <div className="flex h-screen min-h-max w-full items-center justify-center gap-2 p-4 lg:justify-around">
-      {/* Image section */}
       <div className="hidden w-full lg:block">
         <img
           src={logo_inscription}
@@ -201,6 +177,7 @@ const Inscription = () => {
               onChange={(val) => handleChange("nom", val)}
               error={errors.nom}
             />
+
             <Input
               label="Prénom"
               id="prenom"
@@ -213,42 +190,6 @@ const Inscription = () => {
             />
           </div>
 
-          {/* Role */}
-          <div ref={ref} className="relative flex flex-col gap-1">
-            <h3 className="font-semibold">Votre statut</h3>
-            <div
-              onClick={() => setShowOption(!showOption)}
-              className={`flex items-center justify-between rounded-md border p-2 cursor-pointer ${
-                errors.role && "border-red-400 bg-red-100"
-              }`}
-            >
-              <span className={errors.role ? "text-red-400" : formData.role ? "text-black" : "text-gray-500"}>
-                {formData.role || "Sélectionnez votre statut"}
-              </span>
-              <ChevronDown size={15} />
-            </div>
-            {showOption && (
-              <div className="absolute top-17 left-0 z-10 w-full rounded-md border-2 bg-white shadow-lg">
-                {options.map((item) => (
-                  <div
-                    key={item.name}
-                    onClick={() => {
-                      handleChange("role", item.name);
-                      setShowOption(false);
-                    }}
-                    className="cursor-pointer p-2 hover:bg-amber-100"
-                  >
-                    {item.icon} {item.name}
-                  </div>
-                ))}
-              </div>
-            )}
-            {errors.role && (
-              <p className="text-sm font-bold text-red-400">{errors.role}</p>
-            )}
-          </div>
-
-          {/* Email */}
           <Input
             icon="mail"
             label="Email"
@@ -261,7 +202,6 @@ const Inscription = () => {
             error={errors.email}
           />
 
-          {/* Password */}
           <Input
             icon="lock"
             label="Mot de passe"
@@ -274,7 +214,6 @@ const Inscription = () => {
             error={errors.password}
           />
 
-          {/* Confirm Password */}
           <Input
             icon="lock"
             label="Confirmation du mot de passe"
@@ -287,7 +226,6 @@ const Inscription = () => {
             error={errors.confirmPassword}
           />
 
-          {/* Submit button */}
           <button
             type="submit"
             disabled={loading}
