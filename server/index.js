@@ -19,7 +19,10 @@ app.use(passport.initialize());
 require('./config/dbConfig');
 
 const authRouter = require('./routes/AuthRoute');
+const userRouter = require('./routes/UserRoute');
+
 app.use('/auth',authRouter)
+app.use('/user',userRouter)
 
 const port = process.env.PORT;
 app.listen(port,()=>{
