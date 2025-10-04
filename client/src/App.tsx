@@ -8,6 +8,7 @@ import ModificationMotdepasse from './pages/ModificationMotdepasse/ModificationM
 import VerificationEmail from './pages/VerficationEmail/VerificationEmail';
 import Dashboard from './pages/auth/Dashboard/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import PagesNonTrouver from './pages/PagesNonTrouver/PagesNonTrouver';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
       <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='*' element={<PagesNonTrouver />} />
         <Route path='/inscription' element={<Inscription />} />
         <Route path='/connexion' element={<Connexion />} />
         <Route path='/password/reset' element={<OublierMotdepasse />} />
