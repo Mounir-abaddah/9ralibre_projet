@@ -17,7 +17,7 @@ const PagesNonTrouver:React.FC = () => {
 
         <button
         onClick={()=>navigate('/')}
-        className="mt-6 px-6 py-3 bg-gradient-to-r from-cyan-300 to-yellow-400 text-white font-semibold rounded-md shadow cursor-pointer transition"
+        className="mt-6 px-6 py-3 hover:scale-110 bg-gradient-to-r from-cyan-300 to-yellow-400 text-white font-semibold rounded-md shadow cursor-pointer transition"
       >
         Retour à l'accueil
       </button>
