@@ -9,6 +9,7 @@ import logo from "@/assets/images/9ralibre.png";
 import OAuth from "@/components/Oauth/OAuth";
 import Loadering from "@/components/Loadering/Loadering";
 import Input from "@/components/Form/Input";
+import { useProtectedRoutes } from "@/store/userStore";
 
 interface ApiResponse {
   success: boolean;
@@ -19,7 +20,7 @@ const Connexion: React.FC = () => {
   document.title = "Je me connecte | 9ralibre";
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
-
+  const { fetchData } = useProtectedRoutes();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -76,6 +77,7 @@ const Connexion: React.FC = () => {
       const { data } = await axios.post<ApiResponse>(`${apiUrl}/auth/connexion`,form,{ withCredentials: true });
       if (data.success) {
         toast.success(data.message);
+        await fetchData()
         navigate("/Dashboard");
       }
     } catch (error) {
