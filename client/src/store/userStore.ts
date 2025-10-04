@@ -11,21 +11,14 @@ interface typedata{
 }
 
 interface typeAllData{
-    data:typedata
+    data:typedata | null
     loading:boolean
     error:string | null
     fetchData:()=>Promise<void>
 }
 
 export const useProtectedRoutes = create<typeAllData>()((set)=>({
-    data:{
-        id:"",
-        nom:"",
-        prenom:"",
-        email:"",
-        role:"",
-        accountVerified:true
-    },
+    data:null,
     loading:true,
     error:null,
     fetchData:async()=>{
@@ -33,8 +26,12 @@ export const useProtectedRoutes = create<typeAllData>()((set)=>({
             const apiUrl = import.meta.env.VITE_API_URL;
             const response = await axios.get(`${apiUrl}/user/profile`,{withCredentials:true});
             set({data:response.data.user,loading:false,error:null})
-        }catch{
-            set({error:"Une erreure est survenue",loading:false})
+        }catch(err){
+            let message = "Une erreure est survenu";
+            if(axios.isAxiosError(err)){
+                message = err.response?.data?.message || err.message || message
+            }
+            set({error:message,loading:false})
         }
     }
 }))
