@@ -19,6 +19,7 @@
     "clsx": "^2.1.1",
     "cobe": "^0.6.4",
     "developer-icons": "^6.0.4",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",
     "react": "^19.1.1",
