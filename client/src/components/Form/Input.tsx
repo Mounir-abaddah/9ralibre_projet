@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Label } from '../ui/label'
 import { Eye, EyeClosed, Lock, Mail } from 'lucide-react'
 

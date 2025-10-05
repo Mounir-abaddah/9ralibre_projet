@@ -1,4 +1,4 @@
-import React, { useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
@@ -16,7 +16,7 @@ interface ApiResponse {
   message: string;
 }
 
-const Connexion: React.FC = () => {
+const Connexion = () => {
   document.title = "Je me connecte | 9ralibre";
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import { useProtectedRoutes } from '@/store/userStore'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 
 const ProtectedRoute = () => {

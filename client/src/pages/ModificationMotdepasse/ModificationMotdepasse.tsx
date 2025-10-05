@@ -1,7 +1,7 @@
 import Input from '@/components/Form/Input';
 import Loadering from '@/components/Loadering/Loadering';
 import axios, { AxiosError } from 'axios';
-import React, { useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ralibre_logo from '@/assets/images/9ralibre.png';
@@ -11,7 +11,7 @@ interface ApiResponse {
   message: string;
 }
 
-const ModificationMotdepasse: React.FC = () => {
+const ModificationMotdepasse = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;

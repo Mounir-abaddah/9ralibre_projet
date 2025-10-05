@@ -1,9 +1,8 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import Lottie from "lottie-react";
 import animationData from "@/assets/lottlie/404.json";
 
-const PagesNonTrouver:React.FC = () => {
+const PagesNonTrouver = () => {
     const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
