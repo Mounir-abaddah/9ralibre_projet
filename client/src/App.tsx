@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home/Home';
-import Inscription from './pages/Inscription/Inscription';
+import Home from '@/pages/Home/Home';
+import PagesNonTrouver from '@/pages/PagesNonTrouver/PagesNonTrouver';
+import Inscription from '@/pages/Inscription/Inscription';
+import Connexion from '@/pages/Connexion/Connexion';
+import OublierMotdepasse from '@/pages/OublierMotdepasse/OublierMotdepasse';
+import ModificationMotdepasse from '@/pages/ModificationMotdepasse/ModificationMotdepasse';
+import VerificationEmail from '@/pages/VerficationEmail/VerificationEmail';
+import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute';
+import Dashboard from '@/pages/auth/Dashboard/Dashboard';
 import { Toaster } from 'react-hot-toast';
-import Connexion from './pages/Connexion/Connexion';
-import OublierMotdepasse from './pages/OublierMotdepasse/OublierMotdepasse';
-import ModificationMotdepasse from './pages/ModificationMotdepasse/ModificationMotdepasse';
-import VerificationEmail from './pages/VerficationEmail/VerificationEmail';
-import Dashboard from './pages/auth/Dashboard/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import PagesNonTrouver from './pages/PagesNonTrouver/PagesNonTrouver';
 
 const App = () => {
   return (
