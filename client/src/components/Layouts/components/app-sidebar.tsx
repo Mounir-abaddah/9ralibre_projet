@@ -13,9 +13,10 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 
-import TeamSwitcherHeader from "@/components/Layouts/components/team-switcher"
+
 import Navmain from "@/components/Layouts/components/navmain"
 import Footuser from "./footeruser"
+import TeamSwitcherHeader from "./teamSwitcherHeader"
 
 
 const data = {
