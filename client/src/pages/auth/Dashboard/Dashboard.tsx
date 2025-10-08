@@ -1,7 +1,11 @@
+import Layouts from "@/components/Layouts/Layouts"
 
 const Dashboard = () => {
+  document.title = 'Dashboard | 9ralibre'
   return (
-    <div>Dashboard</div>
+      <Layouts>
+        <h1>fddfdfd</h1>
+      </Layouts>
   )
 }
 
