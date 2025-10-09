@@ -18,7 +18,8 @@ router.get('/profile',authMiddleware,async(req,res)=>{
             prenom: user.prenom,
             email: user.email,
             role: user.role,
-            accountVerified: user.accountVerified
+            accountVerified: user.accountVerified,
+            completeProfile:user.completeProfile
         }
         return res.status(200).json({user:saveViewUser,success:true});
     }catch(err){
