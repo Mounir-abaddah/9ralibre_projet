@@ -18,8 +18,6 @@ router.post('/register',async(req,res)=>{
         }
         const hashedPassword = await bcrypt.hash(registerValidation.password,10);
         const newUser = new User({
-            nom : registerValidation.nom,
-            prenom : registerValidation.prenom,
             email : registerValidation.email,
             password : hashedPassword,
             accountVerified:false
