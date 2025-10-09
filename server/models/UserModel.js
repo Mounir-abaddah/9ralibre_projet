@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
         type:String,
         default : ""
     },
+    completeProfile:{
+        type:Boolean,
+        default:false
+    },
     accountVerified:{
         type:Boolean,
         default:false
