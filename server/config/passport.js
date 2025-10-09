@@ -18,8 +18,6 @@ passport.use(
 
         if (!user) {
           user = await User.create({
-            nom: profile.name?.familyName || "",
-            prenom: profile.name?.givenName || "",
             email,
             role:"Non renseigné",
             password: "",
