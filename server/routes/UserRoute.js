@@ -18,6 +18,7 @@ router.get('/profile',authMiddleware,async(req,res)=>{
             prenom: user.prenom,
             email: user.email,
             role: user.role,
+            provider:user.provider,
             accountVerified: user.accountVerified,
             completeProfile:user.completeProfile
         }
