@@ -25,6 +25,11 @@ const UserSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    provider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local"
+    },
     accountVerified:{
         type:Boolean,
         default:false
