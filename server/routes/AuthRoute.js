@@ -20,7 +20,8 @@ router.post('/register',async(req,res)=>{
         const newUser = new User({
             email : registerValidation.email,
             password : hashedPassword,
-            accountVerified:false
+            accountVerified:false,
+            provider:"local"
         })
         await newUser.save();
 
