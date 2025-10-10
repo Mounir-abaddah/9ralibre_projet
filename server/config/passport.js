@@ -21,7 +21,8 @@ passport.use(
             email,
             role:"Non renseigné",
             password: "",
-            accountVerified:true
+            provider:"google",
+            accountVerified:true,
           });
         }
 
