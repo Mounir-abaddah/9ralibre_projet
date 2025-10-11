@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs')
-const authMiddleware = require('../middlewares/authMiddleware')
+const authMiddleware = require('../middlewares/authMiddleware');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path')
 const {completeProfileShema} = require('../validations/authValidation');
 
 router.get('/profile',authMiddleware,async(req,res)=>{
@@ -27,6 +30,85 @@ router.get('/profile',authMiddleware,async(req,res)=>{
         return res.status(500).json({ message: "Une erreur est survenue", success: false, err });
     }
 })
+
+
+const storage =  multer.diskStorage({
+    destination: (req, file, cb) => {
+        const userId = req.user.userId; 
+        const uploadPath = path.join('./uploads/images', userId.toString());
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+})
+
+const upload = multer({ storage: storage });
+
+router.post('/uploadImage',authMiddleware,upload.single('avatar'),async(req,res)=>{
+    try{
+        if(!req.file){
+            return res.status(400).send({message:"Aucun fichier n’a été téléchargé",sucess:false})
+        }
+        const userId = req.user.userId;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).send({message:"Échec de l'opération",success:false})
+        }
+        user.image = req.file.originalname;
+        await user.save();
+        return res.status(200).send({message:"Image importée avec succès",image:user.image,success:true})
+    }catch(err){
+        return res.status(500).send({message:"Une erreure est survenue",success:false,err})
+    }
+})
+
+
+router.get('/importImage',authMiddleware,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).send({message:"Échec de l'opération",success:false})
+        }
+        if(!user.image){
+            return res.status(200).send({message:"Aucune image à importer",success:false})
+        }
+        return res.status(200).json({image:user.image,message:"Image importée avec succès",success:true})
+    }catch(err){
+        return res.status(500).send({message:"Une erreur est survenue lors de l’import de l’image",success:false,err})
+    }
+})
+
+router.delete('/deleteImage',authMiddleware,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).send({message:"Échec de l'opération",success:false})
+        }
+        if (!user.image) {
+            return res.status(400).send({ message: "Aucune image à supprimer", success: false });
+        }
+        const imagePath = path.join(`./uploads/images/${userId.toString()}`,user.image);
+        
+        fs.unlink(imagePath,(err)=>{
+            if(err){
+                return res.status(500).send({ message: "Erreur lors de la suppression du fichier", success: false,err });
+            }
+        })
+        user.image = "";
+        await user.save();
+        return res.status(200).send({ message: "Image supprimée avec succès", success: true });
+    }catch(err){
+        return res.status(500).send({message:"Une erreure est survenue",success:false,err})
+    }
+})
+
+
 
 router.patch('/completeProfile',authMiddleware,async(req,res)=>{
     try{
