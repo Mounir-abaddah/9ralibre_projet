@@ -22,6 +22,7 @@ router.get('/profile',authMiddleware,async(req,res)=>{
             email: user.email,
             role: user.role,
             provider:user.provider,
+            image:user.image,
             accountVerified: user.accountVerified,
             completeProfile:user.completeProfile
         }
