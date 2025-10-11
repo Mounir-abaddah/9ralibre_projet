@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const passport = require('passport')
+const path = require('path')
 const cookieParser = require('cookie-parser');
 
 require('./config/passport')
@@ -12,7 +13,7 @@ app.use(cors({
     credentials:true,
 }));
 
-app.use(express.static('uploads/images'))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
