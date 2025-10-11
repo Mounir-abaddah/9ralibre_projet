@@ -36,7 +36,7 @@ router.get('/profile',authMiddleware,async(req,res)=>{
 const storage =  multer.diskStorage({
     destination: (req, file, cb) => {
         const userId = req.user.userId; 
-        const uploadPath = path.join('./uploads/images', userId.toString());
+        const uploadPath = path.join('./uploads/images/',userId.toString());
         if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });
         }
@@ -111,11 +111,11 @@ router.delete('/deleteImage',authMiddleware,async(req,res)=>{
 
 
 
-router.patch('/completeProfile',authMiddleware,async(req,res)=>{
+router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req,res)=>{
     try{
         const userId = req.user.userId;
         const completeProfile = completeProfileShema.parse(req.body);
-        const { nom, prenom, role, password } = completeProfile; 
+        const { nom, prenom, role, password} = completeProfile; 
         const user = await User.findById(userId);        
         if(!user || !user.accountVerified){
             return res.status(400).send({message:"Échec de l'opération",success:false})
@@ -123,17 +123,27 @@ router.patch('/completeProfile',authMiddleware,async(req,res)=>{
         if(user.completeProfile){
             return res.status(400).send({message: "Le profil a déjà été complété.",success:false})
         }
+        if(!req.file){
+            return res.status(400).send({message:"Aucun fichier n’a été téléchargé",sucess:false})
+        }
         if (nom) user.nom = nom;
         if (prenom) user.prenom = prenom;
-        if (role) user.role = role;
+        if (role) user.role = role;    
         if (password) {
         const hashedPassword = await bcrypt.hash(password, 10);
         user.password = hashedPassword;
         }
+        user.image = req.file.filename;
         user.completeProfile = true
         await user.save();
-        return res.status(200).send({message:"Operation reussi",success:true})
+        return res.status(200).send({ message: "Profil complété avec succès", success: true });
     }catch(err){
+        if (req.file) {
+            const imagePath = path.join(`./uploads/images/${req.user.userId}`, req.file.filename);
+            fs.unlink(imagePath, (err) => {
+                if (err) console.log("Erreur suppression fichier:", err);
+            });
+        }
         if (err.name === "ZodError") {
         return res.status(400).send({
             success: false,
