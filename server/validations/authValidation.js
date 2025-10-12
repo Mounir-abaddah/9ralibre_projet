@@ -39,12 +39,14 @@ const completeProfileShema = z.object({
   
   role:z.enum(['Non renseigné','Etudiant','Etudiante']),
 
+  niveaux:z.enum(['1AC','2AC','3AC','TC','1BAC','2BAC']),
+
   password: z.string()
     .min(8, "le mot de passe doit contenir minimum 8 caractères")
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
       "le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
-    )
+    ).optional()
 })
 
 module.exports = { registerShema ,loginSchema ,messageOUblierSchema,passwordResetShema , completeProfileShema};
