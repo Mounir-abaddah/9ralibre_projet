@@ -25,14 +25,19 @@ const UserSchema = new mongoose.Schema({
         type:String,
         default:""
     },
+    provider: {
+        type: String,
+        enum: ["local", "google"],
+        default: "local"
+    },
+    niveaux:{
+        type:String,
+        enum:["Non renseigné","1AC","2AC","3AC","TC","1BAC","2BAC"],
+        default:"Non renseigné"
+    },
     completeProfile:{
         type:Boolean,
         default:false
-    },
-    provider: {
-    type: String,
-    enum: ["local", "google"],
-    default: "local"
     },
     accountVerified:{
         type:Boolean,
@@ -43,5 +48,6 @@ const UserSchema = new mongoose.Schema({
 })
 
 const UserModels = mongoose.model("User", UserSchema)
+
 
 module.exports = UserModels
