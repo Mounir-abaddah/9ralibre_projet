@@ -21,6 +21,7 @@ router.get('/profile',authMiddleware,async(req,res)=>{
             prenom: user.prenom,
             email: user.email,
             role: user.role,
+            niveaux:user.niveaux,
             provider:user.provider,
             image:user.image,
             accountVerified: user.accountVerified,
@@ -115,7 +116,7 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
     try{
         const userId = req.user.userId;
         const completeProfile = completeProfileShema.parse(req.body);
-        const { nom, prenom, role, password} = completeProfile; 
+        const { nom, prenom, role, password,niveaux} = completeProfile; 
         const user = await User.findById(userId);        
         if(!user || !user.accountVerified){
             return res.status(400).send({message:"Échec de l'opération",success:false})
@@ -123,17 +124,19 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
         if(user.completeProfile){
             return res.status(400).send({message: "Le profil a déjà été complété.",success:false})
         }
-        if(!req.file){
-            return res.status(400).send({message:"Aucun fichier n’a été téléchargé",sucess:false})
-        }
         if (nom) user.nom = nom;
         if (prenom) user.prenom = prenom;
-        if (role) user.role = role;    
-        if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
+        if (role) user.role = role;
+        if(niveaux) user.niveaux = niveaux;
+        if(user.provider === "google"){
+            if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
         }
-        user.image = req.file.filename;
+        }
+        if (req.file) {
+            user.image = req.file.filename;
+        }
         user.completeProfile = true
         await user.save();
         return res.status(200).send({ message: "Profil complété avec succès", success: true });
@@ -153,5 +156,6 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
         return res.status(500).send({ message: "Une erreur est survenue", success: false });
     }
 })
+
 
 module.exports = router
