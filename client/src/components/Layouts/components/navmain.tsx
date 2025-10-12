@@ -18,6 +18,8 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
+import { useProtectedRoutes } from "@/store/userStore"
+import { useEffect } from "react"
 
 const NavMain = ({
   items,
@@ -41,6 +43,21 @@ const NavMain = ({
     }[]
   }[]
 }) => {
+  const {data,fetchData} = useProtectedRoutes();
+  useEffect(()=>{
+    fetchData();
+  },[fetchData]);
+
+  const isCollegeOpen =
+  data?.niveaux === "1AC" ||
+  data?.niveaux === "2AC" ||
+  data?.niveaux === "3AC";
+
+  const isLyceeOpen =
+  data?.niveaux === "TC" ||
+  data?.niveaux === "1BAC" ||
+  data?.niveaux === "2BAC";
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -72,7 +89,7 @@ const NavMain = ({
                     </SidebarMenuSubItem>
                   ))}
                   {item.collegeItems && item.collegeItems.length > 0 && (
-                    <Collapsible className="group/college" asChild>
+                    <Collapsible className="group/college" asChild defaultOpen={isCollegeOpen}>
                       <SidebarMenuSubItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuSubButton>
@@ -87,6 +104,7 @@ const NavMain = ({
                                 <SidebarMenuSubButton asChild>
                                   <Link to={subItem.url}>
                                     <span>{subItem.title}</span>
+                                    <span className="text-teal-400 text-xs font-semibold">{subItem.title === data?.niveaux && '(actuelle)'}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
@@ -97,11 +115,11 @@ const NavMain = ({
                     </Collapsible>
                   )}
                   {item.lyceeItems && item.lyceeItems.length > 0 && (
-                    <Collapsible className="group/college" asChild>
+                    <Collapsible className="group/college" asChild defaultOpen={isLyceeOpen}>
                       <SidebarMenuSubItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuSubButton>
-                            <span>Lycee</span>
+                            <span>Lycée</span>
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/college:rotate-90" />
                           </SidebarMenuSubButton>
                         </CollapsibleTrigger>
@@ -112,6 +130,7 @@ const NavMain = ({
                                 <SidebarMenuSubButton asChild>
                                   <Link to={subItem.url}>
                                     <span>{subItem.title}</span>
+                                    <span className="text-teal-400 text-xs font-medium">{subItem.title === data?.niveaux && '(actuelle)'}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
