@@ -8,6 +8,7 @@ interface typedata{
     email: string,
     role: 'Non renseigné'| 'Etudiant' |'Etudiante',
     niveaux: '1AC' | '2AC' | '3AC' | 'TC'| '1BAC' | '2BAC',
+    image:string
     accountVerified: boolean
     provider:"local"| "google"
     completeProfile:boolean
