@@ -6,8 +6,11 @@ interface typedata{
     nom: string,
     prenom: string,
     email: string,
-    role: string,
+    role: 'Non renseigné'| 'Etudiant' |'Etudiante',
+    niveaux: '1AC' | '2AC' | '3AC' | 'TC'| '1BAC' | '2BAC',
     accountVerified: boolean
+    provider:"local"| "google"
+    completeProfile:boolean
 }
 
 interface typeAllData{
