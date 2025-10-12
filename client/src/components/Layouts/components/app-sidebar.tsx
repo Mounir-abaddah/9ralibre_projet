@@ -20,23 +20,16 @@ import TeamSwitcherHeader from "./teamSwitcherHeader"
 
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "https://github.com/shadcn.png",
-  },
   navMain: [
     {
       title: "Niveaux",
       url: "#",
       icon: Book,
       isActive: true,
-
     collegeItems: [
       { 
         title: "1AC", 
         url: "/niveaux/college/1AC",
-        isActive:true
       },
       { 
         title: "2AC", 
@@ -142,7 +135,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Footuser user={data.user}/>
+        <Footuser />
       </SidebarFooter>
     </Sidebar>
   )
