@@ -20,7 +20,9 @@ passport.use(
           user = await User.create({
             email,
             role:"Non renseigné",
+            niveaux:"Non renseigné",
             password: "",
+            image:"",
             provider:"google",
             accountVerified:true,
           });
