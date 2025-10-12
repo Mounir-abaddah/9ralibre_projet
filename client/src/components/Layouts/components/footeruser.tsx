@@ -1,5 +1,3 @@
-"use client"
-
 import {
   BadgeCheck,
   Bell,
@@ -29,17 +27,18 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useProtectedRoutes } from "@/store/userStore"
+import { useEffect } from "react"
 
-const Footuser = ({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) => {
-  const { isMobile } = useSidebar()
+const Footuser = () => {
+  const { isMobile } = useSidebar();
+  const apiUrl = import.meta.env.VITE_API_URL
+
+  const {data,fetchData} = useProtectedRoutes();
+
+  useEffect(()=>{
+    fetchData()
+  },[fetchData])
 
   return (
     <SidebarMenu>
@@ -51,12 +50,19 @@ const Footuser = ({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt={data?.nom} />
+                <AvatarFallback className={`rounded-lg text-white ${data?.role === "Etudiant" ? "bg-sky-300" : "bg-pink-400"}`}>{data?.nom.charAt(0).toUpperCase()}{data?.prenom.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{data?.prenom}</span>
+                <span className={`px-2 py-[2px] rounded-md text-[10px] font-medium uppercase tracking-wide
+                    ${data?.role === "Etudiant" ? "bg-gradient-to-r from-sky-500 to-sky-700 text-white" :
+                      data?.role === "Etudiante" ? "bg-gradient-to-r from-pink-500 to-pink-700 text-white" :
+                      "bg-gray-200 text-gray-700"}`}
+                >
+                  {data?.role}
+                </span>
+                <span className="truncate text-xs">{data?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -70,12 +76,13 @@ const Footuser = ({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt={data?.nom} />
+                  <AvatarFallback className="rounded-lg">{data?.nom.charAt(0).toUpperCase()}{data?.prenom.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{data?.nom} {data?.prenom}</span>
+                  
+                  <span className="truncate text-xs">{data?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -102,9 +109,9 @@ const Footuser = ({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="bg-red-500 text-white cursor-pointer hover:bg-red-600">
               <LogOut />
-              Log out
+                Se deconnecter
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
