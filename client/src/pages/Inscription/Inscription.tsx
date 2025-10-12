@@ -10,7 +10,6 @@ import Loadering from "@/components/Loadering/Loadering";
 import Input from "@/components/Form/Input";
 import { RoughNotation } from "react-rough-notation";
 
-const regexNames = /^[A-Za-z ]+$/;
 const regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
@@ -22,16 +21,12 @@ const Inscription = () => {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
-    nom: "",
-    prenom: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -50,16 +45,6 @@ const Inscription = () => {
   const validateForm = () => {
     const newErrors = { ...errors };
     let valid = true;
-
-    if (!formData.nom.trim() || !regexNames.test(formData.nom)) {
-      newErrors.nom = "Veuillez entrer un nom valide";
-      valid = false;
-    }
-
-    if (!formData.prenom.trim() || !regexNames.test(formData.prenom)) {
-      newErrors.prenom = "Veuillez entrer un prénom valide";
-      valid = false;
-    }
 
     if (!formData.email.trim() || !regexEmail.test(formData.email)) {
       newErrors.email = "Veuillez entrer une adresse email valide";
@@ -165,31 +150,7 @@ const Inscription = () => {
           text_2={`S'inscrire avec Microsoft`}
         />
 
-        <form onSubmit={handleForm} className="mt-2 flex flex-col gap-3">
-          <div className="flex gap-3">
-            <Input
-              label="Nom"
-              id="nom"
-              type="text"
-              placeholder="Votre Nom"
-              onFocus={() => handleFocus("nom")}
-              value={formData.nom}
-              onChange={(val) => handleChange("nom", val)}
-              error={errors.nom}
-            />
-
-            <Input
-              label="Prénom"
-              id="prenom"
-              type="text"
-              placeholder="Votre Prénom"
-              onFocus={() => handleFocus("prenom")}
-              value={formData.prenom}
-              onChange={(val) => handleChange("prenom", val)}
-              error={errors.prenom}
-            />
-          </div>
-
+        <form onSubmit={handleForm} className="flex flex-col gap-4">
           <Input
             icon="mail"
             label="Email"
