@@ -4,7 +4,7 @@ Ce module permet d'ajouter une **vérification par email** lors de l'inscription
 Un email contenant un lien de confirmation est envoyé à l'utilisateur.  
 Celui-ci doit cliquer dessus pour activer son compte. ✅
 
----
+--- 
 
 ## 🚀 Fonctionnalités
 
