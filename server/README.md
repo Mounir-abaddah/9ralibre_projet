@@ -13,7 +13,7 @@ Celui-ci doit cliquer dessus pour activer son compte. ✅
 - Hachage du mot de passe avec **bcrypt**.
 - Création d'un nouvel utilisateur avec le champ `accountVerified: false`.
 - Génération d’un **token JWT temporaire (1h)** contenant l'ID de l’utilisateur et un type `verifyEmail`.
-- Envoi d’un email avec **Nodemailer** incluant un lien de confirmation.
+- Envoi d’un email avec **Nodemailer** incluant un lien de confirmation. 
 - Vérification du token à la réception du lien pour activer le compte.
 
 ---
