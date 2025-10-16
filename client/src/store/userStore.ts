@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { create } from 'zustand';
 
-interface typedata{
+export interface typedata{
     id: string,
     nom: string,
     prenom: string,
