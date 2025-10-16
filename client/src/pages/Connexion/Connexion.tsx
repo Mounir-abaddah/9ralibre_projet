@@ -11,16 +11,11 @@ import Loadering from "@/components/Loadering/Loadering";
 import Input from "@/components/Form/Input";
 import { useProtectedRoutes } from "@/store/userStore";
 
-interface ApiResponse {
-  success: boolean;
-  message: string;
-}
-
 const Connexion = () => {
   document.title = "Je me connecte | 9ralibre";
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
-  const { fetchData } = useProtectedRoutes();
+  const { data , fetchData } = useProtectedRoutes();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -74,11 +69,11 @@ const Connexion = () => {
     }
 
     try {
-      const { data } = await axios.post<ApiResponse>(`${apiUrl}/auth/connexion`,form,{ withCredentials: true });
-      if (data.success) {
-        toast.success(data.message);
+      const reponse  = await axios.post(`${apiUrl}/auth/connexion`,form,{ withCredentials: true });
+      if (reponse.data.success) {
+        toast.success(reponse.data.message);
         await fetchData()
-        navigate("/Dashboard");
+        navigate(`/Dashboard/${data?.niveaux}`);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
