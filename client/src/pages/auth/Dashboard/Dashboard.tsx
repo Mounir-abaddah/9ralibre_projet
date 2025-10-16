@@ -19,13 +19,18 @@ const Dashboard = () => {
       return <PagesNonTrouver />
   }
 
+  const isEtudiant = data?.role === "Etudiant";
+  const borderColor = isEtudiant ? "border-b-sky-400" : "border-pink-400";
+  const title = isEtudiant ? "Mr" : "Mme";
 
 
   return (
       <Layouts>
         {data?.completeProfile
           ?
-          <h1>{niveaux}</h1>
+          <h1 className="text-xs">
+            Bonjours <span className={`border-b-2 ${borderColor}`}>{title} {data.nom} {data.prenom}</span>
+          </h1>          
           :
           <CompleteProfile />
         }
