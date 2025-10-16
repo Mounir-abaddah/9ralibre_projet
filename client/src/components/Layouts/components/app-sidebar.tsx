@@ -1,8 +1,11 @@
 import {
   Book,
   BookOpen,
+  BookType,
   Bot,
+  MessageCircleMoreIcon,
   Settings2,
+  University,
 } from "lucide-react"
 
 import {
@@ -17,14 +20,16 @@ import {
 import Navmain from "@/components/Layouts/components/navmain"
 import Footuser from "./footeruser"
 import TeamSwitcherHeader from "./teamSwitcherHeader"
+import { useProtectedRoutes } from "@/store/userStore"
+import { useEffect } from "react"
 
 
-const data = {
+const allInformation = {
   navMain: [
     {
       title: "Niveaux",
       url: "#",
-      icon: Book,
+      icon: University,
       isActive: true,
     collegeItems: [
       { 
@@ -58,7 +63,7 @@ const data = {
     {
       title: "Cours",
       url: "#",
-      icon: Bot,
+      icon: Book,
       items: [
         {
           title: "Genesis",
@@ -75,9 +80,70 @@ const data = {
       ],
     },
     {
-      title: "Message",
+      title: "Exercice",
+      url: "#",
+      icon: BookType,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Histoire",
       url: "#",
       icon: BookOpen,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Messagerie",
+      url: "#",
+      icon: MessageCircleMoreIcon,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Intelligence artificielle",
+      url: "#",
+      icon: Bot,
       items: [
         {
           title: "Introduction",
@@ -124,14 +190,20 @@ const data = {
 }
 
 export function AppSidebar() {
+  const {data,fetchData} = useProtectedRoutes();
+
+  useEffect(()=>{
+    fetchData()
+  },[fetchData]);
+  
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <TeamSwitcherHeader />
+        <TeamSwitcherHeader data={data}/>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <Navmain items={data.navMain}/>
+          <Navmain items={allInformation.navMain}/>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
