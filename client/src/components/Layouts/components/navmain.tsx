@@ -44,19 +44,15 @@ const NavMain = ({
   }[]
 }) => {
   const {data,fetchData} = useProtectedRoutes();
+
   useEffect(()=>{
     fetchData();
   },[fetchData]);
 
-  const isCollegeOpen =
-  data?.niveaux === "1AC" ||
-  data?.niveaux === "2AC" ||
-  data?.niveaux === "3AC";
+  const isCollegeOpen = data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
 
-  const isLyceeOpen =
-  data?.niveaux === "TC" ||
-  data?.niveaux === "1BAC" ||
-  data?.niveaux === "2BAC";
+  const isLyceeOpen = data?.niveaux === "TC" || data?.niveaux === "1BAC" || data?.niveaux === "2BAC";
+
 
   return (
     <SidebarGroup>
@@ -99,16 +95,19 @@ const NavMain = ({
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                           <SidebarMenuSub className="ml-4 mt-1">
-                            {item.collegeItems.map((subItem) => (
+                            {item.collegeItems.map((subItem) => {
+                              const isActive = location.pathname === subItem.url
+                              return (
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton asChild>
-                                  <Link to={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                    <span className="text-teal-400 text-xs font-semibold">{subItem.title === data?.niveaux && '(actuelle)'}</span>
+                                  <Link to={subItem.url} className="w-full">
+                                    <span className={`${isActive ? 'bg-amber-500' : 'bg-none'} p-1 rounded-md w-full`}>{subItem.title}</span>
+                                    <span className="text-teal-400 text-xs font-semibold absolute right-4">{subItem.title === data?.niveaux && '(actuelle)'}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
-                            ))}
+                              )
+                            })}
                           </SidebarMenuSub>
                         </CollapsibleContent>
                       </SidebarMenuSubItem>
@@ -125,16 +124,18 @@ const NavMain = ({
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                           <SidebarMenuSub className="ml-4 mt-1">
-                            {item.lyceeItems.map((subItem) => (
+                            {item.lyceeItems.map((subItem) => {
+                              const isActive = location.pathname === subItem.url
+                              return(
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton asChild>
                                   <Link to={subItem.url}>
-                                    <span>{subItem.title}</span>
+                                    <span className={`${isActive ? 'bg-amber-300' : 'bg-none'}`}>{subItem.title}</span>
                                     <span className="text-teal-400 text-xs font-medium">{subItem.title === data?.niveaux && '(actuelle)'}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
-                            ))}
+                            )})}
                           </SidebarMenuSub>
                         </CollapsibleContent>
                       </SidebarMenuSubItem>
