@@ -24,7 +24,7 @@ const App = () => {
         <Route path='/password/reset/:token' element={<ModificationMotdepasse />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
-            <Route path='/Dashboard' element={<Dashboard />} />
+            <Route path='/Dashboard/:niveaux' element={<Dashboard />} />
         </Route>
         <Route />
       </Routes>
