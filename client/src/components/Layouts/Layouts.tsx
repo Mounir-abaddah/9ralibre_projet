@@ -3,6 +3,7 @@ import {SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/si
 import { AppSidebar } from '@/components/Layouts/components/app-sidebar'
 import { Separator } from '@radix-ui/react-separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb'
+import SidebarRight from '@/components/Layouts/components/right-sidebar/SidebarRight'
 
 const Layouts = ({children} : {children:React.ReactNode}) => {
   return (
@@ -35,6 +36,7 @@ const Layouts = ({children} : {children:React.ReactNode}) => {
             {children}
         </section>
         </SidebarInset>
+        <SidebarRight />
     </SidebarProvider>
   )
 }
