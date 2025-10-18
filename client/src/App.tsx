@@ -9,6 +9,7 @@ import VerificationEmail from '@/pages/VerficationEmail/VerificationEmail';
 import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute';
 import Dashboard from '@/pages/auth/Dashboard/Dashboard';
 import { Toaster } from 'react-hot-toast';
+import Layouts from './components/Layouts/Layouts';
 
 const App = () => {
   return (
@@ -24,7 +25,7 @@ const App = () => {
         <Route path='/password/reset/:token' element={<ModificationMotdepasse />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
-            <Route path='/Dashboard/:niveaux' element={<Dashboard />} />
+            <Route path='/Dashboard/:type/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
         </Route>
         <Route />
       </Routes>
