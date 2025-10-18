@@ -20,8 +20,7 @@ import {
 import Navmain from "@/components/Layouts/components/navmain"
 import Footuser from "./footeruser"
 import TeamSwitcherHeader from "./teamSwitcherHeader"
-import { useProtectedRoutes } from "@/store/userStore"
-import { useEffect } from "react"
+
 
 
 const allInformation = {
@@ -34,29 +33,29 @@ const allInformation = {
     collegeItems: [
       { 
         title: "1AC", 
-        url: "/niveaux/college/1AC",
+        url: "/Dashboard/Collège/1AC",
       },
       { 
         title: "2AC", 
-        url: "/niveaux/college/2AC" 
+        url: "/Dashboard/Collège/2AC" 
       },
       { 
         title: "3AC", 
-        url: "/niveaux/college/3AC" 
+        url: "/Dashboard/Collège/3AC" 
       },
     ],
     lyceeItems: [
       { 
         title: "TC",
-        url: "/niveaux/lycee/TC" 
+        url: "/Dashboard/Lycée/TC" 
       },
       { 
         title: "1BAC",
-        url: "/niveaux/lycee/1BAC" 
+        url: "/Dashboard/Lycée/1BAC" 
       },
       { 
         title: "2BAC",
-        url: "/niveaux/lycee/2BAC" 
+        url: "/Dashboard/Lycée/2BAC" 
       },
     ]
     },
@@ -190,16 +189,10 @@ const allInformation = {
 }
 
 export function AppSidebar() {
-  const {data,fetchData} = useProtectedRoutes();
-
-  useEffect(()=>{
-    fetchData()
-  },[fetchData]);
-  
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <TeamSwitcherHeader data={data}/>
+        <TeamSwitcherHeader />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
