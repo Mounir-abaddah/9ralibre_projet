@@ -89,7 +89,7 @@ router.post('/connexion',async(req,res)=>{
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000,
         });
-        return res.status(200).send({message: "Connexion réussie",success: true,});
+        return res.status(200).send({message: "Connexion réussie",user:{niveaux:user.niveaux},success: true,});
   }catch(err){
         if(err.name === "ZodError"){
             return res.status(400).send({
@@ -166,15 +166,20 @@ router.put('/resetPassword/:token', async (req, res) => {
 router.get('/google',passport.authenticate('google', { scope: ['profile','email'] }));
 
 router.get('/google/callback', passport.authenticate('google', {session:false , failureRedirect: `${process.env.FRONTEND_URL}/connexion` }),
-  function(req, res) {
+  async function(req, res) {
     const user = req.user;
+    const userNiveaux = await User.findById(user)
     const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn : "1d"});
     res.cookie("token",token,{
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
         sameSite:"strict"
     })
-    res.redirect(`${process.env.FRONTEND_URL}/Dashboard`);
+    if(["1AC","2AC","3AC"].includes(userNiveaux.niveaux)){
+        res.redirect(`${process.env.FRONTEND_URL}/Dashboard/Collège/${userNiveaux.niveaux}`);
+    }else{
+        res.redirect(`${process.env.FRONTEND_URL}/Dashboard/Lycée/${userNiveaux.niveaux}`);
+    }
   });
   
 
