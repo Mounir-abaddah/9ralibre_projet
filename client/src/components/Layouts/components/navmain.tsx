@@ -1,4 +1,3 @@
-"use client"
 
 import { ChevronRight, type LucideIcon } from "lucide-react"
 
@@ -17,7 +16,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useProtectedRoutes } from "@/store/userStore"
 import { useEffect } from "react"
 
@@ -44,15 +43,15 @@ const NavMain = ({
   }[]
 }) => {
   const {data,fetchData} = useProtectedRoutes();
-
+  const location = useLocation()
   useEffect(()=>{
     fetchData();
   },[fetchData]);
 
+
   const isCollegeOpen = data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
 
   const isLyceeOpen = data?.niveaux === "TC" || data?.niveaux === "1BAC" || data?.niveaux === "2BAC";
-
 
   return (
     <SidebarGroup>
@@ -96,13 +95,16 @@ const NavMain = ({
                         <CollapsibleContent>
                           <SidebarMenuSub className="ml-4 mt-1">
                             {item.collegeItems.map((subItem) => {
-                              const isActive = location.pathname === subItem.url
+                              const isActive = decodeURIComponent(location.pathname) === subItem.url;
+                              const bgItemsCollegePremiere = 
+                                subItem.url === "/Dashboard/Collège/1AC" ? ('bg-green-500 text-white'): 
+                                subItem.url === "/Dashboard/Collège/2AC" ?('bg-cyan-400 text-white after:absolute'):
+                                ('bg-violet-500 text-white');
                               return (
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton asChild>
                                   <Link to={subItem.url} className="w-full">
-                                    <span className={`${isActive ? 'bg-amber-500' : 'bg-none'} p-1 rounded-md w-full`}>{subItem.title}</span>
-                                    <span className="text-teal-400 text-xs font-semibold absolute right-4">{subItem.title === data?.niveaux && '(actuelle)'}</span>
+                                    <span className={`${isActive ? `${bgItemsCollegePremiere}` : 'bg-none'} absolute p-2 rounded-md w-full`}>{subItem.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
@@ -125,13 +127,16 @@ const NavMain = ({
                         <CollapsibleContent>
                           <SidebarMenuSub className="ml-4 mt-1">
                             {item.lyceeItems.map((subItem) => {
-                              const isActive = location.pathname === subItem.url
+                              const isActive = decodeURIComponent(location.pathname) === subItem.url;
+                              const bgItemsLyceePremiere = 
+                                subItem.url === "/Dashboard/Lycée/TC" ? ('bg-blue-400 text-white'): 
+                                subItem.url === "/Dashboard/Lycée/1BAC" ?('bg-pink-400 text-white after:absolute'):
+                                ('bg-red-400 text-white');                            
                               return(
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton asChild>
-                                  <Link to={subItem.url}>
-                                    <span className={`${isActive ? 'bg-amber-300' : 'bg-none'}`}>{subItem.title}</span>
-                                    <span className="text-teal-400 text-xs font-medium">{subItem.title === data?.niveaux && '(actuelle)'}</span>
+                                  <Link to={subItem.url} className="w-full">
+                                    <span className={`${isActive ? `${bgItemsLyceePremiere}` : 'bg-none'} absolute p-2 rounded-md w-full`}>{subItem.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
