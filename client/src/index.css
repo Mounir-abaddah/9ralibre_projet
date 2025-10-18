@@ -149,4 +149,8 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  .rdp-day {
+    @apply pointer-events-none;
+  }
 }
+
