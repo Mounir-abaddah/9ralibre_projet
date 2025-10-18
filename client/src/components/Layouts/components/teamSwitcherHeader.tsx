@@ -9,13 +9,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useNavigate } from 'react-router-dom'
-import type { typedata } from '@/store/userStore';
 
 
-interface TeamSwitcherHeaderProps {
-    data: typedata | null
-}
-const TeamSwitcherHeader = ({data}:TeamSwitcherHeaderProps) => {
+const TeamSwitcherHeader = () => {
     const navigate = useNavigate();    
     return (
         <SidebarMenu>
@@ -25,7 +21,7 @@ const TeamSwitcherHeader = ({data}:TeamSwitcherHeaderProps) => {
                         <SidebarMenuButton 
                             size={"lg"}
                             className="hover:bg-sidebar-accent cursor-pointer"
-                            onClick={()=>navigate(`/Dashboard/${data?.niveaux}`)}
+                            onClick={()=>navigate('/')}
                         >
                             <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                                 <img src={logo} alt="logo du site" />
