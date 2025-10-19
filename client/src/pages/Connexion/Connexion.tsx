@@ -9,12 +9,10 @@ import logo from "@/assets/images/9ralibre.png";
 import OAuth from "@/components/Oauth/OAuth";
 import Loadering from "@/components/Loadering/Loadering";
 import Input from "@/components/Form/Input";
-import { useProtectedRoutes } from "@/store/userStore";
 
 const Connexion = () => {
   document.title = "Je me connecte | 9ralibre";
   const apiUrl = import.meta.env.VITE_API_URL;
-  const {fetchData} = useProtectedRoutes()
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
@@ -71,15 +69,8 @@ const Connexion = () => {
     try {
       const reponse  = await axios.post(`${apiUrl}/auth/connexion`,form,{ withCredentials: true });
       if (reponse.data.success) {
-        await fetchData();
-        const user = reponse.data.user
         toast.success(reponse.data.message);
-        if(["1AC","2AC","3AC"].includes(user.niveaux)){
-          navigate(`/Dashboard/Collège/${user.niveaux}`)
-        }
-        if(!["1AC","2AC","3AC"].includes(user.niveaux)){
-          navigate(`/Dashboard/Lycée/${user.niveaux}`)
-        }
+        navigate('/')
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
