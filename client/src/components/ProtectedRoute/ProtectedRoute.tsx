@@ -15,6 +15,10 @@ const ProtectedRoute = () => {
     return <Navigate to="/connexion" replace />
   }
 
+  if(!data.completeProfile){
+    return <Navigate to="/" replace />
+  }
+
   return <Outlet />
 }
 
