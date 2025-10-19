@@ -139,7 +139,7 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
         }
         user.completeProfile = true
         await user.save();
-        return res.status(200).send({ message: "Profil complété avec succès", success: true });
+        return res.status(200).send({ message: "Profil complété avec succès",user:{niveaux:user.niveaux}, success: true });
     }catch(err){
         if (req.file) {
             const imagePath = path.join(`./uploads/images/${req.user.userId}`, req.file.filename);
