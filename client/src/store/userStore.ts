@@ -35,7 +35,7 @@ export const useProtectedRoutes = create<typeAllData>()((set)=>({
             if(axios.isAxiosError(err)){
                 message = err.response?.data?.message || err.message || message
             }
-            set({error:message,loading:false})
+            set({data:null,error:message,loading:false})
         }
     }
 }))
