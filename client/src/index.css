@@ -149,7 +149,7 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-  .rdp-day {
+  .non-interactive-calendar .rdp-day {
     @apply pointer-events-none;
   }
 }
