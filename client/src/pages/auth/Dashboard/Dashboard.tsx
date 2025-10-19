@@ -1,4 +1,3 @@
-import CompleteProfile from "@/components/CompleteProfile/CompleteProfile";
 import PagesNonTrouver from "@/pages/PagesNonTrouver/PagesNonTrouver";
 import { useProtectedRoutes } from "@/store/userStore"
 import { useEffect } from "react";
@@ -26,14 +25,9 @@ const Dashboard = () => {
 
   return (
       <div>
-        {data?.completeProfile
-          ?
           <h1 className="text-xs">
-            Bonjours,<span className={`border-b-2 ${borderColor}`}>{data.nom} {data.prenom}</span>
-          </h1>          
-          :
-          <CompleteProfile />
-        }
+            Bonjours,<span className={`border-b-2 ${borderColor}`}>{data?.nom} {data?.prenom}</span>
+          </h1>  
       </div>
   )
 }
