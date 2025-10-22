@@ -11,6 +11,12 @@ body {
   background-image: radial-gradient(#aaa 0.8px, #fff 0.8px);
   background-size: 24px 24px;
 }
+/**Calendrier*/
+.day-button:hover {
+  background-color: inherit !important;
+  color: inherit !important;  
+  cursor: pointer;
+}
 
 @custom-variant dark (&:is(.dark *));
 
