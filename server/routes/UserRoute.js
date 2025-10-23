@@ -157,6 +157,20 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
     }
 })
 
+
+router.get('/getEvenements',authMiddleware,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).send({message:"Impossible de récupérer les événements pour cet utilisateur.",success:false})
+        }
+        return res.status(200).send({events:user.events,success:true})
+    }catch(err){
+        return res.status(500).send({message:"Une erreur interne est survenue. Veuillez réessayer plus tard",success:false,err})
+    }
+})
+
 router.post('/postEvents',authMiddleware,async(req,res)=>{
     try{
         const userId = req.user.userId;
@@ -190,16 +204,17 @@ router.post('/postEvents',authMiddleware,async(req,res)=>{
     }
 })
 
-router.get('/getEvenements',authMiddleware,async(req,res)=>{
+router.delete('/deleteEvents/:eventId',authMiddleware,async(req,res)=>{
     try{
         const userId = req.user.userId;
-        const user = await User.findById(userId);
+        const eventId = req.params.eventId;
+        const user = await User.findByIdAndUpdate(userId,{$pull:{events:{_id:eventId}}},{new:true})
         if(!user){
-            return res.status(400).send({message:"Impossible de récupérer les événements pour cet utilisateur.",success:false})
+            return res.status(400).send({message:"Impossible de supprimer l'événement. Veuillez réessayer.",success:false})
         }
-        return res.status(200).send({events:user.events,success:true})
+        return res.status(200).send({message:"Événement supprimé avec succès.",success:true})
     }catch(err){
-        return res.status(500).send({message:"Une erreur interne est survenue. Veuillez réessayer plus tard",success:false,err})
+        return res.status(500).send({message:"Une erreur interne est survenue lors de la suppression de l'événement.",success:false,err})
     }
 })
 
