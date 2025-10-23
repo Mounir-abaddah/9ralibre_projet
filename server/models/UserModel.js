@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema({
             required:true
         },
         type:{
-            type:Array,
+            type:String,
             required:true
         },
         titre:{
