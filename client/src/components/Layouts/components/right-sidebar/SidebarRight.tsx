@@ -9,17 +9,20 @@ import {  Plus, Square } from 'lucide-react';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { fr } from "react-day-picker/locale"
 
+
+interface Item {
+  type: string;
+  titre: string;
+  Description?: string;
+}
+
 interface EventApi {
   Date:string;
-  type:string;
-  titre:string;
-  Description?:string;
+  items:[Item]
 }
 export interface CalendrierInfo {
   date:Date;
-  type:string;
-  titre:string;
-  Description?:string;
+  items:Item[]
 }
 
 
@@ -31,15 +34,19 @@ const SidebarRight = () => {
     const [SelectedInfo,setSelectedInfo]=useState<CalendrierInfo[]>([]);
     const [checkedTypes, setCheckedTypes] = useState<string[]>([]);
 
-    const handleCheckedValue = (type:string , checked:boolean)=>{
-      setCheckedTypes(prev => checked ? [...prev,type] : prev.filter(e=>e!==type))
-    }
 
     useEffect(()=>{
       const handleGetEvents = async()=>{
         try{
           const res = await axios.get<{events:EventApi[]}>(`${apiUrl}/user/getEvenements`,{withCredentials:true});
-          const parEvents = res.data.events.map(e=>({date:new Date(e.Date),type:e.type,titre:e.titre,Description:e.Description}))
+          const parEvents:CalendrierInfo[] = res.data.events.map((e:EventApi)=>({
+            date: new Date(e.Date),
+            items: e.items.map((item)=>({
+              type: item.type,
+              titre: item.titre,
+              Description: item.Description,
+            }))
+          }))
           setEvents(parEvents)       
         }catch(err){
           console.log(err);
@@ -48,13 +55,23 @@ const SidebarRight = () => {
       handleGetEvents()
     },[apiUrl]);
 
-  const filteredEvents = checkedTypes.length > 0 ? events.filter(e => checkedTypes.includes(e.type)) : events;
+  const handleCheckedValue = (type:string , checked:boolean)=>{
+      setCheckedTypes(prev => checked ? [...prev,type] : prev.filter(e=>e!==type))
+  }
+const filteredEvents = checkedTypes.length > 0
+  ? events.filter(e => 
+      checkedTypes.includes("multi")
+        ? e.items.length > 1 || checkedTypes.some(t => e.items.some(item => item.type === t))
+        : e.items.some(item => checkedTypes.includes(item.type))
+    )
+  : events;
 
   const modifiers = {
-    examen: filteredEvents.filter(e => e.type === "Examen").map(e => e.date),
-    devoir: filteredEvents.filter(e => e.type === "Devoir").map(e => e.date),
-    rappel: filteredEvents.filter(e => e.type === "Rappel").map(e => e.date),
-    autre: filteredEvents.filter(e => e.type === "Autre").map(e => e.date),
+    examen: filteredEvents.filter(e => e.items.some(e => e.type === "Examen")).map(e => e.date),
+    devoir: filteredEvents.filter(e => e.items.some(e => e.type === "Devoir")).map(e => e.date),
+    rappel: filteredEvents.filter(e => e.items.some(e => e.type === "Rappel")).map(e => e.date),
+    autre: filteredEvents.filter(e => e.items.some(e => e.type === "Autre")).map(e => e.date),
+    multi: filteredEvents.filter(e => e.items.length > 1 ).map(e => e.date),
   };
 
   const modifiersStyles = {
@@ -62,6 +79,7 @@ const SidebarRight = () => {
     devoir: { backgroundColor: "oklch(76.9% 0.188 70.08)", color: "white" , borderRadius:"8px" },
     rappel: { backgroundColor: "oklch(69.6% 0.17 162.48)", color: "white" , borderRadius:"8px" },
     autre: { backgroundColor: "oklch(65.6% 0.241 354.308)", color: "white",borderRadius:"8px" },
+    multi: { background: "purple", color: "white",borderRadius:"8px" },
   };
 
   const legendItems = [
@@ -69,7 +87,8 @@ const SidebarRight = () => {
     { label: "Examens", type: "Examen", color: "oklch(63.7% 0.237 25.331)" },
     { label: "Devoirs", type: "Devoir", color: "oklch(76.9% 0.188 70.08)" },
     { label: "Rappels", type: "Rappel", color: "oklch(69.6% 0.17 162.48)" },
-    { label: "Autre", type: "Autre", color: "oklch(65.6% 0.241 354.308)" }
+    { label: "Autre", type: "Autre", color: "oklch(65.6% 0.241 354.308)" },
+    { label: "Plusieurs Evenements", type:"multi", color: "purple" }
   ];
 
 
@@ -90,6 +109,7 @@ const SidebarRight = () => {
             classNames={{
               day_button: "day-button"
             }}
+            className='p-2'
             onDayClick={(day) => {
               const eventClicked = events.filter(e => 
                 e.date.toDateString() === day.toDateString()
@@ -140,7 +160,7 @@ const SidebarRight = () => {
       <CalendrierDetailsDay openModalCalendrierDetail={openModalCalendrierDetail} setopenModalCalendrierDetail={setopenModalCalendrierDetail} SelectedInfo={SelectedInfo}/>
     )}
     {openModal && (
-      <CalendrierModal open={openModal} onOpenChange={setOpenModal} events={events}/>
+      <CalendrierModal open={openModal} onOpenChange={setOpenModal} />
     )}
     </>
   )
