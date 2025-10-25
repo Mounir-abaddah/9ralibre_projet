@@ -140,7 +140,7 @@ const SidebarRight = () => {
       <CalendrierDetailsDay openModalCalendrierDetail={openModalCalendrierDetail} setopenModalCalendrierDetail={setopenModalCalendrierDetail} SelectedInfo={SelectedInfo}/>
     )}
     {openModal && (
-      <CalendrierModal open={openModal} onOpenChange={setOpenModal} events={events}/>
+      <CalendrierModal open={openModal} onOpenChange={setOpenModal}/>
     )}
     </>
   )
