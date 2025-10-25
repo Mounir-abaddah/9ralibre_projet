@@ -42,7 +42,26 @@ const UserSchema = new mongoose.Schema({
     accountVerified:{
         type:Boolean,
         default:false
-    }
+    },
+    events:[{
+        Date:{
+            type:Date,
+            required:true
+        },
+        type:{
+            type:String,
+            required:true
+        },
+        titre:{
+            type:String,
+            required:true
+        },
+        Description:{
+            type:String,
+            required:false
+        }
+        
+    }]
 },{
     timestamps:true
 })

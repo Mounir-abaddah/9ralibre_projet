@@ -9,9 +9,11 @@ import { validateForm } from './utils/validation'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import NiveauxSelect from './NiveauxSelect'
+import { useNavigate } from 'react-router-dom'
 
 const CompleteProfile = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate()
   const [step,setStep] = useState(0)
   const {data,fetchData} = useProtectedRoutes();
   const [avatar, setAvatar] = useState<File | null>(null);
@@ -77,10 +79,18 @@ const CompleteProfile = () => {
           const res = await axios.patch(`${apiUrl}/user/completeProfile`,formDataToSend,{withCredentials:true,headers:{
             "Content-Type":"multipart/form-data"
           }})
-          if(res.data.success){
-            toast.success('Profil complété avec succès !')
-            window.location.reload()
-          }
+            if(res.data.success){
+              toast.success('Profil complété avec succès !');
+              await fetchData();
+              const user = res.data.user
+              console.log(user.niveaux);
+              if(["1AC","2AC","3AC"].includes(user.niveaux)){
+                navigate(`/Dashboard/Collège/${user.niveaux}`)
+              }
+              if(!["1AC","2AC","3AC"].includes(user.niveaux)){
+                navigate(`/Dashboard/Lycée/${user.niveaux}`)
+              }
+            }
           }catch(err){
             if(axios.isAxiosError(err) && err.response){
               toast.error(err.response.data.message || "Erreur lors de l’envoi du profil")

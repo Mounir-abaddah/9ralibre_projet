@@ -47,6 +47,13 @@ const completeProfileShema = z.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
       "le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
     ).optional()
+});
+
+const EventsShema = z.object({
+  Date:z.string().transform(val=>new Date(val)).refine(val => !isNaN(val.getTime()),{message:"Date invalide"}),
+  type:z.string().regex(/^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/,{message:"Le type contient des caractères non autorisés"}).min(3,"Le type doit contenir au moins 3 caractères"),
+  titre:z.string().regex(/^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/,{message:"Le titre contient des caractères non autorisés"}).min(3,"Le titre doit contenir au moins 3 caractères"),
+  Description:z.string().regex(/^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/,{message:"La description contient des caractères non autorisés"}).max(100,"La description est trop longue").optional(),
 })
 
-module.exports = { registerShema ,loginSchema ,messageOUblierSchema,passwordResetShema , completeProfileShema};
+module.exports = { registerShema ,loginSchema ,messageOUblierSchema,passwordResetShema , completeProfileShema , EventsShema};

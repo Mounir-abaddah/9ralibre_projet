@@ -12,9 +12,10 @@ interface InputProps {
     onChange: (value : string) => void,
     icon?: "mail"| "lock",
     error?:string
+    className?:string
 }
 
-const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon}:InputProps) => {
+const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon,className}:InputProps) => {
     const [showPassword,setshowPassword] = useState(false)
     const renderIcon = ()=>{
         if(icon === "mail") return <Mail size={18} />
@@ -33,7 +34,8 @@ const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon}:Inp
                 placeholder={placeholder}
                 onChange={(e)=>onChange(e.target.value)}
                 onFocus={onFocus}
-                className="outline-0 w-full font-bold placeholder:font-normal"
+                required
+                className={`outline-0 w-full font-bold placeholder:font-normal ${className}`}
             />
             {type === "password" && (
                 <div onClick={()=>setshowPassword(!showPassword)} className='cursor-pointer'>

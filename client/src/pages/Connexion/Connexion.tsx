@@ -72,14 +72,8 @@ const Connexion = () => {
       const reponse  = await axios.post(`${apiUrl}/auth/connexion`,form,{ withCredentials: true });
       if (reponse.data.success) {
         await fetchData();
-        const user = reponse.data.user
         toast.success(reponse.data.message);
-        if(["1AC","2AC","3AC"].includes(user.niveaux)){
-          navigate(`/Dashboard/Collège/${user.niveaux}`)
-        }
-        if(!["1AC","2AC","3AC"].includes(user.niveaux)){
-          navigate(`/Dashboard/Lycée/${user.niveaux}`)
-        }
+        navigate('/')
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
