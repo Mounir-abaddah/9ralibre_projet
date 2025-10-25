@@ -160,7 +160,7 @@ const filteredEvents = checkedTypes.length > 0
       <CalendrierDetailsDay openModalCalendrierDetail={openModalCalendrierDetail} setopenModalCalendrierDetail={setopenModalCalendrierDetail} SelectedInfo={SelectedInfo}/>
     )}
     {openModal && (
-      <CalendrierModal open={openModal} onOpenChange={setOpenModal} />
+      <CalendrierModal open={openModal} onOpenChange={setOpenModal}/>
     )}
     </>
   )
