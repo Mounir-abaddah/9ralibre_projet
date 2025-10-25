@@ -175,21 +175,20 @@ router.post('/postEvents',authMiddleware,async(req,res)=>{
     try{
         const userId = req.user.userId;
         const EventsShemaValidation = EventsShema.parse(req.body)
-        const user = await User.findByIdAndUpdate(userId,{
-            $push:{
-                events:{
-                    Date: EventsShemaValidation.Date,
-                    type: EventsShemaValidation.type,
-                    titre: EventsShemaValidation.titre,
-                    Description: EventsShemaValidation.Description
-                }
-            }
-        },{
-            new:true,
-            runValidators:true
-        })
+        const user = await User.findById(userId)
         if(!user){
             return res.status(400).send({message:"Impossible d'ajouter l'événement. Veuillez réessayer.",success:false})
+        }
+        const dateTostring = EventsShemaValidation.Date.toDateString();
+        const DateExister = user.events.find(e => e.Date.toDateString() === dateTostring);
+        if(DateExister){
+            DateExister.items.push(...EventsShemaValidation.items);
+        }
+        if(!DateExister){
+            user.events.push({
+                Date:EventsShemaValidation.Date,
+                items:EventsShemaValidation.items,
+            })
         }
         await user.save();
         return res.status(200).send({message:"Événement ajouté avec succès.",success:true})
