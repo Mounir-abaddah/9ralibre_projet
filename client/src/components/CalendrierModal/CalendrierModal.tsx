@@ -18,30 +18,27 @@ import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
-interface Event{
-  date:Date,
-  type:string
-}
 
 interface CalendrierModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  events:Event[]
 }
-const descriptionRegex = /^.{0,100}$/;
+const descriptionRegex = /^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/;
 
-const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) => {
+const CalendrierModal = ({ open, onOpenChange }: CalendrierModalProps) => {
   const apiUrl = import.meta.env.VITE_API_URL
   const [opene, setOpene] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
-  
 
   const [formData, setFormData] = useState({
     Date: "",
-    type: "",
-    titre: "",
-    Description: ""
+    items:[{
+        type: "",
+        titre: "",
+        Description: ""
+  }]
   });
 
   const [errors, setErrors] = useState({
@@ -51,8 +48,16 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
     Description: ""
   });
   
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleDate = (d:Date | undefined)=>{
+    setFormData(prev => ({...prev, Date: d?.toISOString() || ""}))
+  }
+  const handleChange = (field: "type" | "titre" | "Description", value: string , index = 0) => {
+    setFormData(prev => {
+      const items = [...prev.items];
+      if (!items[index]) items[index] = { type: "", titre: "", Description: "" };
+      items[index] = {...items[index],[field]:value};
+      return {...prev,items}
+    })
     setErrors((prev) => ({...prev, [field]: ""}));
   }
 
@@ -65,21 +70,23 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
     let Valid = true;
     const newErrors = {...errors};
 
+    const firstItem = formData.items[0] || { type: "", titre: "", Description: "" };
+
     if(!formData.Date){
       newErrors.Date = "Date invalide !";
       Valid = false
     }
-    if (!formData.titre.trim()) {
+    if (!firstItem.titre.trim()) {
       newErrors.titre = "Le titre est requis !";
       Valid = false;
     }
 
-    if(formData.Description && !descriptionRegex.test(formData.Description)){
-      newErrors.Description = "descripiton invalid "
+    if(firstItem.Description && !descriptionRegex.test(firstItem.Description)){
+      newErrors.Description = "Descripiton invalid "
       Valid = false;
     }
 
-     if (!formData.type) {
+    if (!firstItem.type) {
       newErrors.type = "Type d’événement requis !";
       Valid = false;
     }
@@ -87,9 +94,9 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
     setErrors(newErrors)
 
     if (!Valid) {
-    console.warn("Formulaire invalide !");
-    return;
-  }
+      console.warn("Formulaire invalide !");
+      return;
+    }
     try{      
         const res = await axios.post(`${apiUrl}/user/postEvents`,formData,{withCredentials:true})
         if(res.data.success){
@@ -98,7 +105,7 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
         }
     }catch(err){
       if (axios.isAxiosError(err) && err.response) {
-        toast.error(err.response.data.message);
+          toast.error(err.response.data.message);
       }
     }
     onOpenChange(false);
@@ -135,10 +142,9 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
                     mode="single"
                     selected={date}
                     captionLayout="dropdown"
-                    disabled={events.map(item=>item.date)}
                     onSelect={(d) => {
                       setDate(d);
-                      handleChange("Date", d?.toISOString() || "");
+                      handleDate(d);
                       setOpene(false);
                     }}
                     classNames={{
@@ -167,12 +173,7 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
                     <SelectItem value="Examen">Examen</SelectItem>
                     <SelectItem value="Rappel">Rappel</SelectItem>
                     <SelectItem value="Devoir">Devoir</SelectItem>
-                    <SelectItem value="Autre" className="flex flex-col">
-                      <span>Autre</span>
-                      <span className="text-xs text-slate-400">
-                        Exemple:Devoir+Examen+Rappel,Examen+Devoir...
-                      </span>
-                    </SelectItem>
+                    <SelectItem value="Autre">Autre</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -186,27 +187,35 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
                 id="event-title"
                 type="text"
                 placeholder="Ex: Réunion, Mathématiques..."
-                value={formData.titre}
+                value={formData.items[0].titre}
                 onChange={(e) => handleChange("titre", e.target.value)}
                 onFocus={() => handleFocus("titre")}
+                className={`${errors.titre && "border-red-500"}`}
               />
+                {errors.titre && <span className="text-sm text-red-600 rounded-md pl-2 font-semibold">{errors.titre}</span>}
             </div>
 
             {/* Champ Description */}
             <div className="grid gap-2">
-              <Label htmlFor="event-description" className="text-sm font-medium">
-                Description (optionnelle)
+              <Label htmlFor="event-description" className="text-sm flex w-full justify-between font-medium">
+                <span>Description (optionnelle)</span>
+                <span className="text-xs">{formData.items[0].Description?.length || 0}/100</span>
               </Label>
               <Textarea
                 id="event-description"
                 name="description"
                 placeholder="Ex: Notes importantes, détails de l'événement..."
                 rows={4}
-                value={formData.Description}
+                value={formData.items[0].Description}
                 onChange={(e) => handleChange("Description", e.target.value)}
                 onFocus={() => handleFocus("Description")}
+                className={cn(
+                  errors.Description || ((formData.items[0].Description?.length || 0) > 100)
+                    && "border-red-500 focus-visible:ring-destructive/50"
+                )}              
               />
             </div>
+              {errors.Description && <span className="text-sm text-red-600 rounded-md pl-2 font-semibold">{errors.Description}</span>}
           </div>
 
           <DialogFooter className="flex justify-end space-x-2 pt-4">
