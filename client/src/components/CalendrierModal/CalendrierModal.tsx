@@ -19,19 +19,14 @@ import { Input } from "../ui/input";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-interface Event{
-  date:Date,
-  type:string
-}
 
 interface CalendrierModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  events:Event[]
 }
 const descriptionRegex = /^.{0,100}$/;
 
-const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) => {
+const CalendrierModal = ({ open, onOpenChange }: CalendrierModalProps) => {
   const apiUrl = import.meta.env.VITE_API_URL
   const [opene, setOpene] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
@@ -135,7 +130,6 @@ const CalendrierModal = ({ open, onOpenChange, events }: CalendrierModalProps) =
                     mode="single"
                     selected={date}
                     captionLayout="dropdown"
-                    disabled={events.map(item=>item.date)}
                     onSelect={(d) => {
                       setDate(d);
                       handleChange("Date", d?.toISOString() || "");
