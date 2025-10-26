@@ -10,6 +10,8 @@ import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute';
 import Dashboard from '@/pages/auth/Dashboard/Dashboard';
 import { Toaster } from 'react-hot-toast';
 import Layouts from './components/Layouts/Layouts';
+import DrawExcalidraw from './pages/auth/DrawExcalidraw/DrawExcalidraw';
+import CalendrieMobile from './pages/auth/CalendrieMobile/CalendrieMobile';
 
 const App = () => {
   return (
@@ -26,6 +28,8 @@ const App = () => {
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
             <Route path='/Dashboard/:type/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
+            <Route path='/Calendrier' element={<Layouts><CalendrieMobile /></Layouts>} />
+            <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
         </Route>
         <Route />
       </Routes>
