@@ -16,7 +16,7 @@ interface Item {
   Description?: string;
 }
 
-interface EventApi {
+export interface EventApi {
   Date:string;
   items:[Item]
 }
