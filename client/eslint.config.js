@@ -23,9 +23,6 @@ export default tseslint.config([
         config:false,
       },
     },
-    rules:{
-      'tailwindcss/no-custom-classname': 'error',
-    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
