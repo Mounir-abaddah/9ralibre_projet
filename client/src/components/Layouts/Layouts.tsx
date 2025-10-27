@@ -4,7 +4,7 @@ import { AppSidebar } from '@/components/Layouts/components/app-sidebar'
 import { Separator } from '@radix-ui/react-separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb'
 import SidebarRight from '@/components/Layouts/components/right-sidebar/SidebarRight'
-import { Brush, Calendar1 } from 'lucide-react'
+import { BellRing, Brush, Calendar1 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const Layouts = ({children} : {children:React.ReactNode}) => {
@@ -12,14 +12,14 @@ const Layouts = ({children} : {children:React.ReactNode}) => {
     <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-        <header className="w-full border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4 w-full">
+        <header className="flex h-16 w-full shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <div className="flex w-full items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <Breadcrumb className='flex w-full justify-between items-center'>
+            <Breadcrumb className='flex w-full items-center justify-between'>
               <BreadcrumbList className='w-full'>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
@@ -32,16 +32,19 @@ const Layouts = ({children} : {children:React.ReactNode}) => {
                 </BreadcrumbItem>
               </BreadcrumbList>
               
-              <BreadcrumbList className='w-1/4 lg:w-auto flex justify-end items-center '>
-                <BreadcrumbItem className="lg:hidden block">
+              <BreadcrumbList className='w-1/3 flex justify-end items-center '>
+                <BreadcrumbItem className="lg:hidden block cursor-pointer">
                   <Link to="/Calendrier">
                     <Calendar1 size={19}/>
                   </Link>
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                  <Link to="/Drawing">
+                  <Link to="/Drawing" className='cursoir-pointer'>
                     <Brush size={19}/>
                   </Link>
+                </BreadcrumbItem>
+                <BreadcrumbItem className='cursor-pointer'>
+                    <BellRing size={19}/>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
