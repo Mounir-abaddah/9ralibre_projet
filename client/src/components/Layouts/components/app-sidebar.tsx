@@ -155,7 +155,7 @@ const allInformation = {
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       <SidebarHeader>
         <TeamSwitcherHeader />
       </SidebarHeader>
