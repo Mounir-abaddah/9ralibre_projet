@@ -28,8 +28,8 @@ const App = () => {
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
             <Route path='/Dashboard/:type/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
-            <Route path='/Calendrier' element={<Layouts><CalendrieMobile /></Layouts>} />
-            <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
+            <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
+            <Route path='/Drawing/:niveaux' element={<Layouts><DrawExcalidraw /></Layouts>} />
         </Route>
         <Route />
       </Routes>
