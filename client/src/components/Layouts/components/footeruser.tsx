@@ -2,9 +2,9 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Settings2,
+  User,
 } from "lucide-react"
 
 import {
@@ -89,8 +89,8 @@ const Footuser = () => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+                <User />
+                Profile
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -100,8 +100,8 @@ const Footuser = () => {
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard />
-                Billing
+                <Settings2 />
+                Paramètres 
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -109,7 +109,7 @@ const Footuser = () => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="bg-red-500 text-white cursor-pointer hover:bg-red-600">
+            <DropdownMenuItem>
               <LogOut />
                 Se deconnecter
             </DropdownMenuItem>
