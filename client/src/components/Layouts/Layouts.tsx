@@ -5,9 +5,10 @@ import { Separator } from '@radix-ui/react-separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb'
 import SidebarRight from '@/components/Layouts/components/right-sidebar/SidebarRight'
 import { BellRing, Brush, Calendar1 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 const Layouts = ({children} : {children:React.ReactNode}) => {
+  const {niveaux} = useParams()
   return (
     <SidebarProvider>
         <AppSidebar />
@@ -32,14 +33,14 @@ const Layouts = ({children} : {children:React.ReactNode}) => {
                 </BreadcrumbItem>
               </BreadcrumbList>
               
-              <BreadcrumbList className='w-1/3 flex justify-end items-center '>
-                <BreadcrumbItem className="lg:hidden block cursor-pointer">
-                  <Link to="/Calendrier">
+              <BreadcrumbList className='flex w-1/3 items-center justify-end '>
+                <BreadcrumbItem className="cursor-pointer">
+                  <Link to={`/Calendrier/${niveaux}`}>
                     <Calendar1 size={19}/>
                   </Link>
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                  <Link to="/Drawing" className='cursoir-pointer'>
+                  <Link to={`/Drawing/${niveaux}`}className='cursor-pointer'>
                     <Brush size={19}/>
                   </Link>
                 </BreadcrumbItem>
