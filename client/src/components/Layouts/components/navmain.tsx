@@ -1,5 +1,5 @@
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight, University, type LucideIcon } from "lucide-react"
 
 import {
   Collapsible,
@@ -16,9 +16,17 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Link, useLocation } from "react-router-dom"
-import { useProtectedRoutes } from "@/store/userStore"
-import { useEffect } from "react"
+import { Link, useNavigate, useParams } from "react-router-dom"
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const NavMain = ({
   items,
@@ -42,19 +50,42 @@ const NavMain = ({
     }[]
   }[]
 }) => {
-  const {data,fetchData} = useProtectedRoutes();
-  const location = useLocation()
-  useEffect(()=>{
-    fetchData();
-  },[fetchData]);
-
-
-  const isCollegeOpen = data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
-
-  const isLyceeOpen = data?.niveaux === "TC" || data?.niveaux === "1BAC" || data?.niveaux === "2BAC";
+  const navigate = useNavigate();
+  const {niveaux} = useParams();
 
   return (
     <SidebarGroup>
+      <SidebarGroup className="w-full">
+        <SidebarGroupLabel className="flex items-center gap-2 ">
+          <University strokeWidth={2} color="#000" className="size-4.5"/>
+          <span>Niveaux</span>
+        </SidebarGroupLabel>
+      <Select value={niveaux} onValueChange={(value) => {
+        const enumNiveaux = ['1AC','2AC','3AC'].includes(value)
+        if(enumNiveaux){
+          navigate(decodeURIComponent(`/Dashboard/Collège/${value}`))
+        }
+        if(!enumNiveaux){
+          navigate(decodeURIComponent(`/Dashboard/Lycée/${value}`))
+        }
+      }}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Selectionnez votre niveaux" />
+        </SelectTrigger>
+        <SelectContent className="w-full">
+          <SelectGroup>
+            <SelectLabel>Collège</SelectLabel>
+            <SelectItem value="1AC">1AC</SelectItem>
+            <SelectItem value="2AC">2AC</SelectItem>
+            <SelectItem value="3AC">3AC</SelectItem>
+            <SelectLabel>Lycée</SelectLabel>
+            <SelectItem value="TC">TC</SelectItem>
+            <SelectItem value="1BAC">1BAC</SelectItem>
+            <SelectItem value="2BAC">2BAC</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+    </Select>
+      </SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
@@ -83,69 +114,6 @@ const NavMain = ({
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
-                  {item.collegeItems && item.collegeItems.length > 0 && (
-                    <Collapsible className="group/college" asChild defaultOpen={isCollegeOpen}>
-                      <SidebarMenuSubItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuSubButton>
-                            <span>Collège</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/college:rotate-90" />
-                          </SidebarMenuSubButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub className="ml-4 mt-1">
-                            {item.collegeItems.map((subItem) => {
-                              const isActive = decodeURIComponent(location.pathname) === subItem.url;
-                              const bgItemsCollegePremiere = 
-                                subItem.url === "/Dashboard/Collège/1AC" ? ('bg-green-500 text-white'): 
-                                subItem.url === "/Dashboard/Collège/2AC" ?('bg-cyan-400 text-white after:absolute'):
-                                ('bg-violet-500 text-white');
-                              return (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton asChild>
-                                  <Link to={subItem.url} className="w-full">
-                                    <span className={`${isActive ? `${bgItemsCollegePremiere}` : 'bg-none'} absolute p-2 rounded-md w-full`}>{subItem.title}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                              )
-                            })}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </SidebarMenuSubItem>
-                    </Collapsible>
-                  )}
-                  {item.lyceeItems && item.lyceeItems.length > 0 && (
-                    <Collapsible className="group/college" asChild defaultOpen={isLyceeOpen}>
-                      <SidebarMenuSubItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuSubButton>
-                            <span>Lycée</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/college:rotate-90" />
-                          </SidebarMenuSubButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub className="ml-4 mt-1">
-                            {item.lyceeItems.map((subItem) => {
-                              const isActive = decodeURIComponent(location.pathname) === subItem.url;
-                              const bgItemsLyceePremiere = 
-                                subItem.url === "/Dashboard/Lycée/TC" ? ('bg-blue-400 text-white'): 
-                                subItem.url === "/Dashboard/Lycée/1BAC" ?('bg-pink-400 text-white after:absolute'):
-                                ('bg-red-400 text-white');                            
-                              return(
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton asChild>
-                                  <Link to={subItem.url} className="w-full">
-                                    <span className={`${isActive ? `${bgItemsLyceePremiere}` : 'bg-none'} absolute p-2 rounded-md w-full`}>{subItem.title}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            )})}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </SidebarMenuSubItem>
-                    </Collapsible>
-                  )}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
