@@ -24,7 +24,7 @@ const Dashboard = () => {
 
 
   return (
-      <div>
+      <div className="w-full">
           <h1 className="text-xs">
             Bonjours,<span className={`border-b-2 ${borderColor}`}>{data?.nom} {data?.prenom}</span>
           </h1>  
