@@ -5,6 +5,7 @@ import {
   Bot,
   MessageCircleMoreIcon,
   Settings2,
+  Video,
 } from "lucide-react"
 
 import {
@@ -19,29 +20,25 @@ import {
 import Navmain from "@/components/Layouts/components/navmain"
 import Footuser from "./footeruser"
 import TeamSwitcherHeader from "./teamSwitcherHeader"
+import { useParams } from "react-router-dom"
 
 
 
-const allInformation = {
+
+
+export function AppSidebar() {
+  const {niveaux} = useParams()
+  const allInformation = {
   navMain: [
     {
       title: "Cours",
-      url: "#",
+      url: `/Cours/${niveaux}`,
       icon: Book,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+    },
+    {
+      title: "Videos",
+      url: `/Videos/${niveaux}`,
+      icon: Video,
     },
     {
       title: "Exercice",
@@ -152,8 +149,6 @@ const allInformation = {
     },
   ],
 }
-
-export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
