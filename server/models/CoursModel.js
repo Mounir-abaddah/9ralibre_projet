@@ -4,7 +4,7 @@ const CoursShema = new mongoose.Schema({
     matiere:{
         type:mongoose.Schema.Types.ObjectId , ref:"matiere"
     },
-    semstre:{
+    semestre:{
         type:String,
         enum:["Premier Semestre", "Deuxième Semestre"],
         required:true
