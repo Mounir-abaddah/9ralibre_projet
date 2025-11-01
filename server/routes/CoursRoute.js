@@ -26,12 +26,7 @@ router.get("/getCours/:niveauNom", authMiddleware, async (req, res) => {
       });
     return res.json({ success: true, cours });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération des cours",
-      error: err.message
-    });
+    res.status(500).json({ success: false, message: "Erreur lors de la récupération des cours",error: err.message});
   }
 });
 
