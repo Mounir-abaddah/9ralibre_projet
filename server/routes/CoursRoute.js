@@ -6,11 +6,11 @@ const Niveaux = require('../models/NiveauxModel');
 const Matiere = require('../models/MatiereModel');
 const Cours = require('../models/CoursModel');
 
-router.get("/getCours/:niveauNom", authMiddleware, async (req, res) => {
+router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
   try {
-    const { niveauNom } = req.params;
+    const { niveauxNom } = req.params;
 
-    const niveau = await Niveaux.findOne({ nom: niveauNom });
+    const niveau = await Niveaux.findOne({ nom: niveauxNom });
     if (!niveau) {
       return res.status(404).json({ success: false, message: "Niveau non trouvé" });
     }
