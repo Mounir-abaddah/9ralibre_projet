@@ -138,7 +138,7 @@ const Cours = () => {
         />
       </div>
       {(matiere || semestre || type || filiere) && (
-        <button onClick={resetAll} className="flex w-3/6 cursor-pointer items-center gap-1 text-sm text-gray-600 transition-colors hover:text-red-600">
+        <button onClick={resetAll} className="flex cursor-pointer items-center justify-end gap-1 text-sm text-gray-600 transition-colors hover:text-red-600">
           <XCircle size={16} />Réinitialiser tout
         </button>
       )}
