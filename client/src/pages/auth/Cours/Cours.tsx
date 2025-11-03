@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useCoursFilter } from '@/store/useCoursFilter';
 import axios from 'axios';
-import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, Printer, SquareArrowOutUpRight, XCircle } from 'lucide-react';
+import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, FileText, Globe2, Landmark, Printer, SquareArrowOutUpRight, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 
@@ -21,13 +21,15 @@ interface Cours {
   title: string;
   semestre: string;
   type: string;
+  filière:string;
   pdfUrl: string;
   matiere: Matiere;
 }
+
 const Cours = () => {
     document.title = "Cours | 9ralibre"
     const {niveaux} = useParams();
-    const {matiere,semestre,type,setMatiere,setSemestre,setType,resetAll}=useCoursFilter();
+    const {matiere,semestre,type,filiere,setMatiere,setSemestre,setType,setFiliere,resetAll}=useCoursFilter();
     const [cours,setCours] = useState<Cours[]>([]);
     const [search,setSearch]= useState("")
     const [searchParams,setSearchParams]=useSearchParams();
@@ -77,58 +79,67 @@ const Cours = () => {
     if(matiere) params.matiere = matiere
     if(semestre) params.semestre = semestre
     if(type) params.type = type
+    if(filiere) params.filiere = filiere
     if(search.trim() !== '') params.search = search.trim()
     setSearchParams(params)
-  },[matiere,semestre,type,setSearchParams,search]);
+  },[matiere,semestre,type,setSearchParams,search,filiere]);
 
   useEffect(()=>{
     const m = searchParams.get("matiere");
     const s = searchParams.get('semestre');
     const t = searchParams.get('type');
+    const f = searchParams.get('filiere');
     const q = searchParams.get('search')
     setMatiere(m);
     setSemestre(s);
     setType(t);
+    setFiliere(f)
     setSearch(q || '')
-  },[searchParams, setMatiere, setSemestre, setType]);
+  },[searchParams, setMatiere, setSemestre, setType,setFiliere]);
 
   const filtredCours = cours.filter((c)=>{
     const filterMatiere = !matiere || c.matiere.nom === matiere;
     const filterSemestre = !semestre || c.semestre === semestre;
     const filterType = !type || c.type === type;
+    const filterFiliere = !filiere || c.filière === filiere;
     const SearchCours = search.trim() === "" || 
     c.title.toLowerCase().includes(search.toLowerCase()) ||
     c.matiere.nom.toLowerCase().includes(search.toLowerCase())||
     c.semestre.toLowerCase().includes(search.toLowerCase())
-    return filterMatiere && filterSemestre && filterType && SearchCours
+    return filterMatiere && filterSemestre && filterType && filterFiliere && SearchCours
   })
+
+  const iconeType = {
+    'Cours': <BookOpenText  />,
+    'Exercice': <FileText  />,
+    'Examen National': <Globe2  />,
+    'Examen Régional': <Landmark />,
+  }
+  
   return (
     <>
     <div className='flex w-full gap-4'>
-      <div className='flex w-full flex-col items-start justify-between gap-2 lg:flex-row'>
+      <div className='flex w-full flex-col items-start justify-between gap-2'>
         <div className='flex w-full flex-col gap-2'>
-          <Label id='mySerach'>Tous les cours :</Label>
-          <Input id='mySearch' value={search} onChange={(e)=>setSearch(e.target.value)} placeholder='Chercher votre cours ...' className='focus-visible:ring-amber-500/50'/>
+          <Label htmlFor='mySearch'>Tous les cours :</Label>
+          <Input id='mySearch' type='text' value={search} onChange={(e)=>setSearch(e.target.value)} placeholder='Chercher votre cours ...' className='focus-visible:ring-amber-500/50'/>
         </div>
-        <div className='w-full'>
-          <Matiere 
+          <Matiere
+          niveaux={niveaux}
           items={optionsCollege}
           selectedMatiere={matiere}
           selectedSemestre={semestre}
           selectedType={type}
+          selectedFiliere={filiere}
           onChangeMatiere={setMatiere}
           onChangeSemestre={setSemestre}
           onChangeType={setType}
+          onChangeFiliere={setFiliere}
         />
-        </div>
       </div>
-        {(matiere || semestre || type) && (
-        <button
-          onClick={resetAll}
-          className="flex w-3/6 cursor-pointer items-center gap-1 text-sm text-gray-600 transition-colors hover:text-red-600"
-        >
-          <XCircle size={16} />
-          Réinitialiser tout
+      {(matiere || semestre || type || filiere) && (
+        <button onClick={resetAll} className="flex w-3/6 cursor-pointer items-center gap-1 text-sm text-gray-600 transition-colors hover:text-red-600">
+          <XCircle size={16} />Réinitialiser tout
         </button>
       )}
     </div>
@@ -163,12 +174,15 @@ const Cours = () => {
               </DropdownMenu>
           </CardHeader>
           <CardContent className='flex items-center gap-2'>
-            <div className={`rounded-full ${bgItems[item.matiere.nom as keyof typeof bgItems]} p-2 text-white`}>
-              <BookOpenText size={24} />
+            <div className={`rounded-full ${bgItems[item.matiere.nom as keyof typeof bgItems]} p-2 text-slate-200`}>
+              {iconeType[item.type as keyof typeof iconeType]}
             </div>
             <div className='flex flex-col items-start'>
               <span className='text-sm font-bold'>{item.matiere.nom}</span>
-              <span className='text-xs'>{item.type}</span>
+              <span className='text-xs text-gray-600'>{item.type}</span>
+              {item.filière && (
+                <span className='text-xs font-medium text-blue-600'>📚 {item.filière}</span>
+              )}
             </div>
           </CardContent>
           <Separator />
