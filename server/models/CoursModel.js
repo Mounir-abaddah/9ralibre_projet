@@ -14,6 +14,11 @@ const CoursShema = new mongoose.Schema({
         enum: ["Cours", "Exercice", "Examen National", "Examen Régional"], 
         required: true 
     },
+    filière:{
+        type:String, 
+        enum: ["Cours", "Exercice", "Examen National", "Examen Régional"], 
+        required: true 
+    },
     title:{ 
         type:String, 
         required:true 
