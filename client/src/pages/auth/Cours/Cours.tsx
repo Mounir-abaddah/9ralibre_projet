@@ -197,8 +197,8 @@ const Cours = () => {
           </CardFooter>
         </Card>
       ))
-      : 
-        <p className="mt-6 text-sm text-gray-500">
+      :
+        <p className="mt-6 flex w-full items-center justify-center text-sm text-gray-500">
           Aucun cours trouvé avec ces filtres.
         </p>
       }
