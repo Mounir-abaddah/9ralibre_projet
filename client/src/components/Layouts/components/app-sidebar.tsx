@@ -125,8 +125,8 @@ export function AppSidebar() {
       ],
     },
     {
-      title: "Parametre",
-      url: "#",
+      title: "Paramètre",
+      url: `/Paramètre/${niveaux}`,
       icon: Settings2,
       items: [
         {
