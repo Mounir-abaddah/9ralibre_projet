@@ -21,6 +21,7 @@ interface Cours {
   title: string;
   semestre: string;
   type: string;
+  professeur:string;
   filière:string;
   pdfUrl: string;
   matiere: Matiere;
@@ -105,7 +106,8 @@ const Cours = () => {
     const SearchCours = search.trim() === "" || 
     c.title.toLowerCase().includes(search.toLowerCase()) ||
     c.matiere.nom.toLowerCase().includes(search.toLowerCase())||
-    c.semestre.toLowerCase().includes(search.toLowerCase())
+    c.semestre.toLowerCase().includes(search.toLowerCase()) ||
+    c.professeur.toLowerCase().includes(search.toLowerCase())
     return filterMatiere && filterSemestre && filterType && filterFiliere && SearchCours
   })
 
@@ -121,8 +123,8 @@ const Cours = () => {
     <div className='flex w-full gap-4'>
       <div className='flex w-full flex-col items-start justify-between gap-2'>
         <div className='flex w-full flex-col gap-2'>
-          <Label htmlFor='mySearch'>Tous les cours :</Label>
-          <Input id='mySearch' type='text' value={search} onChange={(e)=>setSearch(e.target.value)} placeholder='Chercher votre cours ...' className='focus-visible:ring-amber-500/50'/>
+          <Label htmlFor='mySearch' className='text-base'>Tous les cours :</Label>
+          <Input id='mySearch' type='text' value={search} onChange={(e)=>setSearch(e.target.value)} placeholder='Rechercher un cours ou un professeur...' className='text-xs selection:bg-amber-500 focus-visible:ring-amber-500/50'/>
         </div>
           <Matiere
           niveaux={niveaux}
@@ -146,8 +148,33 @@ const Cours = () => {
     <div className='grid w-full grid-cols-1 items-center justify-center gap-2 md:grid-cols-2 lg:grid-cols-3'>
       {filtredCours.length > 0 ? 
         filtredCours.map((item,index)=>(
-        <Card key={index} className='w-full shadow-md transition-all duration-500 hover:shadow-xl'>
-          <CardHeader className='flex items-center justify-between'>
+        <Card key={index} className='group relative w-full shadow-md transition-all duration-500 hover:shadow-xl'>
+          <div className={`absolute top-0 left-0 flex items-center gap-2 rounded-br-2xl ${bgItems[item.matiere.nom as keyof typeof bgItems]} px-3 py-1 text-xs font-medium text-white shadow-sm`}>
+            <span className="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+              <path d="M 12.8 15.6 A6 6 0 0 1 8 18" />
+              <path d="M 14 14 L 12.8 15.6" />
+              <path d="M 6 18 A4 4 0 0 0 2 22" />
+              <path d="M 8 18 L 6 18" />
+              <path d="M12 6h6" />
+              <path d="M14 10h4" />
+              <path d="M18 14h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2" />
+              <circle cx="7" cy="11" r="3" />
+            </svg>
+              Professeur : <Link to={`/Professeur/${encodeURIComponent(item.professeur)}`} className="text-xs font-semibold">{item.professeur.toUpperCase()}</Link>
+            </span>
+          </div>
+          <CardHeader className='mt-2 flex items-center justify-between'>
             <CardTitle className='leading-4'>{item.title}</CardTitle>
             <DropdownMenu>
               <DropdownMenuTrigger>
