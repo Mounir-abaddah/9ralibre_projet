@@ -13,6 +13,7 @@ import Layouts from './components/Layouts/Layouts';
 import DrawExcalidraw from './pages/auth/DrawExcalidraw/DrawExcalidraw';
 import CalendrieMobile from './pages/auth/CalendrieMobile/CalendrieMobile';
 import Cours from './pages/auth/Cours/Cours';
+import Settings from './pages/auth/Settings/Settings';
 
 const App = () => {
   return (
@@ -29,9 +30,10 @@ const App = () => {
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
             <Route path='/Dashboard/:type/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
-            <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing/:niveaux' element={<Layouts><DrawExcalidraw /></Layouts>} />
+            <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
+            <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
       </Routes>
