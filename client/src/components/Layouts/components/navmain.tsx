@@ -81,7 +81,7 @@ const NavMain = ({
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          const activeItem = location.pathname === item.url;
+          const activeItem = decodeURI(location.pathname) === item.url;          
           return(
             <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton tooltip={item.title} className={`${activeItem && 'rounded-md bg-amber-400 p-2 transition-all hover:bg-amber-500 active:bg-amber-600'} w-full`}>

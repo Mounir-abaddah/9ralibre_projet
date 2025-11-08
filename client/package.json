@@ -30,6 +30,7 @@
     "cobe": "^0.6.4",
     "date-fns": "^4.1.0",
     "developer-icons": "^6.0.4",
+    "embla-carousel-react": "^8.6.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",

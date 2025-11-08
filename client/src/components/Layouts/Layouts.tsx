@@ -5,10 +5,11 @@ import { Separator } from '@radix-ui/react-separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb'
 import SidebarRight from '@/components/Layouts/components/right-sidebar/SidebarRight'
 import { BellRing, Brush, Calendar1 } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 
 const Layouts = ({children} : {children:React.ReactNode}) => {
   const {niveaux} = useParams()
+  const location = useLocation()
   return (
     <SidebarProvider>
         <AppSidebar />
@@ -55,7 +56,9 @@ const Layouts = ({children} : {children:React.ReactNode}) => {
             {children}
         </section>
         </SidebarInset>
-        <SidebarRight />
+        {location.pathname.startsWith('/Dashboard') && (
+          <SidebarRight />
+        )}
     </SidebarProvider>
   )
 }
