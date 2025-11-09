@@ -1,5 +1,6 @@
 import {
   Book,
+  Bookmark,
   BookOpen,
   BookType,
   Bot,
@@ -100,6 +101,11 @@ export function AppSidebar() {
           url: "#",
         },
       ],
+    },
+    {
+      title: "Enregistrer",
+      url: `/Enregistrer/${niveaux}`,
+      icon: Bookmark,
     },
     {
       title: "Intelligence artificielle",
