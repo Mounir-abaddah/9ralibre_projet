@@ -16,7 +16,6 @@ const CoursShema = new mongoose.Schema({
     },
     filière:{
         type:String, 
-        enum: ["Cours", "Exercice", "Examen National", "Examen Régional"], 
         required: true 
     },
     professeur:{
@@ -32,6 +31,8 @@ const CoursShema = new mongoose.Schema({
         type: String, 
         required: true
     },
+},{
+    timestamps:true
 })
 
 const CoursModels = mongoose.model("Cours", CoursShema)
