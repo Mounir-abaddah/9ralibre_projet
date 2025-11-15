@@ -32,7 +32,7 @@ export function AppSidebar() {
   const allInformation = {
   navMain: [
     {
-      title: "Cours & Exercice",
+      title: "Cours",
       url: `/Cours/${niveaux}`,
       icon: Book,
     },
@@ -42,7 +42,7 @@ export function AppSidebar() {
       icon: Video,
     },
     {
-      title: "Test",
+      title: "Quiz",
       url: "#",
       icon: BookType,
       items: [
