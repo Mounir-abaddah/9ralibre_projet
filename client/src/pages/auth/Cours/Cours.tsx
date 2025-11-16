@@ -23,6 +23,7 @@ interface Cours {
   title: string;
   semestre: string;
   type: string;
+  createdAt:string;
   professeur:string;
   filière:string;
   pdfUrl: string;
@@ -204,7 +205,7 @@ const Cours = () => {
               </span>
             </div>
             <CardHeader className='mt-2 flex items-center justify-between'>
-              <CardTitle className='leading-4'>{item.title}</CardTitle>
+              <CardTitle className='leading-4'>{item.type}: {item.title}</CardTitle>
               <DropdownMenu>
                 <DropdownMenuTrigger aria-label="Menu d'actions">
                   <CardTitle className='cursor-pointer rounded-md p-2 transition-all duration-200 hover:bg-slate-200'>
@@ -241,7 +242,7 @@ const Cours = () => {
               </div>
               <div className='flex flex-col items-start'>
                 <span className='text-sm font-bold'>{item.matiere.nom}</span>
-                <span className='text-xs text-gray-600'>{item.type}</span>
+                <span className='text-xs text-gray-600'>{item.semestre}</span>
                 {item.filière && (
                   <span className='text-xs font-medium text-blue-600'>📚 {item.filière}</span>
                 )}
@@ -251,7 +252,14 @@ const Cours = () => {
             <CardFooter className='flex w-full justify-between'>
               <div className='flex items-center gap-1'>
                 <Calendar size={14}/>
-                <span className='text-xs'>{item.semestre}</span>
+                <span className="text-xs">
+                  {new Date(item.createdAt).toLocaleDateString("fr-FR", {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    timeZone: "Africa/Casablanca"
+                  })}
+                </span>         
               </div>
               <Link to={item.pdfUrl} target='_blank'>
                 <button 
