@@ -19,9 +19,7 @@ const CoursShema = new mongoose.Schema({
         required: true 
     },
     professeur:{
-        type:String,
-        required: true,
-        default:""
+        type:mongoose.Schema.Types.ObjectId, ref:"User"
     },
     title:{ 
         type:String, 
