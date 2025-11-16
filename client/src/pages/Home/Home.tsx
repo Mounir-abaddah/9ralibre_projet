@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/dialog";
 import { useProtectedRoutes } from "@/store/userStore";
 import CompleteProfile from "@/components/CompleteProfile/CompleteProfile";
+import { useTheme } from "@/context/ThemeContext";
+import { Moon, Sun } from "lucide-react";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const {data,fetchData} = useProtectedRoutes();
-
+  const {theme,toggleTheme}=useTheme()
 
   useEffect(()=>{
     fetchData()
@@ -71,7 +73,9 @@ const Home = () => {
       
 }
       
-      
+      <button onClick={toggleTheme}>
+          {theme == "dark" ? <Moon /> : <Sun />}
+      </button>
   
     </div>
   );
