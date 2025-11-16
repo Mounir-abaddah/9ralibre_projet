@@ -40,21 +40,33 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
     if (filiere) queryObject.filière = filiere;
 
     if (search) {
-      const searchRegex = new RegExp(search, 'i');
-
+      const searchWords = search.split(" ");
+      
       const matchingMatieres = await Matiere.find({ 
-        nom: searchRegex, 
-        niveaux: niveau._id 
+        niveaux: niveau._id,
+        nom: new RegExp(search, "i")
       });
       const matchingMatiereIds = matchingMatieres.map(m => m._id);
 
+      const matchingProfs = await User.find({
+        role: "Professeur",
+        $and: searchWords.map(word => ({
+          $or: [
+            { nom: new RegExp(word, "i") },
+            { prenom: new RegExp(word, "i") }
+          ]
+        }))
+      });
+      const matchingProfIds = matchingProfs.map(p => p._id);
+
       queryObject.$or = [
-        { title: searchRegex },
-        { professeur: searchRegex },
-        { semestre: searchRegex },
+        { title: new RegExp(search, "i") },
+        { professeur: { $in: matchingProfIds } },
+        { semestre: new RegExp(search, "i") },
         { matiere: { $in: matchingMatiereIds } }
       ];
     }
+
 
     const totalCours = await Cours.countDocuments(queryObject); 
     
@@ -65,7 +77,7 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
           path: "niveaux",
           model: "Niveaux"
         }
-      })
+      }).populate("professeur","nom prenom role image email")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
