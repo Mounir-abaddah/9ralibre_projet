@@ -18,13 +18,22 @@ interface Matiere {
   niveaux: string;
 }
 
+interface User{
+  _id: string;
+  nom: string;
+  prenom: string;
+  email:string;
+  role: "Etudiant" | "Etudiante" | "Professeur" | "Non renseigné";
+  image: string;
+}
+
 interface Cours {
   _id: string;
   title: string;
   semestre: string;
   type: string;
   createdAt:string;
-  professeur:string;
+  professeur:User;
   filière:string;
   pdfUrl: string;
   matiere: Matiere;
@@ -201,7 +210,7 @@ const Cours = () => {
             <div className={`absolute top-0 left-0 flex items-center gap-2 rounded-br-2xl ${bgItems[item.matiere.nom as keyof typeof bgItems]} px-3 py-1 text-xs font-medium text-white shadow-sm`}>
               <span className="flex items-center gap-1">
                 <IconeProfesseur />
-                Professeur : <Link to={`/Professeur/${encodeURIComponent(item.professeur)}`} className="text-xs font-semibold hover:underline">{item.professeur.toUpperCase()}</Link>
+                Professeur : <Link to={`/Professeur/${encodeURIComponent(item.professeur.nom)}`} className="text-xs font-semibold hover:underline">{`${item.professeur.nom} ${item.professeur.prenom}`.toUpperCase()}</Link>
               </span>
             </div>
             <CardHeader className='mt-2 flex items-center justify-between'>
