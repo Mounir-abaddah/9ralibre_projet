@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['Non renseigné','Etudiant','Etudiante'],
+        enum:['Non renseigné','Etudiant','Etudiante','Professeur'],
         default : "Non renseigné"
     },
     email:{
