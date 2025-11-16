@@ -15,10 +15,11 @@ import CalendrieMobile from './pages/auth/CalendrieMobile/CalendrieMobile';
 import Cours from './pages/auth/Cours/Cours';
 import Settings from './pages/auth/Settings/Settings';
 import Video from './pages/auth/Videos/Video';
+import { ThemeProvider } from './context/ThemeContext';
 
 const App = () => {
   return (
-    <div>
+    <ThemeProvider>
       <Toaster position='top-right' reverseOrder={false} />
       <BrowserRouter>
       <Routes>
@@ -40,7 +41,7 @@ const App = () => {
         <Route />
       </Routes>
     </BrowserRouter>
-    </div>
+    </ThemeProvider>
     
   )
 }
