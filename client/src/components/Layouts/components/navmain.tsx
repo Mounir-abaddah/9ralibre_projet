@@ -49,7 +49,7 @@ const NavMain = ({
     <SidebarGroup>
       <SidebarGroup className="w-full">
         <SidebarGroupLabel className="flex items-center justify-start gap-2 ">
-          <University strokeWidth={2} color="#000" className="size-4.5"/>
+          <University strokeWidth={2} className="size-4.5 text-slate-700 dark:text-white"/>
           <span>Niveaux</span>
         </SidebarGroupLabel>
       <Select value={niveaux} onValueChange={(value) => {
