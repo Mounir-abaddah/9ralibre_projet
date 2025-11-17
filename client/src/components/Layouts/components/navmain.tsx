@@ -83,10 +83,10 @@ const NavMain = ({
         {items.map((item) => {
           const activeItem = decodeURI(location.pathname) === item.url;          
           return(
-            <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title} className={`${activeItem && 'rounded-md bg-amber-400 p-2 transition-all hover:bg-amber-500 active:bg-amber-600'} w-full`}>
+            <SidebarMenuItem key={item.title} className="w-full">
+                <SidebarMenuButton tooltip={item.title} className={`${activeItem && 'rounded-md bg-amber-400 p-2 transition-all hover:bg-amber-500 active:bg-amber-600 dark:text-slate-700'} w-full cursor-pointer`}>
                   {item.icon && <item.icon />}
-                  <Link to={item.url}>
+                  <Link to={item.url} className="w-full">
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
