@@ -47,15 +47,16 @@ const Footuser = () => {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
+              // eslint-disable-next-line tailwindcss/no-custom-classname
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt={data?.nom} />
+              <Avatar className="size-10">
+                <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt={data?.nom} width={400} height={400}/>
                 <AvatarFallback className={`rounded-lg text-white ${data?.role === "Etudiant" ? "bg-sky-300" : "bg-pink-400"}`}>{data?.nom.charAt(0).toUpperCase()}{data?.prenom.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{data?.prenom}</span>
-                <span className={`px-2 py-[2px] rounded-md text-[10px] font-medium uppercase tracking-wide
+                <span className={`rounded-md px-2 py-[2px] text-[10px] font-medium tracking-wide uppercase
                     ${data?.role === "Etudiant" ? "bg-gradient-to-r from-sky-500 to-sky-700 text-white" :
                       data?.role === "Etudiante" ? "bg-gradient-to-r from-pink-500 to-pink-700 text-white" :
                       "bg-gray-200 text-gray-700"}`}
