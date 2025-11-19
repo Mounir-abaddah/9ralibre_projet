@@ -22,11 +22,13 @@ require('./config/dbConfig');
 
 const authRouter = require('./routes/AuthRoute');
 const userRouter = require('./routes/UserRoute');
-const coursRouter = require('./routes/CoursRoute')
+const coursRouter = require('./routes/CoursRoute');
+const videosRouter = require('./routes/VideosRoute')
 
 app.use('/auth',authRouter)
 app.use('/user',userRouter)
-app.use('/cours',coursRouter)
+app.use('/cours',coursRouter);
+app.use('/videos',videosRouter)
 
 const port = process.env.PORT;
 app.listen(port,()=>{
