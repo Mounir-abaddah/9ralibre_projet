@@ -9,13 +9,11 @@ import {
 } from "@/components/ui/dialog";
 import { useProtectedRoutes } from "@/store/userStore";
 import CompleteProfile from "@/components/CompleteProfile/CompleteProfile";
-import { useTheme } from "@/context/ThemeContext";
-import { Moon, Sun } from "lucide-react";
+import Navbar from "@/components/Home/Navbar";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const {data,fetchData} = useProtectedRoutes();
-  const {theme,toggleTheme}=useTheme()
 
   useEffect(()=>{
     fetchData()
@@ -34,49 +32,41 @@ const Home = () => {
   };
 
   return (
-    <div className="p-6">
-      {!data || data.completeProfile ? 
-        <div>
-          <h1 className="text-2xl font-bold">Home</h1>
-            <Dialog open={open} onOpenChange={(value)=>{
-              setOpen(value);
-              if(!value){
-                localStorage.setItem("show-verification","false")
-              }
-              }}>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Bienvenue 👋</DialogTitle>
-                  <DialogDescription>
-                    Merci de vous être inscrit sur{" "}
-                    <span className="font-semibold text-amber-500">
-                      9ral<span className="text-sky-500">ibre</span>
-                    </span>
-                    . Vérifiez votre boîte mail ou vos spams pour activer votre compte.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <button onClick={handleClose} className="cursor-pointer">
-                    Ok
-                  </button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-        </div>
-      
-      
+  <div className="p-2">
+    {!data || data.completeProfile ? 
+    <>
+    <Navbar />
+    <div>
+        <h1 className="text-2xl font-bold">Home</h1>
+          <Dialog open={open} onOpenChange={(value)=>{
+            setOpen(value);
+            if(!value){
+              localStorage.setItem("show-verification","false")
+            }
+            }}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Bienvenue 👋</DialogTitle>
+                <DialogDescription>
+                  Merci de vous être inscrit sur{" "}
+                  <span className="font-semibold text-amber-500">
+                    9ral<span className="text-sky-500">ibre</span>
+                  </span>
+                  . Vérifiez votre boîte mail ou vos spams pour activer votre compte.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <button onClick={handleClose} className="cursor-pointer">
+                  Ok
+                </button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+      </div>
+    </>
       : 
-      
       <CompleteProfile />
-      
-      
-      
-}
-      
-      <button onClick={toggleTheme}>
-          {theme == "dark" ? <Moon /> : <Sun />}
-      </button>
-  
+    }    
     </div>
   );
 };
