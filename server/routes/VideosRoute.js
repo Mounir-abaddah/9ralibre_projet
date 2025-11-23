@@ -109,7 +109,38 @@ router.post('/views/:viewId',authMiddleware,async(req,res)=>{
     }catch(err){
         res.status(500).json({ err: err.message });
     }
+});
+
+
+router.post('/comments/:videoId',authMiddleware,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const {text} = req.body;
+        const {videoId} = req.params;
+
+        const video = await VideoModel.findById(videoId);
+        if(!video){
+            return res.status(400).send({message:"Aucune video est disponible pour commenter",success:false})
+        }
+        const CommentVideo = {
+            user:userId,
+            text:text,
+            createdAt:new Date()
+        }
+        video.comments.push(CommentVideo);
+        await video.save();
+
+        return res.status(201).send({
+            message: "Commentaire ajouté avec succès.",
+            success: true,
+            comment: CommentVideo
+        });
+    }catch(err){
+        return res.status(500).send({message:"Une erreure est survenue pour commenter",success:false,err})
+    }
 })
+
+
 
 
 module.exports = router
