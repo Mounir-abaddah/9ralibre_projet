@@ -14,7 +14,7 @@ export interface typedata{
     completeProfile:boolean
 }
 
-interface typeAllData{
+export interface typeAllData{
     data:typedata | null
     loading:boolean
     error:string | null
