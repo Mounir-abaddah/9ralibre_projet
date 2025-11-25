@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
-import { Book, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Video } from "lucide-react"
+import { Book, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Video } from "lucide-react"
 import { Link } from "react-router-dom"
 
 const Avatare = ({ data }: typeAllData) => {
@@ -15,10 +15,11 @@ const Avatare = ({ data }: typeAllData) => {
     { name: "Quiz", icon: <BookType size={18} />, path: "/" },
     { name: "Histoire", icon: <BookOpen size={18} />, path: "/" },
     { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: "/" },
+    { name: "Paramètre", icon: <Settings size={18} />, path: "/" },
   ]
 
   return (
-    <div className="relative z-50" onMouseEnter={() => setMenuOpen(true)}onMouseLeave={() => setMenuOpen(false)}>
+    <div className="relative z-50" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
       <div className={`flex cursor-pointer items-center gap-3 rounded-full border border-transparent p-1 pr-3 pl-1 transition-all duration-200 hover:bg-gray-600/50 ${menuOpen ? "bg-gray-600/50" : ""}`} onClick={() => setMenuOpen(!menuOpen)}>
         <Avatar className="size-9 border-2 border-gray-600 shadow-sm">
           <AvatarImage src={data?.image} alt={data?.nom} />
@@ -71,7 +72,7 @@ const Avatare = ({ data }: typeAllData) => {
             <div className="p-2">
               <Button 
                 variant={'destructive'} 
-                className="w-full justify-start gap-2 border border-red-100 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+                className="w-full cursor-pointer justify-start gap-2 border border-red-100 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
               >
                 <LogOut size={16} />
                 Se déconnecter
