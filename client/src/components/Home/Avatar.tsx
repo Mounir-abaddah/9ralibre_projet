@@ -27,9 +27,8 @@ const Avatare = ({ data }: typeAllData) => {
             {data?.nom.charAt(0).toUpperCase()}{data?.prenom.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-
-        <div className="hidden flex-col items-start sm:flex">
-          <span className="text-sm font-semibold text-gray-100">{data?.nom}</span>
+        <div className="flex flex-col items-start">
+          <span className="text-sm font-semibold dark:text-gray-100">{data?.nom}</span>
           <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase shadow-sm ${
               data?.role === "Etudiant" ? "bg-sky-500 text-white" :
               data?.role === "Etudiante" ? "bg-pink-500 text-white" :
