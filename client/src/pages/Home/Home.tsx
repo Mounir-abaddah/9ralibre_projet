@@ -32,7 +32,7 @@ const Home = () => {
   };
 
   return (
-  <div className="p-2">
+  <div>
     {!data || data.completeProfile ? 
     <>
     <Navbar />
