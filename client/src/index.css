@@ -7,17 +7,6 @@
   font-optical-sizing: auto;
 }
 
-body {
-  background: #fff;
-  background-image: radial-gradient(#aaa 0.8px, #fff 0.8px);
-  background-size: 24px 24px;
-}
-
-.dark body {
-  background: #000;
-  background-image: radial-gradient(#444 0.8px, #000 0.8px);
-  background-size: 24px 24px;
-}
 /**Calendrier*/
 .day-button:hover {
   background-color: inherit !important;
