@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 const Dashboard = () => {
   document.title = 'Dashboard | 9ralibre'
-  const {niveaux,type} = useParams()
+  const {niveaux} = useParams()
   const {data,fetchData} = useProtectedRoutes(); 
 
     useEffect(()=>{
@@ -13,9 +13,8 @@ const Dashboard = () => {
   },[fetchData]);
 
   const enumParams = ['1AC','2AC','3AC','TC','1BAC','2BAC'];
-  const enumtype = ['Collège','Lycée'];
 
-  if(!enumtype.includes(type || '') || !enumParams.includes(niveaux || '')){
+  if(!enumParams.includes(niveaux || '')){
     return <PagesNonTrouver />
   }
 
