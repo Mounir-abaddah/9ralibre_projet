@@ -31,7 +31,7 @@ const App = () => {
         <Route path='/password/reset/:token' element={<ModificationMotdepasse />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
-            <Route path='/Dashboard/:type/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
+            <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing/:niveaux' element={<Layouts><DrawExcalidraw /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
