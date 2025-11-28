@@ -10,9 +10,10 @@ Atom, BookOpen, Calculator, Dna, FlaskConical, Globe,
 GraduationCap,
 Library,
 PlayCircle,
-Video
+Video,
+DraftingCompass
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useProtectedRoutes, type typeAllData } from "@/store/userStore";
 import Avatare from "./Avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -22,7 +23,9 @@ const Navbar = () => {
 const { theme, toggleTheme } = useTheme();
 const { data, fetchData, loading, error } = useProtectedRoutes();
 const isMobile = useIsMobile();
+const navigate = useNavigate()
 const [open, setOpen] = useState(false);
+
 
 return (
     <>
@@ -67,6 +70,12 @@ return (
             className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
             >
             {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+            <button
+            onClick={()=>navigate('/Drawing')}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
+            >
+            <DraftingCompass size={18}/>
             </button>
         </div>
         ) : (
