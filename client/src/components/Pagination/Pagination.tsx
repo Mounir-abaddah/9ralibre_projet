@@ -11,7 +11,7 @@ const Pagination = ({totalItems,itemsPerPage,currentPage,onPageChange}:typePagin
     const totalPage = Math.ceil(totalItems/itemsPerPage);
     if (totalPage<=1) return null;
     return (
-    <div className="flex w-full items-center justify-between rounded-md bg-white p-2 shadow-sm dark:bg-slate-800">
+    <div className="flex w-full items-center justify-between rounded-md bg-gray-200 p-2 shadow-sm dark:bg-slate-800">
       <div>
         <Button
           variant={"outline"}
