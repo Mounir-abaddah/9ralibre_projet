@@ -1,3 +1,4 @@
+import CardAside from '@/components/Cours/CardAside';
 import Matiere, { type Coursitems} from '@/components/Cours/Matiere';
 import Pagination from '@/components/Pagination/Pagination';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -154,8 +155,9 @@ const Cours = () => {
   },[resetAll]);
   
   return (
-    <>
-    <div className='flex w-full gap-4'>
+    <div className='flex w-full flex-col-reverse items-center justify-between gap-3 lg:flex-row lg:items-start'>
+      <div className='flex w-full flex-col gap-3'>
+        <div className='flex w-full gap-4'>
       <div className='flex w-full flex-col items-start justify-between gap-2'>
         <div className='flex w-full flex-col gap-2'>
           <Label htmlFor='mySearch' className='text-base'>Tous les cours :</Label>
@@ -308,7 +310,11 @@ const Cours = () => {
         />
       </div>
     )}
-    </>
+      </div>
+      <div className='w-full lg:w-lg'>
+        <CardAside />
+      </div>
+    </div>
     
   )
 }
