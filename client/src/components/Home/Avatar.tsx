@@ -28,7 +28,7 @@ const Avatare = ({ data }: typeAllData) => {
     { name: "Quiz", icon: <BookType size={18} />, path: "/Quiz" },
     { name: "Histoire", icon: <BookOpen size={18} />, path: "/" },
     { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: "/" },
-    { name: "Paramètre", icon: <Settings size={18} />, path: "/" },
+    { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${selectedLevel}` },
   ]
 
   return (
@@ -87,7 +87,7 @@ const Avatare = ({ data }: typeAllData) => {
 
             <div className="flex flex-col space-y-1">
               {menuList.map((item, index) => {
-                const activeItem = location.pathname === item.path
+                const activeItem = location.pathname === item.path;
               return(
                 <Link 
                   key={index} 
