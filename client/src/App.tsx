@@ -33,7 +33,7 @@ const App = () => {
         <Route element={<ProtectedRoute />}> 
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
-            <Route path='/Drawing/:niveaux' element={<Layouts><DrawExcalidraw /></Layouts>} />
+            <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Video /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
