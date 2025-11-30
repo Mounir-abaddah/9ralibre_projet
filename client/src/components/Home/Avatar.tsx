@@ -55,7 +55,7 @@ const Avatare = ({ data }: typeAllData) => {
         <ChevronDown size={16} className={`text-gray-300 transition-transform duration-200 ${menuOpen ? "rotate-180" : ""}`} />
       </div>
       
-      <div className={`absolute top-full right-0 w-64 origin-top-right pt-2 transition-all duration-200 ${menuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'}`}>
+      <div className={`absolute top-full right-0 z-50 w-64 origin-top-right pt-2 transition-all duration-200 ${menuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'}`}>
         <div className="rounded-xl bg-white p-2 shadow-xl ring-1 ring-black/5">
             <div className="p-2 text-black">
               <Select  value={selectedLevel} onValueChange={(value) => {
