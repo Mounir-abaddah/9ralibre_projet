@@ -157,10 +157,15 @@ const Cours = () => {
   return (
     <div className='flex w-full flex-col-reverse items-center justify-between gap-3 lg:flex-row lg:items-start'>
       <div className='flex w-full flex-col gap-3'>
+        <div className="mb-2 flex flex-col gap-1">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-gray-600">
+            Bibliothèque des Cours {niveaux ? <span className="text-amber-500 capitalize">- {niveaux}</span> : ''}
+          </h1>
+        </div>
         <div className='flex w-full gap-4'>
       <div className='flex w-full flex-col items-start justify-between gap-2'>
         <div className='flex w-full flex-col gap-2'>
-          <Label htmlFor='mySearch' className='text-base'>Tous les cours :</Label>
+          <Label htmlFor='mySearch' className='text-base font-semibold text-gray-700'>Recherche rapide :</Label>
           <Input id='mySearch' type='text' value={search} disabled={loading} onChange={(e)=>setSearch(e.target.value)} placeholder='Rechercher un cours ou un professeur...' className='text-xs selection:bg-amber-500 focus-visible:ring-amber-500/50'/>
         </div>
           <Matiere
