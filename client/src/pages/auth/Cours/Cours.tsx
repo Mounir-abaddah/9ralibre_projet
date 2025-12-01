@@ -12,6 +12,7 @@ import axios from 'axios';
 import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, FileText, Globe2, Landmark, Loader2, Printer, SquareArrowOutUpRight, XCircle } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
+import No_Data_img from '@/assets/images/cours/No data-cuate.png'
 
 interface Matiere {
   _id: string;
@@ -290,6 +291,7 @@ const Cours = () => {
         ))
         :
           <div className="col-span-full mt-6 flex w-full flex-col items-center justify-center gap-2 text-center">
+            <img src={No_Data_img} alt="no data" loading='lazy'  width={300} height={400}/>
             <p className="text-sm text-gray-500">
               Aucun cours trouvé avec ces filtres.
             </p>
