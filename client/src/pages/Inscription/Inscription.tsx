@@ -98,7 +98,7 @@ const Inscription = () => {
   };
 
   return (
-    <div className="flex h-screen min-h-max w-full items-center justify-center gap-2 p-4 lg:justify-around">
+    <div className="flex h-screen min-h-max w-full items-center justify-center gap-2 p-4 lg:justify-around dark:text-black">
       <div className="hidden w-full lg:block">
         <img
           src={logo_inscription}
