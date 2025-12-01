@@ -11,7 +11,10 @@ GraduationCap,
 Library,
 PlayCircle,
 Video,
-DraftingCompass
+DraftingCompass,
+Facebook,
+Instagram,
+Linkedin
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useProtectedRoutes, type typeAllData } from "@/store/userStore";
@@ -29,6 +32,13 @@ const [open, setOpen] = useState(false);
 
 return (
     <>
+    <div className='flex w-full items-end justify-end bg-gray-800 p-1'>
+        <div className='flex items-center gap-3'>
+            <Facebook size={16} color='#fff'/>
+            <Instagram size={16} color='#fff'/>
+            <Linkedin size={16} color='#fff'/>
+        </div>
+    </div>
     <div className="flex w-full items-center justify-between bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
         <div className="flex items-center gap-2">
         <img src={logo} alt="logo" className="w-10" />
