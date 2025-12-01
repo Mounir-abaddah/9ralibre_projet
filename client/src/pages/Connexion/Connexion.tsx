@@ -88,7 +88,7 @@ const Connexion = () => {
   };
 
   return (
-    <div className="flex h-screen w-full items-center justify-around gap-2 p-4 md:h-screen min-h-max">
+    <div className="flex h-screen min-h-max w-full items-center justify-around gap-2 p-4 md:h-screen dark:text-black">
       <div className="hidden w-full lg:block">
         <img src={img_login} alt="Connexion illustration" width={700} height={700} />
       </div>
@@ -120,7 +120,7 @@ const Connexion = () => {
             Pas encore de compte ?{" "}
             <Link
               to="/inscription"
-              className="lg:text-base text-sm border-b border-sky-200 text-sky-300 transition-all duration-400 hover:text-sky-400"
+              className="border-b border-sky-200 text-sm text-sky-300 transition-all duration-400 hover:text-sky-400 lg:text-base"
             >
               <RoughNotation
                 strokeWidth={5}
@@ -137,7 +137,7 @@ const Connexion = () => {
           <OAuth text_1="Se connecter avec Google" text_2="Se connecter avec Microsoft" />
         </div>
         {serverMessage && (
-          <p className="p-2 border-l-2 border-red-500 bg-red-100 text-red-700 rounded-md w-full">
+          <p className="w-full rounded-md border-l-2 border-red-500 bg-red-100 p-2 text-red-700">
             {serverMessage}
           </p>
         )}
