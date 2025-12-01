@@ -4,31 +4,20 @@ import { useState } from "react"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 import { Book, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Sheet, Video } from "lucide-react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Link, useLocation } from "react-router-dom"
 
 const Avatare = ({ data }: typeAllData) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState('1AC');
-  const navigate = useNavigate();
   const location = useLocation(); 
 
   const menuList = [
-    { name: "Dashboard", icon: <Sheet size={18} />, path: `/Dashboard/${selectedLevel}` },
-    { name: "Cours", icon: <Book size={18} />, path: `/Cours/${selectedLevel}` },
-    { name: "Videos", icon: <Video size={18} />, path: `/Videos/${selectedLevel}` },
-    { name: "Quiz", icon: <BookType size={18} />, path: "/Quiz" },
+    { name: "Dashboard", icon: <Sheet size={18} />, path: `/Dashboard/${data?.niveaux}` },
+    { name: "Cours", icon: <Book size={18} />, path: `/Cours/${data?.niveaux}` },
+    { name: "Videos", icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
+    { name: "Quiz", icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
     { name: "Histoire", icon: <BookOpen size={18} />, path: "/" },
-    { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: "/" },
-    { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${selectedLevel}` },
+    { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Messagerie/${data?.niveaux}` },
+    { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
 
   return (
@@ -57,34 +46,6 @@ const Avatare = ({ data }: typeAllData) => {
       
       <div className={`absolute top-full right-0 z-50 w-64 origin-top-right pt-2 transition-all duration-200 ${menuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'}`}>
         <div className="rounded-xl bg-white p-2 shadow-xl ring-1 ring-black/5">
-            <div className="p-2 text-black">
-              <Select  value={selectedLevel} onValueChange={(value) => {
-                setSelectedLevel(value);
-                const parts = location.pathname.split("/");
-                parts[parts.length - 1] = value;                
-                const newPath = parts.join("/");
-                navigate(newPath);
-              }}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selectionnez votre niveaux" />
-                </SelectTrigger>
-                <SelectContent className="w-full">
-                  <SelectGroup>
-                    <SelectLabel>Collège</SelectLabel>
-                    <SelectItem value="1AC">1AC</SelectItem>
-                    <SelectItem value="2AC">2AC</SelectItem>
-                    <SelectItem value="3AC">3AC</SelectItem>
-                    <SelectLabel>Lycée</SelectLabel>
-                    <SelectItem value="TC">TC</SelectItem>
-                    <SelectItem value="1BAC">1BAC</SelectItem>
-                    <SelectItem value="2BAC">2BAC</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator className="my-2 bg-gray-100" />
-
             <div className="flex flex-col space-y-1">
               {menuList.map((item, index) => {
                 const activeItem = location.pathname === item.path;
