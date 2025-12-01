@@ -23,9 +23,9 @@ const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon,clas
         return null
     }
   return (
-    <div className='w-full flex flex-col gap-1'>
+    <div className='flex w-full flex-col gap-1'>
         <Label htmlFor={id}>{label}</Label>
-        <div className={`flex items-center gap-2 border p-2 rounded-md w-full ${error && 'border-red-400 bg-red-100'}`}>
+        <div className={`flex w-full items-center gap-2 rounded-md border p-2 dark:border-gray-300 ${error && 'border-red-400 bg-red-100'}`}>
             {renderIcon()}
             <input 
                 id={id}
@@ -35,7 +35,7 @@ const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon,clas
                 onChange={(e)=>onChange(e.target.value)}
                 onFocus={onFocus}
                 required
-                className={`outline-0 w-full font-bold placeholder:font-normal ${className}`}
+                className={`w-full font-bold outline-0 placeholder:font-normal ${className}`}
             />
             {type === "password" && (
                 <div onClick={()=>setshowPassword(!showPassword)} className='cursor-pointer'>
@@ -43,7 +43,7 @@ const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon,clas
                 </div>
             )}
             </div>
-            {error && <p className='text-sm text-red-400 font-semibold'>{error}</p>}
+            {error && <p className='text-sm font-semibold text-red-400'>{error}</p>}
     </div>
   )
 }
