@@ -215,6 +215,43 @@ router.delete('/deleteEvents/:eventId',authMiddleware,async(req,res)=>{
     }catch(err){
         return res.status(500).send({message:"Une erreur interne est survenue lors de la suppression de l'événement.",success:false,err})
     }
+});
+
+
+
+router.post('/follow/:professeurId',authMiddleware,async(req,res)=>{
+    const {professeurId} = req.params;
+    const userId = req.user.userId;
+    const professeur = await User.findById(professeurId);
+    const user = await User.findById(userId);
+
+    if(userId === professeurId){
+        return res.status(400).json({ success: false, message: "Impossible de suivre vous-même" });
+    }
+
+    if (!professeur) {
+        return res.status(404).json({ success: false, message: "Professeur introuvable" });
+    }
+
+    const alreadyFollowing = professeur.followers.includes(userId);
+
+    if(alreadyFollowing){
+        professeur.followers.pull(userId);
+        user.following.pull(professeurId)
+    }
+    if(!alreadyFollowing){
+        professeur.followers.push(userId);
+        user.following.pull(professeurId)
+    }
+
+    await professeur.save();
+    await user.save();
+
+    res.json({
+        success: true,
+        following: !alreadyFollowing,
+        followersCount: professeur.followers.length,
+    });
 })
 
 module.exports = router
