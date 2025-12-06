@@ -59,18 +59,22 @@ router.post('/add-videos',authMiddleware,async(req,res)=>{
     }
 });
 
-router.get('/likes/:videoId',authMiddleware,async(req,res)=>{
+router.get('/:videoId',authMiddleware,async(req,res)=>{
     try{
-        const {videoId} = req.params;
-
-        const video = await VideoModel.findById(videoId).populate("likes","nom prenom");
-        if(!video){
-            return res.status(404).send({message:"aucune video est liker",success:false,err:err.message})
+        const {videoId}=req.params;
+        const videos = await VideoModel.findById(videoId).populate("niveaux").populate("matiere").populate("professeur","nom prenom image").populate("comments.user","nom prenom image role");
+        if(!videos){
+            return res.status(400).send({message:"Aucune video n'a ete trouve",success:false})
         }
-
-        return res.status(200).json({success:true,likesCount:video.likes.length,likes:video.likes})
+        const liked = videos.likes.some(like => like._id.toString() === req.user.userId.toString());
+        return res.status(200).json({
+            liked,
+            likesCount:videos.likes.length,
+            success:true,
+            videos
+        })
     }catch(err){
-        return res.status(500).send({message:"Une erreure est survenue pour get les videos",success:false,err:err.message})
+        return res.status(500).send({message:"Une erreure est survenue",success:false,err})
     }
 })
 
@@ -86,30 +90,35 @@ router.post('/likes/:videoId',authMiddleware,async(req,res)=>{
         if(video.likes.includes(userId)){
             video.likes.pull(userId);
             await video.save();
-            return res.json({ liked: false, likes: video.likes.length });
+            return res.json({ liked: false,likesCount:video.likes.length });
         }
         video.likes.push(userId);
         await video.save();
-        return res.status(200).json({likes:video.likes.length,success:true})
+        return res.status(200).json({success:true,liked:true,likesCount:video.likes.length})
     }catch(err){
         return res.status(500).send({message:"Une erreure est survenue pour liker cette videos",success:false,err:err.message})
     }
 });
 
-router.post('/views/:viewId',authMiddleware,async(req,res)=>{
-    try{
-        const {viewId} = req.params;
+
+router.post('/views/:viewId', authMiddleware, async (req, res) => {
+    try {
+        const { viewId } = req.params;
+        const userId = req.user.userId;
         const video = await VideoModel.findById(viewId);
-        if(!video){
-            return res.status(404).json({ message: "Vidéo non trouvée" });
+        if (!video) return res.status(404).json({ message: "Vidéo non trouvée" });
+
+        if (!video.viewers.includes(userId)) {
+            video.views += 1;
+            video.viewers.push(userId);
+            await video.save();
         }
-        video.views += 1;
-        await video.save();
-        res.json({ views: video.views });
-    }catch(err){
+        res.json({success:true,views: video.views });
+    } catch (err) {
         res.status(500).json({ err: err.message });
     }
 });
+
 
 
 router.post('/comments/:videoId',authMiddleware,async(req,res)=>{
@@ -118,7 +127,7 @@ router.post('/comments/:videoId',authMiddleware,async(req,res)=>{
         const {text} = req.body;
         const {videoId} = req.params;
 
-        const video = await VideoModel.findById(videoId);
+        const video = await VideoModel.findById(videoId).populate("comments.user","nom prenom image role");
         if(!video){
             return res.status(400).send({message:"Aucune video est disponible pour commenter",success:false})
         }
@@ -127,7 +136,7 @@ router.post('/comments/:videoId',authMiddleware,async(req,res)=>{
             text:text,
             createdAt:new Date()
         }
-        video.comments.push(CommentVideo);
+        video.comments.unshift(CommentVideo);
         await video.save();
 
         return res.status(201).send({
@@ -138,7 +147,8 @@ router.post('/comments/:videoId',authMiddleware,async(req,res)=>{
     }catch(err){
         return res.status(500).send({message:"Une erreure est survenue pour commenter",success:false,err})
     }
-})
+});
+
 
 
 
