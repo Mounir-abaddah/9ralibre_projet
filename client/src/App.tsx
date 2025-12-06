@@ -16,6 +16,7 @@ import Cours from './pages/auth/Cours/Cours';
 import Settings from './pages/auth/Settings/Settings';
 import Video from './pages/auth/Videos/Video';
 import { ThemeProvider } from './context/ThemeContext';
+import PlayVideo from './pages/auth/Videos/PlayVideo';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Video /></Layouts>} />
+            <Route path='/Videos/:niveaux/:id' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
