@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { Commentaire, VideoType } from "./Video";
 import {
@@ -26,6 +26,7 @@ import ReactPlayer from "react-player";
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { EmojiPicker, EmojiPickerContent, EmojiPickerSearch } from "@/components/ui/emoji-picker";
 
 interface DropdownMenuItemCommentsProps {
   item: Commentaire;
@@ -35,44 +36,63 @@ interface DropdownMenuItemCommentsProps {
 const PlayVideo = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate()
-  const { id } = useParams();
+  const { videoId } = useParams();
   const [videos, setVideos] = useState<VideoType | null>(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [comments, setComments] = useState("");
   const { data } = useProtectedRoutes();
   const [playing, setPlaying] = useState(false);
+  const [follow,setFollow]=useState(false);
+  const [followCount,setFollowCount]=useState(0);
+  const [showEmojie,setShowEmojie]=useState(false);
+  const emojieRef = useRef<HTMLDivElement>(null);
 
   const getVideoId = async () => {
-    const res = await axios.get(`${apiUrl}/videos/${id}`, {withCredentials: true});
+    const res = await axios.get(`${apiUrl}/videos/${videoId}`, {withCredentials: true});
     setVideos(res.data.videos);
     console.log(res.data.videos);
     setLiked(res.data.liked);
     setLikesCount(res.data.likesCount);
+    setFollow(res.data.isFollowed);
+    setFollowCount(res.data.FollowCount)
+    console.log(res.data.isFollowed);
+    console.log(res.data.FollowCount);
   };
+
+  useEffect(()=>{
+    const handleOutside = (event:MouseEvent)=>{
+      if(emojieRef.current && !emojieRef.current.contains(event.target as Node)){
+        setShowEmojie(false);
+      }
+    };
+    document.addEventListener("mousedown",handleOutside);
+    return ()=>document.removeEventListener("mousedown",handleOutside)
+  })
 
   useEffect(() => {
     getVideoId();
-  }, [id]);
+  }, [videoId]);
 
   const handleLikes = async () => {
-    const res = await axios.post(
-      `${apiUrl}/videos/likes/${id}`,
-      {},
-      { withCredentials: true }
-    );
+    const res = await axios.post(`${apiUrl}/videos/likes/${videoId}`,{},{ withCredentials: true });
     setLiked(res.data.liked);
     setLikesCount(res.data.likesCount);
   };
 
   const handleComments = async () => {
-    await axios.post(`${apiUrl}/videos/comments/${id}`,{ text: comments },{ withCredentials: true });
+    await axios.post(`${apiUrl}/videos/comments/${videoId}`,{ text: comments },{ withCredentials: true });
     setComments("");
     await getVideoId();
   };
 
   const handleView = async()=>{
-    await axios.post(`${apiUrl}/videos/views/${id}`,{},{withCredentials:true})
+    await axios.post(`${apiUrl}/videos/views/${videoId}`,{},{withCredentials:true})
+  }
+
+  const handleFollow = async(profId:string)=>{
+    await axios.post(`${apiUrl}/user/follow/${profId}`,{},{withCredentials:true})
+    await getVideoId();
   }
 
   if (!videos) {
@@ -203,12 +223,15 @@ const PlayVideo = () => {
                 {videos.professeur.nom} {videos.professeur.prenom}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                Professeur
+                Professeur . {followCount} abonnés
               </span>
             </div>
           </div>
 
-          <Button className="cursor-pointer rounded-full px-5">Suivre</Button>
+          <Button onClick={()=>handleFollow(videos.professeur._id)} 
+            className={`cursor-pointer rounded-full px-5 ${follow ? 'bg-amber-500 hover:bg-amber-600' : ''}`}>
+            {follow ? 'Suivie(e)' : 'Suivre'}
+          </Button>
         </div>
 
         <Separator />
@@ -234,12 +257,30 @@ const PlayVideo = () => {
             </Avatar>
 
             <div className="w-full space-y-2">
-              <Textarea
-                value={comments}
-                onChange={(e) => setComments(e.target.value)}
-                placeholder="Ajouter un commentaire..."
-                className="min-h-20 resize-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
-              />
+              <div className="relative flex">
+                <Textarea
+                  value={comments}
+                  onChange={(e) => setComments(e.target.value)}
+                  placeholder="Ajouter un commentaire..."
+                  className="min-h-20 resize-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                />
+              <button type="button" onClick={() => setShowEmojie(!showEmojie)} className="absolute top-3 right-3 text-xl transition hover:scale-110" > 
+                😊 
+              </button>
+              {showEmojie && (
+                <div ref={emojieRef} className="absolute top-14 right-0 z-50">
+                  <EmojiPicker className="h-[326px]" 
+                  onEmojiSelect={({emoji})=>{
+                    setComments((prev)=> prev+emoji)
+                  }}
+                  >
+                    <EmojiPickerSearch />
+                    <EmojiPickerContent />
+                  </EmojiPicker>
+                </div>
+              )}
+              </div>
+              
 
               <div className="flex justify-end">
                 <Button
