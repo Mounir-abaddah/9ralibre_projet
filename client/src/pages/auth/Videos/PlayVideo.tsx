@@ -229,7 +229,7 @@ const PlayVideo = () => {
           </div>
 
           <Button onClick={()=>handleFollow(videos.professeur._id)} 
-            className={`cursor-pointer rounded-full px-5 ${follow ? 'bg-amber-500 hover:bg-amber-600' : ''}`}>
+            className={`cursor-pointer rounded-full px-5 transition duration-400 ${follow ? 'bg-amber-500 hover:bg-amber-600' : 'bg-sky-400 hover:bg-sky-500 dark:text-white'}`}>
             {follow ? 'Suivie(e)' : 'Suivre'}
           </Button>
         </div>
@@ -264,7 +264,7 @@ const PlayVideo = () => {
                   placeholder="Ajouter un commentaire..."
                   className="min-h-20 resize-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
                 />
-              <button type="button" onClick={() => setShowEmojie(!showEmojie)} className="absolute top-3 right-3 text-xl transition hover:scale-110" > 
+              <button type="button" onClick={() => setShowEmojie(!showEmojie)} className="absolute top-3 right-3 cursor-pointer text-xl transition hover:scale-110" > 
                 😊 
               </button>
               {showEmojie && (
@@ -285,7 +285,7 @@ const PlayVideo = () => {
               <div className="flex justify-end">
                 <Button
                   onClick={handleComments}
-                  className="flex items-center gap-1"
+                  className="flex cursor-pointer items-center gap-1 bg-sky-400 hover:bg-sky-500 dark:text-white"
                 >
                   Publier <Send size={14} />
                 </Button>
@@ -313,7 +313,7 @@ const PlayVideo = () => {
                   <span className="flex items-center gap-2">
                     <span className="cursor-pointer p-0.5 text-xs text-gray-400 transition duration-200 hover:bg-gray-500">J'aime</span>
                     <Separator  orientation="vertical" className="data-[orientation=vertical]:h-3"/>
-                    <span className="p-0.5 text-xs text-gray-400 transition duration-200 hover:bg-gray-500">Repondre</span>
+                    <span className="cursor-pointer p-0.5 text-xs text-gray-400 transition duration-200 hover:bg-gray-500">Repondre</span>
                   </span>
                 </div>
                 <div className="flex w-full justify-end gap-2">
