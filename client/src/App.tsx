@@ -37,7 +37,7 @@ const App = () => {
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Video /></Layouts>} />
-            <Route path='/Videos/:niveaux/:id' element={<Layouts><PlayVideo /></Layouts>} />
+            <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
