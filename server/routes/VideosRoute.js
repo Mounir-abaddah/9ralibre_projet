@@ -60,22 +60,23 @@ router.post('/add-videos',authMiddleware,async(req,res)=>{
 });
 
 router.get('/:videoId',authMiddleware,async(req,res)=>{
-    try{
         const {videoId}=req.params;
-        const videos = await VideoModel.findById(videoId).populate("niveaux").populate("matiere").populate("professeur","nom prenom image").populate("comments.user","nom prenom image role");
+        const userId = req.user.userId;
+        const videos = await VideoModel.findById(videoId).populate("niveaux").populate("matiere").populate("professeur","nom prenom image followers").populate("comments.user","nom prenom image role");
         if(!videos){
             return res.status(400).send({message:"Aucune video n'a ete trouve",success:false})
         }
-        const liked = videos.likes.some(like => like._id.toString() === req.user.userId.toString());
+        const liked = videos.likes.some(like => like._id.toString() === userId.toString());
+        const isFollowed = videos.professeur.followers.includes(userId);
         return res.status(200).json({
+            isFollowed,
+            FollowCount:videos.professeur.followers.length,
             liked,
             likesCount:videos.likes.length,
             success:true,
             videos
         })
-    }catch(err){
-        return res.status(500).send({message:"Une erreure est survenue",success:false,err})
-    }
+
 })
 
 router.post('/likes/:videoId',authMiddleware,async(req,res)=>{
