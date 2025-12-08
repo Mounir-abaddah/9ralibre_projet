@@ -27,6 +27,7 @@ nom: string;
 }
 
 export interface Commentaire{
+    _id:string
     user:ProfType;
     text:string;
     createdAt:string;
