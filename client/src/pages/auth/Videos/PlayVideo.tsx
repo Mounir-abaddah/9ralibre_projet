@@ -15,6 +15,7 @@ import {
   Plus,
   Send,
   Share2,
+  SmilePlus,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ const PlayVideo = () => {
   const [followCount,setFollowCount]=useState(0);
   const [showEmojie,setShowEmojie]=useState(false);
   const emojieRef = useRef<HTMLDivElement>(null);
+  const [showReplys,setShowReplys]=useState<string | null >(null);
 
   const getVideoId = async () => {
     const res = await axios.get(`${apiUrl}/videos/${videoId}`, {withCredentials: true});
@@ -265,7 +267,7 @@ const PlayVideo = () => {
                   className="min-h-20 resize-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
                 />
               <button type="button" onClick={() => setShowEmojie(!showEmojie)} className="absolute top-3 right-3 cursor-pointer text-xl transition hover:scale-110" > 
-                😊 
+                <SmilePlus size={18}/>
               </button>
               {showEmojie && (
                 <div ref={emojieRef} className="absolute top-14 right-0 z-50">
@@ -296,7 +298,8 @@ const PlayVideo = () => {
           {/* Comment list */}
           <div className="w-full space-y-4 rounded-xl border bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             {videos.comments.map((item, index) => (
-              <div key={index} className="flex w-full gap-3 border-b pb-3 last:border-0 last:pb-0 dark:border-gray-700">
+              <>
+                <div key={index} className={`flex w-full gap-3 ${showReplys === item._id ? 'border-none' : 'border-b'} pb-3 last:border-0 last:pb-0 dark:border-gray-700`}>
                 <Avatar onClick={()=>navigate(`/in/${item.user.nom}${item.user.prenom}`)} className="cursor-pointer">
                   <AvatarImage src={item.user.image} alt="image_users"/>
                   <AvatarFallback className={`text-xs font-bold text-white ${item.user.role === "Etudiant" ? "bg-sky-400": "bg-pink-400"}`}>
@@ -313,7 +316,7 @@ const PlayVideo = () => {
                   <span className="flex items-center gap-2">
                     <span className="cursor-pointer p-0.5 text-xs text-gray-400 transition duration-200 hover:bg-gray-500">J'aime</span>
                     <Separator  orientation="vertical" className="data-[orientation=vertical]:h-3"/>
-                    <span className="cursor-pointer p-0.5 text-xs text-gray-400 transition duration-200 hover:bg-gray-500">Repondre</span>
+                    <span className="cursor-pointer p-0.5 text-xs text-gray-400 transition duration-200 hover:bg-gray-500" onClick={()=>setShowReplys(showReplys === item._id ? null : item._id)}>Repondre</span>
                   </span>
                 </div>
                 <div className="flex w-full justify-end gap-2">
@@ -321,6 +324,24 @@ const PlayVideo = () => {
                   <DropdownMenuItemComments item={item}/>
                 </div>
               </div>
+              {showReplys === item._id && (
+                  <span className="relative ml-14 flex gap-2">
+                    <Avatar>
+                      <AvatarImage src={data?.image} alt="image_user"/>
+                      <AvatarFallback>
+                        {data?.nom[0]}
+                        {data?.prenom[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <Textarea placeholder={`Répondre à ${item.user.nom}`} value={`${item.user.nom} `} className="font-bold"/>
+                    <span className="absolute right-0 bottom-0 flex items-center gap-3 p-2">
+                      <SmilePlus size={18} className="cursor-pointer"/>
+                      <Button className="cursor-pointer bg-amber-400 transition duration-150 hover:bg-amber-500">Répondre</Button>
+                    </span> 
+                  </span>
+              )}
+              </>
+              
             ))}
           </div>
         </div>
@@ -335,7 +356,7 @@ export default PlayVideo;
 
 export const DropdownMenuItemComments = ({item}:DropdownMenuItemCommentsProps)=>{
   return(
-   <DropdownMenu>
+  <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline"><EllipsisVertical size={20} /></Button>
       </DropdownMenuTrigger>
