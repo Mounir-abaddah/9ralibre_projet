@@ -62,7 +62,7 @@ router.post('/add-videos',authMiddleware,async(req,res)=>{
 router.get('/:videoId',authMiddleware,async(req,res)=>{
         const {videoId}=req.params;
         const userId = req.user.userId;
-        const videos = await VideoModel.findById(videoId).populate("niveaux").populate("matiere").populate("professeur","nom prenom image followers").populate("comments.user","nom prenom image role");
+        const videos = await VideoModel.findById(videoId).populate("niveaux").populate("matiere").populate("professeur","nom prenom image followers").populate("comments.user","nom prenom image role").populate("comments.replies.user", "nom prenom role image");;
         if(!videos){
             return res.status(400).send({message:"Aucune video n'a ete trouve",success:false})
         }
@@ -151,6 +151,29 @@ router.post('/comments/:videoId',authMiddleware,async(req,res)=>{
 });
 
 
+router.post('/:videoId/comments/:commentsId/reply',authMiddleware,async(req,res)=>{
+    const {videoId,commentsId}=req.params;
+    const userId = req.user.userId;
+    const {text} = req.body;
+    if(!text){
+        return res.status(400).json({message:"Réponse vide",success:false})
+    }
+    const video = await VideoModel.findById(videoId);
+    if (!video) {
+        return res.status(404).json({ message: "Vidéo non trouvée" });
+    }
+    const comments = video.comments.find(c => c._id.toString() === commentsId);
+    if (!comments) {
+    return res.status(404).json({ message: "Commentaire non trouvé" });
+    }
+    comments.replies.unshift({
+        user: userId,
+        text: text,
+        createdAt: new Date()
+    });
+    await video.save();
+    res.status(200).json({message: "Reply ajoutée ✅",video});
+})
 
 
 
