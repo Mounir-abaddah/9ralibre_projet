@@ -26,11 +26,19 @@ _id: string;
 nom: string;
 }
 
+interface Replys{
+    _id:string;
+    user:ProfType;
+    text:string;
+    createdAt:string;
+}
+
 export interface Commentaire{
     _id:string
     user:ProfType;
     text:string;
     createdAt:string;
+    replies:Replys[]
 }
 
 export interface VideoType {
