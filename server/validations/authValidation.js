@@ -58,6 +58,33 @@ const itemShema = z.object({
 const EventsShema = z.object({
   Date:z.string().transform(val=>new Date(val)).refine(val => !isNaN(val.getTime()),{message:"Date invalide"}),
   items: z.array(itemShema).min(1, "Au moins un événement est requis")
+});
+
+
+const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, { message: "Identifiant invalide" });
+const VideoShema = z.object({
+  title: z.string().min(4, { message: "Le titre doit contenir au moins 4 caractères" }),
+  description: z.string().min(4, { message: "La description doit contenir au moins 4 caractères" }),
+  videoUrl: z.string().url({ message: "URL de la vidéo invalide" }),
+  thumbnail: z.string().url({ message: "URL du thumbnail invalide" }),
+  niveaux: objectId,
+  matiere: objectId,
+  professeur: objectId,
+  filiere: z.string().min(2, { message: "La filière est obligatoire" }),
+});
+
+const CommentsShema = z.object({
+  text:z.string().min(5, { message: "Must be 5 or more characters long" })
 })
 
-module.exports = { registerShema ,loginSchema ,messageOUblierSchema,passwordResetShema , completeProfileShema , EventsShema};
+
+module.exports = { 
+  registerShema ,
+  loginSchema ,
+  messageOUblierSchema,
+  passwordResetShema , 
+  completeProfileShema , 
+  EventsShema,
+  VideoShema,
+  CommentsShema
+};
