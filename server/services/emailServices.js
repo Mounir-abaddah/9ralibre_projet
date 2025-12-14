@@ -95,7 +95,7 @@ async function oublierMotdepasse(user, resetLink) {
 <body style="font-family: Arial, Helvetica, sans-serif; background-color: #f4f4f7; margin: 0; padding: 20px;">
 
   <table align="center" cellpadding="0" cellspacing="0" width="100%" 
-         style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
 
     <!-- Header -->
     <tr>
@@ -146,4 +146,5 @@ async function oublierMotdepasse(user, resetLink) {
   return transporter.sendMail(mailOptions);
 }
 
-module.exports = { sendVerificationEmail, oublierMotdepasse };
+
+module.exports = { sendVerificationEmail, oublierMotdepasse  };
