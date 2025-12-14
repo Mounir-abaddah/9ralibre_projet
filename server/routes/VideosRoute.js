@@ -170,6 +170,30 @@ router.patch('/patch-videos-commetaire/:videoId/:commentsId',authMidllewares,asy
     
 });
 
+{/*********************** Delete COMMENTAIRE   ***********************/}
+router.delete('/delete-videos-commentaire/:videoId/:commentsId',authMidllewares,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const {videoId,commentsId} = req.params;
+        const videos = await VideosModel.findById(videoId);
+        if(!videos){
+            return res.status(404).send({message:"Aucune videos est trouver",success:false})
+        }
+        const comments = videos.comments.id(commentsId)    
+        if(!comments){
+            return res.status(404).send({message:"Aucun Commentaire est trouver",success:false})
+        }
+        if(comments.user.toString() !== userId){
+            return res.status(404).send({message:"Vous n'êtes pas autorisé à modifier ce commentaire",success:false})
+        }
+        videos.comments = videos.comments.filter(c => c._id.toString() !== commentsId);
+        await videos.save();
+        return res.status(200).send({message:"Commentaire suprimer avec success",success:true})
+    }catch(err){
+        return res.status(500).send({message:"Une erreure est survenue lors de suprimation du commentaire",success:false,err})
+    }
+})
+
 {/*********************** POST LIKE DU COMMENTAIRE   ***********************/}
 router.post('/post-videos-likes-commentaire/:videoId/:commentsId',authMidllewares,async(req,res)=>{
     try{
@@ -253,28 +277,54 @@ router.post('/post-videos-likes-reply/:videoId/:replyId/like/reply',authMidllewa
 
 {/*********************** PATCH REPLY DU COMMENTAIRE   ***********************/}
 router.patch('/patch-videos-reply-comments/:videoId/:replyId',authMidllewares,async(req,res)=>{
-    const userId = req.user.userId;
-    const {videoId,replyId} = req.params;
-    const {text} = req.body;
-    const videos = await VideosModel.findById(videoId);
-    if(!videos){
-        return res.status(404).send({messsage:"Aucune videos est trouver",success:false})
-    }
-    const comments = videos.comments.find(c => c.replies.some(r => r._id.toString() === replyId));
-    if(!comments){
-        return res.status(404).send({messsage:"Aucune Commentaire est trouver",success:false})
-    }
-    const replies = comments.replies.find(c => c._id.toString() === replyId);
+    try{
+        const userId = req.user.userId;
+        const {videoId,replyId} = req.params;
+        const {text} = req.body;
+        const videos = await VideosModel.findById(videoId);
+        if(!videos){
+            return res.status(404).send({messsage:"Aucune videos est trouver",success:false})
+        }
+        const comments = videos.comments.find(c => c.replies.some(r => r._id.toString() === replyId));
+        if(!comments){
+            return res.status(404).send({messsage:"Aucune Commentaire est trouver",success:false})
+        }
+        const replies = comments.replies.find(c => c._id.toString() === replyId);
 
-    if(replies.user._id.toString() !== userId){
-        res.status(403).send({success:false,message: "Vous n'êtes pas autorisé à modifier ce commentaire"})
-    }
+        if(replies.user._id.toString() !== userId){
+            return res.status(403).send({success:false,message: "Vous n'êtes pas autorisé à modifier ce commentaire"})
+        }
 
-    replies.text = text
-    await videos.save();
-    res.status(200).send({success:true,message:"votre commentaire a ete modifer avec success"})
+        replies.text = text
+        await videos.save();
+        return  res.status(200).send({success:true,message:"votre commentaire a ete modifer avec success"})
+    }catch(err){
+        return  res.status(500).send({success:false,message:"Une erreure est survenue lors de modifier le reply du commentaires",err})
+    }
+    
     
 });
+
+{/*********************** DELETE REPLY DU COMMENTAIRE   ***********************/}
+router.delete('/delete-videos-reply-comments/:videoId/:replyId',authMidllewares,async(req,res)=>{
+    const userId = req.user.userId;
+    const {videoId,replyId} = req.params;
+    const videos = await VideosModel.findById(videoId);
+    if(!videos){
+        return res.status(404).send({message:"Aucune videos est disponible",success:false})
+    }
+    const comments = videos.comments.find(c=> c.replies.some(r => r._id.toString() === replyId));
+    if (!comments) {
+        return res.status(404).send({success:false, message:"Commentaire non trouvé"});
+    }
+    const reply = comments.replies.find(c => c._id.toString() === replyId);
+    if(reply.user.toString() !== userId){
+        return res.status(403).send({success:false,message: "Vous n'êtes pas autorisé à modifier ce commentaire"})
+    }
+    comments.replies = comments.replies.filter(c => c._id.toString() !== replyId)
+    await videos.save();
+    return res.status(200).send({message:"reply a ete supprimer avec success",success:true})
+})
 
 
 
