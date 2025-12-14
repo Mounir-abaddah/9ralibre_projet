@@ -27,7 +27,7 @@ const VideosShema = new mongoose.Schema({
         ref: "Niveaux", 
         required: true 
     },
-    filière: { 
+    filiere: { 
         type: String,
         required: true 
     },
@@ -52,12 +52,13 @@ const VideosShema = new mongoose.Schema({
             user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
             text: { type: String, required: true },
             createdAt: { type: Date, default: Date.now },
+            likes:[ {type:mongoose.Schema.Types.ObjectId , ref:"User" }],
             replies:[{
                 user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
                 text: { type: String, required: true },
                 createdAt: { type: Date, default: Date.now },
-        }],
-        likes:[ {type:mongoose.Schema.Types.ObjectId , ref:"User" } ]
+                likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] 
+            }],
         }
     ],
 },{
