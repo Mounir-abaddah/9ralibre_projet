@@ -15,6 +15,7 @@ import CalendrieMobile from './pages/auth/CalendrieMobile/CalendrieMobile';
 import Cours from './pages/auth/Cours/Cours';
 import Settings from './pages/auth/Settings/Settings';
 import { ThemeProvider } from './context/ThemeContext';
+import Videos from './pages/auth/Video/Video';
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
+            <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
