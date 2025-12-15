@@ -140,11 +140,152 @@ async function oublierMotdepasse(user, resetLink) {
 
 </body>
 </html>
-`,
+    `,
+  };
+
+  return transporter.sendMail(mailOptions);
+}
+
+async function repliesCommentaire(
+  user,
+  userReplies, 
+  videoTitle,
+  commentsText,
+  replyText,
+  videoLink
+) {
+  const mailOptions = {
+    from: process.env.EMAIL_CLIENT,
+    to: user.email,
+    subject: "Nouvelle réponse 💬",
+    html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nouvelle réponse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { margin:0; padding:0; background:#f4f6f8; font-family:Arial; }
+    .container { max-width:600px; margin:40px auto; background:#fff; border-radius:8px; overflow:hidden; }
+    .header { background:#2563eb; color:#fff; padding:20px; text-align:center; }
+    .content { padding:24px; color:#333; }
+    .comment-box { background:#f1f5f9; padding:15px; border-left:4px solid #2563eb; margin:16px 0; }
+    .reply-box { background:#ecfeff; padding:15px; border-left:4px solid #06b6d4; margin:16px 0; }
+    .button { display:inline-block; margin-top:20px; padding:12px 20px; background:#2563eb; color:#fff; text-decoration:none; border-radius:6px; }
+    .footer { text-align:center; font-size:12px; color:#6b7280; padding:16px; background:#f9fafb; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Nouvelle réponse 💬</h1>
+    </div>
+
+    <div class="content">
+      <h2>Bonjour ${user.nom},</h2>
+
+      <p>
+        <strong>${userReplies.nom}</strong> a répondu à votre commentaire sur la vidéo :
+        <strong>${videoTitle}</strong>
+      </p>
+
+      <p><strong>Votre commentaire :</strong></p>
+      <div class="comment-box">
+        ${commentsText}
+      </div>
+
+      <p><strong>Réponse :</strong></p>
+      <div class="reply-box">
+        ${replyText}
+      </div>
+
+      <a href="${videoLink}" class="button">
+        Voir la discussion
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Vous recevez cet email parce que vous avez commenté une vidéo.<br />
+        © ${new Date().getFullYear()} Votre plateforme éducative
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+  };
+
+  return transporter.sendMail(mailOptions);
+}
+
+async function likeCommentaire(
+  commentOwner,
+  likedByUser, 
+  videoTitle,
+  commentText,
+  videoLink
+) {
+  const mailOptions = {
+    from: process.env.EMAIL_CLIENT,
+    to: commentOwner.email,
+    subject: "Nouveau like ❤️",
+    html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nouveau like</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { margin:0; padding:0; background:#f4f6f8; font-family:Arial; }
+    .container { max-width:600px; margin:40px auto; background:#fff; border-radius:8px; overflow:hidden; }
+    .header { background:#ef4444; color:#fff; padding:20px; text-align:center; }
+    .content { padding:24px; color:#333; }
+    .comment-box { background:#f1f5f9; padding:15px; border-left:4px solid #ef4444; margin:16px 0; }
+    .button { display:inline-block; margin-top:20px; padding:12px 20px; background:#ef4444; color:#fff; text-decoration:none; border-radius:6px; }
+    .footer { text-align:center; font-size:12px; color:#6b7280; padding:16px; background:#f9fafb; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Nouveau like ❤️</h1>
+    </div>
+
+    <div class="content">
+      <h2>Bonjour ${commentOwner.nom},</h2>
+
+      <p>
+        <strong>${likedByUser.nom}</strong> a aimé votre commentaire sur la vidéo :
+        <strong>${videoTitle}</strong>
+      </p>
+
+      <p><strong>Votre commentaire :</strong></p>
+      <div class="comment-box">
+        ${commentText}
+      </div>
+
+      <a href="${videoLink}" class="button">
+        Voir la vidéo
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Vous recevez cet email parce que quelqu’un a aimé votre commentaire.<br />
+        © ${new Date().getFullYear()} Votre plateforme éducative
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
   };
 
   return transporter.sendMail(mailOptions);
 }
 
 
-module.exports = { sendVerificationEmail, oublierMotdepasse  };
+
+
+module.exports = { sendVerificationEmail, oublierMotdepasse , repliesCommentaire , likeCommentaire  };
