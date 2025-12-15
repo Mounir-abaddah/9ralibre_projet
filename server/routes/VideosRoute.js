@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const VideosModel = require('../models/VideosModel');
 const NiveauxModel = require('../models/NiveauxModel');
+const UserModel = require('../models/UserModel');
 const {VideoShema,CommentsShema} = require('../validations/authValidation');
 const authMidllewares = require('../middlewares/authMiddleware');
+const {repliesCommentaire,likeCommentaire} = require('../services/emailServices')
 
 
 {/*********************** Ajouter La Videos ***********************/}
@@ -205,6 +207,11 @@ router.post('/post-videos-likes-commentaire/:videoId/:commentsId',authMidlleware
         }
         const comments = videos.comments.find(c => c._id.toString() === commentsId);
         if(!comments.likes.includes(userId)){
+            if(comments.user._id.toString() !== userId){
+                const commentsOwner = await UserModel.findById(comments.user._id);
+                const user = await UserModel.findById(userId);
+                await likeCommentaire(commentsOwner,user,videos.title,comments.text,videos.videoUrl)
+            }
             comments.likes.push(userId)
         }else{
             comments.likes.pull(userId)
@@ -218,7 +225,7 @@ router.post('/post-videos-likes-commentaire/:videoId/:commentsId',authMidlleware
 
 {/*********************** POST REPLY DU COMMENTAIRE   ***********************/}
 router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewares,async(req,res)=>{
-    try{
+    try{    
         const userId = req.user.userId;
         const {videoId,commentsId}=req.params;
         const {text} = req.body;
@@ -234,16 +241,25 @@ router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewar
             user:userId,
             text,
             createdAt:Date.now()
-        })
-        await videos.save();
+        });
+        await videos.save()
+        if(comments.user._id.toString() !== userId){
+            const user = await UserModel.findById(userId);
+            const commentsOwner = await UserModel.findById(comments.user._id);
+            const replies = comments.replies.find(c => c.text === text);
+            await repliesCommentaire(user,commentsOwner,videos.title,comments.text,replies.text,videos.videoUrl)
+        }
         res.status(200).send({
             success:true,
             videos
         })
     }catch(err){
-        return res.status(500).send({message:"Une erreure est survenue lors de repondre a un commentaire",success:false,err})
-    }
-});
+    return res.status(500).send({
+        success: false,
+        message: "Erreur lors de la réponse au commentaire",
+        err
+    });
+}});
 
 {/*********************** POST LIKE DU REPLY DU COMMENTAIRE   ***********************/}
 router.post('/post-videos-likes-reply/:videoId/:replyId/like/reply',authMidllewares,async(req,res)=>{
