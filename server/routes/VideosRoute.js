@@ -228,7 +228,7 @@ router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewar
     try{    
         const userId = req.user.userId;
         const {videoId,commentsId}=req.params;
-        const {text} = req.body;
+        const {text} = CommentsShema.parse(req.body);
         const videos = await VideosModel.findById(videoId);
         if(!videos){
             return res.status(404).send({message:"Aucune videos est trouver",success:false})
@@ -246,7 +246,8 @@ router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewar
         if(comments.user._id.toString() !== userId){
             const user = await UserModel.findById(userId);
             const commentsOwner = await UserModel.findById(comments.user._id);
-            const replies = comments.replies.find(c => c.text === text);
+            const replies = comments.replies[comments.replies.length - 1];
+            console.log(replies);
             await repliesCommentaire(user,commentsOwner,videos.title,comments.text,replies.text,videos.videoUrl)
         }
         res.status(200).send({
