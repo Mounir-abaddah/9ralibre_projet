@@ -40,7 +40,7 @@ router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     try{
     const {nameNiveaux} = req.params;
     const niveaux = await NiveauxModel.findOne({nom:nameNiveaux});    
-    const videos = await VideosModel.find({niveaux:niveaux._id}).populate("professeur","nom prenom image").select("title thumbnail professeur views createdAt");
+    const videos = await VideosModel.find({niveaux:niveaux._id}).populate("matiere").populate("professeur","nom prenom image").select("title thumbnail professeur views createdAt filiere matiere");
     if(!videos){
         return res.status(404).send({message:"Aucune videos est trouver",success:false})
     }
