@@ -3,6 +3,9 @@ interface Professeur{
     nom:string;
     prenom:string;
     image:string;
+    role:string;
+    following:string[];
+    followers:string[];
 }
 interface Niveaux{
     _id:string;
@@ -11,9 +14,23 @@ interface Niveaux{
 interface Matiere{
     _id:string;
     nom:string;
-    niveaux:Niveaux;
 }
 
+interface Replies{
+    _id:string;
+    user:Professeur;
+    text:string;
+    createdAt:string;
+    likes:string[];
+}
+interface Comments{
+    _id:string;
+    user:Professeur;
+    text:string;
+    createdAt:string;
+    likes:string[];
+    replies:Replies[];
+}
 export interface TypeVideos{
     _id:string;
     title:string;
@@ -22,10 +39,10 @@ export interface TypeVideos{
     thumbnail:string;
     matiere:Matiere;
     niveaux:Niveaux;
-    views:string;
+    views:number;
     filiere:string;
     professeur:Professeur;
     likes:string[];
-    comments:string[];
+    comments:Comments[];
     createdAt:string;
 }
