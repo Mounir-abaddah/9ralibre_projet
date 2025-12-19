@@ -42,7 +42,7 @@ return (
                     <div key={item._id} className="w-full rounded-md bg-amber-400 p-2">
                         <div className="flex w-full flex-col space-y-2 rounded-md bg-gray-200 p-2">
                             {/*** IMAGE (THUMBNAIL) ***/}
-                            <div className="group relative aspect-video w-full cursor-pointer overflow-hidden rounded-md" onClick={()=>navigate(`/videos/${niveaux}/${item._id}`)}>
+                            <div className="group relative aspect-video w-full cursor-pointer overflow-hidden rounded-md" onClick={()=>navigate(`/Videos/${niveaux}/${item._id}`)}>
                                 <img src={item.thumbnail} alt="image_thumbnail" width={200} className="size-full object-cover transition-transform duration-300 group-hover:scale-105"/>
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/30">
                                     <div className="scale-90 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100">
@@ -64,7 +64,7 @@ return (
                                     <div>
                                         <h3 className="text-xl font-medium text-gray-700">{item.title}</h3>
                                         <h3 className="text-sm font-bold text-gray-500">{item.professeur.nom} {item.professeur.prenom}</h3>
-                                        <h3 className="text-xs font-bold text-gray-500">{item.views} vues . {formatDistanceToNow(new Date(item.createdAt),{addSuffix:true,locale:fr},)}</h3>
+                                        <h3 className="text-xs font-bold text-gray-500">{item.views} vues . {formatDistanceToNow(new Date(item.createdAt),{addSuffix:true,locale:fr})}</h3>
                                     </div>
                                 </div>
                                 <div>
