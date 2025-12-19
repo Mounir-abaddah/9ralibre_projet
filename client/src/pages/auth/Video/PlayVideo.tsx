@@ -1,0 +1,79 @@
+import { useParams } from "react-router-dom"
+import ReactPlayer from 'react-player';
+import { useEffect, useState } from "react";
+import type { TypeVideos } from "./types/video.type";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { EllipsisVertical, Heart, Share } from "lucide-react";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { fr } from "date-fns/locale";
+import Comments from "@/components/Videos/Comments";
+
+const PlayVideo = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const {videoId} = useParams();
+    const [videos,setVideos]=useState<TypeVideos | null>(null);
+
+    const getVideos = async()=>{
+        const res = await axios.get(`${apiUrl}/videos/get-videos-id/${videoId}`,{withCredentials:true});
+        setVideos(res.data.videos)
+    };
+
+    useEffect(()=>{
+        getVideos();
+    },[]);
+
+    if(!videos) return <div>Chargement ....</div>
+
+return (
+    <div className="flex w-full p-4">
+        <div className="flex max-w-full flex-col space-y-4">
+            {/*****VIDEOURL REACT PLAYER*****/}
+            <div>
+                <ReactPlayer 
+                    src={videos.videoUrl} 
+                    width={1000} 
+                    height={400} 
+                    controls 
+                />
+            </div>
+            {/*****TITRE *****/}
+            <div>
+                <h1 className="text-2xl font-bold">{videos.title}</h1>
+            </div>
+            {/*****Professeur(Follow,Followers) , LIKES ET SHARE ET SAVE *****/}
+            <div className="flex w-full justify-between">
+                {/*****Professeur(Follow,Followers) *****/}
+                <div className="flex gap-2">
+                    <img src={videos.professeur.image} alt="image_de_professeur" width={40} className="rounded-full"/>
+                    <div className="flex flex-col items-start">
+                        <span>{videos.professeur.nom} {videos.professeur.prenom}</span>
+                        <span className="text-xs text-gray-400">{videos.professeur.followers.length}  d’abonnés</span>
+                    </div>
+                    <div>
+                        <Button className="cursor-pointer bg-amber-500 hover:bg-amber-600">S'abonner</Button>
+                    </div>
+                </div>
+                {/*****LIKES ET SHARE ET SAVE *****/}
+                <div className="flex gap-2">
+                    <Button className="cursor-pointer"><Heart />{videos.likes.length}</Button>
+                    <Button className="cursor-pointer"><Share />Partager</Button>
+                    <Button className="cursor-pointer"><EllipsisVertical /></Button>
+                </div>
+            </div>
+            {/***** Description et Vue *****/}
+            <div className="rounded-md border p-2">
+                <span>{videos.views} vue . {formatDistanceToNow(new Date(videos.createdAt),{addSuffix:true,locale:fr})}</span>
+                <p className="text-gray-400">{videos.description}</p>
+            </div>
+            {/***** COMMENTAIRES ET REPLY *****/}
+            <Comments videos={videos} />
+        </div>
+        {/******************RELATED VIDEOS******************/}
+        <div className="w-full">
+        </div>
+    </div>
+)
+}
+
+export default PlayVideo
