@@ -56,9 +56,10 @@ router.get('/get-videos-id/:videoId',authMidllewares,async(req,res)=>{
         const userId = req.user.userId;
         const {videoId} = req.params;
         const videos = await VideosModel.findById(videoId)
-        .populate("professeur","nom prenom email image")
+        .populate("professeur","nom prenom email image following followers")
         .populate("niveaux","nom")
-        .populate("matiere","nom");
+        .populate("matiere","nom")
+        .populate("comments.user","nom prenom role image")
         if(!videos){
             return res.status(404).send({message:"Aucune videos est trouver d'apres ce Id",success:false})
         }
