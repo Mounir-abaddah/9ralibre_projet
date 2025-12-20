@@ -13,18 +13,25 @@ const PlayVideo = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const {videoId} = useParams();
     const [videos,setVideos]=useState<TypeVideos | null>(null);
+    const [isLike,setisLike]= useState(false);
 
     const getVideos = async()=>{
         const res = await axios.get(`${apiUrl}/videos/get-videos-id/${videoId}`,{withCredentials:true});
         setVideos(res.data.videos)
+        setisLike(res.data.isLikes)
     };
-
+    
     useEffect(()=>{
         getVideos();
     },[]);
 
-    if(!videos) return <div>Chargement ....</div>
+    const handleLikes = async()=>{
+        const res = await axios.post(`${apiUrl}/videos/post-videos-like/${videoId}`,{},{withCredentials:true});
+        setisLike(res.data.isLikes)
+        await getVideos();
+    }
 
+    if(!videos) return <div>Chargement ....</div>
 return (
     <div className="flex w-full p-4">
         <div className="flex max-w-full flex-col space-y-4">
@@ -56,7 +63,7 @@ return (
                 </div>
                 {/*****LIKES ET SHARE ET SAVE *****/}
                 <div className="flex gap-2">
-                    <Button className="cursor-pointer"><Heart />{videos.likes.length}</Button>
+                    <Button className="cursor-pointer" onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#000'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
                     <Button className="cursor-pointer"><Share />Partager</Button>
                     <Button className="cursor-pointer"><EllipsisVertical /></Button>
                 </div>
@@ -67,7 +74,7 @@ return (
                 <p className="text-gray-400">{videos.description}</p>
             </div>
             {/***** COMMENTAIRES ET REPLY *****/}
-            <Comments videos={videos} />
+            <Comments videos={videos} getVideos={getVideos}/>
         </div>
         {/******************RELATED VIDEOS******************/}
         <div className="w-full">
