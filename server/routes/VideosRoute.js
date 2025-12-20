@@ -218,7 +218,7 @@ router.post('/post-videos-likes-commentaire/:videoId/:commentsId',authMidlleware
             comments.likes.pull(userId)
         }
         await videos.save();
-        res.json({success:true,likesCommentaireCount:comments.likes.length,videos})
+        res.json({success:true,likesCommentaireCount:comments.likes.length,isLiked:comments.likes.includes(userId),videos})
     }catch(err){
         return res.status(500).send({message:"Une erreure est survenue lors d'ajouter le commentaire",success:false,err})
     }
