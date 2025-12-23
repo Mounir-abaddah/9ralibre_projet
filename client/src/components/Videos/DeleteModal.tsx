@@ -9,11 +9,13 @@ import {
 import { Button } from "../ui/button"
 
 interface typeModal{
-    openModal:boolean;
+  commentId:string;
+  setCommentToDelete: React.Dispatch<React.SetStateAction<string | null>>;
+  onConfirm: (id: string) => void;
 }
-const DeleteModal = ({openModal}:typeModal) => {
+const DeleteModal = ({ commentId, setCommentToDelete, onConfirm }: typeModal) => {
   return (
-    <Dialog open={openModal}>
+    <Dialog open>
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Supprimer le commentaire</DialogTitle>
@@ -22,8 +24,11 @@ const DeleteModal = ({openModal}:typeModal) => {
                 </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-            <Button className="cursor-pointer">Annuler</Button>
-            <Button variant={'destructive'} className="cursor-pointer">Supprimer</Button>
+            <Button className="cursor-pointer" onClick={() => setCommentToDelete(null)}>Annuler</Button>
+            <Button variant={'destructive'} className="cursor-pointer" onClick={() => {
+                        onConfirm(commentId);
+                        setCommentToDelete(null);
+                    }}>Supprimer</Button>
         </DialogFooter>
         </DialogContent>
     </Dialog>
