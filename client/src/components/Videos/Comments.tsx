@@ -11,12 +11,13 @@ import { fr } from "date-fns/locale";
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import DeleteModal from './DeleteModal'
-import Replies from './Replies'
-
+import ReplieComments from '@/components/Videos/ReplieComments'
 export interface CommentsTypes{
     videos:TypeVideos
-    getVideos:()=>void
+    getVideos:()=>void;
+    commentsId:string
 }
+
 const Comments = ({videos,getVideos}:CommentsTypes) => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const {videoId} = useParams()
@@ -97,7 +98,7 @@ return (
                         />
                         <Popover open={emojiCommentsOpen} onOpenChange={setemojiCommentsOpen}>
                             <PopoverTrigger>
-                            <SmilePlus size={18} />
+                                <span className='cursor-pointer'><SmilePlus size={18} /></span>
                             </PopoverTrigger>
                             <PopoverContent>
                             <EmojiPicker
@@ -122,11 +123,11 @@ return (
                             setEditingCommentId(null)
                             setAfficherButtonComments(false)
                             }}
-                            className="text-sm"
+                            className="cursor-pointer text-sm"
                         >
                             Annuler
                         </button>
-                        <Button onClick={() => editingCommentId ? handleEditComment(editingCommentId) : handlePostComments()}disabled={(editingCommentId ? editingText : comments).length < 1}>
+                        <Button className='cursor-pointer bg-cyan-500 text-white hover:bg-cyan-600' onClick={() => editingCommentId ? handleEditComment(editingCommentId) : handlePostComments()} disabled={(editingCommentId ? editingText : comments).length < 1}>
                             {editingCommentId ? 'Mettre à jour' : 'Commenter'} <Send />
                         </Button>
                     </div>
@@ -134,11 +135,11 @@ return (
                 </div>
             </div>
             {/*************COMMENTAIRES ET REPLIES *****************/}
-            <div className='space-y-6'>
+            <div className='w-full space-y-6'>
                 {videos.comments.map((comments)=>(
-                    <div key={comments._id} className='flex justify-between'>
+                    <div key={comments._id} className='flex w-full justify-between'>
                         {/************* COMMENTAIRES AVATAR *****************/}
-                        <div className="flex items-start gap-2 space-y-4">
+                        <div className="flex w-full items-start gap-2 space-y-4">
                             <Avatar>
                                 <AvatarImage src={comments.user.image} alt='image_users'/>
                                 <AvatarFallback className={`${comments.user.role === "Etudiant" ? 'bg-sky-400' : 'bg-pink-400'}`}>
@@ -147,7 +148,7 @@ return (
                                 </AvatarFallback>
                             </Avatar>
                             {/************* COMMENTAIRES TEXT ET ROLE ET CREATEDAT *****************/}
-                            <div className="flex flex-col space-y-2">
+                            <div className="flex w-full flex-col space-y-2">
                                 <span className="text-sm">{comments.user.nom} {comments.user.prenom} .&nbsp; 
                                     <span className={`${comments.user.role === "Etudiant" ? 'bg-sky-400' : 'bg-pink-400'} rounded-md p-0.5 text-xs tracking-wide`}>
                                         {comments.user.role}
@@ -162,13 +163,18 @@ return (
                                     <span onClick={() => handleLikeComment(comments._id)} className='flex cursor-pointer items-center gap-1 text-xs' > <Heart size={16} fill={data?.id && comments.likes.includes(data.id) ? "#FF2E2E" : "none"} color={data?.id && comments.likes.includes(data.id) ? "#FF2E2E" : "currentColor"} /> {comments.likes.length} </span>
                                     <span onClick={()=>setShowReplies(comments._id)} className='cursor-pointer rounded-md p-0.5 text-xs transition duration-200 hover:bg-amber-500'>Repondre</span>
                                 </div>
-                                {showReplies === comments._id && (
-                                    <Replies />
-                                )}
+                                <ReplieComments 
+                                    videos={videos}
+                                    getVideos={getVideos}
+                                    commentsId={comments._id}
+                                    replies={comments.replies}
+                                    showReplies={showReplies}
+                                    setShowReplies={setShowReplies}
+                                />
                             </div>
                         </div>
                         {/************* POPEVER MODIFIER ET SUPPRIMER LE COMMENTAIRES *****************/}
-                        <div>
+                        
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button variant="outline" className='cursor-pointer'><EllipsisVertical  size={18}/></Button>
@@ -188,7 +194,7 @@ return (
                                         </div>
                                 </PopoverContent>
                             </Popover>
-                        </div>
+                        
                     </div>
                 ))}
             </div>
