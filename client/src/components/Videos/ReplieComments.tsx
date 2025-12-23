@@ -26,11 +26,32 @@ const ReplieComments = ({getVideos,commentsId,replies,showReplies,setShowReplies
   const {videoId} = useParams();
   const {data} = useProtectedRoutes();
   const [showEmojieReplies,setShowEmojieReplies]=useState(false);
+
   const [repliestext,setRepliestext]=useState("");
+
+  const [editReplies,setEditReplies]=useState<string | null>(null);
+  const [editRepliestext,setEditRepliestext]=useState("")
+
 
   const handlePostReply = async()=>{
     await axios.post(`${apiUrl}/videos/post-videos-reply-commentaires/${videoId}/${commentsId}`,{text:repliestext},{withCredentials:true})
     setShowReplies(null);
+    await getVideos();
+  }
+
+  const handleLikeReply = async(replyId:string)=>{
+    await axios.post(`${apiUrl}/videos/post-videos-likes-reply/${videoId}/${replyId}/like/reply`,{},{withCredentials:true})
+    await getVideos();
+  }
+
+  const handleEditReply = async(replyId:string)=>{
+    await axios.patch(`${apiUrl}/videos/patch-videos-reply-comments/${videoId}/${replyId}`,{text:editRepliestext},{withCredentials:true})
+    setEditReplies(null)
+    await getVideos();
+  }
+
+  const handleDelelteReply = async(replyId:string)=>{
+    await axios.delete(`${apiUrl}/videos/delete-videos-reply-comments/${videoId}/${replyId}`,{withCredentials:true})
     await getVideos();
   }
 
@@ -74,8 +95,26 @@ const ReplieComments = ({getVideos,commentsId,replies,showReplies,setShowReplies
               </Avatar>
               <div className="w-full space-y-2">
                 <h2 className="text-xs">{replies.user.nom} {replies.user.prenom} . <span className={`${replies.user.role === "Etudiant" ? 'bg-sky-400' : 'bg-pink-400'} rounded-xs`}>{replies.user.role}</span> . <span className="text-gray-400">{formatDistanceToNow(new Date(replies.createdAt),{addSuffix:true,locale:fr})}</span></h2>
-                <h2 className="text-sm">{replies.text}</h2>
-                <span className="flex w-min cursor-pointer items-center gap-1 rounded-md px-1 text-xs hover:bg-gray-100 hover:text-black"><Heart size={16}/> J'aime</span>
+                {editReplies === replies._id ? (
+                  <span className="flex w-full flex-col items-end space-y-2">
+                    <textarea
+                      value={editRepliestext}
+                      onChange={(e)=>setEditRepliestext(e.target.value)}
+                      rows={2}
+                      className="w-full resize-none rounded-md border p-2 text-sm"
+                    />
+                    <span className="flex gap-2">
+                      <Button onClick={()=>setEditReplies(null)} variant={'outline'} className="flex cursor-pointer items-end justify-end">Annuler</Button>
+                      <Button onClick={()=>handleEditReply(replies._id)} className="flex cursor-pointer items-end justify-end">Modifier</Button>
+                    </span>                  
+                    
+                  </span>
+                ):(
+                  <h2 className="text-sm">{replies.text}</h2>
+                )}
+                <span onClick={()=>handleLikeReply(replies._id)} className="flex w-min cursor-pointer items-center gap-1 rounded-md px-1 text-xs hover:bg-gray-100 hover:text-black">
+                  <Heart size={16} fill={data?.id && replies.likes.includes(data.id) ? "#FF2E2E" : "none"} color={data?.id && replies.likes.includes(data.id) ? "#FF2E2E" : "currentColor"}/> {replies.likes.length}
+                </span>
               </div>
             </div>
             <div>
@@ -87,8 +126,8 @@ const ReplieComments = ({getVideos,commentsId,replies,showReplies,setShowReplies
                           <div className='flex flex-col items-start space-y-2'>
                               {data?.id === replies.user._id ? (
                                   <>
-                                  <Button className='flex w-full cursor-pointer items-center gap-2 text-xs'><Pencil size={14}/>Modifier</Button>
-                                  <Button  variant={'destructive'} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Trash size={14}/>Supprimer</Button>
+                                  <Button onClick={()=>setEditReplies(replies._id)} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Pencil size={14}/>Modifier</Button>
+                                  <Button onClick={()=>handleDelelteReply(replies._id)} variant={'destructive'} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Trash size={14}/>Supprimer</Button>
                                   </>
                               ):(
                                   <>
