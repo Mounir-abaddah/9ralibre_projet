@@ -16,7 +16,7 @@ interface Matiere{
     nom:string;
 }
 
-interface Replies{
+export interface Replies{
     _id:string;
     user:Professeur;
     text:string;
