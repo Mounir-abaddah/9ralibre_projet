@@ -23,7 +23,7 @@ interface Replies{
     createdAt:string;
     likes:string[];
 }
-interface Comments{
+export interface Comments{
     _id:string;
     user:Professeur;
     text:string;
