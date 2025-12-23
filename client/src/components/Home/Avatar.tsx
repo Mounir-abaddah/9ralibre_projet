@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
-import { Book, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Sheet, Video } from "lucide-react"
+import { Book, Bookmark, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Sheet, Video } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
 const Avatare = ({ data }: typeAllData) => {
@@ -17,6 +17,7 @@ const Avatare = ({ data }: typeAllData) => {
     { name: "Quiz", icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
     { name: "Histoire", icon: <BookOpen size={18} />, path: "/" },
     { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Messagerie/${data?.niveaux}` },
+    { name: "Enregistrer", icon: <Bookmark size={18} />, path: `/Enregistrer/${data?.niveaux}` },
     { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
 
