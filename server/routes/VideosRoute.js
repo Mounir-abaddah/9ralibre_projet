@@ -60,6 +60,7 @@ router.get('/get-videos-id/:videoId',authMidllewares,async(req,res)=>{
         .populate("niveaux","nom")
         .populate("matiere","nom")
         .populate("comments.user","nom prenom role image")
+        .populate("comments.replies.user","nom prenom role image")
         if(!videos){
             return res.status(404).send({message:"Aucune videos est trouver d'apres ce Id",success:false})
         }
@@ -223,6 +224,8 @@ router.post('/post-videos-likes-commentaire/:videoId/:commentsId',authMidlleware
         return res.status(500).send({message:"Une erreure est survenue lors d'ajouter le commentaire",success:false,err})
     }
 });
+
+
 
 {/*********************** POST REPLY DU COMMENTAIRE   ***********************/}
 router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewares,async(req,res)=>{
