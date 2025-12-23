@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import type { TypeVideos } from "./types/video.type";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { EllipsisVertical, Heart, Share } from "lucide-react";
+import { Bookmark, EllipsisVertical, Flag, Heart, Share } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { fr } from "date-fns/locale";
 import Comments from "@/components/Videos/Comments";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const PlayVideo = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -32,6 +33,7 @@ const PlayVideo = () => {
     }
 
     if(!videos) return <div>Chargement ....</div>
+    document.title = `Videos - ${videos?.title} | 9ralibre`
 return (
     <div className="flex w-full p-4">
         <div className="flex max-w-full flex-col space-y-4">
@@ -63,9 +65,17 @@ return (
                 </div>
                 {/*****LIKES ET SHARE ET SAVE *****/}
                 <div className="flex gap-2">
-                    <Button className="cursor-pointer" onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#000'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
+                    <Button className={`flex cursor-pointer items-center gap-1 rounded-md  text-xs transition-all duration-200 hover:bg-gray-100 active:scale-95 ${isLike ? 'text-red-500' : ''}`} onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#000'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
                     <Button className="cursor-pointer"><Share />Partager</Button>
-                    <Button className="cursor-pointer"><EllipsisVertical /></Button>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="outline" className="cursor-pointer"><EllipsisVertical /></Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-42 space-y-2">
+                            <Button variant="outline" className="w-full cursor-pointer"><Bookmark />Enregistrer</Button>
+                            <Button variant="outline" className="w-full cursor-pointer"><Flag />Signaler</Button>
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
             {/***** Description et Vue *****/}
