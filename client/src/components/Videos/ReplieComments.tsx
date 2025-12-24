@@ -20,7 +20,7 @@ export interface RepliesTypes{
     setShowReplies:React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const ReplieComments = ({getVideos,commentsId,replies,showReplies,setShowReplies}:RepliesTypes) => {
+const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShowReplies}:RepliesTypes) => {
   
   const apiUrl = import.meta.env.VITE_API_URL;
   const {videoId} = useParams();
@@ -55,12 +55,16 @@ const ReplieComments = ({getVideos,commentsId,replies,showReplies,setShowReplies
     await getVideos();
   }
 
+  const parentComment = videos.comments.find(comment => comment._id === commentsId);
+
+
+
   return (
     <div className="ml-8 w-full space-y-4">
       {showReplies === commentsId && (
         <div className="space-y-2">
           <span className="flex w-full rounded-md border p-2">
-            <textarea value={repliestext} onChange={(e)=>setRepliestext(e.target.value)} className="w-full resize-none border-none outline-0"/>
+            <textarea value={repliestext} onChange={(e)=>setRepliestext(e.target.value)} placeholder={`Répondre à ${parentComment?.user.nom} ${parentComment?.user.prenom}`}className="w-full resize-none border-none text-sm outline-0"/>
             <Popover open={showEmojieReplies} onOpenChange={setShowEmojieReplies}>
               <PopoverTrigger>
                   <span className='cursor-pointer'><SmilePlus size={18} /></span>
@@ -79,7 +83,7 @@ const ReplieComments = ({getVideos,commentsId,replies,showReplies,setShowReplies
           </span>
           <span className="flex items-end justify-end space-x-2">
             <Button size={'sm'} onClick={()=>setShowReplies(null)} variant={'outline'} className="cursor-pointer bg-amber-400 hover:bg-amber-500">Annuler</Button>
-            <Button size={'sm'} onClick={()=>handlePostReply()} className="cursor-pointer bg-amber-400 hover:bg-amber-500"><Send/></Button>
+            <Button size={'sm'} onClick={()=>handlePostReply()} className="cursor-pointer hover:bg-amber-500 dark:bg-amber-400"><Send/></Button>
           </span>
         </div>
       )}
