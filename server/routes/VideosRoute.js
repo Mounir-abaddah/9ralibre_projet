@@ -64,11 +64,13 @@ router.get('/get-videos-id/:videoId',authMidllewares,async(req,res)=>{
         if(!videos){
             return res.status(404).send({message:"Aucune videos est trouver d'apres ce Id",success:false})
         }
-        const likes = videos.likes.some(c => c._id.toString() === userId)        
+        const likes = videos.likes.some(c => c._id.toString() === userId);
+        const isFollowProfesseur = videos.professeur.followers.some(c => c._id.toString() === userId);
         return res.status(200).send({
             success:true,
             likesCount:videos.likes.length,
             isLikes:likes,
+            isFollowProfesseur,
             viewsCount:videos.views,
             videos
         })
@@ -76,6 +78,25 @@ router.get('/get-videos-id/:videoId',authMidllewares,async(req,res)=>{
         return res.status(500).send({message:"Une erreure est survenue lors de recuperation de video",success:false,err})
     }
 });
+
+{/*********************** GET RELATED VIDEOS***********************/}
+router.get('/related/:videoId',async(req,res)=>{
+    const {videoId} = req.params
+    const videos = await VideosModel.findById(videoId);
+    if(!videos){
+        return res.status(400).send({message:"Aucune videos est disponible",success:false})
+    }
+    const relatedVideos = await VideosModel.find({
+        /************ Prends toutes les vidéos SAUF celle dont l’id est videoId*************** */
+        _id: { $ne: videoId },
+        niveaux: videos.niveaux,
+        matiere: videos.matiere,
+    }).populate("professeur", "nom prenom image")
+    .populate("matiere", "nom")
+    .select("title thumbnail professeur views createdAt filiere matiere");
+
+    res.status(200).json({success: true,videos: relatedVideos});
+})
 
 {/*********************** POST LIKE VIDEO ET UNLIKER IT ***********************/}
 router.post('/post-videos-like/:videoId',authMidllewares,async(req,res)=>{
