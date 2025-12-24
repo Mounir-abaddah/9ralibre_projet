@@ -15,7 +15,6 @@ import ReplieComments from '@/components/Videos/ReplieComments'
 export interface CommentsTypes{
     videos:TypeVideos
     getVideos:()=>void;
-    commentsId:string
 }
 
 const Comments = ({videos,getVideos}:CommentsTypes) => {
@@ -75,9 +74,9 @@ return (
             <div className='flex w-full space-x-2'>
                 <Avatar>
                     <AvatarImage src={data?.image} alt='image_users'/>
-                    <AvatarFallback>
-                        {data?.nom[0]}
-                        {data?.prenom[0]}
+                    <AvatarFallback className={`${data?.role === "Etudiant" ? 'bg-sky-400' : 'bg-pink-400'}`}>
+                        {data?.nom[0].toUpperCase()}
+                        {data?.prenom[0].toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
                 {/************* TEXT AREA ET ENVOYER *****************/}
