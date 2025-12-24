@@ -36,6 +36,11 @@ const PlayVideo = () => {
         await getVideos();
     }
 
+    const handleView = async(videoId:string)=>{
+        await axios.post(`${apiUrl}/videos/post-videos-view/${videoId}`,{},{withCredentials:true})
+        await getVideos();
+    }
+
     const handleFollowProfesseur = async(profId:string)=>{
         const res = await axios.post(`${apiUrl}/user/follow/${profId}`,{},{withCredentials:true});
         setLikeProfesseur(res.data.following)
@@ -55,6 +60,7 @@ return (
                     width={'100%'}
                     height={400}
                     className="rounded-md"
+                    onPlay={()=>handleView(videos._id)}
                 />
             </div>
             {/*****TITRE *****/}
