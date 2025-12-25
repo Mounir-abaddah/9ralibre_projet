@@ -20,7 +20,7 @@ const RelatedVideo = () => {
             setVideos(res.data.videos)       
         }
         getVideos();
-    },[apiUrl, niveaux]);
+    },[apiUrl, niveaux, videoId]);
 
     const bgItems = {
         "Mathématiques":"bg-red-400",
@@ -38,9 +38,9 @@ const RelatedVideo = () => {
     <div className='w-full space-y-4'>
         <h2 className='w-full border-b text-2xl font-bold'>Related Videos</h2>
         {videos.map((video)=>(
-            <div key={video._id} className='flex w-full'>
+            <div key={video._id} className='flex w-full cursor-pointer' onClick={()=>{navigate(`/Videos/${niveaux}/${video._id}`);window.location.reload()}}>
                 <div className='flex w-full gap-2'>
-                    <div onClick={()=>{navigate(`/Videos/${niveaux}/${video._id}`);window.location.reload()}} className="group relative h-[90px] w-[160px] flex-shrink-0 cursor-pointer overflow-hidden rounded-md md:h-[100px] md:w-[180px]">
+                    <div className="group relative h-[90px] w-[160px] flex-shrink-0 cursor-pointer overflow-hidden rounded-md md:h-[100px] md:w-[180px]">
                         {/*** IMAGE (THUMBNAIL) ***/}
                             <img src={video.thumbnail} alt="image_thumbnail" width={200} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"/>
                             <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/30">
@@ -70,7 +70,7 @@ const RelatedVideo = () => {
                 <div>
                     <DropdownMenu>
                     <DropdownMenuTrigger asChild className="cursor-pointer">
-                        <EllipsisVertical color="#000" size={16}/>
+                        <EllipsisVertical  size={16}/>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="start">
                         <DropdownMenuGroup>
