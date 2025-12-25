@@ -82,8 +82,8 @@ return (
                 </div>
                 {/*****LIKES ET SHARE ET SAVE *****/}
                 <div className="flex gap-2">
-                    <Button className={`flex cursor-pointer items-center gap-1 rounded-md  text-xs transition-all duration-200 hover:bg-gray-100 active:scale-95 ${isLike ? 'text-red-500' : ''}`} onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#000'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
-                    <Button className="hidden cursor-pointer md:flex lg:flex"><Share />Partager</Button>
+                    <Button variant={'outline'} className={`flex cursor-pointer items-center gap-1 rounded-md  text-xs transition-all duration-200 hover:bg-gray-100 active:scale-95 ${isLike ? 'text-red-500' : ''}`} onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#000'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
+                    <Button variant={'outline'} className="hidden cursor-pointer md:flex lg:flex"><Share />Partager</Button>
                     <Button variant="outline" className="hidden cursor-pointer md:flex lg:flex"><Bookmark />Enregistrer</Button>
                     <Popover>
                         <PopoverTrigger asChild>
