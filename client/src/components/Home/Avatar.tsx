@@ -5,8 +5,10 @@ import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 import { Book, Bookmark, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Sheet, Video } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
+import axios from "axios"
 
 const Avatare = ({ data }: typeAllData) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation(); 
 
@@ -20,6 +22,13 @@ const Avatare = ({ data }: typeAllData) => {
     { name: "Enregistrer", icon: <Bookmark size={18} />, path: `/Enregistrer/${data?.niveaux}` },
     { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
+
+  const handleLogout = async()=>{
+    const res = await axios.post(`${apiUrl}/auth/logout`,{},{withCredentials:true});
+    if(res.data.success){
+      window.location.href='/connexion';
+    }
+  }
 
   return (
     <div className="relative z-50" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
@@ -66,7 +75,8 @@ const Avatare = ({ data }: typeAllData) => {
             <Separator className="my-2 bg-gray-100" />
 
             <div className="p-2">
-              <Button 
+              <Button
+              onClick={handleLogout} 
                 variant={'destructive'} 
                 className="w-full cursor-pointer justify-start gap-2 border border-red-100 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
               >
