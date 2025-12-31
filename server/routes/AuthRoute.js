@@ -84,10 +84,10 @@ router.post('/connexion',async(req,res)=>{
             expiresIn : "1d"
         });
         res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
         });
         return res.status(200).send({message: "Connexion réussie",user:{niveaux:user.niveaux},success: true,});
   }catch(err){
@@ -168,20 +168,35 @@ router.get('/google',passport.authenticate('google', { scope: ['profile','email'
 router.get('/google/callback', passport.authenticate('google', {session:false , failureRedirect: `${process.env.FRONTEND_URL}/connexion` }),
   async function(req, res) {
     const user = req.user;
-    const userNiveaux = await User.findById(user)
     const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn : "1d"});
     res.cookie("token",token,{
-        httpOnly:true,
-        secure:process.env.NODE_ENV === "production",
-        sameSite:"strict"
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
     })
-    if(["1AC","2AC","3AC"].includes(userNiveaux.niveaux)){
-        res.redirect(`${process.env.FRONTEND_URL}/Dashboard/Collège/${userNiveaux.niveaux}`);
-    }else{
-        res.redirect(`${process.env.FRONTEND_URL}/Dashboard/Lycée/${userNiveaux.niveaux}`);
+    res.redirect(`${process.env.FRONTEND_URL}/`);
+});
+
+
+router.post('/logout', (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+        });
+        return res.status(200).send({
+            message: "Déconnexion réussie",
+            success: true
+        });
+    } catch (err) {
+        return res.status(500).send({
+            message: "Une erreur est survenue lors de la déconnexion",
+            success: false
+        });
     }
-  });
-  
+});
 
 
 module.exports = router
