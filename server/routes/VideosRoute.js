@@ -39,12 +39,39 @@ router.post('/add-videos',authMidllewares,async(req,res)=>{
 router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     try{
     const {nameNiveaux} = req.params;
-    const niveaux = await NiveauxModel.findOne({nom:nameNiveaux});    
-    const videos = await VideosModel.find({niveaux:niveaux._id}).populate("matiere").populate("professeur","nom prenom image").select("title thumbnail professeur views createdAt filiere matiere");
-    if(!videos){
-        return res.status(404).send({message:"Aucune videos est trouver",success:false})
+    const { page = 1, limit = 15, matiere, title, filiere , search } = req.query;
+    const skip = (page - 1)* limit;
+    const niveaux = await NiveauxModel.findOne({nom:nameNiveaux});
+    if(!niveaux){
+        return res.status(400).send({message:"aucune niveaux est disponible",success:false})
     }
-    res.status(200).json({success:true,videos})
+    const objectSearch = {niveaux:niveaux._id};
+    if (matiere) objectSearch.matiere = new RegExp(matiere, 'i');
+    if (title) objectSearch.title = new RegExp(title, 'i');
+    if (search){
+        objectSearch.$or = [
+            { title: new RegExp(search, 'i') },
+            { filiere: new RegExp(search, 'i') },
+        ];
+    }
+
+    const [videos,totalVideos] = await Promise.all([
+        VideosModel.find(objectSearch)
+        .populate("matiere")
+        .populate("professeur","nom prenom image")
+        .select("title thumbnail professeur views createdAt filiere matiere")
+        .skip(skip)
+        .limit(limit),
+        VideosModel.countDocuments(objectSearch)
+    ])
+    res.status(200).json({
+        success:true,
+        page,
+        limit,
+        totalVideos,
+        totalPages:Math.ceil(totalVideos / limit),
+        videos
+    })
     }catch(err){
         return res.status(500).send({message:"Une erreure est survenue lors de recuperation des videos",success:false,err})
     }
@@ -245,8 +272,6 @@ router.post('/post-videos-likes-commentaire/:videoId/:commentsId',authMidlleware
         return res.status(500).send({message:"Une erreure est survenue lors d'ajouter le commentaire",success:false,err})
     }
 });
-
-
 
 {/*********************** POST REPLY DU COMMENTAIRE   ***********************/}
 router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewares,async(req,res)=>{
