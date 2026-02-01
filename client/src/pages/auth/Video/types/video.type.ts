@@ -46,3 +46,12 @@ export interface TypeVideos{
     comments:Comments[];
     createdAt:string;
 }
+
+export interface AsideVideosProps {
+  search: string | null;
+  matiere: string | null;
+  filiere: string | null;
+  setSearch: (value: string | null) => void;
+  setMatiere: (value: string | null) => void;
+  setFiliere: (value: string | null) => void;
+}
