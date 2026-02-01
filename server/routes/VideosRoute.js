@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const VideosModel = require('../models/VideosModel');
 const NiveauxModel = require('../models/NiveauxModel');
+const MatiereModel = require('../models/MatiereModel');
 const UserModel = require('../models/UserModel');
 const {VideoShema,CommentsShema} = require('../validations/authValidation');
 const authMidllewares = require('../middlewares/authMiddleware');
@@ -39,20 +40,35 @@ router.post('/add-videos',authMidllewares,async(req,res)=>{
 router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     try{
     const {nameNiveaux} = req.params;
-    const { page = 1, limit = 15, matiere, title, filiere , search } = req.query;
+    let { page = 1, limit = 15, matiere, title, filiere , search } = req.query;
+    page = Number(page);
+    limit = Number(limit);
     const skip = (page - 1)* limit;
     const niveaux = await NiveauxModel.findOne({nom:nameNiveaux});
     if(!niveaux){
         return res.status(400).send({message:"aucune niveaux est disponible",success:false})
     }
     const objectSearch = {niveaux:niveaux._id};
-    if (matiere) objectSearch.matiere = new RegExp(matiere, 'i');
+
+    // Si on fournit un filtre `matiere` (nom ou portion), on recherche les IDs correspondants
+    if (matiere){
+        const matieresFound = await MatiereModel.find({ nom: new RegExp(matiere, 'i') }).select('_id');
+        const matieresIds = matieresFound.map(m => m._id);
+        objectSearch.matiere = { $in: matieresIds };
+    }
+
     if (title) objectSearch.title = new RegExp(title, 'i');
+    if (filiere) objectSearch.filiere = new RegExp(filiere, 'i');
+
+    // `search` : on cherche dans le title / filiere et aussi dans le nom de la matiere
     if (search){
+        const matieresMatch = await MatiereModel.find({ nom: new RegExp(search, 'i') }).select('_id');
+        const matieresMatchIds = matieresMatch.map(m => m._id);
         objectSearch.$or = [
             { title: new RegExp(search, 'i') },
             { filiere: new RegExp(search, 'i') },
         ];
+        if (matieresMatchIds.length) objectSearch.$or.push({ matiere: { $in: matieresMatchIds } });
     }
 
     const [videos,totalVideos] = await Promise.all([
@@ -61,7 +77,7 @@ router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
         .populate("professeur","nom prenom image")
         .select("title thumbnail professeur views createdAt filiere matiere")
         .skip(skip)
-        .limit(limit),
+        .limit(limit).sort({createdAt:-1}),
         VideosModel.countDocuments(objectSearch)
     ])
     res.status(200).json({
