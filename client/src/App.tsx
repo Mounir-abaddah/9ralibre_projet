@@ -17,6 +17,8 @@ import Settings from './pages/auth/Settings/Settings';
 import { ThemeProvider } from './context/ThemeContext';
 import Videos from './pages/auth/Video/Video';
 import PlayVideo from './pages/auth/Video/PlayVideo';
+import Quiz from './pages/auth/Quiz/Quiz';
+import Quiz_id from './pages/auth/Quiz/Quiz_id';
 
 const App = () => {
   return (
@@ -38,6 +40,8 @@ const App = () => {
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
+            <Route path='/Quiz/:niveaux' element={<Layouts><Quiz /></Layouts>} />
+            <Route path='/Quiz/:niveaux/:quizId' element={<Layouts><Quiz_id /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
