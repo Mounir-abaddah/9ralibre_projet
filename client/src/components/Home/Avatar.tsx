@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useRef, useState } from "react"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
-import { Book, Bookmark, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Sheet, Video } from "lucide-react"
+import { Book, BookmarkCheck, BookOpen, BookType, ChevronDown, LogOut, MessageCircleMoreIcon, Settings, Sheet, Video } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import axios from "axios"
 import { createPortal } from "react-dom"
@@ -19,9 +19,9 @@ const Avatare = ({ data }: typeAllData) => {
     { name: "Cours", icon: <Book size={18} />, path: `/Cours/${data?.niveaux}` },
     { name: "Videos", icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
     { name: "Quiz", icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
-    { name: "Histoire", icon: <BookOpen size={18} />, path: "/" },
+    { name: "Histoire", icon: <BookOpen size={18} />, path: `/Histoire/${data?.niveaux}` },
     { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Messagerie/${data?.niveaux}` },
-    { name: "Enregistrer", icon: <Bookmark size={18} />, path: `/Enregistrer/${data?.niveaux}` },
+    { name: "Enregistrer", icon: <BookmarkCheck size={18} />, path: `/Enregistrer/${data?.niveaux}` },
     { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
 
