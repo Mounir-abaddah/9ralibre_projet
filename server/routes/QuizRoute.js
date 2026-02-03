@@ -132,7 +132,7 @@ router.post("/:id/submit", authMiddleware, async (req, res) => {
 
     res.status(200).json({
         success: true,
-        result: { score, totalQuestions, percentage, processedAnswers },
+        result: { score, totalQuestions, processedAnswers },
         quizResult,
     });
     } catch (err) {
