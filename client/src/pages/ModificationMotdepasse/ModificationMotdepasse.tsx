@@ -86,18 +86,18 @@ const ModificationMotdepasse = () => {
   return (
     <div className="mx-auto max-w-xl">
       <header>
-        <img src={ralibre_logo} alt="9ralibre_logo" width={200} />
+        <img src={ralibre_logo} alt="9ralibre_logo" width={200} loading='lazy'/>
       </header>
 
-      <div className="py-4 px-6 text-center rounded-t-lg bg-gray-100">
-        <h2 className="flex items-center justify-center font-semibold text-xl mb-0 text-[#3F3F3F]">
+      <div className="rounded-t-lg bg-gray-100 px-6 py-4 text-center">
+        <h2 className="mb-0 flex items-center justify-center text-xl font-semibold text-[#3F3F3F]">
           <span>Nouveau mot de passe</span>
         </h2>
       </div>
 
-      <div className="p-8 bg-white">
+      <div className="bg-white p-8">
         {serverMessage && (
-          <p className="p-2 border-l-2 border-red-500 bg-red-100 text-red-700 rounded-md w-full mb-4">
+          <p className="mb-4 w-full rounded-md border-l-2 border-red-500 bg-red-100 p-2 text-red-700">
             {serverMessage}
           </p>
         )}
