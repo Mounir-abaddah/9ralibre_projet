@@ -99,6 +99,7 @@ const Connexion = () => {
             src={logo}
             alt="logo_9ralibre"
             width={150}
+            loading='lazy'
             className="absolute -top-2.5 right-0 w-20 rotate-6 cursor-pointer transition-all hover:w-24 md:w-36 hover:md:w-40 lg:w-40 hover:lg:w-44"
           />
         </Link>
