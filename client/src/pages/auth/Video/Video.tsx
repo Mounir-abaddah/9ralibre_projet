@@ -130,6 +130,7 @@ return (
                         src={item.thumbnail}
                         alt="thumbnail"
                         className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading='lazy'
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/30">
                         <div className="scale-90 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100">
@@ -157,6 +158,7 @@ return (
                         <img
                             src={item.professeur.image}
                             className="size-8 rounded-full object-cover md:size-10"
+                            loading='lazy'
                         />
                         </Link>
 
@@ -218,7 +220,7 @@ return (
         </div>
         ) : (
         <div className="flex w-full flex-col items-center justify-center">
-            <img src={No_Data} alt="no data" width={400} />
+            <img src={No_Data} alt="no data" width={400} loading='lazy'/>
             <p>Aucune vidéo disponible pour le moment</p>
         </div>
         )}
