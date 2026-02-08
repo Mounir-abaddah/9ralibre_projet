@@ -41,7 +41,7 @@ return (
     </div>
     <div className="flex w-full items-center justify-between bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
         <div className="flex items-center gap-2">
-        <img src={logo} alt="logo" className="w-10" />
+        <img src={logo} alt="logo" className="w-10" loading='lazy'/>
         <span className="text-lg font-bold text-gray-800 dark:text-white">
             9ralibre
         </span>
