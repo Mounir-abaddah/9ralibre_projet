@@ -19,6 +19,7 @@ import Videos from './pages/auth/Video/Video';
 import PlayVideo from './pages/auth/Video/PlayVideo';
 import Quiz from './pages/auth/Quiz/Quiz';
 import Quiz_id from './pages/auth/Quiz/Quiz_id';
+import Histoire from './pages/auth/Histoire/Histoire';
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Quiz/:niveaux' element={<Layouts><Quiz /></Layouts>} />
             <Route path='/Quiz/:niveaux/:quizId' element={<Layouts><Quiz_id /></Layouts>} />
+            <Route path='/Histoire/:niveaux' element={<Layouts><Histoire /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
