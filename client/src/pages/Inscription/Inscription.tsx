@@ -105,6 +105,7 @@ const Inscription = () => {
           alt="logo_inscription"
           width={700}
           height={700}
+          loading='lazy'
         />
       </div>
 
@@ -114,6 +115,7 @@ const Inscription = () => {
             src={gralibre}
             alt="logo_9ralibre"
             width={150}
+            loading='lazy'
             className="absolute -top-2.5 right-0 w-20 rotate-6 cursor-pointer transition-all hover:w-24 md:w-36 lg:w-40"
           />
         </Link>
