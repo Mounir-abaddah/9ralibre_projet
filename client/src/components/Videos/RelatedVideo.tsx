@@ -42,7 +42,7 @@ const RelatedVideo = () => {
                 <div className='flex w-full gap-2'>
                     <div className="group relative h-[90px] w-[160px] flex-shrink-0 cursor-pointer overflow-hidden rounded-md md:h-[100px] md:w-[180px]">
                         {/*** IMAGE (THUMBNAIL) ***/}
-                            <img src={video.thumbnail} alt="image_thumbnail" width={200} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"/>
+                            <img src={video.thumbnail} alt="image_thumbnail" width={200} loading='lazy' className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"/>
                             <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/30">
                                 <div className="scale-90 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100">
                                     <div className="rounded-full bg-amber-400 p-3 shadow-lg">
