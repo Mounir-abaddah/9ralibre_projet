@@ -71,7 +71,7 @@ return (
             <div className="flex w-full flex-wrap justify-between space-y-4 md:space-y-0 lg:space-y-0">
                 {/*****Professeur(Follow,Followers) *****/}
                 <div className="flex gap-2">
-                    <img src={videos.professeur.image} alt="image_de_professeur" width={40} className="rounded-full"/>
+                    <img src={videos.professeur.image} loading='lazy' alt="image_de_professeur" width={40} className="rounded-full"/>
                     <div className="flex flex-col items-start">
                         <span>{videos.professeur.nom} {videos.professeur.prenom}</span>
                         <span className="text-xs text-gray-400">{videos.professeur.followers.length}  d’abonnés</span>
