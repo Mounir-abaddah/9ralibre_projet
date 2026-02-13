@@ -20,6 +20,8 @@ import PlayVideo from './pages/auth/Video/PlayVideo';
 import Quiz from './pages/auth/Quiz/Quiz';
 import Quiz_id from './pages/auth/Quiz/Quiz_id';
 import Histoire from './pages/auth/Histoire/Histoire';
+import Profile from './pages/auth/Profile/Profile';
+import Chat from './pages/auth/Chat/Chat';
 
 const App = () => {
   return (
@@ -38,12 +40,14 @@ const App = () => {
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
+            <Route path='/Profile/:name' element={<Layouts><Profile /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Quiz/:niveaux' element={<Layouts><Quiz /></Layouts>} />
             <Route path='/Quiz/:niveaux/:quizId' element={<Layouts><Quiz_id /></Layouts>} />
             <Route path='/Histoire/:niveaux' element={<Layouts><Histoire /></Layouts>} />
+            <Route path='/Chat/:Conversationid' element={<Layouts><Chat /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
