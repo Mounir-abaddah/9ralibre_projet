@@ -20,7 +20,7 @@ const Avatare = ({ data }: typeAllData) => {
     { name: "Videos", icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
     { name: "Quiz", icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
     { name: "Histoire", icon: <BookOpen size={18} />, path: `/Histoire/${data?.niveaux}` },
-    { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Messagerie/${data?.niveaux}` },
+    { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Chat/${data?.niveaux}` },
     { name: "Enregistrer", icon: <BookmarkCheck size={18} />, path: `/Enregistrer/${data?.niveaux}` },
     { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
