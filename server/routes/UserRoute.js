@@ -217,8 +217,6 @@ router.delete('/deleteEvents/:eventId',authMiddleware,async(req,res)=>{
     }
 });
 
-
-
 router.post('/follow/:professeurId',authMiddleware,async(req,res)=>{
     const {professeurId} = req.params;
     const userId = req.user.userId;
@@ -252,6 +250,26 @@ router.post('/follow/:professeurId',authMiddleware,async(req,res)=>{
         following: !alreadyFollowing,
         followersCount: professeur.followers.length,
     });
-})
+});
+
+
+router.get('/getUser/:nameProfile', authMiddleware, async (req, res) => {
+    try {
+        const { nameProfile } = req.params;
+
+        const [nom, prenom] = nameProfile.split("-");
+
+        const user = await User.findOne({ nom, prenom }).select("-password");
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        res.json(user);
+
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+});
 
 module.exports = router
