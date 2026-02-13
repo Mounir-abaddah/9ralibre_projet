@@ -28,7 +28,8 @@ const userRouter = require('./routes/UserRoute');
 const coursRouter = require('./routes/CoursRoute');
 const videosRouter = require('./routes/VideosRoute');
 const quizRouter = require('./routes/QuizRoute');
-const messagerieRouter = require('./routes/MessagerieRoute')
+const messagerieRouter = require('./routes/MessagerieRoute');
+const enregistrerRouter = require('./routes/EnregistrerRoute')
 
 app.use('/auth',authRouter)
 app.use('/user',userRouter)
@@ -36,6 +37,7 @@ app.use('/cours',coursRouter);
 app.use('/videos',videosRouter)
 app.use('/quiz',quizRouter);
 app.use('/messagerie',messagerieRouter);
+app.use('/save',enregistrerRouter)
 
 
 const httpServer = createServer(app);
