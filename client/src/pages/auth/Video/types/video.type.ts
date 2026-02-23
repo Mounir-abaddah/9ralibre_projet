@@ -1,4 +1,4 @@
-interface Professeur{
+export interface Professeur{
     _id:string;
     nom:string;
     prenom:string;
@@ -7,11 +7,11 @@ interface Professeur{
     following:string[];
     followers:string[];
 }
-interface Niveaux{
+export interface Niveaux{
     _id:string;
     nom:string;
 }
-interface Matiere{
+export interface Matiere{
     _id:string;
     nom:string;
 }
