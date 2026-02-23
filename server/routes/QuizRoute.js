@@ -33,6 +33,9 @@ router.post('/add-quiz', authMiddleware, async (req, res) => {
 });
 
 router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1)*limit;
     try {
         const niveauxName = req.params.niveauxName;
         const niveaux = await Niveaux.findOne({nom:niveauxName});
@@ -40,17 +43,30 @@ router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: "Niveau non trouvé" });
         }
         const quiz = await Quiz.find({ niveaux: niveaux })
-        .populate("professeur","nom prenom")
+        .populate("professeur","nom prenom image role")
         .populate("niveaux","nom")
         .populate("matiere","nom")
-        .select("-questions.correctAnswer");
-        res.json(quiz);
+        .select("-questions.correctAnswer")
+        .limit(limit)
+        .skip(skip)
+        .sort({createdAt:-1});
+
+        const usersResults = await ResultsQuiz.find({
+            userId:req.user.userId
+        });
+        const passedQuiz = usersResults.map(r => r.quizId.toString());
+        const finalQuiz = quiz.map(q => ({
+            ...q.toObject(),
+            alreadyPassed: passedQuiz.includes(q._id.toString())
+        }))
+        const totalQuiz = await Quiz.countDocuments({niveaux:niveaux})
+        res.json({limit,skip,totalQuiz,finalQuiz});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-router.get('/quiz/:quizId', authMiddleware, async (req, res) => {
+router.get('/:quizId', authMiddleware, async (req, res) => {
 try {
     const quiz = await Quiz.findById(req.params.quizId)
     .populate("professeur","nom prenom")
@@ -94,7 +110,7 @@ router.post('/submit',authMiddleware,async(req,res)=>{
         const question = quiz.questions[i];
         const userAnswer = answers[i];
         if (question.correctAnswer === userAnswer) {
-            score += 10;
+            score += 1;
         }else {
             wrongAnswers.push({
                 question: question.question,
@@ -108,18 +124,38 @@ router.post('/submit',authMiddleware,async(req,res)=>{
         quizId,
         score,
         totalQuestions: quiz.questions.length,
-        wrongAnswers
+        wrongAnswers,
     });
     res.json(result);
 });
 
+router.get('/results/:quizId',authMiddleware,async(req,res)=>{
+    const userId = req.user.userId;
+    const {quizId} = req.params;
+    const results = await ResultsQuiz.find({quizId,userId:userId}).populate("quizId","text");
+    res.json(results);
+})
+
 router.get('/leaderboard/:quizId', authMiddleware, async (req, res) => {
     try {
         const quizId = req.params.quizId;
-        const results = await ResultsQuiz.find({ quizId })
-            .populate('userId', 'nom prenom')
+        const userId = req.user.userId;
+        const results = await ResultsQuiz.find({ quizId,userId:userId })
+            .populate('userId', 'nom prenom role')
             .sort({ score: -1 });
         res.json(results);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/check/:quizId', authMiddleware, async (req, res) => {
+    try {
+        const alreadyDone = await ResultsQuiz.findOne({
+            userId: req.user.userId,
+            quizId: req.params.quizId,
+        });
+        res.json({ alreadyPassed: !!alreadyDone });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
