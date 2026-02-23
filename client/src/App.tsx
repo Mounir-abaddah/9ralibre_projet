@@ -19,6 +19,9 @@ import Videos from './pages/auth/Video/Video';
 import PlayVideo from './pages/auth/Video/PlayVideo';
 import Histoire from './pages/auth/Histoire/Histoire';
 import Profile from './pages/auth/Profile/Profile';
+import Quiz from './pages/auth/Quiz/Quiz';
+import Quiz_Start from './pages/auth/Quiz/Quiz_Start';
+import Resultat from './pages/auth/Quiz/Resultat';
 
 const App = () => {
   return (
@@ -42,6 +45,9 @@ const App = () => {
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Histoire/:niveaux' element={<Layouts><Histoire /></Layouts>} />
+            <Route path='/Quiz/:niveaux' element={<Layouts><Quiz /></Layouts>} />
+            <Route path='/Quiz/start/:niveaux/:quizId' element={<Quiz_Start />} />
+            <Route path='/Quiz/resultat/:quizId' element={<Layouts><Resultat /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
