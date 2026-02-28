@@ -1,186 +1,214 @@
-# 💬 Real-Time Messagerie API -- Socket.IO + Express + MongoDB
+# 📡 Chat Temps Réel avec Socket.IO
 
-Backend d'une application de messagerie en temps réel utilisant :
+## 🧠 Description
 
--   Node.js
--   Express.js
--   MongoDB avec Mongoose
--   Socket.IO
--   JWT + Passport
--   Architecture MERN
+Ce projet implémente un système de chat en temps réel utilisant
+**Socket.IO** avec :
 
-------------------------------------------------------------------------
+-   Frontend : React + Socket.IO Client
+-   Backend : Node.js + Express + Socket.IO Server
 
-# 🚀 Installation du projet
+Fonctionnalités principales :
 
-## 1️⃣ Cloner le projet
-
-``` bash
-git clone https://github.com/ton-username/ton-repository.git
-cd ton-repository
-```
+-   ✅ Envoi et réception de messages en temps réel
+-   ✅ Statut En ligne / Hors ligne
+-   ✅ Système de confirmation "Vu" (✓✓)
+-   ✅ Gestion des rooms par conversation
+-   ✅ Synchronisation automatique des utilisateurs connectés
 
 ------------------------------------------------------------------------
 
-## 2️⃣ Installer les dépendances
+# ⚙️ Architecture Socket
 
-``` bash
-npm install
-```
+Le système fonctionne avec :
 
-### 📦 Dépendances principales
-
-``` bash
-npm install express mongoose cors dotenv passport cookie-parser socket.io
-```
-
-Si tu n'as pas nodemon :
-
-``` bash
-npm install --save-dev nodemon
-```
+-   Des événements personnalisés (custom events)
+-   Des rooms (salons privés)
+-   Une Map des utilisateurs connectés
+-   Une communication bidirectionnelle client ↔ serveur
 
 ------------------------------------------------------------------------
 
-## 3️⃣ Configurer le fichier .env
+# 🖥️ Backend -- Fonctionnement Socket.IO
 
-Créer un fichier `.env` à la racine du projet :
-
-``` env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/nom_de_ta_db
-FRONTEND_URL=http://localhost:5173
-JWT_SECRET=ton_secret
-```
-
-------------------------------------------------------------------------
-
-## 4️⃣ Lancer le serveur
-
-``` bash
-npm run dev
-```
-
-ou
-
-``` bash
-node server.js
-```
-
-------------------------------------------------------------------------
-
-# 🧠 Architecture du projet
-
-## 📁 Structure
-
-    config/
-    models/
-    routes/
-    middlewares/
-    uploads/
-    server.js
-
-------------------------------------------------------------------------
-
-# 🔌 Configuration Socket.IO
+## Initialisation du serveur
 
 ``` js
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+
 const httpServer = createServer(app);
 
-const io = new Server(httpServer,{
-    cors:{
-        origin:process.env.FRONTEND_URL,
-        credentials:true
-    }
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+  }
 });
 ```
 
+Le serveur HTTP est créé puis Socket.IO est attaché dessus. Le CORS
+autorise le frontend à se connecter.
+
 ------------------------------------------------------------------------
 
-# 📡 Fonctionnement des Sockets
-
-## ✅ Connexion utilisateur
+# 👥 Gestion des utilisateurs en ligne
 
 ``` js
-io.on("connection", (socket) => {
-    console.log("Un utilisateur est connecté : ", socket.id);
+const onlineUsers = new Map();
+```
+
+Structure :
+
+userId → socketId
+
+------------------------------------------------------------------------
+
+## 1️⃣ User Online
+
+``` js
+socket.on("user:online", (userId) => {
+    onlineUsers.set(userId, socket.id);
+    io.emit("users:online", Array.from(onlineUsers.keys()));
 });
 ```
 
+Quand un utilisateur se connecte :
+
+-   Il envoie son userId
+-   On l'enregistre dans la Map
+-   On broadcast la liste des users connectés
+
+Cela permet d'afficher : 🟢 En ligne\
+🔴 Hors ligne
+
 ------------------------------------------------------------------------
 
-## 🏠 Rejoindre une conversation (Room)
+# 💬 Gestion des conversations (Rooms)
+
+## Rejoindre une conversation
 
 ``` js
-socket.on("joinRoom", (conversationId) => {
+socket.on("conversation:join", (conversationId) => {
     socket.join(conversationId);
 });
 ```
 
-Chaque conversation possède son propre `conversationId`. Cela permet
-d'envoyer les messages uniquement aux membres concernés.
+Chaque conversation est une room privée. Seuls les membres de la room
+reçoivent les messages.
 
 ------------------------------------------------------------------------
 
-## ✉️ Envoyer un message en temps réel
+## Quitter une conversation
 
 ``` js
-socket.on("sendMessage", ({ conversationId, message }) => {
-    socket.to(conversationId).emit("receiveMessage", message);
+socket.on("conversation:leave", (conversationId) => {
+    socket.leave(conversationId);
 });
 ```
 
--   Le message est sauvegardé en base via API REST
--   Puis envoyé en temps réel via Socket.IO
+------------------------------------------------------------------------
+
+# ✉️ Envoi et Réception des messages
+
+## Envoi côté client
+
+1.  Message sauvegardé en base via HTTP
+2.  Message envoyé via socket
+
+``` js
+socket.emit("message:send", newMessage);
+```
 
 ------------------------------------------------------------------------
 
-## ❌ Déconnexion
+## Réception côté serveur
+
+``` js
+socket.on("message:send", (message) => {
+    socket.to(message.conversationId)
+          .emit("message:receive", message);
+});
+```
+
+Explication :
+
+-   On envoie le message
+-   Seulement aux autres membres de la room
+-   Pas à l'expéditeur
+
+------------------------------------------------------------------------
+
+# 👁️ Système "Vu"
+
+## Quand un message est lu
+
+``` js
+socket.emit("message:seen", {
+  conversationId,
+  userId
+});
+```
+
+## Côté serveur
+
+``` js
+socket.on("message:seen", ({ conversationId, userId }) => {
+    socket.to(conversationId)
+          .emit("message:seen:update", { conversationId, userId });
+});
+```
+
+Cela met à jour le statut :
+
+✓ Envoyé\
+✓✓ Vu
+
+------------------------------------------------------------------------
+
+# 🔌 Déconnexion
 
 ``` js
 socket.on("disconnect", () => {
-    console.log("Utilisateur déconnecté : ", socket.id);
+    for (const [userId, socketId] of onlineUsers.entries()) {
+        if (socketId === socket.id) {
+            onlineUsers.delete(userId);
+            break;
+        }
+    }
+    io.emit("users:online", Array.from(onlineUsers.keys()));
 });
 ```
 
-------------------------------------------------------------------------
+Quand un utilisateur se déconnecte :
 
-# 🗄️ Modèles MongoDB
-
-## Conversation Model
-
--   members : tableau d'utilisateurs
--   timestamps activés
-
-## Message Model
-
--   conversationId
--   sender
--   text
--   readBy (gestion des messages lus)
--   timestamps activés
+-   On le supprime de la Map
+-   On met à jour la liste globale
 
 ------------------------------------------------------------------------
 
-# 🔐 Sécurité
+# 🚀 Résumé du Flux Temps Réel
 
--   Authentification JWT
--   Middleware Passport
--   Accès protégé aux routes
-
-------------------------------------------------------------------------
-
-# ✅ Fonctionnalités implémentées
-
--   Création automatique de conversation
--   Liste des conversations triées par dernière activité
--   Compteur de messages non lus
--   Marquage des messages comme lus
--   Messagerie temps réel avec rooms Socket.IO
+Connexion → user:online\
+Rejoindre conversation → conversation:join\
+Envoyer message → message:send\
+Recevoir message → message:receive\
+Message lu → message:seen\
+Mise à jour vu → message:seen:update\
+Déconnexion → mise à jour users:online
 
 ------------------------------------------------------------------------
 
-# 👨‍💻 Auteur
+# 🏁 Conclusion
 
-Projet développé dans le cadre d'un apprentissage MERN Stack +
-Socket.IO.
+Cette implémentation permet :
+
+-   Une communication instantanée
+-   Une gestion propre des utilisateurs connectés
+-   Une séparation claire entre sauvegarde BDD (HTTP) et temps réel
+    (Socket)
+-   Un système proche de WhatsApp en comportement
+
+------------------------------------------------------------------------
+
+Auteur : Mounir
