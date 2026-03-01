@@ -24,6 +24,7 @@ import Quiz_Start from './pages/auth/Quiz/Quiz_Start';
 import Resultat from './pages/auth/Quiz/Resultat';
 import Chat from './pages/auth/Chat/Chat';
 import ChatStart from './pages/auth/Chat/ChatStart';
+import Save from './pages/auth/Save/Save';
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
             <Route path='/Quiz/resultat/:quizId' element={<Layouts><Resultat /></Layouts>} />
             <Route path='/Chat/:niveaux' element={<Layouts><Chat /></Layouts>} />
             <Route path='/Chat/start/:chatId' element={<Layouts><ChatStart /></Layouts>} />
+            <Route path='/Save/:niveaux' element={<Layouts><Save /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
         </Route>
         <Route />
