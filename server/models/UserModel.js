@@ -1,87 +1,88 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-    nom:{
-        type:String,
-        default : ""
+const UserSchema = new mongoose.Schema(
+  {
+    nom: {
+      type: String,
+      default: "",
     },
-    prenom:{
-        type:String,
-        default : ""
+    prenom: {
+      type: String,
+      default: "",
     },
-    role:{
-        type:String,
-        enum:['Non renseigné','Etudiant','Etudiante','Professeur'],
-        default : "Non renseigné"
+    role: {
+      type: String,
+      enum: ["Non renseigné", "Etudiant", "Etudiante", "Professeur"],
+      default: "Non renseigné",
     },
-    email:{
-        type:String,
+    email: {
+      type: String,
     },
-    password:{
-        type:String,
-        default : ""
+    password: {
+      type: String,
+      default: "",
     },
-    image:{
-        type:String,
-        default:""
+    image: {
+      type: String,
+      default: "",
     },
     provider: {
-        type: String,
-        enum: ["local", "google"],
-        default: "local"
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
     },
-    niveaux:{
-        type:String,
-        enum:["Non renseigné","1AC","2AC","3AC","TC","1BAC","2BAC"],
-        default:"Non renseigné"
+    niveaux: {
+      type: String,
+      enum: ["Non renseigné", "1AC", "2AC", "3AC", "TC", "1BAC", "2BAC"],
+      default: "Non renseigné",
     },
-    completeProfile:{
-        type:Boolean,
-        default:false
+    completeProfile: {
+      type: Boolean,
+      default: false,
     },
-    accountVerified:{
-        type:Boolean,
-        default:false
+    accountVerified: {
+      type: Boolean,
+      default: false,
     },
-    events:[{
-        Date:{
-            type:Date,
-            required:true
+    events: [
+      {
+        Date: {
+          type: Date,
+          required: true,
         },
-        items:[{
-            type:{
-                type:String,
-                required:true
+        items: [
+          {
+            type: {
+              type: String,
+              required: true,
             },
-            titre:{
-                type:String,
-                required:true
+            titre: {
+              type: String,
+              required: true,
             },
-            Description:{
-                type:String,
-                required:false
-            }
-        }] 
-    }],
-    followers:[
-        {
-            type: mongoose.Schema.Types.ObjectId, ref: "User" 
-        }
+            Description: {
+              type: String,
+              required: false,
+            },
+          },
+        ],
+      },
     ],
-    following:[
-        { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
     ],
-    savedVideos: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "Video" }
-    ],
-    savedCours: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "Cours" }
-    ]
-},{
-    timestamps:true
-})
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    savedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
+    savedCours: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cours" }],
+  },
+  {
+    timestamps: true,
+  },
+);
 
-const UserModels = mongoose.model("User", UserSchema)
+const UserModels = mongoose.model("User", UserSchema);
 
-
-module.exports = UserModels
+module.exports = UserModels;
