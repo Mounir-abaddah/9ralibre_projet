@@ -39,15 +39,18 @@ interface Cours {
   filière:string;
   pdfUrl: string;
   matiere: Matiere;
+  isSaved?: boolean;
 }
 
 const Cours = () => {
     document.title = "Cours | 9ralibre"
+    const apiUrl = import.meta.env.VITE_API_URL;
     const {niveaux} = useParams();
     const {matiere,semestre,type,filiere,setMatiere,setSemestre,setType,setFiliere,resetAll}=useCoursFilter();
     const [loading,setLoading]=useState(false);
     const [cours,setCours] = useState<Cours[]>([]);
     const [search,setSearch]= useState("");
+    const [savedCoursMap, setSavedCoursMap] = useState<Record<string, boolean>>({});
     const debounceSearch = useDebounce(search , 500);
     const isInitialMount = useRef(true);
     const [searchParams,setSearchParams]=useSearchParams();
@@ -149,6 +152,22 @@ const Cours = () => {
     'Examen Régional': <Landmark />,
   }
 
+  const handleSaveCours = async (coursId: string) => {
+    try {
+      const res = await axios.post(
+        `${apiUrl}/cours/save-cours/${coursId}`,
+        {},
+        { withCredentials: true }
+      );
+      setSavedCoursMap(prev => ({
+        ...prev,
+        [coursId]: res.data.isSaved
+      }));
+    } catch (err) {
+      console.error('Erreur:', err);
+    }
+  };
+
   const handleResetAll = useCallback(()=>{
     resetAll();
     setSearch('')
@@ -232,10 +251,11 @@ const Cours = () => {
                 <DropdownMenuContent  align="center" className='fixed -right-2.5'>
                     <DropdownMenuGroup>
                       <DropdownMenuItem 
-                        className='flex cursor-pointer items-center justify-between'
+                        onClick={() => handleSaveCours(item._id)}
+                        className={`flex cursor-pointer items-center justify-between ${savedCoursMap[item._id] ? 'text-amber-500 bg-amber-50' : ''}`}
                       >
-                        Enregistrer
-                        <Bookmark />
+                        {savedCoursMap[item._id] ? 'Enregistré' : 'Enregistrer'}
+                        <Bookmark fill={savedCoursMap[item._id] ? '#FF9500' : 'none'} color={savedCoursMap[item._id] ? '#FF9500' : '#000'} />
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         className='flex cursor-pointer items-center justify-between'
