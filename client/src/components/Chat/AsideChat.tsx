@@ -14,6 +14,7 @@ const AsideChat = () => {
   const { data } = useProtectedRoutes();
   const navigate = useNavigate();
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [search,setSearch] = useState("")
 
   const fetchConversations = async () => {
     const res = await axios.get(`${apiUrl}/chat/my-conversation`, { withCredentials: true });
@@ -42,10 +43,22 @@ const AsideChat = () => {
     };
   }, [data?.id]);
 
+const filteredConversations = conversation.filter((conv) => {
+  const otherUser = conv.members.find(
+    (member) => member._id !== data?.id
+  );
+
+  if (!otherUser) return false;
+
+  const fullName = `${otherUser.nom} ${otherUser.prenom}`.toLowerCase();
+
+  return fullName.includes(search.toLowerCase());
+});
+
   return (
     <div className="space-y-3 p-3">
-      <Input type="text" placeholder="Rechercher dans les messageries" />
-      {conversation.map((conv) => {
+      <Input type="text" placeholder="Rechercher dans les messageries" value={search} onChange={(e)=>setSearch(e.target.value)}/>
+      {filteredConversations.map((conv) => {
         const otherUser = conv.members.find((member) => member._id !== data?.id);
         const isLastMessageMine = conv.lastMessage?.sender === data?.id;
         const isOnline = otherUser ? onlineUsers.includes(otherUser._id ?? "") : false;
