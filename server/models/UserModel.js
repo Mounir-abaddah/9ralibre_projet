@@ -70,6 +70,12 @@ const UserSchema = new mongoose.Schema({
     ],
     following:[
         { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+    ],
+    savedVideos: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "Video" }
+    ],
+    savedCours: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "Cours" }
     ]
 },{
     timestamps:true
