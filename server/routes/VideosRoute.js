@@ -107,12 +107,15 @@ router.get('/get-videos-id/:videoId',authMidllewares,async(req,res)=>{
         if(!videos){
             return res.status(404).send({message:"Aucune videos est trouver d'apres ce Id",success:false})
         }
+        const user = await UserModel.findById(userId);
         const likes = videos.likes.some(c => c._id.toString() === userId);
         const isFollowProfesseur = videos.professeur.followers.some(c => c._id.toString() === userId);
+        const isSaved = user.savedVideos.some(id => id.toString() === videoId);
         return res.status(200).send({
             success:true,
             likesCount:videos.likes.length,
             isLikes:likes,
+            isSaved,
             isFollowProfesseur,
             viewsCount:videos.views,
             videos
@@ -179,6 +182,85 @@ router.post('/post-videos-view/:videoId',authMidllewares,async(req,res)=>{
     }    
     await videos.save();
     return res.status(200).json({videos})
+});
+
+{/*********************** POST SAVE VIDEO ET UNSAVE IT ***********************/}
+router.post('/post-videos-save/:videoId',authMidllewares,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const {videoId} = req.params;
+        const user = await UserModel.findById(userId);
+        if(!user){
+            return res.status(404).send({message:"Utilisateur non trouvé",success:false})
+        }
+        
+        // Vérifier si la vidéo est déjà sauvegardée
+        const isSaved = user.savedVideos.some(id => id.toString() === videoId);
+        
+        if(!isSaved){
+            user.savedVideos.push(videoId);
+        }else{
+            user.savedVideos = user.savedVideos.filter(id => id.toString() !== videoId);
+        }
+        
+        await user.save();
+        
+        // Vérifier le nouvel état après sauvegarde
+        const newIsSaved = user.savedVideos.some(id => id.toString() === videoId);
+        
+        return res.status(200).send({
+            success:true,
+            isSaved: newIsSaved,
+            message: newIsSaved ? "Vidéo enregistrée" : "Vidéo supprimée des enregistrements"
+        })
+    }catch(err){
+        console.error("Erreur save video:", err);
+        return res.status(500).send({message:"Une erreur est survenue lors de l'enregistrement de la vidéo",success:false,err})
+    }
+});
+
+{/*********************** GET ALL SAVED VIDEOS***********************/}
+router.get('/get-saved-videos',authMidllewares,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        let { page = 1, limit = 12 } = req.query;
+        page = Number(page);
+        limit = Number(limit);
+        const skip = (page - 1) * limit;
+        
+        const user = await UserModel.findById(userId);
+        
+        if(!user){
+            return res.status(404).send({message:"Utilisateur non trouvé",success:false})
+        }
+
+        const totalSaved = user.savedVideos.length;
+        
+        // Récupérer les IDs avec pagination
+        const savedVideoIds = user.savedVideos.slice(skip, skip + limit);
+        
+        // Ensuite, populate les détails des vidéos
+        const populatedUser = await UserModel.findById(userId).populate({
+            path: 'savedVideos',
+            match: { _id: { $in: savedVideoIds } },
+            populate: [
+                { path: 'professeur', select: 'nom prenom image' },
+                { path: 'matiere', select: 'nom' }
+            ]
+        });
+        
+        return res.status(200).send({
+            success:true,
+            page,
+            limit,
+            totalSaved,
+            totalPages: Math.ceil(totalSaved / limit),
+            savedVideos: populatedUser.savedVideos
+        })
+    }catch(err){
+        console.error("Erreur get saved videos:", err);
+        return res.status(500).send({message:"Une erreur est survenue lors de la récupération des vidéos enregistrées",success:false,err})
+    }
 });
 
 {/*********************** POST COMMENTAIRE   ***********************/}
