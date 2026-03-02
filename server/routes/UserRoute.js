@@ -201,7 +201,7 @@ router.post('/postEvents',authMiddleware,async(req,res)=>{
         }
         return res.status(500).send({message:"Une erreur est survenue",success:false,err})
     }
-})
+});
 
 router.delete('/deleteEvents/:eventId',authMiddleware,async(req,res)=>{
     try{
@@ -269,6 +269,87 @@ router.get('/getUser/:nameProfile', authMiddleware, async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur" });
+    }
+});
+
+router.put('/updateProfile', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { nom, prenom, email, niveaux } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ message: "Utilisateur non trouvé", success: false });
+        }
+
+        if (nom) user.nom = nom;
+        if (prenom) user.prenom = prenom;
+        if (email) user.email = email;
+        if (niveaux) user.niveaux = niveaux;
+
+        await user.save();
+
+        return res.status(200).send({
+            message: "Profil mis à jour avec succès",
+            success: true,
+            user: {
+                nom: user.nom,
+                prenom: user.prenom,
+                email: user.email,
+                niveaux: user.niveaux,
+            }
+        });
+    } catch (err) {
+        return res.status(500).send({ message: "Une erreur est survenue", success: false, err });
+    }
+});
+
+router.put('/changePassword', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).send({
+                message: "Les champs obligatoires sont manquants",
+                success: false
+            });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ message: "Utilisateur non trouvé", success: false });
+        }
+
+        // Vérifier le mot de passe actuel
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).send({
+                message: "Le mot de passe actuel est incorrect",
+                success: false
+            });
+        }
+
+        // Vérifier que le nouveau mot de passe n'est pas le même que l'actuel
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            return res.status(400).send({
+                message: "Le nouveau mot de passe doit être différent du mot de passe actuel",
+                success: false
+            });
+        }
+
+        // Hacher et mettre à jour le nouveau mot de passe
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        return res.status(200).send({
+            message: "Mot de passe changé avec succès",
+            success: true
+        });
+    } catch (err) {
+        return res.status(500).send({ message: "Une erreur est survenue", success: false, err });
     }
 });
 
