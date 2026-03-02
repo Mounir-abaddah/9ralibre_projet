@@ -36,7 +36,7 @@ const Avatare = ({ data }: typeAllData) => {
     <div ref={buttonRef} className="relative z-50" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
       <div className={`flex cursor-pointer items-center gap-3 rounded-full border border-transparent p-1 pr-3 pl-1 transition-all duration-200 hover:bg-gray-600/50 ${menuOpen ? "bg-gray-600/50" : ""}`} onClick={() => setMenuOpen(!menuOpen)}>
         <Avatar className="size-9 border-2 border-gray-600 shadow-sm">
-          <AvatarImage src={data?.image} alt={data?.nom} />
+          <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt={data?.nom} />
           <AvatarFallback className={`text-xs font-bold text-white ${data?.role === "Etudiant" ? "bg-sky-400" : "bg-pink-400"}`}>
             {data?.nom.charAt(0).toUpperCase()}{data?.prenom.charAt(0).toUpperCase()}
           </AvatarFallback>
