@@ -31,6 +31,9 @@ const UserSchema = new mongoose.Schema(
       enum: ["local", "google"],
       default: "local",
     },
+    providerId:{
+      type:Number,
+    },
     niveaux: {
       type: String,
       enum: ["Non renseigné", "1AC", "2AC", "3AC", "TC", "1BAC", "2BAC"],
