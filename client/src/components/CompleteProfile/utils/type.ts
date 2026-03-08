@@ -3,8 +3,6 @@ export interface FormDatatype{
     prenom:string
     role:string
     niveaux:string
-    password:string
-    confirmPassword:string
 }
 
 export interface ErrorType{
@@ -12,6 +10,4 @@ export interface ErrorType{
     prenom:string
     role:string
     niveaux:string
-    password:string
-    confirmPassword:string
 }
