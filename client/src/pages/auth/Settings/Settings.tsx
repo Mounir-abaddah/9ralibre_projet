@@ -25,6 +25,7 @@ import { useState, useRef } from "react";
 import axios from "axios";
 
 const Settings = () => {
+  document.title = "Paramètres | 9ralibre"
   const apiUrl = import.meta.env.VITE_API_URL;
   const { data } = useProtectedRoutes();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -207,11 +208,11 @@ const Settings = () => {
         {/* Tabs Container */}
         <Tabs defaultValue="personal" className="w-full">
           <TabsList className="mb-6 grid w-full grid-cols-2">
-            <TabsTrigger value="personal" className="flex items-center gap-2">
+            <TabsTrigger value="personal" className="flex cursor-pointer items-center gap-2">
               <User className="size-4" />
               <span>Informations</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
+            <TabsTrigger value="security" className="flex cursor-pointer items-center gap-2">
               <Lock className="size-4" />
               <span>Sécurité</span>
             </TabsTrigger>
@@ -343,7 +344,7 @@ const Settings = () => {
                       value={formData.niveaux}
                       onValueChange={(value) => handleChange("niveaux", value)}
                     >
-                      <SelectTrigger className="border-slate-200 dark:border-slate-700">
+                      <SelectTrigger className="w-full border-slate-200 dark:border-slate-700">
                         <SelectValue placeholder="Sélectionnez votre niveau" />
                       </SelectTrigger>
                       <SelectContent>
@@ -366,7 +367,7 @@ const Settings = () => {
                     <Select
                       onValueChange={(value) => handleChange("langue", value)}
                     >
-                      <SelectTrigger className="border-slate-200 dark:border-slate-700">
+                      <SelectTrigger className="w-full border-slate-200 dark:border-slate-700">
                         <SelectValue placeholder="Sélectionnez votre langue" />
                       </SelectTrigger>
                       <SelectContent>
