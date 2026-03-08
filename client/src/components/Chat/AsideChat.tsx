@@ -73,7 +73,7 @@ const filteredConversations = conversation.filter((conv) => {
               <>
                 <div className="relative">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={otherUser.image} />
+                    <AvatarImage src={`${apiUrl}/uploads/images/${otherUser?._id}/${otherUser?.image}`} alt="utilisateur"/>
                     <AvatarFallback className={`rounded font-bold tracking-wide uppercase shadow-sm ${
               data?.role === "Etudiant" ? "bg-sky-500 text-white" :
               data?.role === "Etudiante" ? "bg-pink-500 text-white" :
