@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { Bookmark, Play, Clock, Eye, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { fr } from "date-fns/locale";
 import Pagination from "@/components/Pagination/Pagination";
@@ -12,6 +12,7 @@ type TabType = "videos" | "cours";
 
 const Save = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
+  const {niveaux} = useParams();
   const [activeTab, setActiveTab] = useState<TabType>("videos");
   const [savedVideos, setSavedVideos] = useState<SavedVideo[]>([]);
   const [savedCours, setSavedCours] = useState<SavedCours[]>([]);
@@ -400,12 +401,12 @@ const Save = () => {
               plus tard.
             </p>
             <div className="flex justify-center gap-4">
-              <Link to="/courses">
+              <Link to={`/Videos/${niveaux}`}>
                 <Button className="bg-amber-500 hover:bg-amber-600">
                   Découvrir les vidéos
                 </Button>
               </Link>
-              <Link to="/cours/1AC">
+              <Link to={`/Cours/${niveaux}`}>
                 <Button
                   variant="outline"
                   className="border-amber-200 text-amber-600 hover:bg-amber-50"
