@@ -7,7 +7,7 @@ export interface typedata{
     nom: string,
     prenom: string,
     email: string,
-    role: 'Non renseigné'| 'Etudiant' |'Etudiante',
+    role: 'Non renseigné'| 'Etudiant' |'Etudiante' | 'Professeur',
     niveaux: '1AC' | '2AC' | '3AC' | 'TC'| '1BAC' | '2BAC',
     image:string
     accountVerified: boolean
