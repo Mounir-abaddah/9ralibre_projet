@@ -137,7 +137,7 @@ const ChatStart = () => {
         <header className="flex w-full shrink-0 items-center justify-between gap-3 border-b p-4 shadow-sm">
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={otherUser?.image} alt="user" className="rounded-full" />
+              <AvatarImage src={`${apiUrl}/uploads/images/${otherUser?._id}/${otherUser?.image}`} alt="user" className="rounded-full" />
               <AvatarFallback className="bg-sky-500 font-bold text-white uppercase">
                 {otherUser?.nom?.[0]}{otherUser?.prenom?.[0]}
               </AvatarFallback>
@@ -146,7 +146,7 @@ const ChatStart = () => {
               <p className="text-sm font-semibold">{otherUser?.nom} {otherUser?.prenom}</p>
               {/* ✅ En ligne / Hors ligne dynamique */}
               <span className="flex items-center text-xs text-gray-500">
-                <Dot color={isOtherUserOnline ? "lime" : "red"} className="size-8" />
+                <Dot color={isOtherUserOnline ? "lime" : "red"} size={32} />
                 {isOtherUserOnline ? "En ligne" : "Hors ligne"}
               </span>
             </div>
