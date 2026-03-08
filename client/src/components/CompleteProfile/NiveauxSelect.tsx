@@ -39,7 +39,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
         <Label>Votre niveau d’étude</Label>
         <div
           onClick={() => setShowCategory(!showCategory)}
-          className={`relative w-full border rounded-md p-3 flex items-center justify-between cursor-pointer transition ${
+          className={`relative flex w-full cursor-pointer items-center justify-between rounded-md border p-3 transition ${
             error ? "border-red-400 bg-red-100" : "border-gray-300"
           }`}
         >
@@ -55,7 +55,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
         </div>
 
         {showCategory && (
-          <div className="border border-gray-200 rounded-md mt-1 shadow-sm bg-white relative z-50">
+          <div className="relative z-50 mt-1 rounded-md border border-gray-200 bg-white shadow-sm">
             {categories.map((cat) => (
               <div
                 key={cat}
@@ -65,7 +65,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
                   setShowLevel(false);
                   onChange("");
                 }}
-                className="p-2 px-3 hover:bg-amber-100 cursor-pointer text-sm"
+                className="cursor-pointer rounded-md p-2 px-3 text-sm hover:bg-amber-100 dark:text-black"
               >
                 {cat}
               </div>
@@ -79,7 +79,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
           <Label>Niveau spécifique</Label>
           <div
             onClick={() => setShowLevel(!showLevel)}
-            className={`relative w-full border rounded-md p-3 flex items-center justify-between cursor-pointer transition ${
+            className={`relative flex w-full cursor-pointer items-center justify-between rounded-md border p-3 transition ${
               error ? "border-red-400 bg-red-100" : "border-gray-300"
             }`}
           >
@@ -95,7 +95,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
           </div>
 
           {showLevel && (
-            <div className="border border-gray-200 rounded-md mt-1 shadow-sm bg-white relative z-50">
+            <div className="relative z-50 mt-1 rounded-md border border-gray-200 bg-white shadow-sm">
               {niveaux[selectedCategory].map((niv) => (
                 <div
                   key={niv}
@@ -103,7 +103,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
                     onChange(niv);
                     setShowLevel(false);
                   }}
-                  className="p-2 px-3 hover:bg-amber-100 cursor-pointer text-sm"
+                  className="cursor-pointer rounded-md p-2 px-3 text-sm hover:bg-amber-100 dark:text-black"
                 >
                   {niv}
                 </div>
@@ -114,7 +114,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
       )}
 
       {error && !showCategory && !showLevel && (
-        <p className="text-sm text-red-400 font-semibold">{error}</p>
+        <p className="text-sm font-semibold text-red-400">{error}</p>
       )}
     </div>
   );
