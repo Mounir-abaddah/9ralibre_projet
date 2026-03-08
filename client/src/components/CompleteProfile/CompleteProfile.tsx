@@ -15,7 +15,7 @@ const CompleteProfile = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate()
   const [step,setStep] = useState(0)
-  const {data,fetchData} = useProtectedRoutes();
+  const {fetchData} = useProtectedRoutes();
   const [avatar, setAvatar] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -24,8 +24,6 @@ const CompleteProfile = () => {
     prenom: "",
     role: "",
     niveaux: "",
-    password: "",
-    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState<ErrorType>({
@@ -33,8 +31,6 @@ const CompleteProfile = () => {
     prenom: "",
     role: "",
     niveaux: "",
-    password: "",
-    confirmPassword: "",
   });
 
   useEffect(()=>{
@@ -59,7 +55,7 @@ const CompleteProfile = () => {
   
   const handleSubmit = async(e:FormEvent)=>{
     e.preventDefault();
-    if(!validateForm(formData,setErrors,step,data)) return;
+    if(!validateForm(formData,setErrors,step)) return;
     if(step === 0) return setStep(1);
     if(step === 1) return setStep(2);
     setLoading(true);
@@ -69,10 +65,6 @@ const CompleteProfile = () => {
             formDataToSend.append("prenom", formData.prenom);
             formDataToSend.append("role", formData.role);
             formDataToSend.append("niveaux", formData.niveaux);
-            if(data?.provider === "google"){
-              formDataToSend.append("password", formData.password);
-            }
-            
             if(avatar){
               formDataToSend.append("avatar", avatar)
             }
@@ -111,13 +103,13 @@ const CompleteProfile = () => {
             Veuillez compléter les informations suivantes pour une meilleure expérience.
           </DialogDescription>
         </DialogHeader>
-        <DialogHeader className='flex flex-row items-center justify-between w-full'>
-          <span className='text-lg font-bold flex items-center gap-2 border-b-2 border-sky-300 rounded-md'>
+        <DialogHeader className='flex w-full flex-row items-center justify-between'>
+          <span className='flex items-center gap-2 rounded-md border-b-2 border-sky-300 text-lg font-bold'>
             {step === 0 ? "ℹ️ Informations personnelles" : step === 1 ? "📷 Importer votre photo" : "🎓 Niveau d’étude"}
           </span>
           <span>{step + 1} / 3</span>
         </DialogHeader>
-        <form className='w-full flex flex-col gap-5 justify-around' onSubmit={handleSubmit}>
+        <form className='flex w-full flex-col justify-around gap-5' onSubmit={handleSubmit}>
           <div>
             {step === 0 ? (
               <StepOneForm 
@@ -125,7 +117,6 @@ const CompleteProfile = () => {
                 errors={errors}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                provider={data?.provider}
               />
             ):step === 1 ? (
               <StepTwoUpload 
@@ -141,7 +132,7 @@ const CompleteProfile = () => {
             )
             } 
           </div>
-          <div className="w-full flex gap-2 justify-end">
+          <div className="flex w-full justify-end gap-2">
               {step > 0 && (
                 <Button 
                   type="button"
@@ -157,7 +148,7 @@ const CompleteProfile = () => {
               </Button>
           </div>
         </form>
-       </DialogContent> 
+      </DialogContent> 
       </Dialog>
   )
 }
