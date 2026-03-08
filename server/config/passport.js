@@ -9,9 +9,10 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {      
       try {
         const email = profile.emails?.[0]?.value;
+        const providerId = profile.id;
         if (!email) return done(new Error("Email not available from Google"), null);
 
         let user = await User.findOne({ email });
@@ -22,6 +23,7 @@ passport.use(
             role:"Non renseigné",
             niveaux:"Non renseigné",
             password: "",
+            providerId:providerId,
             image:"",
             provider:"google",
             accountVerified:true,
