@@ -8,6 +8,23 @@ const fs = require('fs');
 const path = require('path')
 const {completeProfileShema , EventsShema} = require('../validations/authValidation');
 
+const storage =  multer.diskStorage({
+    destination: (req, file, cb) => {
+        const userId = req.user.userId; 
+        const uploadPath = path.join('./uploads/images/',userId.toString());
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+})
+
+const upload = multer({ storage: storage });
+
+
 router.get('/profile',authMiddleware,async(req,res)=>{
     try{
         const userId = req.user.userId;
@@ -31,24 +48,34 @@ router.get('/profile',authMiddleware,async(req,res)=>{
     }catch(err){
         return res.status(500).json({ message: "Une erreur est survenue", success: false, err });
     }
-})
+});
 
 
-const storage =  multer.diskStorage({
-    destination: (req, file, cb) => {
-        const userId = req.user.userId; 
-        const uploadPath = path.join('./uploads/images/',userId.toString());
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
+router.get('/profile/:name',authMiddleware,async(req,res)=>{
+    try {
+        const { name } = req.params;
+        
+        // Support du format "nom-prenom" (tiret) ainsi que les espaces
+        const [nom, prenom] = name.split("-");
+        
+        let user;
+        if (prenom) {
+            // Si le format est "nom-prenom"
+            user = await User.findOne({ nom, prenom }).select("-password");
+        } else {
+            // Sinon chercher juste par nom
+            user = await User.findOne({ nom: name }).select("-password");
         }
-        cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur non trouvé", success: false });
+        }
+
+        return res.status(200).json({ user, success: true });
+    } catch (err) {
+        return res.status(500).json({ message: "Erreur serveur", success: false, err });
     }
 })
-
-const upload = multer({ storage: storage });
 
 router.post('/uploadImage',authMiddleware,upload.single('avatar'),async(req,res)=>{
     try{
@@ -116,7 +143,7 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
     try{
         const userId = req.user.userId;
         const completeProfile = completeProfileShema.parse(req.body);
-        const { nom, prenom, role, password,niveaux} = completeProfile; 
+        const { nom, prenom, role,niveaux} = completeProfile; 
         const user = await User.findById(userId);        
         if(!user || !user.accountVerified){
             return res.status(400).send({message:"Échec de l'opération",success:false})
@@ -128,12 +155,6 @@ router.patch('/completeProfile',authMiddleware,upload.single('avatar'),async(req
         if (prenom) user.prenom = prenom;
         if (role) user.role = role;
         if(niveaux) user.niveaux = niveaux;
-        if(user.provider === "google"){
-            if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user.password = hashedPassword;
-        }
-        }
         if (req.file) {
             user.image = req.file.filename;
         }
