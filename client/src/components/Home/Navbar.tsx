@@ -52,29 +52,13 @@ return (
         {!isMobile ? (
         <div className="flex items-center gap-3">
             {data ? (
+            <>
             <Avatare
                 data={data}
                 fetchData={fetchData}
                 loading={loading}
                 error={error}
             />
-            ) : (
-            <>
-                <Link
-                to="/inscription"
-                className="rounded-lg bg-amber-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-500"
-                >
-                Inscription
-                </Link>
-                <Link
-                to="/connexion"
-                className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-cyan-500"
-                >
-                Connexion
-                </Link>
-            </>
-            )}
-
             <button
             onClick={toggleTheme}
             className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
@@ -87,6 +71,29 @@ return (
             >
             <DraftingCompass size={18}/>
             </button>
+            </>
+            ) : (
+            <>
+            <button
+            onClick={toggleTheme}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
+            >
+            {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+            <Link
+            to="/inscription"
+            className="rounded-lg bg-amber-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-500"
+            >
+            Inscription
+            </Link>
+            <Link
+            to="/connexion"
+            className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-cyan-500"
+            >
+            Espace Professeur
+            </Link>
+            </>
+            )}
         </div>
         ) : (
         <button onClick={() => setOpen(!open)}>
@@ -125,7 +132,7 @@ return (
                 Inscription
             </Link>
             <Link to="/connexion" className="rounded-lg bg-cyan-400 p-2 text-center text-black">
-                Connexion
+                Espace Professeur
             </Link>
         </>
     }
