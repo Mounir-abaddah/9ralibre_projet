@@ -7,13 +7,12 @@ interface Props{
     errors:ErrorType;
     onChange:(fields:string,v:string)=>void;
     onFocus: (fields: string) => void;
-    provider?: string;
 }
 
-const StepOneForm = ({formData,errors,onChange,onFocus,provider}:Props) => {
+const StepOneForm = ({formData,errors,onChange,onFocus}:Props) => {
   return (
-    <div className="w-full flex flex-col gap-5 mt-2">
-    <div className="w-full flex gap-2">
+    <div className="mt-2 flex w-full flex-col gap-5">
+    <div className="flex w-full gap-2">
       <Input
         label="Nom"
         id="Nom"
@@ -33,39 +32,11 @@ const StepOneForm = ({formData,errors,onChange,onFocus,provider}:Props) => {
         error={errors.prenom}
       />
     </div>
-
-        <RoleSelect
-        value={formData.role}
-        error={errors.role}
-        onChange={(val) => onChange("role", val)}
-        />
-
-    {provider === "google" && (
-      <>
-        <Input
-          icon="lock"
-          label="Mot de passe"
-          id="Mot de passe"
-          type="password"
-          placeholder="Entrez votre mot de passe"
-          value={formData.password}
-          onChange={(val) => onChange("password", val)}
-          onFocus={() => onFocus("password")}
-          error={errors.password}
-        />
-        <Input
-          icon="lock"
-          label="Confirmation du mot de passe"
-          id="confirmPassword"
-          type="password"
-          placeholder="Confirmez votre mot de passe"
-          onFocus={() => onFocus("confirmPassword")}
-          value={formData.confirmPassword}
-          onChange={(val) => onChange("confirmPassword", val)}
-          error={errors.confirmPassword}
-        />
-      </>
-    )}
+    <RoleSelect
+      value={formData.role}
+      error={errors.role}
+      onChange={(val) => onChange("role", val)}
+    />
   </div>
   )
 }
