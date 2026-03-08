@@ -25,15 +25,15 @@ const RoleSelect = ({value,error,onChange}:Props) => {
     ];
 
   return (
-    <div ref={ref} className="flex gap-1 flex-col">
+    <div ref={ref} className="flex flex-col gap-1">
       <Label id="status">Votre statut</Label>
       <div
         onClick={() => setShow(!show)}
-        className={`relative w-full border rounded-md p-3 flex items-center justify-between cursor-pointer transition ${
+        className={`relative flex w-full cursor-pointer items-center justify-between rounded-md border p-3 transition ${
           error ? "border-red-400 bg-red-100" : "border-gray-300"
         }`}
       >
-        <h3 className={`text-sm ${!value && "text-slate-400 font-normal"}`}>
+        <h3 className={`text-sm ${!value && "font-normal text-slate-400"}`}>
           {value || "Sélectionnez votre statut"}
         </h3>
         <ChevronDown
@@ -43,11 +43,11 @@ const RoleSelect = ({value,error,onChange}:Props) => {
       </div>
 
       {error && !show && (
-        <p className="text-sm text-red-400 font-semibold">{error}</p>
+        <p className="text-sm font-semibold text-red-400">{error}</p>
       )}
 
       {show && (
-        <div className="border border-gray-200 rounded-md mt-1 shadow-sm bg-white relative z-50">
+        <div className="relative z-50 mt-1 rounded-md border border-gray-200 bg-white shadow-sm">
           {options.map((item, index) => (
             <div
               key={index}
@@ -55,7 +55,7 @@ const RoleSelect = ({value,error,onChange}:Props) => {
                 onChange(item.name);
                 setShow(false);
               }}
-              className="p-2 px-3 hover:bg-amber-100 cursor-pointer flex items-center gap-2 text-sm"
+              className="flex cursor-pointer items-center gap-2 rounded-md p-2 px-3 text-sm hover:bg-amber-100 dark:text-black"
             >
               <span>{item.icon}</span>
               <span>{item.name}</span>
