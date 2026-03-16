@@ -25,6 +25,10 @@ import Resultat from './pages/auth/Quiz/Resultat';
 import Chat from './pages/auth/Chat/Chat';
 import ChatStart from './pages/auth/Chat/ChatStart';
 import Save from './pages/auth/Save/Save';
+import ProfConnexion from './pages/auth/Professeur/Prof-connexion/ProfConnexion';
+import LayoutsProf from './components/LayoutsProf/LayoutsProf';
+import ProfDashboard from './pages/auth/Professeur/Dashboard/ProfDashboard';
+import ProtectedRouteProf from './components/ProtectedRouteProf/ProtectedRouteProf';
 
 const App = () => {
   return (
@@ -36,6 +40,7 @@ const App = () => {
         <Route path='*' element={<PagesNonTrouver />} />
         <Route path='/inscription' element={<Inscription />} />
         <Route path='/connexion' element={<Connexion />} />
+        <Route path='/prof-connexion' element={<ProfConnexion />} />
         <Route path='/password/reset' element={<OublierMotdepasse />} />
         <Route path='/password/reset/:token' element={<ModificationMotdepasse />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
@@ -55,6 +60,9 @@ const App = () => {
             <Route path='/Chat/start/:chatId' element={<Layouts><ChatStart /></Layouts>} />
             <Route path='/Save/:niveaux' element={<Layouts><Save /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
+        </Route>
+        <Route element={<ProtectedRouteProf />}>
+          <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
         </Route>
         <Route />
       </Routes>

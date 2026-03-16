@@ -91,6 +91,7 @@ const coursRouter = require('./routes/CoursRoute');
 const videosRouter = require('./routes/VideosRoute');
 const quizRouter = require('./routes/QuizRoute');
 const messageRouter = require('./routes/MessageRoute');
+const professeurRouter = require('./routes/ProfesseurRoute');
 
 app.use('/auth',authRouter);
 app.use('/user',userRouter);
@@ -98,6 +99,7 @@ app.use('/cours',coursRouter);
 app.use('/videos',videosRouter);
 app.use('/quiz',quizRouter);
 app.use('/chat',messageRouter);
+app.use('/prof',professeurRouter);
 
 const port = process.env.PORT;
 httpServer.listen(port,()=>{

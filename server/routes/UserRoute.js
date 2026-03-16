@@ -47,6 +47,7 @@ router.get("/profile", authMiddleware, async (req, res) => {
       image: user.image,
       accountVerified: user.accountVerified,
       completeProfile: user.completeProfile,
+      followers:user.followers,
     };
     return res.status(200).json({ user: saveViewUser, success: true });
   } catch (err) {
@@ -505,4 +506,41 @@ router.put("/changePassword", authMiddleware, async (req, res) => {
   }
 });
 
+
+router.get("/saved/latest", authMiddleware, async (req, res) => {
+  try {
+
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId)
+      .populate({
+        path: "savedVideos",
+        options: { sort: { createdAt: -1 }, limit: 3 }
+      })
+      .populate({
+        path: "savedCours",
+        options: { sort: { createdAt: -1 }, limit: 3 }
+      });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Utilisateur non trouvé"
+      });
+    }
+
+    res.json({
+      success: true,
+      videos: user.savedVideos,
+      cours: user.savedCours
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+      err
+    });
+  }
+});
 module.exports = router;

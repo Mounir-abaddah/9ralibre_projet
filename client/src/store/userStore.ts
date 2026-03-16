@@ -13,10 +13,31 @@ export interface typedata{
     accountVerified: boolean
     provider:"local"| "google"
     completeProfile:boolean
+    followers:string[]
 }
 
 export interface typeAllData{
     data:typedata | null
+    loading:boolean
+    error:string | null
+    fetchData:()=>Promise<void>
+}
+
+export interface typedataProf{
+    _id:string
+    nom: string,
+    prenom: string,
+    email: string,
+    image:string
+    accountVerified: boolean
+    completeProfile:boolean
+    followers:string[]
+    quiz:string;
+    videos:string
+}
+
+export interface typeAllDataProf{
+    data:typedataProf | null
     loading:boolean
     error:string | null
     fetchData:()=>Promise<void>
@@ -39,4 +60,25 @@ export const useProtectedRoutes = create<typeAllData>()((set)=>({
             set({data:null,error:message,loading:false})
         }
     }
-}))
+}));
+
+
+export const useProfProtectedRoutes = create<typeAllDataProf>()((set)=>({
+    data:null,
+    loading:true,
+    error:null,
+    fetchData:async()=>{
+        try{
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await axios.get(`${apiUrl}/prof/profile`,{withCredentials:true});
+            const profData = {...response.data.user,quiz:response.data.quiz,videos:response.data.videos}
+            set({data:profData,loading:false,error:null})
+        }catch(err){
+            let message = "Une erreure est survenu";
+            if(axios.isAxiosError(err)){
+                message = err.response?.data?.message || err.message || message
+            }
+            set({data:null,error:message,loading:false})
+        }
+    }
+}));
