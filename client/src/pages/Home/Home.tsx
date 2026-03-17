@@ -10,63 +10,68 @@ import {
 import { useProtectedRoutes } from "@/store/userStore";
 import CompleteProfile from "@/components/CompleteProfile/CompleteProfile";
 import Navbar from "@/components/Home/Navbar";
+import { Navigate } from "react-router-dom";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
-  const {data,fetchData} = useProtectedRoutes();
+  const { data, fetchData } = useProtectedRoutes();
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchData()
-  },[fetchData])
+  }, [fetchData])
 
   useEffect(() => {
     const showVerification = localStorage.getItem("show-verification");
     if (showVerification === "true") {
       setOpen(true);
     }
-  }, []); 
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
     localStorage.setItem("show-verification", "false");
   };
 
+  if (data?.role === "Professeur") {
+    return <Navigate to="/prof/dashboard" replace />
+  }
+
   return (
-  <div>
-    {!data || data.completeProfile ? 
-    <>
-    <Navbar />
     <div>
-        <h1 className="text-2xl font-bold">Home</h1>
-          <Dialog open={open} onOpenChange={(value)=>{
-            setOpen(value);
-            if(!value){
-              localStorage.setItem("show-verification","false")
-            }
+      {!data || data.completeProfile ?
+        <>
+          <Navbar />
+          <div>
+            <h1 className="text-2xl font-bold">Home</h1>
+            <Dialog open={open} onOpenChange={(value) => {
+              setOpen(value);
+              if (!value) {
+                localStorage.setItem("show-verification", "false")
+              }
             }}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Bienvenue 👋</DialogTitle>
-                <DialogDescription>
-                  Merci de vous être inscrit sur{" "}
-                  <span className="font-semibold text-amber-500">
-                    9ral<span className="text-sky-500">ibre</span>
-                  </span>
-                  . Vérifiez votre boîte mail ou vos spams pour activer votre compte.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <button onClick={handleClose} className="cursor-pointer">
-                  Ok
-                </button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-      </div>
-    </>
-      : 
-      <CompleteProfile />
-    }    
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Bienvenue 👋</DialogTitle>
+                  <DialogDescription>
+                    Merci de vous être inscrit sur{" "}
+                    <span className="font-semibold text-amber-500">
+                      9ral<span className="text-sky-500">ibre</span>
+                    </span>
+                    . Vérifiez votre boîte mail ou vos spams pour activer votre compte.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <button onClick={handleClose} className="cursor-pointer">
+                    Ok
+                  </button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </>
+        :
+        <CompleteProfile />
+      }
     </div>
   );
 };
