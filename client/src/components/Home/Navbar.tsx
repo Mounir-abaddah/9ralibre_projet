@@ -87,7 +87,7 @@ return (
             Inscription
             </Link>
             <Link
-            to="/connexion"
+            to="/prof-connexion"
             className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-cyan-500"
             >
             Espace Professeur
