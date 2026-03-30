@@ -47,6 +47,22 @@ export interface TypeVideos{
     createdAt:string;
 }
 
+export interface TypeProfVideos{
+    _id:string;
+    title:string;
+    description:string;
+    videoUrl:string;
+    thumbnail:string;
+    matiere:string;
+    niveaux:Niveaux;
+    views:number;
+    filiere:string;
+    professeur:Professeur;
+    likes:string[];
+    comments:Comments[];
+    visibility:string
+    createdAt:string;
+}
 export interface AsideVideosProps {
   search: string | null;
   matiere: string | null;
