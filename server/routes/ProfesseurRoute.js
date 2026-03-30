@@ -6,28 +6,171 @@ const Cours = require("../models/CoursModel");
 const User = require('../models/UserModel');
 const Quiz = require('../models/QuizModel');
 const Videos = require('../models/VideosModel');
-const Conversation = require('../models/ConversationModel')
+const Conversation = require('../models/ConversationModel');
+const Matiere = require('../models/MatiereModel');
+const Niveaux = require('../models/NiveauxModel');
 
-router.post("/addCours",authMiddlewares, profMiddleware, async (req, res) => {
-    try {
-        const { matiere, semestre, type, filiere, professeur, title, pdfUrl } = req.body;
-        if (!matiere || !semestre || !type || !filiere || !professeur || !title || !pdfUrl) {
-            return res.status(400).json({ success: false, message: "Champs obligatoires manquants" });
-        }
-        const newCours = new Cours({
-            matiere,
-            semestre,
-            type,
-            filière: filiere,
-            professeur,
-            title,
-            pdfUrl,
-        });
-        await newCours.save();
-        res.status(201).json({success: true,message: "Cours ajouté avec succès",cours: newCours});
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const userId = req.user.userId;
+    const uploadPath = path.join("./uploads/files/", userId.toString());
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+router.get('/fetch-matiere',authMiddlewares,profMiddleware,async(req,res)=>{
+  const user = await User.findById(req.user.userId);
+  const niveau = await Niveaux.findOne({ nom: user.niveaux });
+  const matiere = await Matiere.find({niveaux:niveau._id}).populate("niveaux");
+  res.json(matiere)
+})
+
+
+router.post("/add-cours",authMiddlewares,profMiddleware,upload.single("file"),async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { semestre, title, matiere, type, filiere } = req.body;
+    const fileUrl = req.file.filename;
+    const cours = await Cours.create({
+      professeur: userId,
+      filière: filiere,
+      semestre: semestre,
+      title: title,
+      pdfUrl: fileUrl,
+      matiere,
+      type  
+    });
+    res.json({ success: true, cours });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put("/put-cours/:coursId",authMiddlewares,profMiddleware,upload.single("file"),async (req, res) => {
+    try {
+      const { semestre, title, matiere, type, filiere } = req.body;
+      const coursId = req.params.coursId;
+
+      const cours = await Cours.findById(coursId);
+      if (!cours) {
+        return res.status(404).json({ message: "Cours non trouvé" });
+      }
+
+
+      cours.semestre = semestre || cours.semestre;
+      cours.title = title || cours.title;
+      cours.type = type || cours.type;
+      cours.filière = filiere || cours.filière;
+      cours.matiere = matiere || cours.matiere;
+
+
+      if (req.file) {
+        cours.pdfUrl = req.file.filename;
+      }
+
+      await cours.save();
+
+      res.json({ success: true, cours });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+);
+
+router.delete("/delete-cours/:coursId", authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { coursId } = req.params;
+
+    const deleted = await Cours.findOneAndDelete({
+      _id: coursId,
+      professeur: userId,
+    });
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Cours non trouvé ou non autorisé",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Cours supprimé avec succès",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.get("/getCours", authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const { semestre, type, filiere, search } = req.query;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const queryObject = {
+      professeur: userId,
+    };
+
+    // filtres optionnels
+    if (semestre) queryObject.semestre = semestre;
+    if (type) queryObject.type = type;
+    if (filiere) queryObject.filière = filiere;
+
+    // 🔍 recherche
+    if (search) {
+      queryObject.$or = [
+        { title: new RegExp(search, "i") },
+        { semestre: new RegExp(search, "i") },
+        { type: new RegExp(search, "i") },
+      ];
+    }
+
+    const totalCours = await Cours.countDocuments(queryObject);
+
+    const cours = await Cours.find(queryObject)
+      .populate("matiere")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return res.json({
+      success: true,
+      totalCours,
+      limit,
+      skip,
+      totalPages: Math.ceil(totalCours / limit),
+      cours,
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors de la récupération des cours",
+      error: err.message,
+    });
+  }
 });
 
 router.get('/profile', authMiddlewares, profMiddleware, async (req, res) => {
@@ -54,6 +197,7 @@ router.get('/profile', authMiddlewares, profMiddleware, async (req, res) => {
       prenom: user.prenom,
       email: user.email,
       image: user.image,
+      niveaux:user.niveaux,
       completeProfile: user.completeProfile,
       followers: user.followers,
     };
@@ -200,6 +344,7 @@ router.get("/stats-week", authMiddlewares, profMiddleware, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
 
 
 
