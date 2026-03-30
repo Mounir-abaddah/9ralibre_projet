@@ -37,6 +37,12 @@ router.get('/fetch-matiere',authMiddlewares,profMiddleware,async(req,res)=>{
   res.json(matiere)
 })
 
+router.get('/fetch-niveaux',authMiddlewares,profMiddleware,async(req,res)=>{
+  const user = await User.findById(req.user.userId);
+  const niveau = await Niveaux.findOne({ nom: user.niveaux });
+  res.json(niveau)
+})
+
 
 router.post("/add-cours",authMiddlewares,profMiddleware,upload.single("file"),async (req, res) => {
   try {
@@ -342,6 +348,154 @@ router.get("/stats-week", authMiddlewares, profMiddleware, async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+
+router.get('/get-videos', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const videos = await Videos.find({ professeur: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Videos.countDocuments({ professeur: userId });
+
+    res.json({
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      success: true,
+      videos,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+
+router.post('/add-videos', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const {
+      title,
+      description,
+      videoUrl,
+      thumbnail,
+      niveaux,
+      matiere,
+      filiere,
+      visibility
+    } = req.body;
+
+    if (!title || !videoUrl || !matiere || !niveaux || !filiere) {
+      return res.status(400).json({success: false,message: "Champs obligatoires manquants"});
+    }
+
+    const video = new Videos({
+      title,
+      description,
+      videoUrl,
+      thumbnail,
+      niveaux,
+      professeur: userId,
+      matiere,
+      filiere,
+      visibility: visibility || "Public"
+    });
+
+    await video.save();
+
+    res.status(201).json({success: true,message: "Vidéo ajoutée avec succès",video});
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({success: false,message: "Erreur lors de l'ajout de la vidéo"});
+  }
+});
+
+router.delete('/delete-videos/:videoId', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const videoId = req.params.videoId;
+    const userId = req.user.userId;
+
+    const video = await Videos.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ success: false, message: "Vidéo introuvable" });
+    }
+
+    if (video.professeur.toString() !== userId) {
+      return res.status(403).json({success: false,message: "Non autorisé"});
+    }
+
+    await Videos.findByIdAndDelete(videoId);
+
+    res.json({ success: true, message: "Vidéo supprimée avec succès" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+});
+
+router.put("/update-videos/:videoId", async (req, res) => {
+  try {
+    const { videoId } = req.params;
+
+    const {
+      title,
+      description,
+      videoUrl,
+      thumbnail,
+      matiere,
+      filiere,
+      visibility,
+      niveaux,
+    } = req.body;
+
+    const updatedVideo = await Videos.findByIdAndUpdate(
+      videoId,
+      {
+        title,
+        description,
+        videoUrl,
+        thumbnail,
+        matiere,
+        filiere,
+        visibility,
+        niveaux,
+      },
+      {
+        new: true, // retourne la nouvelle version
+        runValidators: true,
+      }
+    );
+
+    if (!updatedVideo) {
+      return res.status(404).json({
+        message: "Vidéo non trouvée",
+      });
+    }
+
+    res.status(200).json({
+      message: "Vidéo modifiée avec succès",
+      video: updatedVideo,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Erreur serveur",
+    });
   }
 });
 
