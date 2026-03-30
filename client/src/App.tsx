@@ -29,6 +29,7 @@ import ProfConnexion from './pages/auth/Professeur/Prof-connexion/ProfConnexion'
 import LayoutsProf from './components/LayoutsProf/LayoutsProf';
 import ProfDashboard from './pages/auth/Professeur/Dashboard/ProfDashboard';
 import ProtectedRouteProf from './components/ProtectedRouteProf/ProtectedRouteProf';
+import ProfCours from './pages/auth/Professeur/Prof-cours/ProfCours';
 
 const App = () => {
   return (
@@ -63,6 +64,7 @@ const App = () => {
         </Route>
         <Route element={<ProtectedRouteProf />}>
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
+          <Route path='/prof/cours'  element={<LayoutsProf><ProfCours /></LayoutsProf>} />
         </Route>
         <Route />
       </Routes>
