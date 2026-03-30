@@ -47,6 +47,11 @@ const VideosShema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User' 
     }],
+    visibility:{
+        type:String,
+        enum:['Public', 'Private'],
+        default:'Public'
+    },
     comments: [
         {
             user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
