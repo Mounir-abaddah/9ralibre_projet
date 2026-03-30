@@ -9,33 +9,6 @@ const authMidllewares = require('../middlewares/authMiddleware');
 const {repliesCommentaire,likeCommentaire} = require('../services/emailServices')
 
 
-{/*********************** Ajouter La Videos ***********************/}
-router.post('/add-videos',authMidllewares,async(req,res)=>{
-    try{
-        const ValidationVideoShema = VideoShema.parse(req.body)
-        const videos = new VideosModel({
-            title:ValidationVideoShema.title,
-            description:ValidationVideoShema.description,
-            videoUrl:ValidationVideoShema.videoUrl,
-            thumbnail:ValidationVideoShema.thumbnail,
-            niveaux:ValidationVideoShema.niveaux,
-            professeur:ValidationVideoShema.professeur,
-            matiere:ValidationVideoShema.matiere,
-            filiere:ValidationVideoShema.filiere,
-        })
-        await videos.save();
-        return res.status(200).send({success:true,message:"Video a ete bien ajouter"})
-    }catch(err){
-        if(err.name === "ZodError"){
-            return res.status(400).send({
-            success: false,
-            message: err.issues.map(e => e.message)
-        });
-        }
-        return res.status(500).send({message:"Une erreure est survenue lors de recuperation des videos",success:false,err})
-    }
-});
-
 {/*********************** Get all videos par le Nom ***********************/}
 router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     try{
