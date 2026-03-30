@@ -13,34 +13,9 @@ import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, FileText,
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import No_Data_img from '@/assets/images/cours/No data-cuate.png'
+import type { CoursType} from './types/CoursType';
 
-interface Matiere {
-  _id: string;
-  nom: string;
-  niveaux: string;
-}
 
-interface User{
-  _id: string;
-  nom: string;
-  prenom: string;
-  email:string;
-  role: "Etudiant" | "Etudiante" | "Professeur" | "Non renseigné";
-  image: string;
-}
-
-interface Cours {
-  _id: string;
-  title: string;
-  semestre: string;
-  type: string;
-  createdAt:string;
-  professeur:User;
-  filière:string;
-  pdfUrl: string;
-  matiere: Matiere;
-  isSaved?: boolean;
-}
 
 const Cours = () => {
     document.title = "Cours | 9ralibre"
@@ -48,7 +23,7 @@ const Cours = () => {
     const {niveaux} = useParams();
     const {matiere,semestre,type,filiere,setMatiere,setSemestre,setType,setFiliere,resetAll}=useCoursFilter();
     const [loading,setLoading]=useState(false);
-    const [cours,setCours] = useState<Cours[]>([]);
+    const [cours,setCours] = useState<CoursType[]>([]);
     const [search,setSearch]= useState("");
     const [savedCoursMap, setSavedCoursMap] = useState<Record<string, boolean>>({});
     const debounceSearch = useDebounce(search , 500);
@@ -252,7 +227,7 @@ const Cours = () => {
                     <DropdownMenuGroup>
                       <DropdownMenuItem 
                         onClick={() => handleSaveCours(item._id)}
-                        className={`flex cursor-pointer items-center justify-between ${savedCoursMap[item._id] ? 'text-amber-500 bg-amber-50' : ''}`}
+                        className={`flex cursor-pointer items-center justify-between ${savedCoursMap[item._id] ? 'bg-amber-50 text-amber-500' : ''}`}
                       >
                         {savedCoursMap[item._id] ? 'Enregistré' : 'Enregistrer'}
                         <Bookmark fill={savedCoursMap[item._id] ? '#FF9500' : 'none'} color={savedCoursMap[item._id] ? '#FF9500' : '#000'} />
