@@ -25,9 +25,11 @@ export interface typeAllData{
 
 export interface typedataProf{
     _id:string
+    id:string,
     nom: string,
     prenom: string,
     email: string,
+    niveaux:string,
     image:string
     accountVerified: boolean
     completeProfile:boolean
