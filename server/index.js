@@ -24,6 +24,7 @@ app.use(cors({
     credentials:true,
 }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/files', express.static(path.join(__dirname, 'uploads/files')));
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
