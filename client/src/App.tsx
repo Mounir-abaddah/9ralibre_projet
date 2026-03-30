@@ -30,6 +30,7 @@ import LayoutsProf from './components/LayoutsProf/LayoutsProf';
 import ProfDashboard from './pages/auth/Professeur/Dashboard/ProfDashboard';
 import ProtectedRouteProf from './components/ProtectedRouteProf/ProtectedRouteProf';
 import ProfCours from './pages/auth/Professeur/Prof-cours/ProfCours';
+import ProfVideos from './pages/auth/Professeur/Prof-videos/ProfVideos';
 
 const App = () => {
   return (
@@ -65,6 +66,7 @@ const App = () => {
         <Route element={<ProtectedRouteProf />}>
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
           <Route path='/prof/cours'  element={<LayoutsProf><ProfCours /></LayoutsProf>} />
+          <Route path='/prof/videos'  element={<LayoutsProf><ProfVideos /></LayoutsProf>} />
         </Route>
         <Route />
       </Routes>
