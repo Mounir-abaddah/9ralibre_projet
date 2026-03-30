@@ -6,10 +6,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const {
-  completeProfileShema,
-  EventsShema,
-} = require("../validations/authValidation");
+const {completeProfileShema,EventsShema} = require("../validations/authValidation");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -196,11 +193,7 @@ router.delete("/deleteImage", authMiddleware, async (req, res) => {
   }
 });
 
-router.patch(
-  "/completeProfile",
-  authMiddleware,
-  upload.single("avatar"),
-  async (req, res) => {
+router.patch("/completeProfile",authMiddleware,upload.single("avatar"),async (req, res) => {
     try {
       const userId = req.user.userId;
       const completeProfile = completeProfileShema.parse(req.body);
