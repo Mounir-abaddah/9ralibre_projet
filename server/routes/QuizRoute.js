@@ -86,8 +86,11 @@ try {
 });
 
 router.post('/submit',authMiddleware,async(req,res)=>{
+    const userId = req.user.userId;
     const { quizId, answers } = req.body;
-    const quiz = await Quiz.findById(quizId);
+    const quiz = await Quiz.findByIdAndUpdate(quizId,{
+        $addToSet:{participants:userId}
+    });
     if(!quiz) {
         return res.status(404).json({ message: "Quiz non trouvé" });
     }
