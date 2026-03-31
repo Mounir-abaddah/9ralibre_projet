@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Send } from "lucide-react";
 import type { CoursType, Matiere } from "@/pages/auth/Cours/types/CoursType";
+import toast from "react-hot-toast";
 
 
 
@@ -123,9 +124,10 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
           formData,
           { withCredentials: true }
         );
+        toast.success("Cours modifié ✏️");
       } else {
         if (!file) {
-          alert("Ajouter fichier");
+          toast.error("Ajouter un fichier ❌");
           return;
         }
 
@@ -134,6 +136,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
           formData,
           { withCredentials: true }
         );
+        toast.success("Cours ajouté 🎉");
       }
 
       setOpen(false);
@@ -141,6 +144,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
 
     } catch (error) {
       console.error(error);
+      toast.error("Erreur ❌");
     }
   };
 
