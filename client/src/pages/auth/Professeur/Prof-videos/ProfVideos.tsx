@@ -10,12 +10,13 @@ import {
 import { useEffect, useState } from "react"
 import type { Matiere, TypeProfVideos } from "../../Video/types/video.type";
 import axios from "axios";
-import { Eye, Heart, MessageCircle, MoreHorizontalIcon, Plus } from "lucide-react";
+import { Eye, Heart, MessageCircle, MoreHorizontalIcon, Pen, Plus, Trash } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger,TooltipContent } from "@/components/ui/tooltip";
 import toast from "react-hot-toast";
 import AddVideosModal from "@/components/Videos/Prof/AddVideosModal";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const ProfVideos = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -146,12 +147,42 @@ const ProfVideos = () => {
                                 setOpen(true);
                             }}
                             >
-                            Modifier
+                            <Pen /> Modifier
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="destructive" className="cursor-pointer" onClick={()=>handleDelete(vid._id)}>
-                            Supprimer
-                        </DropdownMenuItem>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem
+                                className="cursor-pointer text-red-600 focus:text-red-600"
+                                onSelect={(e) => e.preventDefault()}
+                                >
+                                <Trash /> Supprimer
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Confirmer la suppression
+                                </AlertDialogTitle>
+
+                                <AlertDialogDescription>
+                                    Voulez-vous vraiment supprimer cette vidéo ?
+                                    <span className="font-semibold"> {vid.title} </span>
+                                </AlertDialogDescription>
+                                </AlertDialogHeader>
+
+                                <AlertDialogFooter>
+                                <AlertDialogCancel className="cursor-pointer">Annuler</AlertDialogCancel>
+
+                                <AlertDialogAction
+                                    onClick={() => handleDelete(vid._id)}
+                                    className="cursor-pointer bg-red-600 text-white hover:bg-red-700"
+                                >
+                                    Oui, supprimer
+                                </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
