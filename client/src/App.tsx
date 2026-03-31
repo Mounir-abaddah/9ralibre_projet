@@ -31,6 +31,8 @@ import ProfDashboard from './pages/auth/Professeur/Dashboard/ProfDashboard';
 import ProtectedRouteProf from './components/ProtectedRouteProf/ProtectedRouteProf';
 import ProfCours from './pages/auth/Professeur/Prof-cours/ProfCours';
 import ProfVideos from './pages/auth/Professeur/Prof-videos/ProfVideos';
+import ProfQuiz from './pages/auth/Professeur/Prof-quiz/ProfQuiz';
+import ProfAddQuiz from './pages/auth/Professeur/Prof-quiz/ProfAddQuiz';
 
 const App = () => {
   return (
@@ -67,6 +69,8 @@ const App = () => {
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
           <Route path='/prof/cours'  element={<LayoutsProf><ProfCours /></LayoutsProf>} />
           <Route path='/prof/videos'  element={<LayoutsProf><ProfVideos /></LayoutsProf>} />
+          <Route path='/prof/quiz'  element={<LayoutsProf><ProfQuiz /></LayoutsProf>} />
+          <Route path='/prof/add/quiz/questions'  element={<ProfAddQuiz />} />
         </Route>
         <Route />
       </Routes>
