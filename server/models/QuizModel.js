@@ -22,6 +22,12 @@ const QuizShema = new mongoose.Schema({
     professeur:{
         type:mongoose.Schema.Types.ObjectId, ref:"User"
     },
+    participants: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
     filiere:{
         type:String, 
         required: false 
