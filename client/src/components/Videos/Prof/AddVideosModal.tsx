@@ -23,6 +23,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useProfProtectedRoutes } from "@/store/userStore";
 import type { Matiere, TypeProfVideos } from "@/pages/auth/Video/types/video.type";
+import toast from "react-hot-toast";
 
 interface typeModal {
   open: boolean;
@@ -34,7 +35,7 @@ interface typeModal {
 
 const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal) => {
   const apiUrl = import.meta.env.VITE_API_URL;
-  const { data } = useProfProtectedRoutes();
+  const { data, fetchData } = useProfProtectedRoutes();
  
   const [niveauId, setNiveauId] = useState("");
 
@@ -74,6 +75,7 @@ const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal)
     };
 
     getNiveau();
+    fetchData();
   }, []);
 
   // Filière dynamique
@@ -124,6 +126,7 @@ const handleSubmit = async () => {
         },
         { withCredentials: true }
       );
+      toast.success("Videos modifié avec succès ✏️");
     } else {
       // ➕ ADD
       await axios.post(
@@ -134,12 +137,14 @@ const handleSubmit = async () => {
         },
         { withCredentials: true }
       );
+      toast.success("Videos ajouter avec succès ✏️");
     }
 
     setOpen(false);
     onSuccess();
   } catch (err) {
     console.error(err);
+    toast.error("Une erreur est survenue ❌");
   }
 };
 
