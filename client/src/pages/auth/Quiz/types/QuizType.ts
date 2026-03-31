@@ -21,3 +21,17 @@ export interface Quiz{
     updatedAt:string;
 }
 
+export interface QuizProf{
+    _id:string;
+    text:string;
+    matiere: Matiere;
+    niveaux:Niveaux;
+    filiere:string;
+    professeur:Professeur
+    questions:question[];
+    participants:string[]
+    alreadyPassed:boolean;
+    createdAt:string;
+    updatedAt:string;
+}
+
