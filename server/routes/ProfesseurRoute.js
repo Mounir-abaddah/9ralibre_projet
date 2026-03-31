@@ -383,7 +383,6 @@ router.get('/get-videos', authMiddlewares, profMiddleware, async (req, res) => {
   }
 });
 
-
 router.post('/add-videos', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -424,6 +423,34 @@ router.post('/add-videos', authMiddlewares, profMiddleware, async (req, res) => 
   }
 });
 
+router.put("/update-videos/:videoId",authMiddlewares,profMiddleware, async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const { title, description, videoUrl, thumbnail, matiere, filiere, visibility, niveaux } = req.body;
+    const updatedVideo = await Videos.findByIdAndUpdate(videoId,{
+        title,
+        description,
+        videoUrl,
+        thumbnail,
+        matiere,
+        filiere,
+        visibility,
+        niveaux,
+      },{
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!updatedVideo) {
+      return res.status(404).json({message: "Vidéo non trouvée"});
+    }
+    res.status(200).json({message: "Vidéo modifiée avec succès",video: updatedVideo});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message: "Erreur serveur",sucess:false,error});
+  }
+});
+
 router.delete('/delete-videos/:videoId', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const videoId = req.params.videoId;
@@ -448,54 +475,123 @@ router.delete('/delete-videos/:videoId', authMiddlewares, profMiddleware, async 
   }
 });
 
-router.put("/update-videos/:videoId", async (req, res) => {
+
+router.get('/get-quiz', authMiddlewares, profMiddleware, async (req, res) => {
   try {
-    const { videoId } = req.params;
+    const userId = req.user.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const skip = (page - 1) * limit;
 
-    const {
-      title,
-      description,
-      videoUrl,
-      thumbnail,
-      matiere,
-      filiere,
-      visibility,
-      niveaux,
-    } = req.body;
+    const [quiz, totalQuiz] = await Promise.all([
+      Quiz.find({ professeur: userId })
+      .populate("matiere")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean(),
+      Quiz.countDocuments({ professeur: userId })
+    ]);
 
-    const updatedVideo = await Videos.findByIdAndUpdate(
-      videoId,
-      {
-        title,
-        description,
-        videoUrl,
-        thumbnail,
-        matiere,
-        filiere,
-        visibility,
-        niveaux,
-      },
-      {
-        new: true, // retourne la nouvelle version
-        runValidators: true,
-      }
-    );
+    const totalPages = Math.ceil(totalQuiz / limit);
 
-    if (!updatedVideo) {
-      return res.status(404).json({
-        message: "Vidéo non trouvée",
-      });
-    }
-
-    res.status(200).json({
-      message: "Vidéo modifiée avec succès",
-      video: updatedVideo,
+    res.json({
+      success: true,
+      page,
+      totalPages,
+      totalQuiz,
+      quiz
     });
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({
-      message: "Erreur serveur",
+    res.status(500).json({success: false,message: "Erreur serveur"});
+  }
+});
+
+
+router.post('/add-quiz', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const { text, questions, matiere, filiere } = req.body;
+
+    const user = await User.findById(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    const niveauxDoc = await Niveaux.findOne({ nom: user.niveaux });
+
+    if (!niveauxDoc) {
+      return res.status(404).json({ message: "Niveau introuvable" });
+    }
+    const niveaux = niveauxDoc._id;
+
+    if (!text) {
+      return res.status(400).json({ message: "Titre requis" });
+    }
+    if (!questions || questions.length === 0) {
+      return res.status(400).json({ message: "Questions requises" });
+    }
+    const cleanQuestions = questions.map((q, index) => {
+      if (!q.question) {
+        throw new Error(`Question ${index + 1} vide`);
+      }
+
+      const options = q.options.filter((opt) => opt.trim() !== "");
+
+      if (options.length < 2) {
+        throw new Error(`Minimum 2 réponses (question ${index + 1})`);
+      }
+
+      if (q.correctAnswer === null || q.correctAnswer === undefined) {
+        throw new Error(`Choisir une bonne réponse (question ${index + 1})`);
+      }
+
+      return {
+        question: q.question,
+        options,
+        correctAnswer: q.correctAnswer
+      };
     });
+
+    const quiz = await Quiz.create({
+      text,
+      questions: cleanQuestions,
+      professeur: req.user.userId,
+      matiere,
+      niveaux,
+      filiere
+    });
+
+    res.status(201).json({ success: true, quiz });
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+router.delete('/delete-quiz/:quizId', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const quizId = req.params.quizId;
+
+    const quiz = await Quiz.findOneAndDelete({
+      _id: quizId,
+      professeur: userId
+    });
+
+    if (!quiz) {
+      return res.status(404).json({success: false,message: "Quiz non trouvé ou non autorisé"});
+    }
+
+    res.json({success: true,message: "Quiz supprimé avec succès",quiz});
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({success: false,message: "Erreur serveur"});
   }
 });
 
