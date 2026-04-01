@@ -5,17 +5,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Trash, Users } from "lucide-react";
 import Pagination from "@/components/Pagination/Pagination";
 import type { QuizProf } from "../../Quiz/types/QuizType";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import no_data from "@/assets/images/cours/No data-cuate.png";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,49 +36,65 @@ import {
 
 const ProfQuiz = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
+
     const [quiz, setQuiz] = useState<QuizProf[]>([]);
     const [page, setPage] = useState(1);
     const [totalQuiz, setTotalQuiz] = useState(0);
+    const [loading, setLoading] = useState(false);
+
     const limit = 8;
 
-    const options:Intl.DateTimeFormatOptions = {
+    const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "long",
         day: "numeric",
     };
 
     const getQuiz = async (pageNumber = 1) => {
-        const res = await axios.get(`${apiUrl}/prof/get-quiz?page=${pageNumber}&limit=${limit}`,{ withCredentials: true });
-        setQuiz(res.data.quiz);
-        setTotalQuiz(res.data.totalQuiz);
+        try {
+            setLoading(true);
+            const res = await axios.get(`${apiUrl}/prof/get-quiz?page=${pageNumber}&limit=${limit}`,{ withCredentials: true });
+            setQuiz(res.data.quiz);
+            setTotalQuiz(res.data.totalQuiz);
+        } catch (error) {
+            console.log(error);
+            toast.error("Erreur lors du chargement ❌");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleDelete = async(quizId:string)=>{
-        await axios.delete(`${apiUrl}/prof/delete-quiz/${quizId}`,{withCredentials:true})
-        await getQuiz(page);
-        toast.success("Cours supprimé avec succès ✅");
-    }
+    const handleDelete = async (quizId: string) => {
+        try {
+        await axios.delete(`${apiUrl}/prof/delete-quiz/${quizId}`, {
+            withCredentials: true,
+        });
+            await getQuiz(page);
+            toast.success("Quiz supprimé avec succès ✅");
+        } catch (error) {
+            console.log(error);
+            toast.error("Erreur lors de la suppression ❌");
+        }
+    };
 
-    useEffect(() => {
-        getQuiz(page);
-    }, [page]);
+  useEffect(() => {
+    getQuiz(page);
+  }, [page]);
 
-    return (
-        <div className="space-y-6">
+  return (
+    <div className="space-y-6">
         {/* HEADER */}
         <div className="flex items-center justify-between">
             <div>
-                <h2 className="text-2xl font-bold">Mes Quiz</h2>
-                <span className="rounded-full px-4 py-1 text-sm text-white">
-                    {totalQuiz} Quiz disponible
-                </span>
+            <h2 className="text-2xl font-bold">Mes Quiz</h2>
+            <span className="rounded-full bg-cyan-500 px-4 py-1 text-sm text-white">
+                {totalQuiz} Quiz disponible
+            </span>
             </div>
-            <Link target="_blank" to={'/prof/add/quiz/questions'}>
-                <Button variant={'outline'} className="cursor-pointer">
-                    Ajouter un Quiz
-                </Button>
+
+            <Link target="_blank" to={"/prof/add/quiz/questions"}>
+            <Button variant="outline">Ajouter un Quiz</Button>
             </Link>
-            
         </div>
 
         {/* TABLE */}
@@ -83,15 +105,13 @@ const ProfQuiz = () => {
                 <TableHead>Titre</TableHead>
                 <TableHead>Questions</TableHead>
                 <TableHead>Filière</TableHead>
-                <TableHead>Matiere</TableHead>
+                <TableHead>Matière</TableHead>
                 <TableHead>
                     <Tooltip>
-                        <TooltipTrigger >
-                            Étudiants
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Étudiants passer le quiz</p>
-                        </TooltipContent>
+                    <TooltipTrigger>Étudiants</TooltipTrigger>
+                    <TooltipContent>
+                        <p>Étudiants ayant passé le quiz</p>
+                    </TooltipContent>
                     </Tooltip>
                 </TableHead>
                 <TableHead>Date</TableHead>
@@ -100,90 +120,119 @@ const ProfQuiz = () => {
             </TableHeader>
 
             <TableBody>
-                {quiz.map((q) => (
-                <TableRow key={q._id} className="transition hover:bg-gray-50 dark:hover:bg-slate-800">
+                {loading ? (
+                <TableRow>
+                    <TableCell colSpan={7} className="text-center py-10">
+                    Chargement...
+                    </TableCell>
+                </TableRow>
+                ) : quiz.length > 0 ? (
+                quiz.map((q) => (
+                    <TableRow
+                    key={q._id}
+                    className="transition hover:bg-gray-50 dark:hover:bg-slate-800"
+                    >
                     <TableCell className="font-semibold">
                         {q.text}
                     </TableCell>
 
-                    <TableCell>
-                        {q.questions.length}
-                    </TableCell>
+                    <TableCell>{q.questions.length}</TableCell>
 
                     <TableCell>
-                    <span className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-600">
+                        <span className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-600">
                         {q.filiere}
-                    </span>
+                        </span>
                     </TableCell>
 
                     <TableCell>
-                    <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-600">
+                        <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-600">
                         {q.matiere.nom}
-                    </span>
+                        </span>
                     </TableCell>
 
                     <TableCell>
-                    <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1">
                         <Users size={16} />
                         {q.participants?.length || 0}
-                    </div>
+                        </div>
                     </TableCell>
 
                     <TableCell>
-                    {new Date(q.createdAt).toLocaleDateString("fr-FR",options)}
+                        {new Date(q.createdAt).toLocaleDateString(
+                        "fr-FR",
+                        options
+                        )}
                     </TableCell>
 
-                    <TableCell className="flex justify-end gap-2 text-right">
+                    <TableCell className="flex justify-end gap-2">
                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
+                        <AlertDialogTrigger asChild>
                             <Button
-                                variant="outline"
-                                className="rounded-lg p-2 text-red-500 hover:bg-red-100"
+                            variant="outline"
+                            className="p-2 text-red-500 hover:bg-red-100"
                             >
-                                <Trash size={16} />
+                            <Trash size={16} />
                             </Button>
-                            </AlertDialogTrigger>
+                        </AlertDialogTrigger>
 
-                            <AlertDialogContent>
+                        <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Confirmer la suppression
-                                </AlertDialogTitle>
+                            <AlertDialogTitle>
+                                Confirmer la suppression
+                            </AlertDialogTitle>
 
-                                <AlertDialogDescription>
-                                Voulez-vous vraiment supprimer ce quiz :
-                                <span className="font-semibold"> {q.text} </span> ?
-                                Cette action est irréversible.
-                                </AlertDialogDescription>
+                            <AlertDialogDescription>
+                                Voulez-vous vraiment supprimer :
+                                <span className="font-semibold">
+                                {" "}
+                                {q.text}{" "}
+                                </span>
+                                ? Cette action est irréversible.
+                            </AlertDialogDescription>
                             </AlertDialogHeader>
 
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                            <AlertDialogCancel>
+                                Annuler
+                            </AlertDialogCancel>
 
-                                <AlertDialogAction
+                            <AlertDialogAction
                                 onClick={() => handleDelete(q._id)}
                                 className="bg-red-600 hover:bg-red-700"
-                                >
-                                    Oui, supprimer
-                                </AlertDialogAction>
+                            >
+                                Supprimer
+                            </AlertDialogAction>
                             </AlertDialogFooter>
-                            </AlertDialogContent>
+                        </AlertDialogContent>
                         </AlertDialog>
-                        </TableCell>
+                    </TableCell>
+                    </TableRow>
+                ))
+                ) : (
+                <TableRow>
+                    <TableCell colSpan={7}>
+                    <div className="flex flex-col items-center justify-center py-10">
+                        <img src={no_data} className="w-72" />
+                        <p className="mt-4 text-gray-500">
+                        Aucun Quiz
+                        </p>
+                    </div>
+                    </TableCell>
                 </TableRow>
-                ))}
+                )}
             </TableBody>
             </Table>
         </div>
-        {/* PAGINATION */}
+
+      {/* PAGINATION */}
         <Pagination
             totalItems={totalQuiz}
             itemsPerPage={limit}
             currentPage={page}
             onPageChange={setPage}
         />
-        </div>
-    );
+    </div>
+  );
 };
 
 export default ProfQuiz;
