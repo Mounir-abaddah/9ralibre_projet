@@ -13,6 +13,7 @@ const Message = require('../models/MessagesModel');
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcryptjs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -29,6 +30,22 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+const storageImage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const userId = req.user.userId;
+    const uploadPath = path.join("./uploads/images/", userId.toString());
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+const uploadImage = multer({ storage: storageImage });
 
 router.get('/fetch-matiere',authMiddlewares,profMiddleware,async(req,res)=>{
   const user = await User.findById(req.user.userId);
@@ -205,6 +222,7 @@ router.get('/profile', authMiddlewares, profMiddleware, async (req, res) => {
       image: user.image,
       niveaux:user.niveaux,
       completeProfile: user.completeProfile,
+      provider:user.provider,
       followers: user.followers,
     };
 
@@ -654,6 +672,127 @@ router.post('/messages',authMiddlewares,profMiddleware,async(req,res)=>{
         lastMessage:messages._id
     })
     res.status(201).json(messages)
+});
+
+
+
+
+
+router.put('/settings', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const {
+      nom,
+      prenom,
+      niveaux,
+      image
+    } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Utilisateur non trouvé"
+      });
+    }
+
+    user.nom = nom || user.nom;
+    user.prenom = prenom || user.prenom;
+    user.niveaux = niveaux || user.niveaux;
+    user.image = image || user.image;
+
+    // si profil complet
+    user.completeProfile = true;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Profil mis à jour avec succès",
+      user
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
+
+
+router.put('/change-password', authMiddlewares, profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Utilisateur non trouvé"
+      });
+    }
+
+    // vérifier ancien mot de passe
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Ancien mot de passe incorrect"
+      });
+    }
+
+    // hash nouveau password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Mot de passe modifié avec succès"
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
+
+router.put('/upload-avatar', authMiddlewares, profMiddleware, uploadImage.single("image"), async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false });
+    }
+
+    if (req.file) {
+      user.image = req.file.filename;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      image: user.image
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
 });
 
 
