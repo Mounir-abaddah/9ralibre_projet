@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { MessageCircle } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 interface MessageType {
   conversationId: string
@@ -23,6 +23,7 @@ interface ChatProfProps {
 
 const ChatProf = ({ messages }: ChatProfProps) => {
   const unreadCount = messages.filter(m => m.unread).length
+  const navigate = useNavigate();
   return (
     <Card className="w-full">
       <CardHeader className="flex justify-between">
@@ -50,7 +51,8 @@ const ChatProf = ({ messages }: ChatProfProps) => {
         {messages.map((mes) => (
           <div
             key={mes.conversationId}
-            className="flex items-start gap-3 rounded-md border-b p-2 transition hover:bg-slate-200 hover:text-gray-800"
+            onClick={()=>navigate(`/prof/Chat/start/${mes.conversationId}`)}
+            className="flex cursor-pointer items-start gap-3 rounded-md border-b p-2 transition hover:bg-slate-200 hover:text-gray-800"
           >
             <Avatar className="h-9 w-9">
               <AvatarImage src={mes.user.image} />
