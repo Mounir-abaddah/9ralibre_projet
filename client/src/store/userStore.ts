@@ -34,6 +34,7 @@ export interface typedataProf{
     accountVerified: boolean
     completeProfile:boolean
     followers:string[]
+    provider:"local"| "google";
     quiz:string;
     videos:string;
     totalViews:number
