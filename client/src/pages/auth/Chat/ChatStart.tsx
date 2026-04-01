@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import type { typeMessage } from "./types/MessageType";
 import { useProtectedRoutes } from "@/store/userStore";
 import type { typeChat } from "./types/ChatType";
-import { Dot, EllipsisVertical, Flag } from "lucide-react";
+import { EllipsisVertical, Flag } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -136,20 +136,23 @@ const ChatStart = () => {
         {/* Header */}
         <header className="flex w-full shrink-0 items-center justify-between gap-3 border-b p-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <Avatar>
+            <Avatar size="lg">
               <AvatarImage src={`${apiUrl}/uploads/images/${otherUser?._id}/${otherUser?.image}`} alt="user" className="rounded-full" />
-              <AvatarFallback className="bg-sky-500 font-bold text-white uppercase">
+              <AvatarFallback className={`rounded font-bold tracking-wide uppercase shadow-sm ${
+                    otherUser?.role === "Etudiant" ? "bg-sky-500 text-white" :
+                    otherUser?.role === "Etudiante" ? "bg-pink-500 text-white" :
+                    "bg-gray-200 text-gray-700"}`}>
                 {otherUser?.nom?.[0]}{otherUser?.prenom?.[0]}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col items-start">
-              <p className="text-sm font-semibold">{otherUser?.nom} {otherUser?.prenom}</p>
-              {/* ✅ En ligne / Hors ligne dynamique */}
-              <span className="flex items-center text-xs text-gray-500">
-                <Dot color={isOtherUserOnline ? "lime" : "red"} size={32} />
-                {isOtherUserOnline ? "En ligne" : "Hors ligne"}
+            <div>
+              <p className="font-semibold">
+                {otherUser?.nom} {otherUser?.prenom}
+              </p>
+              <span className={`text-xs ${isOtherUserOnline ? "text-green-500" : "text-gray-400"}`}>
+                {isOtherUserOnline ? "● En ligne" : "● Hors ligne"}
               </span>
-            </div>
+          </div>
           </div>
 
           <Popover>
