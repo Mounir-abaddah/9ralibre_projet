@@ -1,42 +1,85 @@
-import type { PropsWithChildren } from "react"
-import {SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar"
-import { AppSidebar } from "../Dashboard/Sidebar/app-sidebar"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb"
-import { Separator } from "../ui/separator"
+import type { PropsWithChildren } from "react";
+import { useLocation, Link } from "react-router-dom";
+
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "../ui/sidebar";
+import { AppSidebar } from "../Dashboard/Sidebar/app-sidebar";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../ui/breadcrumb";
+
+import { Separator } from "../ui/separator";
 
 const LayoutsProf = ({ children }: PropsWithChildren) => {
-return (
+  const location = useLocation();
+  const path = location.pathname;
+
+  // 🧠 mapping des routes
+  const breadcrumbMap: Record<string, string> = {
+    "/prof/dashboard": "Dashboard",
+    "/prof/cours": "Cours",
+    "/prof/videos": "Videos",
+    "/prof/quiz": "Quiz",
+    "/prof/chat": "Chat",
+    "/prof/settings": "Paramètres",
+  };
+
+  // 🧠 gestion des routes dynamiques
+  let currentLabel = breadcrumbMap[path];
+
+  if (path.startsWith("/prof/Chat/start")) {
+    currentLabel = "Chat";
+  }
+
+  return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        {/* HEADER */}
+        <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
               orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
+              className="mr-2 h-4"
             />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Build Your Application
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/prof/dashboard">Dashboard</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
+                {path !== "/prof/dashboard" && currentLabel && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>
+                        {currentLabel}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
+        {/* CONTENT */}
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           {children}
         </div>
       </SidebarInset>
     </SidebarProvider>
-)
-}
+  );
+};
 
-export default LayoutsProf
+export default LayoutsProf;
