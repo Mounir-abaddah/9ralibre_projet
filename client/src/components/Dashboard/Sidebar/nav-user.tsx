@@ -1,12 +1,11 @@
 "use client"
 
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Moon,
+  Settings,
 } from "lucide-react"
 
 import {
@@ -30,11 +29,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useProtectedRoutes } from "@/store/userStore"
+import { Switch } from "@/components/ui/switch"
+import { useTheme } from "@/context/ThemeContext"
 
 export function NavUser() {
   const apiUrl = import.meta.env.VITE_API_URL;
   const { isMobile } = useSidebar()
   const {data} = useProtectedRoutes();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -47,7 +49,7 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={data?.image} alt={data?.nom} />
+                <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt={data?.nom} />
                 <AvatarFallback className="rounded-lg uppercase">{data?.nom[0]}{data?.prenom[0]}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -77,30 +79,30 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem className="flex cursor-pointer items-center justify-between">
+                <div className="flex items-center gap-2">
+                <Moon size={16} />
+                <span>Mode sombre</span>
+              </div>
+
+              <Switch
+                checked={theme === "dark"}
+                onCheckedChange={toggleTheme}
+              />
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
                 Notifications
               </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                <Settings />
+                Paramètre
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem variant='destructive' className="cursor-pointer">
               <LogOut />
-              Log out
+              Se déconnecter 
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
