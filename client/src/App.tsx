@@ -35,6 +35,7 @@ import ProfQuiz from './pages/auth/Professeur/Prof-quiz/ProfQuiz';
 import ProfAddQuiz from './pages/auth/Professeur/Prof-quiz/ProfAddQuiz';
 import ProfChat from './pages/auth/Professeur/Prof-chat/ProfChat';
 import ProfChatStart from './pages/auth/Professeur/Prof-chat/ProfChatStart';
+import ProfSettings from './pages/auth/Professeur/Prof-settings/ProfSettings';
 
 const App = () => {
   return (
@@ -75,6 +76,7 @@ const App = () => {
           <Route path='/prof/add/quiz/questions'  element={<ProfAddQuiz />} />
           <Route path='/prof/chat'  element={<LayoutsProf><ProfChat /></LayoutsProf>} />
           <Route path='/prof/Chat/start/:chatId'  element={<LayoutsProf><ProfChatStart /></LayoutsProf>} />
+          <Route path='/prof/settings'  element={<LayoutsProf><ProfSettings /></LayoutsProf>} />
         </Route>
         <Route />
       </Routes>
