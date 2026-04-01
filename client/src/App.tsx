@@ -33,6 +33,8 @@ import ProfCours from './pages/auth/Professeur/Prof-cours/ProfCours';
 import ProfVideos from './pages/auth/Professeur/Prof-videos/ProfVideos';
 import ProfQuiz from './pages/auth/Professeur/Prof-quiz/ProfQuiz';
 import ProfAddQuiz from './pages/auth/Professeur/Prof-quiz/ProfAddQuiz';
+import ProfChat from './pages/auth/Professeur/Prof-chat/ProfChat';
+import ProfChatStart from './pages/auth/Professeur/Prof-chat/ProfChatStart';
 
 const App = () => {
   return (
@@ -71,6 +73,8 @@ const App = () => {
           <Route path='/prof/videos'  element={<LayoutsProf><ProfVideos /></LayoutsProf>} />
           <Route path='/prof/quiz'  element={<LayoutsProf><ProfQuiz /></LayoutsProf>} />
           <Route path='/prof/add/quiz/questions'  element={<ProfAddQuiz />} />
+          <Route path='/prof/chat'  element={<LayoutsProf><ProfChat /></LayoutsProf>} />
+          <Route path='/prof/Chat/start/:chatId'  element={<LayoutsProf><ProfChatStart /></LayoutsProf>} />
         </Route>
         <Route />
       </Routes>
