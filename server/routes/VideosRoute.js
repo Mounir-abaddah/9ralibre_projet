@@ -21,7 +21,10 @@ router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     if(!niveaux){
         return res.status(400).send({message:"aucune niveaux est disponible",success:false})
     }
-    const objectSearch = {niveaux:niveaux._id};
+    const objectSearch = {
+        niveaux:niveaux._id,
+        visibility: 'Public'
+    };
 
     // Si on fournit un filtre `matiere` (nom ou portion), on recherche les IDs correspondants
     if (matiere){
@@ -43,7 +46,6 @@ router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
         ];
         if (matieresMatchIds.length) objectSearch.$or.push({ matiere: { $in: matieresMatchIds } });
     }
-
     const [videos,totalVideos] = await Promise.all([
         VideosModel.find(objectSearch)
         .populate("matiere")
