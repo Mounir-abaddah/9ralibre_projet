@@ -180,7 +180,7 @@ const Connexion = () => {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-amber-300 p-3 text-base font-semibold text-black transition-all duration-300 hover:bg-amber-400 hover:shadow-md disabled:bg-slate-50 disabled:shadow dark:text-white"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-amber-500 p-3 text-base font-semibold text-black transition-all duration-300 hover:bg-amber-600 hover:shadow-md disabled:bg-slate-50 disabled:shadow dark:text-white"
           >
             {loading && <Loadering />}
             <h2>Connectez-vous</h2>
