@@ -68,7 +68,15 @@ const Cours = () => {
         setLoading(true);
         const res = await axios.get(`${apiUrl}/cours/getCours/${niveaux}?${params.toString()}`,{withCredentials:true});
         if(res.data.success){
-          setCours(res.data.cours)
+          const fetchedCours: CoursType[] = res.data.cours || [];
+          setCours(fetchedCours)
+          setSavedCoursMap((prev) => {
+            const updatedMap = { ...prev };
+            fetchedCours.forEach((coursItem) => {
+              updatedMap[coursItem._id] = Boolean(coursItem.isSaved);
+            });
+            return updatedMap;
+          });
           setTotalCours(res.data.totalCours)
         }
       }catch(err){
