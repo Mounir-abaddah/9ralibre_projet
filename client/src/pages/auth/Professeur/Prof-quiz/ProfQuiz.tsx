@@ -18,7 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import no_data from "@/assets/images/cours/No data-cuate.png";
 
@@ -36,9 +36,13 @@ import {
 
 const ProfQuiz = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [quiz, setQuiz] = useState<QuizProf[]>([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(() => {
+      const p = Number(searchParams.get("page"));
+      return Number.isFinite(p) && p > 0 ? p : 1;
+    });
     const [totalQuiz, setTotalQuiz] = useState(0);
     const [loading, setLoading] = useState(false);
 
@@ -66,10 +70,18 @@ const ProfQuiz = () => {
 
     const handleDelete = async (quizId: string) => {
         try {
+            // Si on supprime le dernier quiz de la page courante,
+            // on revient automatiquement à page - 1.
+            const shouldGoBack = page > 1 && quiz.length === 1;
         await axios.delete(`${apiUrl}/prof/delete-quiz/${quizId}`, {
             withCredentials: true,
         });
-            await getQuiz(page);
+
+            if (shouldGoBack) {
+                setPage((prev) => Math.max(prev - 1, 1));
+            } else {
+                await getQuiz(page);
+            }
             toast.success("Quiz supprimé avec succès ✅");
         } catch (error) {
             console.log(error);
@@ -80,6 +92,12 @@ const ProfQuiz = () => {
   useEffect(() => {
     getQuiz(page);
   }, [page]);
+
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (page > 1) params.page = page.toString();
+    setSearchParams(params);
+  }, [page, setSearchParams]);
 
   return (
     <div className="space-y-6">
