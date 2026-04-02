@@ -47,6 +47,11 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    status:{
+      type:String,
+      default:"pending",
+      enum:['pending','approved']
+    },
     events: [
       {
         Date: {
@@ -79,7 +84,7 @@ const UserSchema = new mongoose.Schema(
     ],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     savedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
-    savedCours: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cours" }],
+    savedCours: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cours" }]
   },
   {
     timestamps: true,
