@@ -28,14 +28,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import toast from "react-hot-toast"
+import { useSearchParams } from "react-router-dom"
 
 const ProfCours = () => {
 const apiUrl = import.meta.env.VITE_API_URL;
 const { data } = useProfProtectedRoutes();
+const [searchParams, setSearchParams] = useSearchParams();
 
 const [open, setOpen] = useState(false);
 const [Cours, SetCours] = useState<CoursType[]>([]);
-const [currentPage, setCurrentPage] = useState(1);
+const [currentPage, setCurrentPage] = useState(() => {
+    const p = Number(searchParams.get("page"));
+    return Number.isFinite(p) && p > 0 ? p : 1;
+});
 const [totalCours, setTotalCours] = useState(0);
 const [matiere, setMatiere] = useState<Matiere[]>([])
 const [limit] = useState(6);
@@ -55,6 +60,12 @@ useEffect(() => {
 }, [currentPage]);
 
 useEffect(() => {
+    const params: Record<string, string> = {};
+    if (currentPage > 1) params.page = currentPage.toString();
+    setSearchParams(params);
+}, [currentPage, setSearchParams]);
+
+useEffect(() => {
     const getMatiere = async () => {
     const res = await axios.get(`${apiUrl}/prof/fetch-matiere`, { withCredentials: true })
     setMatiere(res.data)
@@ -71,10 +82,18 @@ const bgItems = {
 
 const handleDeleteCours = async (coursId: string) => {
     try {
+        // Si on supprime le dernier cours sur la page courante,
+        // on doit revenir à la page précédente pour éviter une page vide.
+        const shouldGoBack = currentPage > 1 && Cours.length === 1;
         await axios.delete(`${apiUrl}/prof/delete-cours/${coursId}`, {
             withCredentials: true,
         });
-        await getCours();
+
+        if (shouldGoBack) {
+            setCurrentPage((prev) => Math.max(prev - 1, 1));
+        } else {
+            await getCours();
+        }
         toast.success("Cours supprimé avec succès ✅");
     } catch (error) {
         console.log(error);
