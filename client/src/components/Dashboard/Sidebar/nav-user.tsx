@@ -103,7 +103,7 @@ export function NavUser() {
                 <Bell />
                 Notifications
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/prof/settings')}>
                 <Settings />
                 Paramètre
               </DropdownMenuItem>
