@@ -44,9 +44,6 @@ router.post('/register',async(req,res)=>{
 });
 
 
-
-
-
 router.get('/confirm-email/:token',async(req,res)=>{
     try{
         const {token} = req.params;
