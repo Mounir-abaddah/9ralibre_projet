@@ -9,6 +9,7 @@ const Cours = require("../models/CoursModel");
 router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
   try {
     const { niveauxNom } = req.params;
+    const userId = req.user.userId;
 
     const { matiere, semestre, type, filiere, search } = req.query;
 
@@ -88,13 +89,26 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
+    const user = await User.findById(userId).select("savedCours");
+    const savedCoursSet = new Set(
+      (user?.savedCours || []).map((id) => id.toString()),
+    );
+
+    const coursWithSavedStatus = cours.map((item) => {
+      const coursItem = item.toObject();
+      return {
+        ...coursItem,
+        isSaved: savedCoursSet.has(coursItem._id.toString()),
+      };
+    });
+
     return res.json({
       success: true,
       totalCours,
       limit,
       skip,
       totalPages: Math.ceil(totalCours / limit),
-      cours,
+      cours: coursWithSavedStatus,
     });
   } catch (err) {
     res
@@ -163,16 +177,11 @@ router.post("/save-cours/:coursId", authMiddleware, async (req, res) => {
         .status(404)
         .send({ message: "Utilisateur non trouvé", success: false });
     }
-
-    // Vérifier si le cours est déjà sauvegardé
     const isSaved = user.savedCours.some((id) => id.toString() === coursId);
-
     if (!isSaved) {
       user.savedCours.push(coursId);
     } else {
-      user.savedCours = user.savedCours.filter(
-        (id) => id.toString() !== coursId,
-      );
+      user.savedCours = user.savedCours.filter((id) => id.toString() !== coursId,);
     }
 
     await user.save();
