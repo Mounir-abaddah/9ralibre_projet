@@ -17,17 +17,27 @@ import { Tooltip, TooltipTrigger,TooltipContent } from "@/components/ui/tooltip"
 import toast from "react-hot-toast";
 import AddVideosModal from "@/components/Videos/Prof/AddVideosModal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import Pagination from "@/components/Pagination/Pagination";
+import { useSearchParams } from "react-router-dom";
 
 const ProfVideos = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
+    const [searchParams, setSearchParams] = useSearchParams();
     const [videos,setVideos] = useState<TypeProfVideos[]>([]);
     const [open,setOpen] = useState(false)
     const [matiere, setMatiere] = useState<Matiere[]>([])
     const [selectedVideos, setSelectedVideos] = useState<TypeProfVideos | null>(null);
+    const [currentPage, setCurrentPage] = useState(() => {
+        const p = Number(searchParams.get("page"));
+        return Number.isFinite(p) && p > 0 ? p : 1;
+    });
+    const [totalVideos, setTotalVideos] = useState(0);
+    const limit = 6;
 
     const getVideos = async()=>{
-        const res = await axios.get(`${apiUrl}/prof/get-videos`,{withCredentials:true});
+        const res = await axios.get(`${apiUrl}/prof/get-videos?page=${currentPage}&limit=${limit}`,{withCredentials:true});
         setVideos(res.data.videos)
+        setTotalVideos(res.data.total || 0);
     }
 
     useEffect(()=>{
@@ -40,7 +50,13 @@ const ProfVideos = () => {
 
     useEffect(()=>{
         getVideos()
-    },[])
+    },[currentPage])
+
+    useEffect(() => {
+        const params: Record<string, string> = {};
+        if (currentPage > 1) params.page = currentPage.toString();
+        setSearchParams(params);
+    }, [currentPage, setSearchParams]);
 
     const options:Intl.DateTimeFormatOptions = {
         year: "numeric",
@@ -55,9 +71,16 @@ const ProfVideos = () => {
     }, [open]);
 
     const handleDelete = async(videoId:string)=>{
+        // Si on supprime le dernier élément de la page courante,
+        // on doit revenir à page - 1 pour éviter un tableau vide.
+        const shouldGoBack = currentPage > 1 && videos.length === 1;
         const res = await axios.delete(`${apiUrl}/prof/delete-videos/${videoId}`,{withCredentials:true})
         toast.success(res.data.message)
-        await getVideos()
+        if (shouldGoBack) {
+            setCurrentPage((prev) => Math.max(prev - 1, 1));
+        } else {
+            await getVideos()
+        }
     }
 
   return (
@@ -65,7 +88,7 @@ const ProfVideos = () => {
     <div className="p-6">
         <div>
             <h1 className="text-2xl font-bold">Mes Vidéos</h1>
-            <span className="pl-2 text-xs">{videos.length} videos disponible</span>
+            <span className="pl-2 text-xs">{totalVideos} videos disponible</span>
         </div>
     
     <Table>
@@ -190,6 +213,16 @@ const ProfVideos = () => {
         ))}
         </TableBody>
     </Table>
+    {totalVideos > limit && (
+      <div className="mt-4">
+        <Pagination
+          totalItems={totalVideos}
+          itemsPerPage={limit}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    )}
     <Tooltip>
         <div className="group fixed right-6 bottom-6">
             <TooltipTrigger asChild onClick={()=>setOpen(!open)} className="cursor-pointer">
