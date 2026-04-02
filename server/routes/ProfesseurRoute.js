@@ -14,6 +14,14 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
+const { sendVerificationProfesseurEmail,oublierMotdepasse } = require('../services/emailServices');
+const jwt = require('jsonwebtoken')
+
+
+
+
+
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -49,8 +57,14 @@ const uploadImage = multer({ storage: storageImage });
 
 router.get('/fetch-matiere',authMiddlewares,profMiddleware,async(req,res)=>{
   const user = await User.findById(req.user.userId);
+  if (!user) {
+    return res.status(404).json({ message: "Utilisateur introuvable" });
+  }
   const niveau = await Niveaux.findOne({ nom: user.niveaux });
-  const matiere = await Matiere.find({niveaux:niveau._id}).populate("niveaux");
+  if (!niveau) {
+    return res.status(404).json({ message: "Niveau introuvable" });
+  }
+  const matiere = await Matiere.find({ niveaux: niveau._id }).populate("niveaux");
   res.json(matiere)
 })
 
@@ -795,6 +809,202 @@ router.put('/upload-avatar', authMiddlewares, profMiddleware, uploadImage.single
   }
 });
 
+
+
+
+router.post("/register", async (req, res) => {
+  try {
+    const { nom, prenom, email, niveaux, password } = req.body
+    if (!nom || !prenom || !email || !niveaux || !password) {
+      return res.status(400).json({success: false,message: "Tous les champs sont obligatoires"})
+    }
+    const emailExists = await User.findOne({ email })
+    if (emailExists) {
+      return res.status(400).json({ success: false, message: "Un compte avec cet email existe déjà" })
+    }
+    const hashedPassword = await bcrypt.hash(password, 10)
+    const newUser = new User({
+      nom,
+      prenom,
+      email,
+      password: hashedPassword,
+      accountVerified: true,
+      niveaux,
+      role: "Professeur",
+      provider: "local",
+      status: "pending"
+    })
+    await newUser.save()
+    return res.status(201).json({success: true,message: "Compte créé avec succès. En attente de validation."})
+  } catch (error) {
+    console.error("Register error:", error)
+    return res.status(500).json({success: false,message: "Erreur serveur"})
+  }
+})
+
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // validation
+    if (!email || !password) {
+      return res.status(400).json({success: false,message: "Email et mot de passe requis"});
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Email ou mot de passe incorrect"
+      });
+    }
+    // vérifier statut admin
+    if (user.status !== "approved") {
+      return res.status(403).json({success: false,message: "Compte en attente de validation"});
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({success: false,message: "Mot de passe incorrect"
+      });
+    }
+
+    // JWT
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        nom: user.nom,
+        prenom: user.prenom,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
+
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Email ou mot de passe incorrect"
+      });
+    }
+
+    // token reset
+    const resetToken = jwt.sign(
+      { userId: user._id, type: "resetPassword" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // envoyer email
+    await oublierMotdepasse(user, resetUrl);
+
+    res.json({
+      success: true,
+      message: "Email de réinitialisation envoyé"
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
+
+
+router.post('/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.type !== "resetPassword") {
+      return res.status(400).json({
+        success: false,
+        message: "Token invalide"
+      });
+    }
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Email ou mot de passe incorrect"
+      });
+    }
+
+    // hash password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Mot de passe réinitialisé avec succès"
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: "Token expiré ou invalide"
+    });
+  }
+});
+
+
+router.post('/logout', (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+        });
+        return res.status(200).send({
+            message: "Déconnexion réussie",
+            success: true
+        });
+    } catch (err) {
+        return res.status(500).send({
+            message: "Une erreur est survenue lors de la déconnexion",
+            success: false
+        });
+    }
+});
 
 
 
