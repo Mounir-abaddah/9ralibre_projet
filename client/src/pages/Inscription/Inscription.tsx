@@ -192,7 +192,7 @@ const Inscription = () => {
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center justify-center gap-2 rounded-md bg-amber-300 p-3 font-semibold text-black hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-300"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-md bg-amber-500 p-3 font-semibold  text-white transition duration-300 hover:bg-amber-600 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-300"
           >
             {loading && <Loadering />}
             <span>Inscrivez-vous</span>
