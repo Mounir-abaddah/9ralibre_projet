@@ -36,6 +36,7 @@ import ProfAddQuiz from './pages/auth/Professeur/Prof-quiz/ProfAddQuiz';
 import ProfChat from './pages/auth/Professeur/Prof-chat/ProfChat';
 import ProfChatStart from './pages/auth/Professeur/Prof-chat/ProfChatStart';
 import ProfSettings from './pages/auth/Professeur/Prof-settings/ProfSettings';
+import ProfInscription from './pages/auth/Professeur/Prof-inscription/ProfInscription';
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='*' element={<PagesNonTrouver />} />
         <Route path='/inscription' element={<Inscription />} />
+        <Route path='/prof-inscription' element={<ProfInscription />} />
         <Route path='/connexion' element={<Connexion />} />
         <Route path='/prof-connexion' element={<ProfConnexion />} />
         <Route path='/password/reset' element={<OublierMotdepasse />} />
