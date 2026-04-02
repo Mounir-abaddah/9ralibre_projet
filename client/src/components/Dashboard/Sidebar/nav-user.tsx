@@ -31,12 +31,21 @@ import {
 import { useProtectedRoutes } from "@/store/userStore"
 import { Switch } from "@/components/ui/switch"
 import { useTheme } from "@/context/ThemeContext"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export function NavUser() {
   const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
   const { isMobile } = useSidebar()
   const {data} = useProtectedRoutes();
   const { theme, toggleTheme } = useTheme();
+
+  const handleLogout = async()=>{
+    await axios.post(`${apiUrl}/prof/logout`,{},{withCredentials:true})
+    navigate(`/prof-connexion`);
+    window.location.reload()
+  }
 
   return (
     <SidebarMenu>
@@ -100,7 +109,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant='destructive' className="cursor-pointer">
+            <DropdownMenuItem onClick={()=>handleLogout()} variant='destructive' className="cursor-pointer">
               <LogOut />
               Se déconnecter 
             </DropdownMenuItem>
