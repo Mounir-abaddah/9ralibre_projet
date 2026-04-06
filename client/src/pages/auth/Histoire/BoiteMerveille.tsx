@@ -1,0 +1,70 @@
+import React, { useEffect, useState } from "react";
+import HTMLFlipBook from "react-pageflip";
+
+const BoiteMerveille = () => {
+  const [text, setText] = useState("");
+
+  const splitTextIntoPages = (text: string, maxLength = 1040) => {
+  const sentences = text.split(/(?<=[.!?])/); // coupe par phrases
+  const pages: string[] = [];
+  let current = "";
+
+  sentences.forEach((sentence) => {
+    if ((current + sentence).length > maxLength) {
+      pages.push(current);
+      current = sentence;
+    } else {
+      current += sentence;
+    }
+  });
+
+  if (current) pages.push(current);
+
+  return pages;
+};
+
+const pages = splitTextIntoPages(text);
+
+  useEffect(() => {
+    fetch("/book/boite.txt")
+      .then((res) => res.text())
+      .then((data) => setText(data));
+  }, []);
+
+
+  return (
+  <div className="flex justify-center p-6">
+    <HTMLFlipBook
+      width={450}
+      height={650}
+      showCover
+      className="shadow-2xl"
+    >
+      {/* COVER */}
+      <div className="bg-black text-white flex items-center justify-center text-xl">
+        La Boîte à Merveilles
+      </div>
+
+      {pages.map((page, i) => (
+        <div
+          key={i}
+          className="flex flex-col justify-between bg-[#fdfaf5] p-8"
+        >
+          <div className="flex-1 overflow-hidden">
+            <p className="text-justify leading-7 text-[15px]">
+              {page}
+            </p>
+          </div>
+
+          <div className="text-center text-xs text-gray-400">
+            — {i + 1} —
+          </div>
+        </div>
+      ))}
+    </HTMLFlipBook>
+  </div>
+)
+
+}
+
+export default BoiteMerveille
