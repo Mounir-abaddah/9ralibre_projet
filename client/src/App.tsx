@@ -37,6 +37,7 @@ import ProfChat from './pages/auth/Professeur/Prof-chat/ProfChat';
 import ProfChatStart from './pages/auth/Professeur/Prof-chat/ProfChatStart';
 import ProfSettings from './pages/auth/Professeur/Prof-settings/ProfSettings';
 import ProfInscription from './pages/auth/Professeur/Prof-inscription/ProfInscription';
+import BoiteMerveille from './pages/auth/Histoire/BoiteMerveille';
 
 const App = () => {
   return (
@@ -62,6 +63,7 @@ const App = () => {
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Histoire/:niveaux' element={<Layouts><Histoire /></Layouts>} />
+            <Route path='/Histoire/Boite/:niveaux' element={<Layouts><BoiteMerveille /></Layouts>} />
             <Route path='/Quiz/:niveaux' element={<Layouts><Quiz /></Layouts>} />
             <Route path='/Quiz/start/:niveaux/:quizId' element={<Quiz_Start />} />
             <Route path='/Quiz/resultat/:quizId' element={<Layouts><Resultat /></Layouts>} />
