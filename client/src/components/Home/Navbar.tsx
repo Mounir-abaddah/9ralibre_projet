@@ -1,4 +1,4 @@
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from '../ui/navigation-menu';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '../ui/navigation-menu';
 import logo from "@/assets/images/9ralibre.png";
 import { useTheme } from "@/context/ThemeContext";
 import {
@@ -6,15 +6,17 @@ Moon,
 Sun,
 Menu,
 X,
-Atom, BookOpen, Calculator, Dna, FlaskConical, Globe,
-GraduationCap,
-Library,
+Atom, Calculator, FlaskConical,
 PlayCircle,
 Video,
 DraftingCompass,
 Facebook,
 Instagram,
-Linkedin
+Linkedin,
+Info,
+Book,
+Trophy,
+Brain
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useProtectedRoutes, type typeAllData } from "@/store/userStore";
@@ -39,7 +41,8 @@ return (
             <Linkedin size={16} color='#fff'/>
         </div>
     </div>
-    <div className="flex w-full items-center justify-between bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
+    {/* `isolate` + z-index élevé: évite que le menu passe derrière les cards */}
+    <div className="relative z-[9999] isolate flex w-full items-center justify-between overflow-visible bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
         <div className="flex items-center gap-2">
         <img src={logo} alt="logo" className="w-10" loading='lazy'/>
         <span className="text-lg font-bold text-gray-800 dark:text-white">
@@ -124,6 +127,7 @@ return (
     <Link to="/" className="text-lg font-semibold">Accueil</Link>
     <Link to="/cours" className="text-lg font-semibold">Cours</Link>
     <Link to="/videos" className="text-lg font-semibold">Vidéos</Link>
+    <Link to="/videos" className="text-lg font-semibold">A propos</Link>
     {data ? 
         <Avatare data={data} loading={loading} error={error} fetchData={fetchData} /> 
     : 
@@ -140,46 +144,35 @@ return (
 );
 };
 
-
 const MenuLinkItem = () => {
 
-    const coursesMenu = [
-    {
-        icon: <Calculator size={20} />,
-        title: "Mathématiques",
-        description: "Algèbre, géométrie, analyse",
-        href: "/cours/mathematiques"
-    },
-    {
-        icon: <Atom size={20} />,
-        title: "Physique",
-        description: "Mécanique, électricité, optique",
-        href: "/cours/physique"
-    },
-    {
-        icon: <FlaskConical size={20} />,
-        title: "Chimie",
-        description: "Chimie générale et organique",
-        href: "/cours/chimie"
-    },
-    {
-        icon: <Dna size={20} />,
-        title: "SVT",
-        description: "Biologie, génétique, écologie",
-        href: "/cours/svt"
-    },
-    {
-        icon: <Globe size={20} />,
-        title: "Sciences Humaines",
-        description: "Histoire, géographie, philosophie",
-        href: "/cours/sciences-humaines"
-    },
-    {
-        icon: <BookOpen size={20} />,
-        title: "Langues",
-        description: "Français, anglais, arabe",
-        href: "/cours/langues"
-    }
+const {data} = useProtectedRoutes();
+
+const coursesMenu = [
+  {
+    icon: <Calculator size={20} />,
+    title: "Mathématiques",
+    description: "Algèbre, analyse...",
+    href: `/Cours/${data?.niveaux}?matiere=Mathématiques`
+  },
+  {
+    icon: <Atom size={20} />,
+    title: "Physique et Chimie",
+    description: "Mécanique, électricité",
+    href: `/Cours/${data?.niveaux}?matiere=Physique+et+Chimie`
+  },
+  {
+    icon: <FlaskConical size={20} />,
+    title: "SVT",
+    description: "SVT",
+    href: `/Cours/${data?.niveaux}?matiere=SVT`
+  },
+  {
+    icon: <Book size={20} />,
+    title: "Tout les cours",
+    description: "cours",
+    href: `/Cours/${data?.niveaux}`
+  },
 ];
 
 const videosMenu = [
@@ -187,50 +180,51 @@ const videosMenu = [
         icon: <Video size={20} />,
         title: "Mathématiques",
         description: "Cours vidéo, exercices corrigés",
-        href: "/videos/mathematiques"
+        href: `/Videos/${data?.niveaux}/?matiere=Mathématiques`
     },
     {
         icon: <Video size={20} />,
         title: "Physique-Chimie",
         description: "Expériences et démonstrations",
-        href: "/videos/physique-chimie"
+        href: `/Videos/${data?.niveaux}/?matiere=Physique+et+Chimie`
     },
     {
         icon: <Video size={20} />,
         title: "SVT",
         description: "Cours animés et simulations",
-        href: "/videos/svt"
+        href: `/Videos/${data?.niveaux}/?matiere=Mathématiques`
     },
     {
         icon: <PlayCircle size={20} />,
         title: "Toutes les vidéos",
         description: "Parcourir l'intégralité du contenu",
-        href: "/videos"
-    }
+        href: `/Videos/${data?.niveaux}/?matiere=Mathématiques`
+    },
 ];
 
-const niveauxMenu = [
-    {
-        icon: <Library size={20} />,
-        title: "Collège",
-        description: "De la 6ème à la 3ème",
-        href: "/niveau/college"
-    },
-    {
-        icon: <GraduationCap size={20} />,
-        title: "Lycée",
-        description: "Seconde, Première, Terminale",
-        href: "/niveau/lycee"
-    }
+const quizMenu = [
+  {
+    icon: <Brain size={20} />,
+    title: "Quiz disponibles",
+    description: "Tester vos connaissances",
+    href: `/Quiz/${data?.niveaux}`
+  },
+  {
+    icon: <Trophy size={20} />,
+    title: "Résultats",
+    description: "Voir vos scores",
+    href: `/Quiz/${data?.niveaux}`
+  },
 ];
+
 
 return (
-    <NavigationMenu>
-        <NavigationMenuList>
-            <NavigationMenuItem>
-            <NavigationMenuTrigger className="bg-transparent text-black dark:text-white">Cours</NavigationMenuTrigger>
-            <NavigationMenuContent>
-                <ul className="grid w-[600px] gap-3 rounded-xl p-4 shadow-xl md:grid-cols-2">
+    <NavigationMenu viewport={false} className='z-50'>
+        <NavigationMenuList className='z-50'>
+            <NavigationMenuItem className='z-50'>
+            <NavigationMenuTrigger className='!bg-inherit'>Apprendre</NavigationMenuTrigger>            
+            <NavigationMenuContent className='z-50'>
+                <ul className=" w-[600px] gap-3 rounded-xl p-4 shadow-xl">
                 {coursesMenu.map((item, index) => (
                     <li
                     key={index}
@@ -248,9 +242,9 @@ return (
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-            <NavigationMenuTrigger className="bg-transparent text-black dark:text-white">Vidéos</NavigationMenuTrigger>
+            <NavigationMenuTrigger className='!bg-inherit'>Cours en vidéo</NavigationMenuTrigger>
             <NavigationMenuContent>
-                <ul className="grid w-[450px] grid-cols-2 gap-3 rounded-xl p-4 shadow-xl">
+                <ul className=" w-[450px] grid-cols-2 gap-3 rounded-xl p-4 shadow-xl">
                 {videosMenu.map((item, index) => (
                     <li
                     key={index}
@@ -268,10 +262,10 @@ return (
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-            <NavigationMenuTrigger className="bg-transparent text-black dark:text-white">Niveaux</NavigationMenuTrigger>
+            <NavigationMenuTrigger className='!bg-inherit'>Quiz & Exercices</NavigationMenuTrigger>
             <NavigationMenuContent>
-                <ul className="grid w-[250px] gap-3 rounded-xl p-4 shadow-xl">
-                {niveauxMenu.map((item, index) => (
+                <ul className=" w-[450px] grid-cols-2 gap-3 rounded-xl p-4 shadow-xl">
+                {quizMenu.map((item, index) => (
                     <li
                     key={index}
                     className="flex cursor-pointer items-start gap-3 rounded-lg p-2 transition hover:bg-gray-200 hover:dark:bg-gray-800"
@@ -287,7 +281,14 @@ return (
             </NavigationMenuContent>
             </NavigationMenuItem>
 
+            {!data && (
+                <NavigationMenuItem>
+                    <NavigationMenuLink>
+                        <Link to="/About" className='flex items-center gap-1'><Info size={14}/> A propos</Link>
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+            )}
         </NavigationMenuList>
-        </NavigationMenu>
+    </NavigationMenu>
 );
 }
