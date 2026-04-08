@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
-
+import Boite from "/boite_a_merveille.jpg"
 const BoiteMerveille = () => {
   const [text, setText] = useState("");
 
-  const splitTextIntoPages = (text: string, maxLength = 1040) => {
-  const sentences = text.split(/(?<=[.!?])/); // coupe par phrases
+  const splitTextIntoPages = (text: string, maxLength = 1030) => {
+  const sentences = text.split(/(?<=[.!?])/);
   const pages: string[] = [];
   let current = "";
 
@@ -41,8 +41,8 @@ const pages = splitTextIntoPages(text);
       className="shadow-2xl"
     >
       {/* COVER */}
-      <div className="bg-black text-white flex items-center justify-center text-xl">
-        La Boîte à Merveilles
+      <div>
+        <img src={Boite} alt="Boite" className="size-full object-contain"/>
       </div>
 
       {pages.map((page, i) => (
@@ -51,7 +51,7 @@ const pages = splitTextIntoPages(text);
           className="flex flex-col justify-between bg-[#fdfaf5] p-8"
         >
           <div className="flex-1 overflow-hidden">
-            <p className="text-justify leading-7 text-[15px]">
+            <p className="text-justify text-[15px] leading-7">
               {page}
             </p>
           </div>
