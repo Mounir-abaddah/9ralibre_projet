@@ -57,7 +57,7 @@ const Settings = () => {
       setError(null);
       setSuccess(null);
 
-      const { data } = await axios.put(
+      const resData = await axios.put(
         `${apiUrl}/user/updateProfile`,
         {
           nom: formData.nom,
@@ -68,12 +68,14 @@ const Settings = () => {
         { withCredentials: true },
       );
 
-      if (data.success) {
+      if (resData.data.success) {
         setSuccess("Profil mis à jour avec succès");
+        window.location.reload()
+        window.location.href = `/Paramètre/${data?.niveaux}`
       } else {
-        setError(data.message || "Erreur lors de la mise à jour");
+        setError(resData.data.message || "Erreur lors de la mise à jour");
       }
-    } catch (error: unknown) {
+    } catch (error) {
       const errorMessage =
         error instanceof axios.AxiosError
           ? error.response?.data?.message
