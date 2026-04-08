@@ -111,13 +111,13 @@ const AsideVideos = ({
   // Contenu des filtres
   const FilterContent = () => (
     <div className="space-y-4 p-2">
-      <div className="space-y-3">
+      <div className="space-y-3 rounded-md bg-gray-800 p-2">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">Matières</h3>
         </div>
         {(niveaux === "1AC" || niveaux === "2AC" || niveaux === "3AC" || niveaux === "TC") ? (
           matieres_college.map((matiereItem, index) => (
-            <div key={index} className="flex items-center space-x-2">
+            <div key={index} className="flex items-center space-x-2 ">
               <Checkbox
                 id={`matiere-${index}`}
                 checked={matiere === matiereItem.name}
@@ -150,7 +150,7 @@ const AsideVideos = ({
         )}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 rounded-md bg-gray-800 p-2">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">{(niveaux === "TC" || niveaux === "1BAC" || niveaux === "2BAC") && 'Filière'}</h3>
         </div>
