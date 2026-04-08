@@ -112,7 +112,6 @@ const handleSubmit = async () => {
             },
         ]);
     } catch (error) {
-    console.log(error);
     const axiosError = error as AxiosError<{ message: string }>;
     alert(axiosError.response?.data?.message || "Erreur");
     toast.error("Erreur Pour ajouter le Quiz ❌");
@@ -174,7 +173,7 @@ return (
             {/* OPTIONS */}
             <RadioGroup
                 onValueChange={(value) => handleCorrect(qIndex, value)}
-                className="grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4"
+                className="grid  grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4"
             >
                 {q.options.map((opt, oIndex) => (
                 <div
@@ -185,7 +184,7 @@ return (
                         <TooltipTrigger asChild>
                             <RadioGroupItem
                             value={oIndex.toString()}
-                            className="absolute top-3 right-3 cursor-pointer"
+                            className="absolute top-3 right-3 cursor-pointer "
                             />
                         </TooltipTrigger>
                         <TooltipContent>
@@ -215,7 +214,7 @@ return (
         {/* SAVE */}
         <Button
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={loading || questions.length < 5}
             className="w-full cursor-pointer bg-cyan-600 text-white hover:bg-cyan-700"
         >
             <Save />
