@@ -120,7 +120,6 @@ const ProfConnexion = () => {
           </span>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-
             {/* Email */}
             <Input
               type="email"
