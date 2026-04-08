@@ -42,6 +42,11 @@ const MatiereModal = ({
   const niveauxLabel = data?.niveaux ?? "";
 
   const filiereByNiveau: Record<string, string[]> = {
+    "1AC": [
+      "Sciences Mathématiques",
+      "Sciences Expérimentales",
+      "Sciences Éco",
+    ],
     "1BAC": [
       "Sciences Mathématiques",
       "Sciences Expérimentales",
