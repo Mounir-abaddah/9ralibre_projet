@@ -13,7 +13,6 @@ DraftingCompass,
 Facebook,
 Instagram,
 Linkedin,
-Info,
 Book,
 Trophy,
 Brain
@@ -41,8 +40,7 @@ return (
             <Linkedin size={16} color='#fff'/>
         </div>
     </div>
-    {/* `isolate` + z-index élevé: évite que le menu passe derrière les cards */}
-    <div className="relative z-[9999] isolate flex w-full items-center justify-between overflow-visible bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
+    <div className="relative isolate z-[9999] flex w-full items-center justify-between overflow-visible bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
         <div className="flex items-center gap-2">
         <img src={logo} alt="logo" className="w-10" loading='lazy'/>
         <span className="text-lg font-bold text-gray-800 dark:text-white">
@@ -224,11 +222,11 @@ return (
             <NavigationMenuItem className='z-50'>
             <NavigationMenuTrigger className='!bg-inherit'>Apprendre</NavigationMenuTrigger>            
             <NavigationMenuContent className='z-50'>
-                <ul className=" w-[600px] gap-3 rounded-xl p-4 shadow-xl">
+                <ul className=" w-[600px] gap-3 rounded-xl p-4">
                 {coursesMenu.map((item, index) => (
                     <li
                     key={index}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg p-2 transition hover:bg-gray-200 hover:dark:bg-gray-800"
+                    className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition hover:bg-gray-200 hover:dark:bg-gray-800"
                     >
                     {item.icon}
                     <Link to={item.href}>
@@ -244,11 +242,11 @@ return (
             <NavigationMenuItem>
             <NavigationMenuTrigger className='!bg-inherit'>Cours en vidéo</NavigationMenuTrigger>
             <NavigationMenuContent>
-                <ul className=" w-[450px] grid-cols-2 gap-3 rounded-xl p-4 shadow-xl">
+                <ul className=" w-[450px] grid-cols-2 gap-3 rounded-xl p-4">
                 {videosMenu.map((item, index) => (
                     <li
                     key={index}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg p-2 transition hover:bg-gray-200 hover:dark:bg-gray-800"
+                    className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition hover:bg-gray-200 hover:dark:bg-gray-800"
                     >
                     {item.icon}
                     <Link to={item.href}>
@@ -264,11 +262,11 @@ return (
             <NavigationMenuItem>
             <NavigationMenuTrigger className='!bg-inherit'>Quiz & Exercices</NavigationMenuTrigger>
             <NavigationMenuContent>
-                <ul className=" w-[450px] grid-cols-2 gap-3 rounded-xl p-4 shadow-xl">
+                <ul className=" w-[450px] grid-cols-2 gap-3 rounded-xl p-4">
                 {quizMenu.map((item, index) => (
                     <li
                     key={index}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg p-2 transition hover:bg-gray-200 hover:dark:bg-gray-800"
+                    className="flex cursor-pointer items-start gap-3 rounded-lg p-3 transition hover:bg-gray-200 hover:dark:bg-gray-800"
                     >
                     {item.icon}
                     <Link to={item.href}>
@@ -284,7 +282,7 @@ return (
             {!data && (
                 <NavigationMenuItem>
                     <NavigationMenuLink>
-                        <Link to="/About" className='flex items-center gap-1'><Info size={14}/> A propos</Link>
+                        <Link to="/About">A propos</Link>
                     </NavigationMenuLink>
                 </NavigationMenuItem>
             )}
