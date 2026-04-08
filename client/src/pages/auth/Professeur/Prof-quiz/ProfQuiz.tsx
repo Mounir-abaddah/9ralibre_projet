@@ -105,7 +105,7 @@ const ProfQuiz = () => {
         <div className="flex items-center justify-between">
             <div>
             <h2 className="text-2xl font-bold">Mes Quiz</h2>
-            <span className="rounded-full bg-cyan-500 px-4 py-1 text-sm text-white">
+            <span className="pl-2 text-sm text-white">
                 {totalQuiz} Quiz disponible
             </span>
             </div>
