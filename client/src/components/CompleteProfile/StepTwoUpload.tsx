@@ -25,8 +25,8 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
   };
 
   return (
-    <div className="space-y-5 p-6 bg-white shadow-lg rounded-2xl border border-gray-200 hover:shadow-xl transition-all duration-300">
-      <div className="flex items-start gap-3 bg-gradient-to-r from-amber-50 to-amber-100 border-l-4 border-amber-400 text-amber-800 px-4 py-3 rounded-lg shadow-sm">
+    <div className="space-y-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
+      <div className="flex items-start gap-3 rounded-lg border-l-4 border-amber-400 bg-gradient-to-r from-amber-50 to-amber-100 px-4 py-3 text-amber-800 shadow-sm">
         <span className="text-2xl leading-none">⚠️</span>
         <div>
           <p className="font-semibold">Avertissement</p>
@@ -44,12 +44,12 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
 
         <div
           onClick={!avatar ? handleClick : undefined}
-          className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl border-gray-300 hover:border-blue-500 transition cursor-pointer bg-gray-50 hover:bg-blue-50/40 relative"
+          className="relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-6 transition hover:border-blue-500 hover:bg-blue-50/40"
         >
           {!avatar ? (
             <>
-              <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
-              <p className="text-gray-500 text-sm mb-2">
+              <UploadCloud className="mb-2 h-10 w-10 text-gray-400" />
+              <p className="mb-2 text-sm text-gray-500">
                 Cliquez ou déposez une image ici
               </p>
               <input
@@ -62,11 +62,11 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
               />
             </>
           ) : (
-            <div className="relative w-40 h-40 rounded-xl overflow-hidden shadow-md">
+            <div className="relative h-40 w-40 overflow-hidden rounded-xl shadow-md">
               <img
                 src={URL.createObjectURL(avatar)}
                 alt="Preview"
-                className="object-cover w-full h-full"
+                className="h-full w-full object-cover"
               />
               <button
                 type="button"
@@ -74,7 +74,7 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
                   e.stopPropagation();
                   handleRemove();
                 }}
-                className="absolute top-2 right-2 flex items-center gap-1 bg-red-600/80 text-white text-xs px-2 py-1 rounded-md hover:bg-red-700 transition"
+                className="absolute top-2 right-2 flex items-center gap-1 rounded-md bg-red-600/80 px-2 py-1 text-xs text-white transition hover:bg-red-700"
               >
                 <CircleX size={18} /> Supprimer
               </button>
