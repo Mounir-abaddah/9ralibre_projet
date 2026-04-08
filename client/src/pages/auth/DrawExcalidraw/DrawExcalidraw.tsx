@@ -4,7 +4,7 @@ import { GitHubDark, Google } from "developer-icons";
 import { useEffect, useState } from "react";
 
 export default function DrawExcalidraw() {
-  document.title = "9ralibre"
+  document.title = "9ralibre | Paint"
   const [elements, setElements] = useState(() => {
     const savedDrawing = localStorage.getItem("drawing");
     return savedDrawing ? JSON.parse(savedDrawing) : [];
@@ -18,7 +18,7 @@ export default function DrawExcalidraw() {
   }
 
   return (
-    <div className="size-full" style={{ height: "560px" }}>
+    <div className="size-full" style={{ height: "590px" }}>
       <Excalidraw
         langCode="fr-FR"
         initialData={{ elements }}
