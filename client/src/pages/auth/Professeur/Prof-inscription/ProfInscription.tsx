@@ -107,7 +107,7 @@ return (
 
         {/* Image */}
         <div className="hidden items-center justify-center bg-blue-50/50 p-6 md:flex">
-            <img src={Teacher_img} className="max-w-md" />
+            <img src={Teacher_img} alt='teacher_img' className="max-w-md" />
         </div>
 
         {/* Form */}
@@ -123,7 +123,7 @@ return (
 
             <span className="mb-4 text-sm dark:text-gray-800">
                 Déjà un compte ?{" "}
-                <Link to="/prof/connexion" className="text-cyan-600 hover:underline">
+                <Link to="/prof-connexion" className="text-cyan-600 hover:underline">
                 Se connecter
                 </Link>
             </span>
