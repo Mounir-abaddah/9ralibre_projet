@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Check, Play } from "lucide-react";
 import Pagination from "@/components/Pagination/Pagination";
+import No_Data_img from '@/assets/images/cours/No data-cuate.png'
 
 const QuizPage = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -39,6 +40,8 @@ const QuizPage = () => {
 
     return (
     <>
+    {quizList.length > 0 ? (
+        <>
         <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 Prêt à vous challenger ? 🎯
@@ -112,7 +115,18 @@ const QuizPage = () => {
                 onPageChange={handlePageChange}
             />
         </div>
-        </>
+    </>
+    ):(
+        <div className="col-span-full mt-6 flex w-full flex-col items-center justify-center gap-2 text-center">
+            <img src={No_Data_img} alt="no data" loading='lazy'  width={300} height={400}/>
+            <p className="text-sm text-gray-500">
+                Aucun quiz trouvé avec ces filtres.
+            </p>
+        </div>
+    )}
+    
+        
+    </>
     );
 };
 
