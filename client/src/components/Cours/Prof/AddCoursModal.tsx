@@ -24,6 +24,14 @@ import axios from "axios";
 import { Send } from "lucide-react";
 import type { CoursType, Matiere } from "@/pages/auth/Cours/types/CoursType";
 import toast from "react-hot-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CircleAlert } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  fieldErrorsFromIssues,
+  messagesFromApiData,
+  type ProfApiErrorBody,
+} from "@/utils/profApiErrors";
 
 
 
@@ -44,6 +52,8 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
   const [title, setTitle] = useState("");
   const [semestre, setSemestre] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [bannerError, setBannerError] = useState("");
 
   const niveaux = data?.niveaux ?? "";
   const isEdit = !!cours;
@@ -101,11 +111,15 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
       setFiliere("");
       setMatiereSelected("");
       setFile(null);
+      setFieldErrors({});
+      setBannerError("");
     }
   }, [open]);
 
   // ✅ SUBMIT
   const handleSubmit = async () => {
+    setFieldErrors({});
+    setBannerError("");
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -127,7 +141,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
         toast.success("Cours modifié ✏️");
       } else {
         if (!file) {
-          toast.error("Ajouter un fichier ❌");
+          setBannerError("Ajoutez un fichier PDF pour publier le cours.");
           return;
         }
 
@@ -143,8 +157,25 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
       onSuccess();
 
     } catch (error) {
-      console.error(error);
-      toast.error("Erreur ❌");
+      if (axios.isAxiosError(error)) {
+        const data = error.response?.data as ProfApiErrorBody | undefined;
+        const issues = data?.issues;
+        if (issues?.length) {
+          setFieldErrors(fieldErrorsFromIssues(issues));
+        }
+        const msg =
+          typeof data?.message === "string" && data.message.trim()
+            ? data.message.trim()
+            : messagesFromApiData(data).join(" · ");
+        if (!issues?.length) {
+          setBannerError(msg || "Une erreur est survenue");
+        }
+        if (error.response?.status && error.response.status >= 500) {
+          toast.error("Erreur serveur. Réessayez plus tard.");
+        }
+      } else {
+        setBannerError("Une erreur est survenue");
+      }
     }
   };
 
@@ -159,6 +190,26 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
         </DialogHeader>
 
         <div className="space-y-5">
+          {bannerError && (
+            <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900">
+              <CircleAlert className="size-4 shrink-0" />
+              <AlertTitle className="text-sm font-semibold">Publication impossible</AlertTitle>
+              <AlertDescription className="text-sm text-red-800">
+                {bannerError}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {Object.keys(fieldErrors).length > 0 && !bannerError && (
+            <Alert variant="destructive" className="border-amber-200 bg-amber-50 text-amber-950">
+              <CircleAlert className="size-4 shrink-0 text-amber-700" />
+              <AlertTitle className="text-sm font-semibold">Champs à corriger</AlertTitle>
+              <AlertDescription className="text-sm text-amber-900">
+                Vérifiez les champs indiqués ci-dessous.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="flex w-full items-center justify-between gap-2">
             <div className="w-full space-y-2">
               <Label>Niveau</Label>
@@ -168,9 +219,21 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
               <Label>Matière</Label>
               <Select
                 value={matiereSelected}
-                onValueChange={setMatiereSelected}
+                onValueChange={(v) => {
+                  setMatiereSelected(v);
+                  setFieldErrors((prev) => {
+                    const n = { ...prev };
+                    delete n.matiere;
+                    return n;
+                  });
+                }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
+                  )}
+                >
                   <SelectValue placeholder="Choisir une matière"/>
                 </SelectTrigger>
                 <SelectContent>
@@ -181,6 +244,9 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                   ))}
                 </SelectContent>
               </Select>
+              {fieldErrors.matiere && (
+                <p className="text-sm text-destructive">{fieldErrors.matiere}</p>
+              )}
             </div>
           </div>
 
@@ -188,15 +254,41 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
             <Label>Titre</Label>
             <Input
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setFieldErrors((p) => {
+                  const n = { ...p };
+                  delete n.title;
+                  return n;
+                });
+              }}
+              className={cn(fieldErrors.title && "border-destructive ring-1 ring-destructive/30")}
             />
+            {fieldErrors.title && (
+              <p className="text-sm text-destructive">{fieldErrors.title}</p>
+            )}
           </div>
 
           <div className="flex w-full items-center justify-between gap-2">
             <div className="w-full space-y-2">
               <Label>Type</Label>
-              <Select value={type} onValueChange={setType}>
-                <SelectTrigger className="w-full">
+              <Select
+                value={type}
+                onValueChange={(v) => {
+                  setType(v);
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.type;
+                    return n;
+                  });
+                }}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.type && "border-destructive ring-1 ring-destructive/30"
+                  )}
+                >
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -207,12 +299,30 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                   ))}
                 </SelectContent>
               </Select>
+              {fieldErrors.type && (
+                <p className="text-sm text-destructive">{fieldErrors.type}</p>
+              )}
             </div>
 
             <div className="w-full space-y-2 ">
               <Label>Semestre</Label>
-              <Select value={semestre} onValueChange={setSemestre}>
-                <SelectTrigger className="w-full">
+              <Select
+                value={semestre}
+                onValueChange={(v) => {
+                  setSemestre(v);
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.semestre;
+                    return n;
+                  });
+                }}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.semestre && "border-destructive ring-1 ring-destructive/30"
+                  )}
+                >
                   <SelectValue placeholder="Semestre" />
                 </SelectTrigger>
                 <SelectContent>
@@ -224,6 +334,9 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                   </SelectItem>
                 </SelectContent>
               </Select>
+              {fieldErrors.semestre && (
+                <p className="text-sm text-destructive">{fieldErrors.semestre}</p>
+              )}
             </div>
           </div>
 
@@ -231,8 +344,23 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
           {showFiliere && (
             <div className="w-full space-y-2">
               <Label>Filière</Label>
-              <Select value={filiere} onValueChange={setFiliere}>
-                <SelectTrigger className="w-full">
+              <Select
+                value={filiere}
+                onValueChange={(v) => {
+                  setFiliere(v);
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.filiere;
+                    return n;
+                  });
+                }}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
+                  )}
+                >
                   <SelectValue placeholder="Filière" />
                 </SelectTrigger>
                 <SelectContent>
@@ -243,6 +371,9 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                   ))}
                 </SelectContent>
               </Select>
+              {fieldErrors.filiere && (
+                <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
+              )}
             </div>
           )}
 
@@ -250,9 +381,14 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
             <Label>PDF</Label>
             <Input
               type="file"
-              onChange={(e) =>
-                setFile(e.target.files?.[0] || null)
-              }
+              accept="application/pdf"
+              onChange={(e) => {
+                setFile(e.target.files?.[0] || null);
+                setBannerError("");
+              }}
+              className={cn(
+                bannerError.includes("PDF") && "border-destructive ring-1 ring-destructive/30"
+              )}
             />
           </div>
 
