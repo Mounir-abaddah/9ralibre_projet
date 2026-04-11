@@ -16,6 +16,14 @@ import {
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import axios from "axios"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { CircleAlert } from "lucide-react"
+import {
+  fieldErrorsFromIssues,
+  messagesFromApiData,
+  type ProfApiErrorBody,
+} from "@/utils/profApiErrors"
+import { cn } from "@/lib/utils"
 
 const ProfInscription = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -89,8 +97,24 @@ const ProfInscription = () => {
             navigate('/prof-connexion')
         }
         } catch (err) {
-            if (axios.isAxiosError(err)) {
-                setErrorMsg(err.response?.data?.message || "Erreur serveur");
+            if (!axios.isAxiosError(err)) {
+                setErrorMsg("Une erreur est survenue");
+                return;
+            }
+            const data = err.response?.data as ProfApiErrorBody | undefined;
+            const issues = data?.issues;
+            if (issues?.length) {
+                setErrFormData((prev) => ({
+                    ...prev,
+                    ...fieldErrorsFromIssues(issues),
+                }));
+                setErrorMsg("");
+            } else {
+                const msg =
+                    typeof data?.message === "string" && data.message.trim()
+                        ? data.message.trim()
+                        : messagesFromApiData(data).join(" · ") || "Erreur serveur";
+                setErrorMsg(msg);
             }
         } finally {
             setLoading(false)
@@ -128,22 +152,25 @@ return (
                 </Link>
             </span>
 
-            
-            {/* Messages */}
-            {successMsg && (
-                <p className="mt-3 rounded-md bg-teal-100 p-2 text-sm text-teal-700">
-                {successMsg}
-                </p>
-            )}
-
-            {errorMsg && (
-                <p className="mt-3 rounded-md bg-red-100 p-2 text-sm text-red-600">
-                {errorMsg}
-                </p>
-            )}
-
-
             <form onSubmit={handleSubmit} className="space-y-4">
+                {successMsg && (
+                    <Alert className="border-emerald-200 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100">
+                        <AlertTitle className="text-sm font-semibold">Succès</AlertTitle>
+                        <AlertDescription className="text-sm text-emerald-800 dark:text-emerald-200">
+                            {successMsg}
+                        </AlertDescription>
+                    </Alert>
+                )}
+
+                {errorMsg && (
+                    <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100">
+                        <CircleAlert className="size-4" />
+                        <AlertTitle className="text-sm font-semibold">Inscription impossible</AlertTitle>
+                        <AlertDescription className="text-sm text-red-800 dark:text-red-200">
+                            {errorMsg}
+                        </AlertDescription>
+                    </Alert>
+                )}
 
                 {/* Nom + Prénom */}
                 <div className='flex w-full gap-1.5'>
@@ -186,9 +213,15 @@ return (
                 <Label className='dark:text-black'>Niveaux</Label>
 
                 <Select
+                    value={formData.niveaux || undefined}
                     onValueChange={(value) => handleChange("niveaux", value)}
                 >
-                    <SelectTrigger className="w-full rounded-md border p-2 dark:border-gray-300 dark:font-semibold dark:text-black">
+                    <SelectTrigger
+                        className={cn(
+                            "w-full rounded-md border p-2 dark:border-gray-300 dark:font-semibold dark:text-black",
+                            errFormData.niveaux && "border-red-400 bg-red-50 dark:bg-red-950/30"
+                        )}
+                    >
                     <SelectValue placeholder="Niveaux" />
                     </SelectTrigger>
 
