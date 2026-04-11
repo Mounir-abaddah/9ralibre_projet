@@ -14,13 +14,16 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
-const { sendVerificationProfesseurEmail,oublierMotdepasse } = require('../services/emailServices');
-const jwt = require('jsonwebtoken')
+const {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema} = require('../validations/professeurValidation');
+const jwt = require('jsonwebtoken');
 
-
-
-
-
+function zodErrorPayload(err) {
+  return {
+    success: false,
+    message: err.issues.map((e) => e.message).join(", "),
+    issues: err.issues.map((e) => ({ path: e.path, message: e.message })),
+  };
+}
 
 
 const storage = multer.diskStorage({
@@ -77,51 +80,62 @@ router.get('/fetch-niveaux',authMiddlewares,profMiddleware,async(req,res)=>{
 
 router.post("/add-cours",authMiddlewares,profMiddleware,upload.single("file"),async (req, res) => {
   try {
+    const AddCours = addCoursSchema.parse(req.body); 
     const userId = req.user.userId;
-    const { semestre, title, matiere, type, filiere } = req.body;
-    const fileUrl = req.file.filename;
+    if (!req.file) {
+        return res.status(400).json({success: false,message: "Le fichier PDF est obligatoire",});
+    }
+    if (req.file.mimetype !== "application/pdf") {
+        return res.status(400).json({ success: false, message: "Seuls les fichiers PDF sont autorisés", });
+    }
     const cours = await Cours.create({
       professeur: userId,
-      filière: filiere,
-      semestre: semestre,
-      title: title,
-      pdfUrl: fileUrl,
-      matiere,
-      type  
+      filière: AddCours.filiere,
+      semestre: AddCours.semestre,
+      title: AddCours.title,
+      pdfUrl: req.file.filename,
+      matiere:AddCours.matiere,
+      type:AddCours.type
     });
     res.json({ success: true, cours });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+  }catch (err) {
+    if (err.name === "ZodError") {
+        return res.status(400).json(zodErrorPayload(err));
+      }
+      return res.status(500).send({ message: "Une erreur est survenue", success: false });
+    }
 });
 
 router.put("/put-cours/:coursId",authMiddlewares,profMiddleware,upload.single("file"),async (req, res) => {
     try {
-      const { semestre, title, matiere, type, filiere } = req.body;
+      const updateCoursSchema = addCoursSchema.partial(req.body);
+      const { semestre, title, matiere, type, filiere } = updateCoursSchema.parse(req.body);
       const coursId = req.params.coursId;
-
       const cours = await Cours.findById(coursId);
       if (!cours) {
         return res.status(404).json({ message: "Cours non trouvé" });
       }
-
-
+      if(cours.professeur.toString() !== req.user.userId) {
+        return res.status(403).json({success: false,message: "Non autorisé",});
+      }
       cours.semestre = semestre || cours.semestre;
       cours.title = title || cours.title;
       cours.type = type || cours.type;
       cours.filière = filiere || cours.filière;
       cours.matiere = matiere || cours.matiere;
-
-
       if (req.file) {
+        if (req.file.mimetype !== "application/pdf") {
+          return res.status(400).json({success: false,message: "Seuls les PDF sont autorisés",});
+        }
         cours.pdfUrl = req.file.filename;
       }
-
       await cours.save();
-
       res.json({ success: true, cours });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+    } catch (err) {
+      if (err.name === "ZodError") {
+        return res.status(400).json(zodErrorPayload(err));
+      }
+      return res.status(500).json({success: false,message: err.message || "Erreur serveur",});
     }
   }
 );
@@ -382,8 +396,7 @@ router.get("/stats-week", authMiddlewares, profMiddleware, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-
-
+{/***************************************************************Validation Vieos Post */}
 router.get('/get-videos', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -418,31 +431,11 @@ router.get('/get-videos', authMiddlewares, profMiddleware, async (req, res) => {
 router.post('/add-videos', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
-    const {
-      title,
-      description,
-      videoUrl,
-      thumbnail,
-      niveaux,
-      matiere,
-      filiere,
-      visibility
-    } = req.body;
-
-    if (!title || !videoUrl || !matiere || !niveaux || !filiere) {
-      return res.status(400).json({success: false,message: "Champs obligatoires manquants"});
-    }
-
+    const data = addVideoSchema.parse(req.body);
     const video = new Videos({
-      title,
-      description,
-      videoUrl,
-      thumbnail,
-      niveaux,
+      ...data,
       professeur: userId,
-      matiere,
-      filiere,
-      visibility: visibility || "Public"
+      visibility: data.visibility || "Public",
     });
 
     await video.save();
@@ -450,36 +443,56 @@ router.post('/add-videos', authMiddlewares, profMiddleware, async (req, res) => 
     res.status(201).json({success: true,message: "Vidéo ajoutée avec succès",video});
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({success: false,message: "Erreur lors de l'ajout de la vidéo"});
+    if (err.name === "ZodError") {
+      return res.status(400).json(zodErrorPayload(err));
+    }
+    res.status(500).json({success: false,message: "Erreur lors de l'ajout de la vidéo",});
   }
 });
 
-router.put("/update-videos/:videoId",authMiddlewares,profMiddleware, async (req, res) => {
+
+router.put("/update-videos/:videoId", authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const { videoId } = req.params;
-    const { title, description, videoUrl, thumbnail, matiere, filiere, visibility, niveaux } = req.body;
-    const updatedVideo = await Videos.findByIdAndUpdate(videoId,{
-        title,
-        description,
-        videoUrl,
-        thumbnail,
-        matiere,
-        filiere,
-        visibility,
-        niveaux,
-      },{
-        new: true,
-        runValidators: true,
-      }
-    );
-    if (!updatedVideo) {
-      return res.status(404).json({message: "Vidéo non trouvée"});
+
+    // ✅ Validation
+    const data = updateVideoSchema.parse(req.body);
+
+    const video = await Videos.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({ message: "Vidéo non trouvée" });
     }
-    res.status(200).json({message: "Vidéo modifiée avec succès",video: updatedVideo});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({message: "Erreur serveur",sucess:false,error});
+
+    // ✅ Sécurité
+    if (video.professeur.toString() !== req.user.userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Non autorisé",
+      });
+    }
+
+    // ✅ Update dynamique propre 🔥
+    Object.assign(video, data);
+
+    await video.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Vidéo modifiée avec succès",
+      video,
+    });
+
+  } catch (err) {
+
+    if (err.name === "ZodError") {
+      return res.status(400).json(zodErrorPayload(err));
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+    });
   }
 });
 
@@ -507,7 +520,7 @@ router.delete('/delete-videos/:videoId', authMiddlewares, profMiddleware, async 
   }
 });
 
-
+{/***************************************************************Validation Quiz Post */}
 router.get('/get-quiz', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -541,69 +554,57 @@ router.get('/get-quiz', authMiddlewares, profMiddleware, async (req, res) => {
   }
 });
 
+router.post("/add-quiz",authMiddlewares,profMiddleware,async (req, res) => {
+    try {
+      const data = addQuizSchema.parse(req.body);
 
-router.post('/add-quiz', authMiddlewares, profMiddleware, async (req, res) => {
-  try {
-    const { text, questions, matiere, filiere } = req.body;
-
-    const user = await User.findById(req.user.userId);
-    
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
-    const niveauxDoc = await Niveaux.findOne({ nom: user.niveaux });
-
-    if (!niveauxDoc) {
-      return res.status(404).json({ message: "Niveau introuvable" });
-    }
-    const niveaux = niveauxDoc._id;
-
-    if (!text) {
-      return res.status(400).json({ message: "Titre requis" });
-    }
-    if (!questions || questions.length === 0) {
-      return res.status(400).json({ message: "Questions requises" });
-    }
-    const cleanQuestions = questions.map((q, index) => {
-      if (!q.question) {
-        throw new Error(`Question ${index + 1} vide`);
+      const user = await User.findById(req.user.userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "Utilisateur non trouvé",
+        });
       }
 
-      const options = q.options.filter((opt) => opt.trim() !== "");
-
-      if (options.length < 2) {
-        throw new Error(`Minimum 2 réponses (question ${index + 1})`);
+      const niveauxDoc = await Niveaux.findOne({ nom: user.niveaux });
+      if (!niveauxDoc) {
+        return res.status(404).json({
+          success: false,
+          message: "Niveau introuvable",
+        });
       }
 
-      if (q.correctAnswer === null || q.correctAnswer === undefined) {
-        throw new Error(`Choisir une bonne réponse (question ${index + 1})`);
-      }
+      const niveaux = niveauxDoc._id;
 
-      return {
+      const cleanQuestions = data.questions.map((q) => ({
         question: q.question,
-        options,
-        correctAnswer: q.correctAnswer
-      };
-    });
+        options: q.options.filter((opt) => opt.trim() !== ""),
+        correctAnswer: q.correctAnswer,
+      }));
 
-    const quiz = await Quiz.create({
-      text,
-      questions: cleanQuestions,
-      professeur: req.user.userId,
-      matiere,
-      niveaux,
-      filiere
-    });
+      const quiz = await Quiz.create({
+        text: data.text,
+        questions: cleanQuestions,
+        professeur: req.user.userId,
+        matiere: data.matiere,
+        niveaux,
+        filiere: data.filiere,
+      });
 
-    res.status(201).json({ success: true, quiz });
+      res.status(201).json({
+        success: true,
+        message: "Quiz ajouté avec succès",
+        quiz,
+      });
 
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    } catch (error) {
+      if (error.name === "ZodError") {
+        return res.status(400).json(zodErrorPayload(error));
+      }
+      res.status(500).json({success: false,message: error.message || "Erreur serveur",});
+    }
   }
-});
-
+);
 
 router.delete('/delete-quiz/:quizId', authMiddlewares, profMiddleware, async (req, res) => {
   try {
@@ -811,78 +812,82 @@ router.put('/upload-avatar', authMiddlewares, profMiddleware, uploadImage.single
 
 
 
-
+{/***************************************************************Validation autheentfication Post */}
 router.post("/register", async (req, res) => {
   try {
-    const { nom, prenom, email, niveaux, password } = req.body
-    if (!nom || !prenom || !email || !niveaux || !password) {
-      return res.status(400).json({success: false,message: "Tous les champs sont obligatoires"})
-    }
-    const emailExists = await User.findOne({ email })
+    // ✅ validation
+    const data = registerSchema.parse(req.body);
+
+    const emailExists = await User.findOne({ email: data.email });
     if (emailExists) {
-      return res.status(400).json({ success: false, message: "Un compte avec cet email existe déjà" })
+      return res.status(400).json({
+        success: false,
+        message: "Un compte avec cet email existe déjà",
+      });
     }
-    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
     const newUser = new User({
-      nom,
-      prenom,
-      email,
+      nom: data.nom,
+      prenom: data.prenom,
+      email: data.email,
       password: hashedPassword,
+      niveaux: data.niveaux,
       accountVerified: true,
-      niveaux,
       role: "Professeur",
       provider: "local",
-      status: "pending"
-    })
-    await newUser.save()
-    return res.status(201).json({success: true,message: "Compte créé avec succès. En attente de validation."})
-  } catch (error) {
-    console.error("Register error:", error)
-    return res.status(500).json({success: false,message: "Erreur serveur"})
-  }
-})
+      status: "pending",
+    });
 
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
+    await newUser.save();
 
-    // validation
-    if (!email || !password) {
-      return res.status(400).json({success: false,message: "Email et mot de passe requis"});
+    res.status(201).json({
+      success: true,
+      message: "Compte créé avec succès. En attente de validation.",
+    });
+
+  } catch (err) {
+    if (err.name === "ZodError") {
+      return res.status(400).json(zodErrorPayload(err));
     }
 
-    const user = await User.findOne({ email });
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const data = loginSchema.parse(req.body);
+    const user = await User.findOne({ email: data.email });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Email ou mot de passe incorrect"
-      });
-    }
-    // vérifier statut admin
-    if (user.status !== "approved") {
-      return res.status(403).json({success: false,message: "Compte en attente de validation"});
+      return res.status(404).json({ success: false, message: "Email ou mot de passe incorrect", });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    if (user.status !== "approved") {
+      return res.status(403).json({
+        success: false,
+        message: "Compte en attente de validation",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(data.password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({success: false,message: "Mot de passe incorrect"
-      });
+      return res.status(400).json({success: false,message: "Mot de passe incorrect",});
     }
 
-    // JWT
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const token = jwt.sign({ userId: user._id, role: user.role },process.env.JWT_SECRET,{ expiresIn: "7d" });
 
     res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.json({
@@ -893,98 +898,22 @@ router.post('/login', async (req, res) => {
         nom: user.nom,
         prenom: user.prenom,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
 
   } catch (err) {
+    if (err.name === "ZodError") {
+      return res.status(400).json(zodErrorPayload(err));
+    }
+
     res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 });
 
-router.post('/forgot-password', async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Email ou mot de passe incorrect"
-      });
-    }
-
-    // token reset
-    const resetToken = jwt.sign(
-      { userId: user._id, type: "resetPassword" },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-    // envoyer email
-    await oublierMotdepasse(user, resetUrl);
-
-    res.json({
-      success: true,
-      message: "Email de réinitialisation envoyé"
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
-  }
-});
-
-
-router.post('/reset-password/:token', async (req, res) => {
-  try {
-    const { token } = req.params;
-    const { newPassword } = req.body;
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (decoded.type !== "resetPassword") {
-      return res.status(400).json({
-        success: false,
-        message: "Token invalide"
-      });
-    }
-
-    const user = await User.findById(decoded.userId);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Email ou mot de passe incorrect"
-      });
-    }
-
-    // hash password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    user.password = hashedPassword;
-    await user.save();
-
-    res.json({
-      success: true,
-      message: "Mot de passe réinitialisé avec succès"
-    });
-
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: "Token expiré ou invalide"
-    });
-  }
-});
 
 
 router.post('/logout', (req, res) => {
