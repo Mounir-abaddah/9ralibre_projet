@@ -24,6 +24,14 @@ import { useEffect, useState } from "react";
 import { useProfProtectedRoutes } from "@/store/userStore";
 import type { Matiere, TypeProfVideos } from "@/pages/auth/Video/types/video.type";
 import toast from "react-hot-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CircleAlert } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  fieldErrorsFromIssues,
+  messagesFromApiData,
+  type ProfApiErrorBody,
+} from "@/utils/profApiErrors";
 
 interface typeModal {
   open: boolean;
@@ -38,6 +46,8 @@ const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal)
   const { data, fetchData } = useProfProtectedRoutes();
  
   const [niveauId, setNiveauId] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [bannerError, setBannerError] = useState("");
 
   const [form, setForm] = useState({
     title: "",
@@ -110,11 +120,15 @@ const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal)
         filiere: "",
         visibility: "Public",
       });
+      setFieldErrors({});
+      setBannerError("");
     }
   }, [open]);
 
   // SUBMIT
 const handleSubmit = async () => {
+  setFieldErrors({});
+  setBannerError("");
   try {
     if (videos) {
       // ✏️ UPDATE
@@ -143,8 +157,25 @@ const handleSubmit = async () => {
     setOpen(false);
     onSuccess();
   } catch (err) {
-    console.error(err);
-    toast.error("Une erreur est survenue ❌");
+    if (axios.isAxiosError(err)) {
+      const data = err.response?.data as ProfApiErrorBody | undefined;
+      const issues = data?.issues;
+      if (issues?.length) {
+        setFieldErrors(fieldErrorsFromIssues(issues));
+      }
+      const msg =
+        typeof data?.message === "string" && data.message.trim()
+          ? data.message.trim()
+          : messagesFromApiData(data).join(" · ");
+      if (!issues?.length) {
+        setBannerError(msg || "Une erreur est survenue");
+      }
+      if (err.response?.status && err.response.status >= 500) {
+        toast.error("Erreur serveur. Réessayez plus tard.");
+      }
+    } else {
+      setBannerError("Une erreur est survenue");
+    }
   }
 };
 
@@ -159,22 +190,61 @@ const handleSubmit = async () => {
         </DialogHeader>
 
         <div className="space-y-5">
+          {bannerError && (
+            <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900">
+              <CircleAlert className="size-4 shrink-0" />
+              <AlertTitle className="text-sm font-semibold">Enregistrement impossible</AlertTitle>
+              <AlertDescription className="text-sm text-red-800">
+                {bannerError}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {Object.keys(fieldErrors).length > 0 && !bannerError && (
+            <Alert className="border-amber-200 bg-amber-50 text-amber-950">
+              <CircleAlert className="size-4 shrink-0 text-amber-700" />
+              <AlertTitle className="text-sm font-semibold">Champs à corriger</AlertTitle>
+              <AlertDescription className="text-sm text-amber-900">
+                Vérifiez les champs indiqués ci-dessous.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Niveau + Matière */}
           <div className="flex gap-2">
             <div className="w-full space-y-2">
               <Label>Niveau</Label>
-              <Input value={niveauxLabel || "Non renseigné"} disabled />
+              <Input
+                value={niveauxLabel || "Non renseigné"}
+                disabled
+                className={cn(
+                  fieldErrors.niveaux && "border-destructive ring-1 ring-destructive/30"
+                )}
+              />
+              {fieldErrors.niveaux && (
+                <p className="text-sm text-destructive">{fieldErrors.niveaux}</p>
+              )}
             </div>
 
             <div className="w-full space-y-2">
               <Label>Matière</Label>
               <Select
                 value={form.matiere}
-                onValueChange={(value) =>
-                  setForm({ ...form, matiere: value })
-                }
+                onValueChange={(value) => {
+                  setForm({ ...form, matiere: value });
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.matiere;
+                    return n;
+                  });
+                }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
+                  )}
+                >
                   <SelectValue placeholder="Choisir une matière" />
                 </SelectTrigger>
                 <SelectContent>
@@ -185,6 +255,9 @@ const handleSubmit = async () => {
                   ))}
                 </SelectContent>
               </Select>
+              {fieldErrors.matiere && (
+                <p className="text-sm text-destructive">{fieldErrors.matiere}</p>
+              )}
             </div>
           </div>
 
@@ -193,11 +266,22 @@ const handleSubmit = async () => {
             <Label>Titre</Label>
             <Input
               value={form.title}
-              onChange={(e) =>
-                setForm({ ...form, title: e.target.value })
-              }
+              onChange={(e) => {
+                setForm({ ...form, title: e.target.value });
+                setFieldErrors((p) => {
+                  const n = { ...p };
+                  delete n.title;
+                  return n;
+                });
+              }}
               placeholder="Titre de la vidéo"
+              className={cn(
+                fieldErrors.title && "border-destructive ring-1 ring-destructive/30"
+              )}
             />
+            {fieldErrors.title && (
+              <p className="text-sm text-destructive">{fieldErrors.title}</p>
+            )}
           </div>
 
           {/* Description */}
@@ -205,11 +289,22 @@ const handleSubmit = async () => {
             <Label>Description</Label>
             <Textarea
               value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
+              onChange={(e) => {
+                setForm({ ...form, description: e.target.value });
+                setFieldErrors((p) => {
+                  const n = { ...p };
+                  delete n.description;
+                  return n;
+                });
+              }}
               placeholder="Description"
+              className={cn(
+                fieldErrors.description && "border-destructive ring-1 ring-destructive/30"
+              )}
             />
+            {fieldErrors.description && (
+              <p className="text-sm text-destructive">{fieldErrors.description}</p>
+            )}
           </div>
 
           {/* URL + Thumbnail */}
@@ -219,22 +314,44 @@ const handleSubmit = async () => {
               <Input
                 value={form.videoUrl}
                 type="url"
-                onChange={(e) =>
-                  setForm({ ...form, videoUrl: e.target.value })
-                }
+                onChange={(e) => {
+                  setForm({ ...form, videoUrl: e.target.value });
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.videoUrl;
+                    return n;
+                  });
+                }}
                 placeholder="https://youtube.com/..."
+                className={cn(
+                  fieldErrors.videoUrl && "border-destructive ring-1 ring-destructive/30"
+                )}
               />
+              {fieldErrors.videoUrl && (
+                <p className="text-sm text-destructive">{fieldErrors.videoUrl}</p>
+              )}
             </div>
             <div className="w-full space-y-2">
               <Label>Thumbnail</Label>
               <Input
                 value={form.thumbnail}
                 type="url"
-                onChange={(e) =>
-                  setForm({ ...form, thumbnail: e.target.value })
-                }
-                placeholder="Image URL"
+                onChange={(e) => {
+                  setForm({ ...form, thumbnail: e.target.value });
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.thumbnail;
+                    return n;
+                  });
+                }}
+                placeholder="Image URL (optionnel)"
+                className={cn(
+                  fieldErrors.thumbnail && "border-destructive ring-1 ring-destructive/30"
+                )}
               />
+              {fieldErrors.thumbnail && (
+                <p className="text-sm text-destructive">{fieldErrors.thumbnail}</p>
+              )}
             </div>
           </div>
           <div className="flex w-full items-center justify-between gap-2">
@@ -244,11 +361,21 @@ const handleSubmit = async () => {
                 <Label>Filière</Label>
                 <Select
                   value={form.filiere}
-                  onValueChange={(value) =>
-                    setForm({ ...form, filiere: value })
-                  }
+                  onValueChange={(value) => {
+                    setForm({ ...form, filiere: value });
+                    setFieldErrors((p) => {
+                      const n = { ...p };
+                      delete n.filiere;
+                      return n;
+                    });
+                  }}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger
+                    className={cn(
+                      "w-full",
+                      fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
+                    )}
+                  >
                     <SelectValue placeholder="Choisir filière" />
                   </SelectTrigger>
                   <SelectContent>
@@ -259,6 +386,9 @@ const handleSubmit = async () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {fieldErrors.filiere && (
+                  <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
+                )}
               </div>
             )}
             {/* Visibilité */}
@@ -266,11 +396,21 @@ const handleSubmit = async () => {
               <Label>Visibilité</Label>
               <Select
                 value={form.visibility}
-                onValueChange={(value) =>
-                  setForm({ ...form, visibility: value })
-                }
+                onValueChange={(value) => {
+                  setForm({ ...form, visibility: value });
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.visibility;
+                    return n;
+                  });
+                }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.visibility && "border-destructive ring-1 ring-destructive/30"
+                  )}
+                >
                   <SelectValue placeholder="Visibilité" />
                 </SelectTrigger>
                 <SelectContent>
@@ -278,6 +418,9 @@ const handleSubmit = async () => {
                   <SelectItem value="Private">Privé</SelectItem>
                 </SelectContent>
               </Select>
+              {fieldErrors.visibility && (
+                <p className="text-sm text-destructive">{fieldErrors.visibility}</p>
+              )}
             </div>
           </div>
           {/* Buttons */}
