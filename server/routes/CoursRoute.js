@@ -121,49 +121,6 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/addCours", async (req, res) => {
-  try {
-    const { matiere, semestre, type, filiere, professeur, title, pdfUrl } =
-      req.body;
-
-    if (
-      !matiere ||
-      !semestre ||
-      !type ||
-      !filiere ||
-      !professeur ||
-      !title ||
-      !pdfUrl
-    ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Champs obligatoires manquants" });
-    }
-
-    const newCours = new Cours({
-      matiere,
-      semestre,
-      type,
-      filière: filiere,
-      professeur,
-      title,
-      pdfUrl,
-    });
-
-    await newCours.save();
-
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Cours ajouté avec succès",
-        cours: newCours,
-      });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
-
 {
   /*********************** POST SAVE COURS ET UNSAVE IT ***********************/
 }
