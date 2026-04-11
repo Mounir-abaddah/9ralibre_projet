@@ -70,12 +70,10 @@ const ProfQuiz = () => {
 
     const handleDelete = async (quizId: string) => {
         try {
-            // Si on supprime le dernier quiz de la page courante,
-            // on revient automatiquement à page - 1.
             const shouldGoBack = page > 1 && quiz.length === 1;
-        await axios.delete(`${apiUrl}/prof/delete-quiz/${quizId}`, {
-            withCredentials: true,
-        });
+            await axios.delete(`${apiUrl}/prof/delete-quiz/${quizId}`, {
+                withCredentials: true,
+            });
 
             if (shouldGoBack) {
                 setPage((prev) => Math.max(prev - 1, 1));
