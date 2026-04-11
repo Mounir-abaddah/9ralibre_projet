@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import MatiereModal from "@/components/Quiz/Prof/MatiereModal";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
+import { useProfProtectedRoutes } from "@/store/userStore";
 
 const colors = [
 "bg-cyan-500",
@@ -20,6 +23,7 @@ const colors = [
 const ProfAddQuiz = () => {
 const apiUrl = import.meta.env.VITE_API_URL;
 const [text, setText] = useState("");
+const {data} = useProfProtectedRoutes();
 const [loading, setLoading] = useState(false);
 const [openModal,setOpenModal] = useState(false);
 const [selectedMatiere, setSelectedMatiere] = useState("");
@@ -80,8 +84,10 @@ const deleteQuestion = (index: number) => {
 const handleSubmit = async () => {
     try {
         if (!text) return toast.error("Titre requis");
-        if (!selectedMatiere) return toast.error("Choisir matière");
-        if (!selectedFiliere) return toast.error("Choisir filière");
+        const isCollege = data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
+        if (!selectedMatiere || (!isCollege && !selectedFiliere)) {
+            return toast.error("Ouvrez le bouton Paramètres et renseignez la matière" +(!isCollege ? " ainsi que la filière." : "."),);
+        }
         for (const q of questions) {
             if (!q.question) return toast.error("Question vide");
 
@@ -97,7 +103,7 @@ const handleSubmit = async () => {
             text,
             questions,
             matiere: selectedMatiere,
-            filiere: selectedFiliere,
+            filiere: isCollege ? 'Science' : selectedFiliere,
         },{ withCredentials: true },
         );
 
@@ -112,9 +118,10 @@ const handleSubmit = async () => {
             },
         ]);
     } catch (error) {
-    const axiosError = error as AxiosError<{ message: string }>;
-    alert(axiosError.response?.data?.message || "Erreur");
-    toast.error("Erreur Pour ajouter le Quiz ❌");
+        const axiosError = error as AxiosError<{ message: string }>;
+        toast.error(
+            axiosError.response?.data?.message || "Impossible d’ajouter le quiz.",
+        );
     } finally {
     setLoading(false);
     }
@@ -123,18 +130,57 @@ const handleSubmit = async () => {
 return (
     <>
         <div className="min-h-screen space-y-6 p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
                 <Button onClick={()=>navigate(-1)} variant="outline" className="cursor-pointer">
                     <ArrowLeft />
                 </Button>
-                <Button onClick={()=>setOpenModal(!openModal)} variant="outline" className="cursor-pointer">
-                    <Settings />
-                </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            type="button"
+                            onClick={() => setOpenModal(true)}
+                            variant={!selectedMatiere || !selectedFiliere ? "default" : "outline"}
+                            className={`shrink-0 cursor-pointer ${!selectedMatiere || !selectedFiliere ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                            aria-label="Paramètres : choisir la matière et la filière"
+                        >
+                            <Settings className="size-4" />
+                            <span className="ml-2 hidden sm:inline">Paramètres</span>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs text-center">
+                        <p>Cliquez ici pour choisir la matière et la filière du quiz.</p>
+                    </TooltipContent>
+                </Tooltip>
             </div>
 
-            <p className="text-sm text-gray-500">
-                Matière: {selectedMatiere || "Non sélectionnée"} | Filière:{" "}
-                {selectedFiliere || "Non sélectionnée"}
+            {(!selectedMatiere || !selectedFiliere) && (
+                <Alert className="w-full border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-50">
+                    <Info className="size-4 text-amber-700 dark:text-amber-300" />
+                    <AlertTitle className="text-sm font-semibold">
+                        Matière et filière obligatoires
+                    </AlertTitle>
+                    <AlertDescription className="w-full text-sm text-amber-900 dark:text-amber-100">
+                        Avant d’enregistrer le quiz, cliquez sur le bouton{" "}
+                        <strong className="w-full font-semibold">Paramètres</strong>{" "}
+                        (icône engrenage) en haut à droite, puis renseignez la{" "}
+                        <strong className="font-semibold">matière</strong> et la{" "}
+                        <strong className="font-semibold">filière</strong> dans la fenêtre qui s’ouvre.
+                    </AlertDescription>
+                </Alert>
+            )}
+
+{            // eslint-disable-next-line tailwindcss/no-custom-classname
+}            <p className="text-muted-foreground w-full text-sm">
+                <span className={selectedMatiere ? "" : "font-medium text-amber-700 dark:text-amber-300"}>
+                    Matière : {selectedMatiere ? `choisie ${selectedMatiere}` : "non renseignée — ouvrir Paramètres"}
+                </span>
+                {" · "}
+                {!["1AC", "2AC", "3AC"].includes(data?.niveaux || "") && (
+                    <span className={selectedFiliere ? "" : "font-medium text-amber-700 dark:text-amber-300"}>
+                        Filière : {selectedFiliere || "non renseignée — ouvrir Paramètres"}
+                    </span>
+                )}
+                
             </p>
         
         {/* TITLE */}
