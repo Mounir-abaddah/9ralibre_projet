@@ -42,7 +42,7 @@ const MatiereModal = ({
   const niveauxLabel = data?.niveaux ?? "";
 
   const filiereByNiveau: Record<string, string[]> = {
-    "1AC": [
+    "TC": [
       "Sciences Mathématiques",
       "Sciences Expérimentales",
       "Sciences Éco",
@@ -102,22 +102,31 @@ const MatiereModal = ({
                 </SelectContent>
             </Select>
             </div>
-            {/* Filière */}
-            <div className="w-full space-y-2">
-            <Label>Filière</Label>
-            <Select value={filiereValue} onValueChange={setFiliereValue}>
-                <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choisir filière" />
-                </SelectTrigger>
-                <SelectContent>
-                {(filiereByNiveau[niveauxLabel] ?? []).map((f) => (
-                    <SelectItem key={f} value={f}>
-                    {f}
-                    </SelectItem>
-                ))}
-                </SelectContent>
-            </Select>
-            </div>
+            {data?.niveaux === "1AC" || data?.niveaux==="2AC" || data?.niveaux==="3AC" ? (
+              <div>
+
+              </div>
+            ):(
+              <div className="w-full">
+                {/* Filière */}
+                <div className="w-full space-y-2">
+                <Label>Filière</Label>
+                <Select value={filiereValue} onValueChange={setFiliereValue}>
+                    <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Choisir filière" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    {(filiereByNiveau[niveauxLabel] ?? []).map((f) => (
+                        <SelectItem key={f} value={f}>
+                        {f}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                </div>
+              </div>
+            )}
+            
         </div>
         
 
@@ -125,12 +134,22 @@ const MatiereModal = ({
 
         {/* BUTTON */}
         <Button
-            className="w-full"
+            className="w-full cursor-pointer"
             onClick={() => {
-                if (!matiereValue || !filiereValue) return;
-                setSelectedMatiere(matiereValue);
+              const isCollege =
+                data?.niveaux === "1AC" ||
+                data?.niveaux === "2AC" ||
+                data?.niveaux === "3AC";
+
+              if (!matiereValue || (!isCollege && !filiereValue)) return;
+
+              setSelectedMatiere(matiereValue);
+
+              if (!isCollege) {
                 setSelectedFiliere(filiereValue);
-                setOpenModal(false);
+              }
+
+              setOpenModal(false);
             }}
         >
             Confirmer
