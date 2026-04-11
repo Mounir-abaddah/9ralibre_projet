@@ -6,7 +6,7 @@ const CoursShema = new mongoose.Schema({
     },
     semestre:{
         type:String,
-        enum:["Premier Semestre", "Deuxième Semestre"],
+        enum:["Premier Semestre", "Deuxième Semestre","Non renseigné"],
         required:true
     },
     type:{
