@@ -5,6 +5,13 @@ import { Link } from 'react-router-dom'
 import Input from '@/components/Form/Input'
 import { useState } from 'react'
 import axios from "axios"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { CircleAlert } from "lucide-react"
+import {
+  fieldErrorsFromIssues,
+  messagesFromApiData,
+  type ProfApiErrorBody,
+} from "@/utils/profApiErrors"
 
 const ProfConnexion = () => {
   const apiUrl = import.meta.env.VITE_API_URL
@@ -67,8 +74,24 @@ const ProfConnexion = () => {
       }
 
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-          setErrorMsg(err.response?.data?.message || "Erreur serveur");
+      if (!axios.isAxiosError(err)) {
+        setErrorMsg("Une erreur est survenue");
+        return;
+      }
+      const data = err.response?.data as ProfApiErrorBody | undefined;
+      const issues = data?.issues;
+      if (issues?.length) {
+        seterrFormData((prev) => ({
+          ...prev,
+          ...fieldErrorsFromIssues(issues),
+        }));
+        setErrorMsg("");
+      } else {
+        const msg =
+          typeof data?.message === "string" && data.message.trim()
+            ? data.message.trim()
+            : messagesFromApiData(data).join(" · ") || "Erreur serveur";
+        setErrorMsg(msg);
       }
     } finally {
       setLoading(false)
@@ -120,6 +143,18 @@ const ProfConnexion = () => {
           </span>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {errorMsg && (
+              <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100">
+                <CircleAlert className="size-4" />
+                <AlertTitle className="text-sm font-semibold">
+                  Connexion impossible
+                </AlertTitle>
+                <AlertDescription className="text-sm text-red-800 dark:text-red-200">
+                  {errorMsg}
+                </AlertDescription>
+              </Alert>
+            )}
+
             {/* Email */}
             <Input
               type="email"
@@ -165,13 +200,6 @@ const ProfConnexion = () => {
             </Button>
 
           </form>
-
-          {/* Error message */}
-          {errorMsg && (
-            <p className="mt-3 rounded-md bg-red-100 p-2 text-center text-sm text-red-600">
-              {errorMsg}
-            </p>
-          )}
 
           {/* Footer */}
           <p className="mt-6 text-center text-sm text-gray-400">
