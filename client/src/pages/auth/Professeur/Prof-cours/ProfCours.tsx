@@ -82,8 +82,6 @@ const bgItems = {
 
 const handleDeleteCours = async (coursId: string) => {
     try {
-        // Si on supprime le dernier cours sur la page courante,
-        // on doit revenir à la page précédente pour éviter une page vide.
         const shouldGoBack = currentPage > 1 && Cours.length === 1;
         await axios.delete(`${apiUrl}/prof/delete-cours/${coursId}`, {
             withCredentials: true,
