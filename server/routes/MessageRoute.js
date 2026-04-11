@@ -6,7 +6,7 @@
 
 
 
-  router.post('/start-conversation',authMiddleware,async(req,res)=>{
+router.post('/start-conversation',authMiddleware,async(req,res)=>{
       const userId = req.user.userId;
       const {user} = req.body;
       if(userId === user){
@@ -78,6 +78,7 @@
 
     res.json({ message: "Messages marqués comme lus" });
   });
+  
 
   router.post('/messages',authMiddleware,async(req,res)=>{
       const userId = req.user.userId;
