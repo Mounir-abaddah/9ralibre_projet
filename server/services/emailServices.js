@@ -285,7 +285,47 @@ async function likeCommentaire(
   return transporter.sendMail(mailOptions);
 }
 
+async function oublierMotdepasseProfesseur(user, resetLink) {
+  const mailOptions = {
+    from: process.env.EMAIL_CLIENT,
+    to: user.email,
+    subject: "Réinitialisation de votre mot de passe",
+    html: `
+      <div style="font-family: Arial, sans-serif; background:#f4f4f7; padding:20px;">
+        <div style="max-width:500px; margin:auto; background:#fff; padding:25px; border-radius:8px; text-align:center;">
+          
+          <h2 style="color:#333;">Réinitialisation du mot de passe</h2>
+
+          <p style="color:#555; font-size:14px;">
+            Bonjour ${user.prenom || ""},
+          </p>
+
+          <p style="color:#555; font-size:14px; line-height:1.6;">
+            Une demande de réinitialisation de mot de passe a été effectuée pour votre compte professeur.
+          </p>
+
+          <a href="${resetLink}" 
+             style="display:inline-block; margin:20px 0; padding:12px 25px; background:#0ea5e9; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold;">
+            Réinitialiser mon mot de passe
+          </a>
+
+          <p style="font-size:12px; color:#777;">
+            Ce lien est valable pendant 30 minutes.
+          </p>
+
+          <p style="font-size:12px; color:#999;">
+            Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.
+          </p>
+
+        </div>
+      </div>
+    `,
+  };
+
+  return transporter.sendMail(mailOptions);
+}
 
 
 
-module.exports = { sendVerificationEmail, oublierMotdepasse , repliesCommentaire , likeCommentaire  };
+
+module.exports = { sendVerificationEmail, oublierMotdepasse , repliesCommentaire , likeCommentaire ,oublierMotdepasseProfesseur  };
