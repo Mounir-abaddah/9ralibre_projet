@@ -24,7 +24,7 @@ const Input = ({id,label,type,placeholder,value,onFocus,onChange,error,icon,clas
     }
   return (
     <div className='flex w-full flex-col gap-1'>
-        <Label htmlFor={id} className='text-black'>{label}</Label>
+        <Label htmlFor={id} className={`text-black dark:text-white ${className}`}>{label}</Label>
         <div className={`flex w-full items-center gap-2 rounded-md border p-2 text-black dark:border-gray-300 ${error && 'border-red-400 bg-red-100'}`}>
             {renderIcon()}
             <input 
