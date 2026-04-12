@@ -408,7 +408,8 @@ const Settings = () => {
                 <p className="font-medium">{success}</p>
               </div>
             )}
-            <Card className="border-0 shadow-lg">
+            {data?.provider === "local" ? (
+              <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
                 <CardTitle>Changer le mot de passe</CardTitle>
                 <CardDescription>
@@ -474,7 +475,13 @@ const Settings = () => {
                   Changer le mot de passe
                 </Button>
               </div>
-            </Card>
+              </Card>
+            ):(
+              <Card className="">
+                <CardContent className="rounded-md text-sm">Vous êtes connecté avec Google. Vous ne pouvez pas modifier le mot de passe ici.</CardContent>
+              </Card>
+            )}
+            
           </TabsContent>
         </Tabs>
       </div>
