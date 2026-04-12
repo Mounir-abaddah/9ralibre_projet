@@ -99,7 +99,7 @@ const ProfConnexion = () => {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center px-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-amber-500 px-4">
 
       {/* Logo */}
       <Link to={'/'}>
@@ -166,6 +166,7 @@ const ProfConnexion = () => {
               value={formData.email}
               onFocus={() => handleFocus('email')}
               error={errformData.email}
+              className='text-black dark:text-black'
             />
 
             {/* Password */}
@@ -179,11 +180,12 @@ const ProfConnexion = () => {
               onFocus={() => handleFocus('password')}
               icon='lock'
               error={errformData.password}
+              className='text-black dark:text-black'
             />
 
             <div className="mt-2 text-right">
               <Link
-                to="/forgot-password"
+                to="/prof/password/reset"
                 className="text-xs text-amber-600 hover:underline"
               >
                 Mot de passe oublié ?
