@@ -235,10 +235,10 @@ const Cours = () => {
                     <DropdownMenuGroup>
                       <DropdownMenuItem 
                         onClick={() => handleSaveCours(item._id)}
-                        className={`flex cursor-pointer items-center justify-between ${savedCoursMap[item._id] ? 'bg-amber-50 text-amber-500' : ''}`}
+                        className={`flex cursor-pointer items-center justify-between`}
                       >
                         {savedCoursMap[item._id] ? 'Enregistré' : 'Enregistrer'}
-                        <Bookmark fill={savedCoursMap[item._id] ? '#FF9500' : 'none'} color={savedCoursMap[item._id] ? '#FF9500' : '#000'} />
+                        <Bookmark fill={savedCoursMap[item._id] ? '#F49E0B' : 'none'} color={savedCoursMap[item._id] ? '#F49E0B' : '#6B7280'} />
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         className='flex cursor-pointer items-center justify-between'
