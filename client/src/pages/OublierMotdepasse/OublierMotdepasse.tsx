@@ -53,16 +53,16 @@ const OublierMotdepasse = () => {
       </header>
 
       {step === 1 && (
-        <div className="shadow bg-white rounded-lg">
-          <div className="py-4 px-6 text-center rounded-t-lg bg-gray-100">
-            <h2 className="flex items-center justify-center font-semibold text-xl mb-0 text-[#3F3F3F]">
+        <div className="rounded-lg bg-white shadow">
+          <div className="rounded-t-lg bg-gray-100 px-6 py-4 text-center">
+            <h2 className="mb-0 flex items-center justify-center text-xl font-semibold text-[#3F3F3F]">
               <span>Mot de passe oublié ?</span>
             </h2>
           </div>
           <div className="p-8">
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <label htmlFor="monemail" className="block text-base mb-4">
+                <label htmlFor="monemail" className="mb-4 block text-base">
                   Entrez simplement l’adresse e-mail avec laquelle vous vous êtes inscrit·e et nous vous enverrons un lien
                   pour réinitialiser votre mot de passe.
                 </label>
@@ -80,9 +80,9 @@ const OublierMotdepasse = () => {
               <button
                 disabled={loading} 
                 type="submit"
-                className={`flex items-center gap-2 p-2 rounded-md ${
-                  loading ? 'bg-slate-200 cursor-not-allowed' : 'bg-amber-400 cursor-pointer'
-                } shadow-md w-full justify-center hover:bg-amber-500 transition-all duration-300`}
+                className={`flex items-center gap-2 rounded-md p-2 ${
+                  loading ? 'cursor-not-allowed bg-slate-200' : 'cursor-pointer bg-amber-400'
+                } w-full justify-center shadow-md transition-all duration-300 hover:bg-amber-500`}
               >
                 {loading && <Loadering />}
                 <span className="cursor-pointer text-[#3F3F3F]">
@@ -92,7 +92,7 @@ const OublierMotdepasse = () => {
             </form>
             <hr className="my-8" />
             <div className="text-right">
-              <Link to={'/connexion'} className="border-b-sky-400 border-b">
+              <Link to={'/connexion'} className="border-b border-b-sky-400">
                 Finalement, je m’en rappelle !
               </Link>
             </div>
@@ -101,8 +101,8 @@ const OublierMotdepasse = () => {
       )}
 
       {step === 2 && (
-        <div className="shadow bg-white rounded-lg p-8 text-center">
-          <h2 className="text-xl font-semibold text-[#3F3F3F] mb-4">
+        <div className="rounded-lg bg-white p-8 text-center shadow">
+          <h2 className="mb-4 text-xl font-semibold text-[#3F3F3F]">
             📧 Vérifiez votre boîte mail
           </h2>
           <p className="text-gray-600">
