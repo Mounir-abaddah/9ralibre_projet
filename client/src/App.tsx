@@ -38,6 +38,8 @@ import ProfChatStart from './pages/auth/Professeur/Prof-chat/ProfChatStart';
 import ProfSettings from './pages/auth/Professeur/Prof-settings/ProfSettings';
 import ProfInscription from './pages/auth/Professeur/Prof-inscription/ProfInscription';
 import BoiteMerveille from './pages/auth/Histoire/BoiteMerveille';
+import ProfForgotPassword from './pages/auth/Professeur/Prof-forgotPassword/ProfForgotPassword';
+import ProfResetPassword from './pages/auth/Professeur/Prof-resetPassword/ProfResetPassword';
 
 const App = () => {
   return (
@@ -52,7 +54,9 @@ const App = () => {
         <Route path='/connexion' element={<Connexion />} />
         <Route path='/prof-connexion' element={<ProfConnexion />} />
         <Route path='/password/reset' element={<OublierMotdepasse />} />
+        <Route path='/prof/password/reset' element={<ProfForgotPassword />} />
         <Route path='/password/reset/:token' element={<ModificationMotdepasse />} />
+        <Route path='/prof/password/reset/:token' element={<ProfResetPassword />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
