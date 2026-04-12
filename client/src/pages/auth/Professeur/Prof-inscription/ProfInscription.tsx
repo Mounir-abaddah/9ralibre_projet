@@ -122,7 +122,7 @@ const ProfInscription = () => {
     }
 
 return (
-    <div className="relative flex min-h-screen items-center justify-center px-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-amber-500 px-4">
 
         {/* Logo */}
         <img src={logo} className="absolute top-4 left-4 w-20" />
@@ -182,6 +182,7 @@ return (
                         onFocus={() => handleFocus("nom")}
                         placeholder="Nom"
                         error={errFormData.nom}
+                        className='text-black dark:text-black'
                     />
 
                     <Input
@@ -192,6 +193,7 @@ return (
                         onFocus={() => handleFocus("prenom")}
                         placeholder="Prénom"
                         error={errFormData.prenom}
+                        className='text-black dark:text-black'
                     />
                 </div>
 
@@ -206,6 +208,7 @@ return (
                 onFocus={() => handleFocus("email")}
                 placeholder="Email"
                 error={errFormData.email}
+                className='text-black dark:text-black'
                 />
 
                 {/* Niveaux */}
@@ -222,7 +225,7 @@ return (
                             errFormData.niveaux && "border-red-400 bg-red-50 dark:bg-red-950/30"
                         )}
                     >
-                    <SelectValue placeholder="Niveaux" />
+                    <SelectValue placeholder="Niveaux"/>
                     </SelectTrigger>
 
                     <SelectContent>
@@ -260,6 +263,7 @@ return (
                 onFocus={() => handleFocus("password")}
                 placeholder="Mot de passe"
                 error={errFormData.password}
+                className='text-black dark:text-black'
                 />
 
                 {/* Submit */}
@@ -274,7 +278,7 @@ return (
 
 
             <p className="mt-6 text-center text-xs text-gray-400">
-                Votre compte sera validé par un administrateur.
+                Après votre inscription, vous recevrez un email avec les détails. Nous pourrons vous contacter pour confirmer votre compte si nécessaire.
             </p>
         </div>
     </div>
