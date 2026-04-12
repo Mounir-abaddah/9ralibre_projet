@@ -46,16 +46,13 @@ const questionSchema = z.object({
   }
 );
 
-// =======================
-// ✅ ADD QUIZ
-// =======================
 const addQuizSchema = z.object({
   text: z.string().min(3, "Titre requis"),
   matiere: objectId,
   filiere: z.string().min(2, "Filière requise"),
   questions: z
     .array(questionSchema)
-    .min(5, "Minimum 5 questions requises"), // 🔥 ICI
+    .min(5, "Minimum 5 questions requises"),
 });
 
 
@@ -84,7 +81,21 @@ const loginSchema = z.object({
 });
 
 
+const messageOUblierSchema = z.object({
+  email:z.string().email("Email invalid")
+})
+
+const passwordResetShema = z.object({
+  password: z.string()
+    .min(8, "le mot de passe doit contenir minimum 8 caractères")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
+    )
+});
 
 
-module.exports = {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema}
+
+
+module.exports = {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema,messageOUblierSchema,passwordResetShema}
 
