@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react"
 import type { Matiere, TypeProfVideos } from "../../Video/types/video.type";
 import axios from "axios";
-import { Eye, Heart, MessageCircle, MoreHorizontalIcon, Pen, Plus, Trash } from "lucide-react";
+import { Eye, Heart, MessageCircle, MoreHorizontalIcon, Pen, Plus, Search, Trash } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger,TooltipContent } from "@/components/ui/tooltip";
@@ -19,6 +19,8 @@ import AddVideosModal from "@/components/Videos/Prof/AddVideosModal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import Pagination from "@/components/Pagination/Pagination";
 import { useSearchParams } from "react-router-dom";
+import { useDebounce } from "@/hooks/use-debounce";
+import { Input } from "@/components/ui/input";
 
 const ProfVideos = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -28,14 +30,18 @@ const ProfVideos = () => {
     const [matiere, setMatiere] = useState<Matiere[]>([])
     const [selectedVideos, setSelectedVideos] = useState<TypeProfVideos | null>(null);
     const [currentPage, setCurrentPage] = useState(() => {
-        const p = Number(searchParams.get("page"));
-        return Number.isFinite(p) && p > 0 ? p : 1;
+        return Number(searchParams.get("page")) || 1;
     });
     const [totalVideos, setTotalVideos] = useState(0);
     const limit = 6;
+    const [search, setSearch] = useState(() => {
+        return searchParams.get("search") || ""
+    })
+
+    const debouncedSearch = useDebounce(search, 500)
 
     const getVideos = async()=>{
-        const res = await axios.get(`${apiUrl}/prof/get-videos?page=${currentPage}&limit=${limit}`,{withCredentials:true});
+        const res = await axios.get(`${apiUrl}/prof/get-videos?page=${currentPage}&limit=${limit}&search=${debouncedSearch}`,{withCredentials:true});
         setVideos(res.data.videos)
         setTotalVideos(res.data.total || 0);
     }
@@ -50,13 +56,39 @@ const ProfVideos = () => {
 
     useEffect(()=>{
         getVideos()
-    },[currentPage])
+    },[currentPage,debouncedSearch])
+
+    
+
 
     useEffect(() => {
-        const params: Record<string, string> = {};
-        if (currentPage > 1) params.page = currentPage.toString();
-        setSearchParams(params);
-    }, [currentPage, setSearchParams]);
+        const params = new URLSearchParams(searchParams)
+
+        if (currentPage > 1) {
+            params.set("page", currentPage.toString())
+        } else {
+            params.delete("page")
+        }
+
+        if (debouncedSearch.trim() !== "") {
+            params.set("search", debouncedSearch.trim())
+        } else {
+            params.delete("search")
+        }
+
+        setSearchParams(params)
+    }, [currentPage, debouncedSearch]);
+
+    useEffect(() => {
+        const q = searchParams.get("search") || ""
+        if (q !== search) {
+            setSearch(q)
+        }
+    }, [searchParams])
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearch]);
 
     const options:Intl.DateTimeFormatOptions = {
         year: "numeric",
@@ -71,8 +103,6 @@ const ProfVideos = () => {
     }, [open]);
 
     const handleDelete = async(videoId:string)=>{
-        // Si on supprime le dernier élément de la page courante,
-        // on doit revenir à page - 1 pour éviter un tableau vide.
         const shouldGoBack = currentPage > 1 && videos.length === 1;
         const res = await axios.delete(`${apiUrl}/prof/delete-videos/${videoId}`,{withCredentials:true})
         toast.success(res.data.message)
@@ -85,12 +115,37 @@ const ProfVideos = () => {
 
   return (
     <>
-    <div className="p-6">
-        <div>
-            <h1 className="text-2xl font-bold">Mes Vidéos</h1>
-            <span className="pl-2 text-xs">{totalVideos} videos disponible</span>
+    <div className="p-2">
+        <div className="flex flex-col items-start justify-between md:flex-row md:items-start lg:flex-row lg:items-center">
+            <div>
+                <h1 className="text-2xl font-bold">Mes Vidéos</h1>
+                <span className="pl-2 text-xs">{totalVideos} videos disponible</span>
+            </div>
+            <div className="relative w-full max-w-md">
+                <Input
+                    type="text"
+                    placeholder="Rechercher une vidéo..."
+                    value={search}
+                    onChange={(e) => {
+                    setSearch(e.target.value)
+                    }}
+                    className="pr-10 pl-10"
+                />
+
+                <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
+                    <Search size={16} />
+                </span>
+
+                {search && (
+                    <button
+                    onClick={() => setSearch("")}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
+                    >
+                    ✕
+                    </button>
+                )}
+            </div>
         </div>
-    
     <Table>
         <TableCaption>Liste de vos vidéos publiées</TableCaption>
         <TableHeader>
