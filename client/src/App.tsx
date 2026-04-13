@@ -40,6 +40,7 @@ import ProfInscription from './pages/auth/Professeur/Prof-inscription/ProfInscri
 import BoiteMerveille from './pages/auth/Histoire/BoiteMerveille';
 import ProfForgotPassword from './pages/auth/Professeur/Prof-forgotPassword/ProfForgotPassword';
 import ProfResetPassword from './pages/auth/Professeur/Prof-resetPassword/ProfResetPassword';
+import ProtectedNiveauRoute from './components/ProtectedRoute/ProtectedNiveauRoute';
 
 const App = () => {
   return (
@@ -59,10 +60,11 @@ const App = () => {
         <Route path='/prof/password/reset/:token' element={<ProfResetPassword />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
+        <Route path='/Profile/:name' element={<Layouts><Profile /></Layouts>} />
+          <Route element={<ProtectedNiveauRoute />}>
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
-            <Route path='/Profile/:name' element={<Layouts><Profile /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
@@ -75,6 +77,7 @@ const App = () => {
             <Route path='/Chat/start/:chatId' element={<Layouts><ChatStart /></Layouts>} />
             <Route path='/Save/:niveaux' element={<Layouts><Save /></Layouts>} />
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
+          </Route>
         </Route>
         <Route element={<ProtectedRouteProf />}>
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
