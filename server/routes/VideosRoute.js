@@ -208,8 +208,11 @@ router.get('/get-saved-videos',authMidllewares,async(req,res)=>{
         if(!user){
             return res.status(404).send({message:"Utilisateur non trouvé",success:false})
         }
-
-        const totalSaved = user.savedVideos.length;
+        // ⚠️ user.savedVideos peut contenir des IDs orphelins (vidéo supprimée)
+        // On calcule donc le vrai total en base.
+        const totalSaved = await VideosModel.countDocuments({
+            _id: { $in: user.savedVideos || [] }
+        });
         
         // Récupérer les IDs avec pagination
         const savedVideoIds = user.savedVideos.slice(skip, skip + limit);
