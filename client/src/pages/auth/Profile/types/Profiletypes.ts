@@ -3,14 +3,23 @@ export interface UserProfile {
   nom: string;
   prenom: string;
   email: string;
-  role: "Professeur" | "Etudiant" | "Admin";
+  role: "Non renseigné" | "Etudiant" | "Etudiante" | "Professeur" | "Admin";
   niveaux: string;
   provider: "google" | "local";
   providerId?: number;
   image: string;
   accountVerified: boolean;
   completeProfile: boolean;
-  events: string[];
+  status?: "pending" | "approved";
+  events?: Array<{
+    _id?: string;
+    Date: string | Date;
+    items: Array<{
+      type: string;
+      titre: string;
+      Description?: string;
+    }>;
+  }>;
   followers: string[];
   following: string[];
   savedCours: string[];
