@@ -21,7 +21,7 @@ const StepOneForm = ({formData,errors,onChange,onFocus}:Props) => {
         onChange={(val) => onChange("nom", val)}
         onFocus={() => onFocus("nom")}
         error={errors.nom}
-        className="dark:text-black"
+        className="dark:text-white"
       />
       <Input
         label="Prénom"
@@ -31,7 +31,7 @@ const StepOneForm = ({formData,errors,onChange,onFocus}:Props) => {
         onChange={(val) => onChange("prenom", val)}
         onFocus={() => onFocus("prenom")}
         error={errors.prenom}
-        className="dark:text-black"
+        className="dark:text-white"
       />
     </div>
     <RoleSelect
