@@ -187,7 +187,7 @@ const Videos = () => {
                     <div className="flex justify-between gap-2">
                       <div className="flex gap-2">
                         <Link
-                          to={`/professeur/${item.professeur.nom}-${item.professeur.prenom}`}
+                          to={`/Profile/${item.professeur.nom}-${item.professeur.prenom}`}
                         >
                           <img
                             src={item.professeur.image}
