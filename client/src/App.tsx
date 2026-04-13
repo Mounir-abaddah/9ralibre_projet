@@ -60,8 +60,9 @@ const App = () => {
         <Route path='/prof/password/reset/:token' element={<ProfResetPassword />} />
         <Route path='/inscription/confirm-email/:token' element={<VerificationEmail />} />
         <Route element={<ProtectedRoute />}> 
-        <Route path='/Profile/:name' element={<Layouts><Profile /></Layouts>} />
-          <Route element={<ProtectedNiveauRoute />}>
+          <Route path='/Profile/:name' element={<Layouts><Profile /></Layouts>} />
+          <Route path='/Chat/start/:chatId' element={<Layouts><ChatStart /></Layouts>} />
+        <Route element={<ProtectedNiveauRoute />}>
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
             <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
