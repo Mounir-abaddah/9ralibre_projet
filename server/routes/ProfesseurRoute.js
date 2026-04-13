@@ -401,17 +401,29 @@ router.get("/stats-week", authMiddlewares, profMiddleware, async (req, res) => {
 router.get('/get-videos', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
+    const { search } = req.query;
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
     const skip = (page - 1) * limit;
 
-    const videos = await Videos.find({ professeur: userId })
+    const queryObject = {
+      professeur: userId,
+    };
+  
+    if (search) {
+      queryObject.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const videos = await Videos.find(queryObject)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const total = await Videos.countDocuments({ professeur: userId });
+    const total = await Videos.countDocuments(queryObject);
 
     res.json({
       total,
@@ -525,18 +537,31 @@ router.delete('/delete-videos/:videoId', authMiddlewares, profMiddleware, async 
 router.get('/get-quiz', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
+    const { search } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
     const skip = (page - 1) * limit;
 
+    const queryObject = {
+      professeur: userId,
+    };
+
+    if (search) {
+      queryObject.$or = [
+        { text: { $regex: search, $options: "i" } },
+        { filiere: { $regex: search, $options: "i" } },
+      ];
+    }
+    
+
     const [quiz, totalQuiz] = await Promise.all([
-      Quiz.find({ professeur: userId })
+      Quiz.find(queryObject)
       .populate("matiere")
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 })
         .lean(),
-      Quiz.countDocuments({ professeur: userId })
+      Quiz.countDocuments(queryObject)
     ]);
 
     const totalPages = Math.ceil(totalQuiz / limit);
