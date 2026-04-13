@@ -230,7 +230,7 @@ return (
 
                     <SelectContent>
                     <SelectGroup>
-                        <SelectLabel>College</SelectLabel>
+                        <SelectLabel>Collège</SelectLabel>
                         <SelectItem value="1AC">1AC</SelectItem>
                         <SelectItem value="2AC">2AC</SelectItem>
                         <SelectItem value="3AC">3AC</SelectItem>
@@ -239,7 +239,7 @@ return (
                     <SelectSeparator />
 
                     <SelectGroup>
-                        <SelectLabel>Lycee</SelectLabel>
+                        <SelectLabel>Lycée</SelectLabel>
                         <SelectItem value="TC">TC</SelectItem>
                         <SelectItem value="1BAC">1BAC</SelectItem>
                         <SelectItem value="2BAC">2BAC</SelectItem>
