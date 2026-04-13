@@ -146,8 +146,8 @@ const Dashboard = () => {
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 border-white/30 bg-white/20 shadow-inner">
                 {data?.image ? (
                   <img
-                    src={data.image}
-                    alt=""
+                    src={`${apiUrl}/uploads/images/${data.id}/${data.image}`}
+                    alt="img_utilisateur"
                     className="h-full w-full object-cover"
                   />
                 ) : (
