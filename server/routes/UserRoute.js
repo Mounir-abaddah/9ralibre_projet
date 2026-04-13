@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/UserModel");
+const VideosModel = require("../models/VideosModel");
+const CoursModels = require("../models/CoursModel");
+const QuizModel = require("../models/QuizModel");
+const ResultatQuizModel = require("../models/ResultatQuizModel");
 const bcrypt = require("bcryptjs");
 const authMiddleware = require("../middlewares/authMiddleware");
 const multer = require("multer");
@@ -375,7 +379,7 @@ router.post("/follow/:professeurId", authMiddleware, async (req, res) => {
   }
   if (!alreadyFollowing) {
     professeur.followers.push(userId);
-    user.following.pull(professeurId);
+    user.following.push(professeurId);
   }
 
   await professeur.save();
@@ -386,6 +390,94 @@ router.post("/follow/:professeurId", authMiddleware, async (req, res) => {
     following: !alreadyFollowing,
     followersCount: professeur.followers.length,
   });
+});
+
+router.get("/profile/:userId/content", authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const viewerId = req.user.userId;
+
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Utilisateur non trouvé" });
+    }
+
+    const isSelf = viewerId === userId;
+    const isProfesseur = user.role === "Professeur";
+
+    if (!isProfesseur) {
+      return res.status(200).json({
+        success: true,
+        videos: [],
+        cours: [],
+        quiz: [],
+      });
+    }
+
+    const videoQuery = { professeur: userId };
+    if (!isSelf) videoQuery.visibility = "Public";
+
+    const [videos, cours, quiz] = await Promise.all([
+      VideosModel.find(videoQuery)
+        .populate("matiere", "nom")
+        .populate("niveaux", "nom")
+        .select("title description thumbnail videoUrl views likes createdAt filiere matiere niveaux visibility")
+        .sort({ createdAt: -1 })
+        .limit(12)
+        .lean(),
+      CoursModels.find({ professeur: userId })
+        .populate("matiere", "nom")
+        .select("title type semestre filière pdfUrl createdAt matiere")
+        .sort({ createdAt: -1 })
+        .limit(12)
+        .lean(),
+      QuizModel.find({ professeur: userId })
+        .populate("matiere", "nom")
+        .populate("niveaux", "nom")
+        .select("text participants createdAt filiere matiere niveaux")
+        .sort({ createdAt: -1 })
+        .limit(12)
+        .lean(),
+    ]);
+
+    return res.status(200).json({ success: true, videos, cours, quiz });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+      err,
+    });
+  }
+});
+
+router.get("/profile/:userId/quiz-results", authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const viewerId = req.user.userId;
+
+    if (viewerId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Non autorisé",
+      });
+    }
+
+    const results = await ResultatQuizModel.find({ userId })
+      .populate("quizId", "text")
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .lean();
+
+    return res.status(200).json({ success: true, results });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+      err,
+    });
+  }
 });
 
 router.get("/getUser/:nameProfile", authMiddleware, async (req, res) => {
