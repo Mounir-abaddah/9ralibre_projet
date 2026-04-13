@@ -15,6 +15,7 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -71,7 +72,7 @@ const Settings = () => {
       if (resData.data.success) {
         setSuccess("Profil mis à jour avec succès");
         window.location.reload()
-        window.location.href = `/Paramètre/${data?.niveaux}`
+        window.location.href = `/Paramètre/${formData?.niveaux}`
       } else {
         setError(resData.data.message || "Erreur lors de la mise à jour");
       }
@@ -351,10 +352,14 @@ const Settings = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Niveaux d'étude</SelectLabel>
+                          <SelectLabel>Collège</SelectLabel>
                           <SelectItem value="1AC">1AC</SelectItem>
                           <SelectItem value="2AC">2AC</SelectItem>
                           <SelectItem value="3AC">3AC</SelectItem>
+                          </SelectGroup>
+                        <SelectSeparator />
+                        <SelectGroup>
+                          <SelectLabel>Lycée</SelectLabel>
                           <SelectItem value="TC">TC</SelectItem>
                           <SelectItem value="1BAC">1BAC</SelectItem>
                           <SelectItem value="2BAC">2BAC</SelectItem>
