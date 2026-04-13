@@ -9,7 +9,7 @@ import {
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash, Users } from "lucide-react";
+import { Plus, Search, Trash, Users } from "lucide-react";
 import Pagination from "@/components/Pagination/Pagination";
 import type { QuizProf } from "../../Quiz/types/QuizType";
 import {
@@ -33,15 +33,22 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useDebounce } from "@/hooks/use-debounce";
+import { Input } from "@/components/ui/input";
 
 const ProfQuiz = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [searchParams, setSearchParams] = useSearchParams();
+    const [search, setSearch] = useState(() => {
+        return searchParams.get("search") || ""
+    })
+
+    const debouncedSearch = useDebounce(search, 500)
 
     const [quiz, setQuiz] = useState<QuizProf[]>([]);
     const [page, setPage] = useState(() => {
-      const p = Number(searchParams.get("page"));
-      return Number.isFinite(p) && p > 0 ? p : 1;
+        const p = Number(searchParams.get("page"));
+        return Number.isFinite(p) && p > 0 ? p : 1;
     });
     const [totalQuiz, setTotalQuiz] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -57,7 +64,7 @@ const ProfQuiz = () => {
     const getQuiz = async (pageNumber = 1) => {
         try {
             setLoading(true);
-            const res = await axios.get(`${apiUrl}/prof/get-quiz?page=${pageNumber}&limit=${limit}`,{ withCredentials: true });
+            const res = await axios.get(`${apiUrl}/prof/get-quiz?page=${pageNumber}&limit=${limit}&search=${debouncedSearch}`,{ withCredentials: true });
             setQuiz(res.data.quiz);
             setTotalQuiz(res.data.totalQuiz);
         } catch (error) {
@@ -87,30 +94,75 @@ const ProfQuiz = () => {
         }
     };
 
-  useEffect(() => {
-    getQuiz(page);
-  }, [page]);
+    useEffect(() => {
+        getQuiz(page);
+    }, [page,debouncedSearch]);
 
-  useEffect(() => {
-    const params: Record<string, string> = {};
-    if (page > 1) params.page = page.toString();
-    setSearchParams(params);
-  }, [page, setSearchParams]);
+    useEffect(() => {
+    setPage(1);
+    }, [search]);
+
+    
+
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams)
+
+        if (page > 1) {
+            params.set("page", page.toString())
+        } else {
+            params.delete("page")
+        }
+
+        if (debouncedSearch.trim() !== "") {
+            params.set("search", debouncedSearch.trim())
+        } else {
+            params.delete("search")
+        }
+
+        setSearchParams(params)
+    }, [page, debouncedSearch]);
+
 
   return (
     <div className="space-y-6">
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start justify-between lg:flex-row lg:items-center">
             <div>
-            <h2 className="text-2xl font-bold">Mes Quiz</h2>
-            <span className="pl-2 text-sm text-white">
-                {totalQuiz} Quiz disponible
-            </span>
+                <h2 className="text-2xl font-bold">Mes Quiz</h2>
+                <span className="pl-2 text-sm text-white">
+                    {totalQuiz} Quiz disponible
+                </span>
             </div>
-
-            <Link target="_blank" to={"/prof/add/quiz/questions"}>
-            <Button variant="outline">Ajouter un Quiz</Button>
-            </Link>
+            <div className="flex flex-row-reverse items-center gap-2">
+                <Link target="_blank" to={"/prof/add/quiz/questions"}>
+                    <Button variant="outline" className="flex items-center"><Plus />Ajouter un Quiz</Button>
+                </Link>
+                <div className="relative w-full max-w-md">
+                    <Input
+                        type="text"
+                        placeholder="Rechercher un quiz..."
+                        value={search}
+                        onChange={(e) => {
+                        setSearch(e.target.value)
+                        }}
+                        className="pr-10 pl-10"
+                    />
+                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
+                        <Search size={16} />
+                    </span>
+                    {search && (
+                        <button
+                        onClick={() => {
+                            setSearch("")
+                            setPage(1)
+                        }}
+                        className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
+                        >
+                        ✕
+                        </button>
+                    )}
+                </div>
+            </div>
         </div>
 
         {/* TABLE */}
@@ -138,7 +190,7 @@ const ProfQuiz = () => {
             <TableBody>
                 {loading ? (
                 <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10">
+                    <TableCell colSpan={7} className="py-10 text-center">
                     Chargement...
                     </TableCell>
                 </TableRow>
