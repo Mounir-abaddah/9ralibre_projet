@@ -184,7 +184,11 @@ router.get("/get-saved-cours", authMiddleware, async (req, res) => {
         .send({ message: "Utilisateur non trouvé", success: false });
     }
 
-    const totalSaved = user.savedCours.length;
+    // ⚠️ user.savedCours peut contenir des IDs orphelins (cours supprimé)
+    // On calcule donc le vrai total en base.
+    const totalSaved = await Cours.countDocuments({
+      _id: { $in: user.savedCours || [] },
+    });
 
     // Récupérer les IDs avec pagination
     const savedCoursIds = user.savedCours.slice(skip, skip + limit);
