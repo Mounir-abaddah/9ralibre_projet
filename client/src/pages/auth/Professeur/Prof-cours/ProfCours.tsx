@@ -2,7 +2,7 @@ import Pagination from "@/components/Pagination/Pagination"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import axios from "axios"
-import { Plus } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import no_data from '@/assets/images/cours/No data-cuate.png'
 import AddCoursModal from "@/components/Cours/Prof/AddCoursModal"
@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import toast from "react-hot-toast"
 import { useSearchParams } from "react-router-dom"
+import { Input } from "@/components/ui/input"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const ProfCours = () => {
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -45,10 +47,14 @@ const [totalCours, setTotalCours] = useState(0);
 const [matiere, setMatiere] = useState<Matiere[]>([])
 const [limit] = useState(6);
 const [selectedCours, setSelectedCours] = useState<CoursType | null>(null);
+const [search, setSearch] = useState(() => {
+  return searchParams.get("search") || ""
+})
+const debouncedSearch = useDebounce(search, 500)
 
 const getCours = async () => {
     const res = await axios.get(
-    `${apiUrl}/prof/getCours?page=${currentPage}&limit=${limit}`,
+    `${apiUrl}/prof/getCours?page=${currentPage}&limit=${limit}&search=${debouncedSearch}`,
     { withCredentials: true }
     );
     SetCours(res.data.cours);
@@ -57,13 +63,26 @@ const getCours = async () => {
 
 useEffect(() => {
     getCours();
-}, [currentPage]);
+}, [currentPage, debouncedSearch]);
 
 useEffect(() => {
     const params: Record<string, string> = {};
     if (currentPage > 1) params.page = currentPage.toString();
+    if(debouncedSearch.trim() !== '') params.search = debouncedSearch.trim()
     setSearchParams(params);
-}, [currentPage, setSearchParams]);
+}, [currentPage, debouncedSearch, setSearchParams]);
+
+useEffect(() => {
+  const q = searchParams.get("search") || ""
+  if (q !== search) {
+    setSearch(q)
+  }
+}, [searchParams])
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [debouncedSearch]);
+
 
 useEffect(() => {
     const getMatiere = async () => {
@@ -104,26 +123,52 @@ return (
     {/* HEADER */}
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-        <h1 className="text-2xl font-semibold">Mes Cours</h1>
-        <span className="text-sm text-gray-500">
-            {Cours.length} documents publiés
-        </span>
+            <h1 className="text-2xl font-semibold">Mes Cours</h1>
+            <span className="text-sm text-gray-500">
+                {Cours.length} documents publiés
+            </span>
         </div>
+        <div className="flex flex-row-reverse items-center gap-2">
+            <Button
+            variant="outline"
+            onClick={() => {
+                setSelectedCours(null)
+                setOpen(true)
+            }}
+            className="cursor-pointer"
+            >
+                <Plus /> Ajouter
+            </Button>
+            <div className="relative w-full max-w-3xl">
+                <Input
+                    type="text"
+                    placeholder="Rechercher par titre..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pr-10 pl-10"
+                />
 
-        <Button
-        variant="outline"
-        onClick={() => {
-            setSelectedCours(null)
-            setOpen(true)
-        }}
-        >
-        <Plus /> Ajouter
-        </Button>
+                {/* icon */}
+                <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
+                    <Search size={16}/>
+                </span>
+
+                {/* clear */}
+                {search && (
+                    <button
+                    onClick={() => setSearch("")}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
+                    >
+                    ✕
+                    </button>
+                )}
+            </div>
+        </div>
     </div>
 
-    {Cours.length > 0 ? (
-        <Card className="mt-6 p-4">
 
+    {Cours.length > 0 ? (
+        <Card className="mt-6 p-4"> 
         {totalCours > limit && (
             <Pagination
             totalItems={totalCours}
@@ -131,12 +176,10 @@ return (
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             />
-        )}
-
+        )} 
         {/* RESPONSIVE TABLE */}
         <div className="mt-4 w-full overflow-x-auto">
             <Table className="min-w-[700px]">
-
             <TableHeader>
                 <TableRow>
                 <TableHead>Titre</TableHead>
@@ -239,8 +282,16 @@ return (
 
             </Table>
         </div>
+         {totalCours > limit && (
+            <Pagination
+            totalItems={totalCours}
+            itemsPerPage={limit}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            />
+        )}
 
-        </Card>
+        </Card>        
     ) : (
         <div className="mt-10 flex flex-col items-center">
         <img src={no_data} className="w-72" />
