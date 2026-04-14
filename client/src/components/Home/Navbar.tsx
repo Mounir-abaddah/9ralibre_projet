@@ -42,10 +42,12 @@ return (
     </div>
     <div className="relative isolate z-[9999] flex w-full items-center justify-between overflow-visible bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
         <div className="flex items-center gap-2">
-        <img src={logo} alt="logo" className="w-10" loading='lazy'/>
-        <span className="text-lg font-bold text-gray-800 dark:text-white">
-            9ralibre
-        </span>
+        <Link to={'/'} className='flex items-center gap-1'>
+            <img src={logo} alt="logo" className="w-10" loading='lazy'/>
+            <span className="text-lg font-bold text-gray-800 dark:text-white">
+                9ralibre
+            </span>
+        </Link>
         </div>
 
         {!isMobile && <MenuLinkItem />}
@@ -123,9 +125,9 @@ const MobileMenu = ({data,loading,error,fetchData}:typeAllData) => {
 return (
     <div className="flex flex-col gap-6 text-gray-800 dark:text-white">
     <Link to="/" className="text-lg font-semibold">Accueil</Link>
-    <Link to="/cours" className="text-lg font-semibold">Cours</Link>
-    <Link to="/videos" className="text-lg font-semibold">Vidéos</Link>
-    <Link to="/videos" className="text-lg font-semibold">A propos</Link>
+    <Link to={`/cours/${data?.niveaux}`} className="text-lg font-semibold">Cours</Link>
+    <Link to={`/videos/${data?.niveaux}`} className="text-lg font-semibold">Vidéos</Link>
+    <Link to="/About" className="text-lg font-semibold">A propos</Link>
     {data ? 
         <Avatare data={data} loading={loading} error={error} fetchData={fetchData} /> 
     : 
@@ -147,30 +149,30 @@ const MenuLinkItem = () => {
 const {data} = useProtectedRoutes();
 
 const coursesMenu = [
-  {
-    icon: <Calculator size={20} />,
-    title: "Mathématiques",
-    description: "Algèbre, analyse...",
-    href: `/Cours/${data?.niveaux}?matiere=Mathématiques`
-  },
-  {
-    icon: <Atom size={20} />,
-    title: "Physique et Chimie",
-    description: "Mécanique, électricité",
-    href: `/Cours/${data?.niveaux}?matiere=Physique+et+Chimie`
-  },
-  {
-    icon: <FlaskConical size={20} />,
-    title: "SVT",
-    description: "SVT",
-    href: `/Cours/${data?.niveaux}?matiere=SVT`
-  },
-  {
-    icon: <Book size={20} />,
-    title: "Tout les cours",
-    description: "cours",
-    href: `/Cours/${data?.niveaux}`
-  },
+    {
+        icon: <Calculator size={20} />,
+        title: "Mathématiques",
+        description: "Algèbre, analyse...",
+        href: `/Cours/${data?.niveaux}?matiere=Mathématiques`
+    },
+    {
+        icon: <Atom size={20} />,
+        title: "Physique et Chimie",
+        description: "Mécanique, électricité",
+        href: `/Cours/${data?.niveaux}?matiere=Physique+et+Chimie`
+    },
+    {
+        icon: <FlaskConical size={20} />,
+        title: "SVT",
+        description: "SVT",
+        href: `/Cours/${data?.niveaux}?matiere=SVT`
+    },
+    {
+        icon: <Book size={20} />,
+        title: "Tout les cours",
+        description: "cours",
+        href: `/Cours/${data?.niveaux}`
+    },
 ];
 
 const videosMenu = [
@@ -201,18 +203,18 @@ const videosMenu = [
 ];
 
 const quizMenu = [
-  {
-    icon: <Brain size={20} />,
-    title: "Quiz disponibles",
-    description: "Tester vos connaissances",
-    href: `/Quiz/${data?.niveaux}`
-  },
-  {
-    icon: <Trophy size={20} />,
-    title: "Résultats",
-    description: "Voir vos scores",
-    href: `/Quiz/${data?.niveaux}`
-  },
+    {
+        icon: <Brain size={20} />,
+        title: "Quiz disponibles",
+        description: "Tester vos connaissances",
+        href: `/Quiz/${data?.niveaux}`
+    },
+    {
+        icon: <Trophy size={20} />,
+        title: "Résultats",
+        description: "Voir vos scores",
+        href: `/Quiz/${data?.niveaux}`
+    },
 ];
 
 
