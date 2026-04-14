@@ -62,7 +62,7 @@ const OublierMotdepasse = () => {
           <div className="p-8">
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <label htmlFor="monemail" className="mb-4 block text-base">
+                <label htmlFor="monemail" className="mb-4 block text-base dark:text-gray-600">
                   Entrez simplement l’adresse e-mail avec laquelle vous vous êtes inscrit·e et nous vous enverrons un lien
                   pour réinitialiser votre mot de passe.
                 </label>
@@ -70,11 +70,13 @@ const OublierMotdepasse = () => {
                   id="monemail"
                   onFocus={() => setErrEmail('')}
                   type="email"
+                  label='Email :'
                   icon='mail'
                   placeholder="Saisissez votre adresse e-mail"
                   value={email}
                   onChange={setEmail}
                   error={errEmail}
+                  className="dark:text-black"
                 />
               </div>
               <button
@@ -85,14 +87,14 @@ const OublierMotdepasse = () => {
                 } w-full justify-center shadow-md transition-all duration-300 hover:bg-amber-500`}
               >
                 {loading && <Loadering />}
-                <span className="cursor-pointer text-[#3F3F3F]">
+                <span className="cursor-pointer text-[#3F3F3F] dark:text-gray-600">
                   Envoyer le lien de réinitialisation de mot de passe
                 </span>
               </button>
             </form>
             <hr className="my-8" />
             <div className="text-right">
-              <Link to={'/connexion'} className="border-b border-b-sky-400">
+              <Link to={'/connexion'} className="border-b border-b-sky-400 dark:text-cyan-600">
                 Finalement, je m’en rappelle !
               </Link>
             </div>
