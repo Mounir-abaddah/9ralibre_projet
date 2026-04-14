@@ -149,7 +149,6 @@ const Inscription = () => {
 
         <OAuth
           text_1={`S'inscrire avec Google`}
-          text_2={`S'inscrire avec Microsoft`}
         />
 
         <form onSubmit={handleForm} className="flex flex-col gap-4">
@@ -163,6 +162,7 @@ const Inscription = () => {
             value={formData.email}
             onChange={(val) => handleChange("email", val)}
             error={errors.email}
+            className="dark:text-black"
           />
 
           <Input
@@ -175,6 +175,7 @@ const Inscription = () => {
             value={formData.password}
             onChange={(val) => handleChange("password", val)}
             error={errors.password}
+            className="dark:text-black"
           />
 
           <Input
@@ -187,6 +188,7 @@ const Inscription = () => {
             value={formData.confirmPassword}
             onChange={(val) => handleChange("confirmPassword", val)}
             error={errors.confirmPassword}
+            className="dark:text-black"
           />
 
           <button
