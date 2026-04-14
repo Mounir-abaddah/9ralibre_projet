@@ -33,6 +33,7 @@ import {
   Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ReactPlayer from 'react-player';
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -188,8 +189,8 @@ function LandingPage({ user }: { user: typedata | null }) {
   return (
     <div className="w-full">
       {/* Hero */}
-      <section className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-2 md:items-center md:gap-16 md:py-20 lg:px-8 lg:py-24">
+      <section className="border-b border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="grid  gap-12 px-4 py-16 md:grid-cols-2 md:items-center md:gap-10 md:py-20 lg:px-8 lg:py-24">
           <div>
             <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase dark:text-zinc-400">
               <GraduationCap className="h-4 w-4 text-amber-600" aria-hidden />
@@ -272,31 +273,15 @@ function LandingPage({ user }: { user: typedata | null }) {
               </Link>
             </p>
           </div>
-
-          {/* Bloc visuel type “aperçu app” — tout en aplats */}
-          <div className="relative md:justify-self-end">
-            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-xl shadow-zinc-200/50 dark:border-zinc-700 dark:bg-zinc-800 dark:shadow-black/40">
-              <div className="flex items-center gap-2 border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-700 dark:bg-zinc-900">
-                <span className="h-3 w-3 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <span className="h-3 w-3 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <span className="h-3 w-3 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <span className="ml-2 text-xs font-medium text-zinc-400">
-                  9ralibre
-                </span>
-              </div>
-              <div className="space-y-4 p-6">
-                <div className="h-3 w-2/3 rounded bg-zinc-200 dark:bg-zinc-600" />
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="h-20 rounded-lg border border-zinc-200 bg-white dark:border-zinc-600 dark:bg-zinc-900" />
-                  <div className="h-20 rounded-lg border border-zinc-200 bg-white dark:border-zinc-600 dark:bg-zinc-900" />
-                  <div className="h-20 rounded-lg border border-zinc-200 bg-white dark:border-zinc-600 dark:bg-zinc-900" />
-                </div>
-                <div className="h-24 rounded-lg border-2 border-dashed border-amber-300/80 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/40" />
-                <div className="flex gap-2">
-                  <div className="h-8 flex-1 rounded-md bg-zinc-200 dark:bg-zinc-600" />
-                  <div className="h-8 w-24 rounded-md bg-amber-500" />
-                </div>
-              </div>
+          <div className="w-full">
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
+              <ReactPlayer
+                src="https://youtu.be/5OdVJbNCSso?si=eXdHCABtLMHq9CVm"
+                controls
+                width="100%"
+                height="100%"
+                className="absolute top-0 left-0"
+              />
             </div>
           </div>
         </div>
