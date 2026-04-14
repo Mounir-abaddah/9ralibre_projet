@@ -125,7 +125,7 @@ return (
     <div className="relative flex min-h-screen items-center justify-center bg-amber-500 px-4">
 
         {/* Logo */}
-        <img src={logo} className="absolute top-4 left-4 w-20" />
+        <Link to={'/'}><img src={logo} className="absolute top-4 left-4 w-20" /></Link>
 
         <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border bg-white/70 shadow-2xl backdrop-blur-xl md:grid-cols-2 dark:bg-white">
 
