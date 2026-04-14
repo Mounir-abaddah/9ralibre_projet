@@ -135,7 +135,7 @@ const Connexion = () => {
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center justify-around gap-4">
-          <OAuth text_1="Se connecter avec Google" text_2="Se connecter avec Microsoft" />
+          <OAuth text_1="Se connecter avec Google" />
         </div>
         {serverMessage && (
           <p className="w-full rounded-md border-l-2 border-red-500 bg-red-100 p-2 text-red-700">
@@ -146,7 +146,7 @@ const Connexion = () => {
         <form onSubmit={handleForm} className="flex w-full flex-col gap-1.5">
           <Input
             placeholder="e.g@email.ma"
-            label="Email"
+            label="Email :"
             id="monEmail"
             value={form.email}
             type="email"
@@ -154,11 +154,12 @@ const Connexion = () => {
             onChange={(val) => handleChange("email", val)}
             icon="mail"
             error={errors.email}
+            className="dark:text-black"
           />
 
           <Input
             placeholder="Votre mot de passe"
-            label="Mot de passe"
+            label="Mot de passe :"
             id="password"
             value={form.password}
             type="password"
@@ -166,6 +167,7 @@ const Connexion = () => {
             onChange={(val) => handleChange("password", val)}
             icon="lock"
             error={errors.password}
+            className="dark:text-black"
           />
 
           <div className="flex w-full items-end justify-end">
