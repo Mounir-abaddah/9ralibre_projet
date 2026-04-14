@@ -114,14 +114,15 @@ const ModificationMotdepasse = () => {
               onChange={(val) => handleChange('password', val)}
               icon="lock"
               error={errors.password}
+              className="dark:text-black"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`p-2 rounded-md flex gap-2 items-center justify-center w-full
-              ${loading ? 'bg-slate-300 cursor-not-allowed' : 'bg-amber-400 cursor-pointer'} hover:bg-amber-500 transition ease-in duration-300`}
+            className={`flex w-full items-center justify-center gap-2 rounded-md p-2
+              ${loading ? 'cursor-not-allowed bg-slate-300' : 'cursor-pointer bg-amber-400'} transition duration-300 ease-in hover:bg-amber-500`}
           >
             {loading && <Loadering />}
             <span className="text-[#3f3f3f]">Réinitialiser le mot de passe</span>
@@ -131,7 +132,7 @@ const ModificationMotdepasse = () => {
         <hr className="my-8" />
 
         <div className="text-right">
-          <Link to="/" className="border-b-sky-400 border-b">
+          <Link to="/" className="border-b border-b-sky-400 dark:text-cyan-500">
             Retour au site
           </Link>
         </div>
