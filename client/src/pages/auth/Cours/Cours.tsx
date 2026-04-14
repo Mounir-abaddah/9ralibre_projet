@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useCoursFilter } from '@/store/useCoursFilter';
 import axios from 'axios';
-import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, FileText, Globe2, Landmark, Loader2, Printer, SquareArrowOutUpRight, XCircle } from 'lucide-react';
+import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, FileText, Globe2, Landmark, Loader2, SquareArrowOutUpRight, XCircle } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import No_Data_img from '@/assets/images/cours/No data-cuate.png'
