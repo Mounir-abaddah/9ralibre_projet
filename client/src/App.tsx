@@ -11,7 +11,6 @@ import Dashboard from '@/pages/auth/Dashboard/Dashboard';
 import { Toaster } from 'react-hot-toast';
 import Layouts from './components/Layouts/Layouts';
 import DrawExcalidraw from './pages/auth/DrawExcalidraw/DrawExcalidraw';
-import CalendrieMobile from './pages/auth/CalendrieMobile/CalendrieMobile';
 import Cours from './pages/auth/Cours/Cours';
 import Settings from './pages/auth/Settings/Settings';
 import { ThemeProvider } from './context/ThemeContext';
@@ -41,6 +40,7 @@ import BoiteMerveille from './pages/auth/Histoire/BoiteMerveille';
 import ProfForgotPassword from './pages/auth/Professeur/Prof-forgotPassword/ProfForgotPassword';
 import ProfResetPassword from './pages/auth/Professeur/Prof-resetPassword/ProfResetPassword';
 import ProtectedNiveauRoute from './components/ProtectedRoute/ProtectedNiveauRoute';
+import About from './pages/About/About';
 
 const App = () => {
   return (
@@ -50,6 +50,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='*' element={<PagesNonTrouver />} />
+        <Route path='/About' element={<About />} />
         <Route path='/inscription' element={<Inscription />} />
         <Route path='/prof-inscription' element={<ProfInscription />} />
         <Route path='/connexion' element={<Connexion />} />
@@ -64,7 +65,6 @@ const App = () => {
           <Route path='/Chat/start/:chatId' element={<Layouts><ChatStart /></Layouts>} />
         <Route element={<ProtectedNiveauRoute />}>
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
-            <Route path='/Calendrier/:niveaux' element={<Layouts><CalendrieMobile /></Layouts>} />
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
