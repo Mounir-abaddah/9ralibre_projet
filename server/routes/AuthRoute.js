@@ -105,6 +105,9 @@ router.post('/oublierMotdepasse',async(req,res)=>{
         if(!user){
             return res.status(400).send({message:"Si un compte existe pour cet email, vous allez recevoir un email pour réinitialiser le mot de passe" , success:false})
         }
+        if(user.role === "Professeur"){
+            return res.status(400).send({message:"Si un compte existe pour cet email, vous allez recevoir un email pour réinitialiser le mot de passe" , success:false});
+        }
         const token = jwt.sign({userId:user._id,type:"Oublier mot de passe"},process.env.JWT_SECRET,{
             expiresIn : "30m"
         })
