@@ -33,6 +33,32 @@ const Cours = () => {
     const [currentPage,setCurrentPage]=useState(1);
     const itemsPerPage = 6;
 
+  const buildPdfUrl = useCallback(
+    (professeurId: string, pdfUrl: string) => `${apiUrl}/uploads/files/${professeurId}/${pdfUrl}`,
+    [apiUrl]
+  );
+
+  const handleDownloadPdf = useCallback(async (url: string, filename?: string) => {
+    const safeName = (filename?.trim() ? filename.trim() : 'cours.pdf').replace(/[\\/:*?"<>|]+/g, '-');
+    try {
+      const res = await axios.get(url, {
+        responseType: 'blob',
+        withCredentials: true,
+      });
+
+      const blobUrl = window.URL.createObjectURL(res.data);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = safeName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }, []);
+
   const optionsCollege:Coursitems[] = [
     { name: "Mathématiques"},
     { name: "Physique et Chimie"},
@@ -156,7 +182,7 @@ const Cours = () => {
     setSearch('')
     setCurrentPage(1)
   },[resetAll]);
-  
+
   return (
     <div className='flex w-full flex-col-reverse items-center justify-between gap-3 lg:flex-row lg:items-start'>
       <div className='flex w-full flex-col gap-3'>
@@ -240,14 +266,12 @@ const Cours = () => {
                         {savedCoursMap[item._id] ? 'Enregistré' : 'Enregistrer'}
                         <Bookmark fill={savedCoursMap[item._id] ? '#F49E0B' : 'none'} color={savedCoursMap[item._id] ? '#F49E0B' : '#6B7280'} />
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         className='flex cursor-pointer items-center justify-between'
-                      >
-                        Imprimer
-                        <Printer />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        className='flex cursor-pointer items-center justify-between'
+                        onClick={() => {
+                          const url = buildPdfUrl(item.professeur._id, item.pdfUrl);
+                          void handleDownloadPdf(url, `${item.title}.pdf`);
+                        }}
                       >
                         Télécharger
                         <Download />
@@ -281,7 +305,7 @@ const Cours = () => {
                   })}
                 </span>         
               </div>
-              <Link to={item.pdfUrl} target='_blank'>
+              <Link to={`${apiUrl}/uploads/files/${item.professeur._id}/${item.pdfUrl}`} target='_blank'>
                 <button 
                   className={`text-xs ${bgItems[item.matiere.nom as keyof typeof bgItems]} flex cursor-pointer items-center gap-2 rounded-md p-2 text-white transition-all hover:shadow-md`}
                   aria-label={`Voir le PDF de ${item.title}`}
