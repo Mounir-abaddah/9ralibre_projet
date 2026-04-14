@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
@@ -13,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import type { AsideVideosProps } from "@/pages/auth/Video/types/video.type";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 const AsideVideos = ({
   search,
@@ -24,22 +24,6 @@ const AsideVideos = ({
 }: AsideVideosProps) => {
   const { niveaux } = useParams();
   const [isOpen, setIsOpen] = useState(false);
-
-  const handleMatiereChange = (matiereName: string) => {
-    if (matiere === matiereName) {
-      setMatiere(null);
-    } else {
-      setMatiere(matiereName);
-    }
-  };
-
-  const handleFiliereChange = (filiereNam: string) => {
-    if (filiere === filiereNam) {
-      setFiliere(null);
-    } else {
-      setFiliere(filiereNam);
-    }
-  };
 
   const resetFilters = () => {
     setSearch(null);
@@ -70,11 +54,6 @@ const AsideVideos = ({
     { name: "Histoire Géographie", color: "text-amber-400" },
     { name: "Éducation Islamique", color: "text-blue-400" },
     { name: "Philosophie", color: "text-blue-400" },
-    { name: "Sciences de l'ingénieur", color: "text-blue-400" },
-    { name: "Économie et Organisation Administrative des Entreprises", color: "text-red-400" },
-    { name: "Comptabilité et Mathématiques financières", color: "text-red-400" },
-    { name: "Économie générale et Statistiques", color: "text-red-400" },
-    { name: "Droit", color: "text-red-400" },
   ];
 
   const filièreTC = [
@@ -96,125 +75,74 @@ const AsideVideos = ({
     { name: "Sciences Mathématiques A" },
     { name: "Sciences Mathématiques B" },
     { name: "Sciences Physiques" },
-    { name: "Sciences de la Vie et de la Terre (SVT)" },
-    { name: "Sciences Agronomiques" },
-    { name: "Sciences et Technologies Électriques" },
-    { name: "Sciences et Technologies Mécaniques" },
+    { name: "SVT" },
     { name: "Sciences Économiques" },
-    { name: "Sciences de Gestion Comptable (SGC)" },
     { name: "Lettres" },
-    { name: "Sciences Humaines" },
   ];
 
   const activeFiltersCount = [matiere, filiere].filter(Boolean).length;
 
-  // Contenu des filtres
   const FilterContent = () => (
     <div className="space-y-4 p-2">
+
+      {/* MATIERE */}
       <div className="space-y-3 rounded-md bg-gray-800 p-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold">Matières</h3>
-        </div>
-        {(niveaux === "1AC" || niveaux === "2AC" || niveaux === "3AC" || niveaux === "TC") ? (
-          matieres_college.map((matiereItem, index) => (
-            <div key={index} className="flex items-center space-x-2 ">
-              <Checkbox
-                id={`matiere-${index}`}
-                checked={matiere === matiereItem.name}
-                onCheckedChange={() => handleMatiereChange(matiereItem.name)}
-              />
-              <label
-                htmlFor={`matiere-${index}`}
-                className={`cursor-pointer text-sm ${matiereItem.color} font-medium`}
-              >
-                {matiereItem.name}
-              </label>
-            </div>
-        ))
-        ):(
-          matieres_Lycee.map((matiereItem, index) => (
+        <h3 className="text-sm font-semibold text-white">Matières</h3>
+
+        <RadioGroup
+          value={matiere || ""}
+          onValueChange={(value) => setMatiere(value)}
+          className="space-y-2"
+        >
+          {(niveaux === "1AC" || niveaux === "2AC" || niveaux === "3AC" || niveaux === "TC"
+            ? matieres_college
+            : matieres_Lycee
+          ).map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
-              <Checkbox
-                id={`matiere-${index}`}
-                checked={matiere === matiereItem.name}
-                onCheckedChange={() => handleMatiereChange(matiereItem.name)}
-              />
-              <label
+              <RadioGroupItem value={item.name} id={`matiere-${index}`} />
+              <Label
                 htmlFor={`matiere-${index}`}
-                className={`cursor-pointer text-sm ${matiereItem.color} font-medium`}
+                className={`cursor-pointer ${item.color}`}
               >
-                {matiereItem.name}
-              </label>
+                {item.name}
+              </Label>
             </div>
-        ))
-        )}
+          ))}
+        </RadioGroup>
       </div>
 
-      <div className="space-y-3 rounded-md bg-gray-800 p-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold">{(niveaux === "TC" || niveaux === "1BAC" || niveaux === "2BAC") && 'Filière'}</h3>
-        </div>
-        {niveaux === "TC"
-          ? filièreTC.map((filiereItem, index) => (
+      {/* FILIERE */}
+      {(niveaux === "TC" || niveaux === "1BAC" || niveaux === "2BAC") && (
+        <div className="space-y-3 rounded-md bg-gray-800 p-2">
+          <h3 className="text-sm font-semibold text-white">Filière</h3>
+
+          <RadioGroup
+            value={filiere || ""}
+            onValueChange={(value) => setFiliere(value)}
+            className="space-y-2"
+          >
+            {(niveaux === "TC"
+              ? filièreTC
+              : niveaux === "1BAC"
+              ? filière1BAC
+              : filière2BAC
+            ).map((item, index) => (
               <div key={index} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`filiere-${index}`}
-                  checked={filiere === filiereItem.name}
-                  onCheckedChange={() => handleFiliereChange(filiereItem.name)}
-                />
-                <Label
-                  htmlFor={`filiere-${index}`}
-                  className="cursor-pointer text-sm font-medium"
-                >
-                  {filiereItem.name}
+                <RadioGroupItem value={item.name} id={`filiere-${index}`} />
+                <Label htmlFor={`filiere-${index}`} className="text-white">
+                  {item.name}
                 </Label>
               </div>
-            ))
-          : niveaux === "1BAC"
-            ? filière1BAC.map((filiereItem, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`filiere-${index}`}
-                    checked={filiere === filiereItem.name}
-                    onCheckedChange={() =>
-                      handleFiliereChange(filiereItem.name)
-                    }
-                  />
-                  <Label
-                    htmlFor={`filiere-${index}`}
-                    className="cursor-pointer text-sm font-medium"
-                  >
-                    {filiereItem.name}
-                  </Label>
-                </div>
-              ))
-            : niveaux === "2BAC" && filière2BAC.map((filiereItem, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`filiere-${index}`}
-                    checked={filiere === filiereItem.name}
-                    onCheckedChange={() =>
-                      handleFiliereChange(filiereItem.name)
-                    }
-                  />
-                  <Label
-                    htmlFor={`filiere-${index}`}
-                    className="cursor-pointer text-sm font-medium"
-                  >
-                    {filiereItem.name}
-                  </Label>
-                </div>
-              ))}
-      </div>
+            ))}
+          </RadioGroup>
+        </div>
+      )}
 
+      {/* RESET */}
       {activeFiltersCount > 0 && (
-        <Button
-          variant="outline"
-          onClick={resetFilters}
-          className="w-full"
-        >
+        <Button variant="outline" onClick={resetFilters} className="w-full">
           <X size={16} className="mr-2" />
-          Réinitialiser les filtres
+          Réinitialiser
         </Button>
       )}
     </div>
@@ -222,15 +150,15 @@ const AsideVideos = ({
 
   return (
     <div className="flex flex-col gap-2">
-    <div>
-        <Input
-          type="text"
-          placeholder="Cherchez votre titre de vidéos, filière ou matière"
-          value={search || ""}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-      {/* Bouton filtre pour mobile */}
+      {/* SEARCH */}
+      <Input
+        type="text"
+        placeholder="Cherchez..."
+        value={search || ""}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {/* MOBILE */}
       <div className="lg:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
@@ -238,25 +166,24 @@ const AsideVideos = ({
               <Filter size={18} className="mr-2" />
               Filtres
               {activeFiltersCount > 0 && (
-                <span className="ml-2 rounded-full bg-amber-400 px-2 py-0.5 text-xs font-semibold text-black">
+                <span className="ml-2 rounded-full bg-amber-400 px-2 text-xs">
                   {activeFiltersCount}
                 </span>
               )}
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 overflow-y-auto">
+
+          <SheetContent side="left" className="absolute z-[9999999999] w-80 overflow-y-auto">
             <SheetHeader>
               <SheetTitle>Filtres</SheetTitle>
             </SheetHeader>
-            <div className="">
-              <FilterContent />
-            </div>
+            <FilterContent />
           </SheetContent>
         </Sheet>
       </div>
 
-      {/* Aside pour desktop */}
-      <div className="hidden w-full lg:block">
+      {/* DESKTOP */}
+      <div className="hidden lg:block">
         <FilterContent />
       </div>
     </div>
