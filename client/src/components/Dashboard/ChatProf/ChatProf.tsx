@@ -34,13 +34,13 @@ const ChatProf = ({ messages }: ChatProfProps) => {
           </span>
           <div className="flex items-center gap-3">
             {unreadCount > 0 && (
-              <span className="rounded-full bg-cyan-100 px-3 py-1 text-xs font-medium text-cyan-700">
-                {unreadCount} nouveaux
+              <span className="flex items-center justify-center gap-2 rounded-full bg-cyan-100 px-3 py-1 text-xs font-medium text-cyan-700">
+                <span>{unreadCount}</span> nouveaux
               </span>
             )}
             <Link
               to="/prof/chat"
-              className="text-xs text-cyan-600 hover:underline"
+              className="w-max text-xs text-cyan-600 hover:underline"
             >
               Voir tous
             </Link>
