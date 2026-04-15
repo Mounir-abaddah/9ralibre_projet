@@ -66,7 +66,7 @@ const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal)
       description: videos.description || "",
       videoUrl: videos.videoUrl || "",
       thumbnail: videos.thumbnail || "",
-      matiere: videos.matiere || "",
+      matiere: videos.matiere._id || "",
       filiere: videos.filiere || "",
       visibility: videos.visibility || "Public",
     });
