@@ -441,6 +441,30 @@ router.get('/get-videos', authMiddlewares, profMiddleware, async (req, res) => {
   }
 });
 
+router.get('/get-videos-id/:videoId',authMiddlewares,profMiddleware,async(req,res)=>{
+    try{
+        const userId = req.user.userId;
+        const {videoId} = req.params;
+        const videos = await Videos.findById(videoId)
+        .populate("niveaux","nom")
+        .populate("matiere","nom")
+        .populate("comments.user","nom prenom role image")
+        .populate("comments.replies.user","nom prenom role image")
+        if(!videos){
+            return res.status(404).send({message:"Aucune videos est trouver d'apres ce Id",success:false})
+        }
+        const user = await User.findById(userId);
+        return res.status(200).send({
+            success:true,
+            likesCount:videos.likes.length,
+            viewsCount:videos.views,
+            videos
+        })
+    }catch(err){
+        return res.status(500).send({message:"Une erreure est survenue lors de recuperation de video",success:false,err})
+    }
+});
+
 router.post('/add-videos', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
