@@ -18,7 +18,7 @@ import toast from "react-hot-toast";
 import AddVideosModal from "@/components/Videos/Prof/AddVideosModal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import Pagination from "@/components/Pagination/Pagination";
-import { useSearchParams } from "react-router-dom";
+import {useSearchParams } from "react-router-dom";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Input } from "@/components/ui/input";
 
@@ -37,8 +37,7 @@ const ProfVideos = () => {
     const [search, setSearch] = useState(() => {
         return searchParams.get("search") || ""
     })
-
-    const debouncedSearch = useDebounce(search, 500)
+    const debouncedSearch = useDebounce(search, 500);
 
     const getVideos = async()=>{
         const res = await axios.get(`${apiUrl}/prof/get-videos?page=${currentPage}&limit=${limit}&search=${debouncedSearch}`,{withCredentials:true});
@@ -161,7 +160,7 @@ const ProfVideos = () => {
         </TableHeader>
         <TableBody>
         {videos.map((vid)=>(
-        <TableRow key={vid._id}>
+        <TableRow key={vid._id} onClick={()=>window.open(`/prof/videos/play/${vid._id}`,'_blank')}>
             {/* VIDEO */}
             <TableCell className="flex max-w-[300px] items-start gap-3">
                 <img src={vid.thumbnail} alt="thumbnail" className="h-12 w-16 rounded-md object-cover"/>
