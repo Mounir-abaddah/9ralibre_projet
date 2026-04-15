@@ -42,6 +42,7 @@ import ProfResetPassword from './pages/auth/Professeur/Prof-resetPassword/ProfRe
 import ProtectedNiveauRoute from './components/ProtectedRoute/ProtectedNiveauRoute';
 import About from './pages/About/About';
 import { CrispVisibilityController } from './utils/crispVisibilityController';
+import ProfPlayVideos from './pages/auth/Professeur/Prof-videos/ProfPlayVideos';
 
 
 const App = () => {
@@ -87,6 +88,7 @@ const App = () => {
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
           <Route path='/prof/cours'  element={<LayoutsProf><ProfCours /></LayoutsProf>} />
           <Route path='/prof/videos'  element={<LayoutsProf><ProfVideos /></LayoutsProf>} />
+          <Route path='/prof/videos/play/:videoId'  element={<LayoutsProf><ProfPlayVideos /></LayoutsProf>} />
           <Route path='/prof/quiz'  element={<LayoutsProf><ProfQuiz /></LayoutsProf>} />
           <Route path='/prof/add/quiz/questions'  element={<ProfAddQuiz />} />
           <Route path='/prof/chat'  element={<LayoutsProf><ProfChat /></LayoutsProf>} />
