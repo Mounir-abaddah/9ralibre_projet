@@ -715,6 +715,22 @@ router.post('/messages',authMiddlewares,profMiddleware,async(req,res)=>{
     res.status(201).json(messages)
 });
 
+  router.put('/mark-as-read/:conversationId', authMiddlewares,profMiddleware ,async (req, res) => {
+    const userId = req.user.userId;
+
+    await Message.updateMany(
+      {
+        conversationId: req.params.conversationId,
+        readBy: { $ne: userId }
+      },
+      {
+        $push: { readBy: userId }
+      }
+    );
+
+    res.json({ message: "Messages marqués comme lus" });
+  });
+
 
 
 
