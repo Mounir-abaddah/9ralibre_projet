@@ -1,7 +1,5 @@
-"use client"
 
 import {
-  Bell,
   ChevronsUpDown,
   LogOut,
   Moon,
@@ -98,10 +96,6 @@ export function NavUser() {
                 checked={theme === "dark"}
                 onCheckedChange={toggleTheme}
               />
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/prof/settings')}>
                 <Settings />
