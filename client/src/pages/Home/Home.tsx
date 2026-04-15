@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import logo from "@/assets/images/9ralibre_logo.png";
 import {
   Dialog,
   DialogContent,
@@ -528,48 +529,46 @@ function LandingPage({ user }: { user: typedata | null }) {
   );
 }
 
-function HomeFooter({ user }: { user: typedata | null }) {
+export function HomeFooter({ user }: { user: typedata | null }) {
   const n = user?.niveaux;
   return (
     <footer className="border-t border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           <div className="lg:col-span-1">
-            <p className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
-              9ralibre
-            </p>
+            <img src={logo} alt="logo"  loading="lazy" width={90}/>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
               Cours, vidéos et quiz pour le collège et le lycée — un seul endroit
               pour réviser sereinement.
             </p>
             <div className="mt-4 flex gap-3">
-              <a
-                href="https://facebook.com/9ralibre"
+              <Link
+                to="https://facebook.com/9ralibre"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-colors hover:border-amber-400 hover:text-amber-700 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-amber-600 dark:hover:text-amber-500"
                 aria-label="Facebook"
               >
                 <Facebook className="h-4 w-4" />
-              </a>
-              <a
-                href="https://instagram.com/9ralibre"
+              </Link>
+              <Link
+                to="https://instagram.com/9ralibre"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-colors hover:border-amber-400 hover:text-amber-700 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-amber-600 dark:hover:text-amber-500"
                 aria-label="Instagram"
               >
                 <Instagram className="h-4 w-4" />
-              </a>
-              <a
-                href="https://linkedin.com/9ralibre"
+              </Link>
+              <Link
+                to="https://linkedin.com/9ralibre"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-colors hover:border-amber-400 hover:text-amber-700 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-amber-600 dark:hover:text-amber-500"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-4 w-4" />
-              </a>
+              </Link>
             </div>
           </div>
 
