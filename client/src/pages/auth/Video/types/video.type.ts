@@ -53,7 +53,7 @@ export interface TypeProfVideos{
     description:string;
     videoUrl:string;
     thumbnail:string;
-    matiere:string;
+    matiere:Matiere;
     niveaux:Niveaux;
     views:number;
     filiere:string;
