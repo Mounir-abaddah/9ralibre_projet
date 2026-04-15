@@ -41,12 +41,15 @@ import ProfForgotPassword from './pages/auth/Professeur/Prof-forgotPassword/Prof
 import ProfResetPassword from './pages/auth/Professeur/Prof-resetPassword/ProfResetPassword';
 import ProtectedNiveauRoute from './components/ProtectedRoute/ProtectedNiveauRoute';
 import About from './pages/About/About';
+import { CrispVisibilityController } from './utils/crispVisibilityController';
+
 
 const App = () => {
   return (
     <ThemeProvider>
       <Toaster position='top-right' reverseOrder={false} />
       <BrowserRouter>
+      <CrispVisibilityController />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='*' element={<PagesNonTrouver />} />
