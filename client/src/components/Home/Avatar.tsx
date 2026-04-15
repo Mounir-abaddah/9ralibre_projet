@@ -59,7 +59,7 @@ const Avatare = ({ data }: typeAllData) => {
       {menuOpen &&
         createPortal(
           <div
-            className="fixed top-[70px] right-[20px] z-[9999] mt-4 w-64 origin-top-right pt-2"
+            className="fixed top-[50px] right-[60px] z-[9999] mt-4 w-64 origin-top-right pt-2"
             onMouseEnter={() => setMenuOpen(true)}
             onMouseLeave={() => setMenuOpen(false)}
           >
