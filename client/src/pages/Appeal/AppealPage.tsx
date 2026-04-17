@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
