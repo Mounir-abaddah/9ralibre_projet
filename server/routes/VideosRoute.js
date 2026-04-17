@@ -388,6 +388,58 @@ router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewar
     });
 }});
 
+router.post('/report/:videoId', authMidllewares, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { videoId } = req.params;
+        const { reason } = req.body;
+        if (!reason || reason.trim().length < 3) {
+            return res.status(400).send({ success: false, message: "Raison invalide" });
+        }
+        const videos = await VideosModel.findById(videoId);
+        if (!videos) {
+            return res.status(404).send({ success: false, message: "Vidéo introuvable" });
+        }
+        const alreadyReported = videos.reports?.some((r) => r.user.toString() === userId);
+        if (alreadyReported) {
+            return res.status(400).send({ success: false, message: "Vidéo déjà signalée" });
+        }
+        videos.reports.push({ user: userId, reason: reason.trim(), createdAt: Date.now() });
+        await videos.save();
+        return res.status(200).send({ success: true, message: "Signalement vidéo envoyé" });
+    } catch (err) {
+        return res.status(500).send({ success: false, message: "Erreur signalement vidéo", err });
+    }
+});
+
+router.post('/report-comment/:videoId/:commentsId', authMidllewares, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { videoId, commentsId } = req.params;
+        const { reason } = req.body;
+        if (!reason || reason.trim().length < 3) {
+            return res.status(400).send({ success: false, message: "Raison invalide" });
+        }
+        const videos = await VideosModel.findById(videoId);
+        if (!videos) {
+            return res.status(404).send({ success: false, message: "Vidéo introuvable" });
+        }
+        const comments = videos.comments.find((c) => c._id.toString() === commentsId);
+        if (!comments) {
+            return res.status(404).send({ success: false, message: "Commentaire introuvable" });
+        }
+        const alreadyReported = (comments.reports || []).some((r) => r.user.toString() === userId);
+        if (alreadyReported) {
+            return res.status(400).send({ success: false, message: "Commentaire déjà signalé" });
+        }
+        comments.reports.push({ user: userId, reason: reason.trim(), createdAt: Date.now() });
+        await videos.save();
+        return res.status(200).send({ success: true, message: "Signalement commentaire envoyé" });
+    } catch (err) {
+        return res.status(500).send({ success: false, message: "Erreur signalement commentaire", err });
+    }
+});
+
 {/*********************** POST LIKE DU REPLY DU COMMENTAIRE   ***********************/}
 router.post('/post-videos-likes-reply/:videoId/:replyId/like/reply',authMidllewares,async(req,res)=>{
     try{
