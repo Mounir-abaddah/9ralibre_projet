@@ -63,6 +63,9 @@ const Home = () => {
   if (data?.role === "Professeur") {
     return <Navigate to="/prof/dashboard" replace />;
   }
+  if (data?.role === "Admin") {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
