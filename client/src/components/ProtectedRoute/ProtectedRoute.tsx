@@ -19,6 +19,10 @@ const ProtectedRoute = () => {
   if(data.role === "Professeur"){
     return <PagesNonTrouver />
   }
+  
+  if(data.role === "Admin"){
+    return <PagesNonTrouver />
+  }
 
   if(!data.completeProfile){
     return <Navigate to="/" replace />
