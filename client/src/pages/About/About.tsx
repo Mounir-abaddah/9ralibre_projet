@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import Navbar from "@/components/Home/Navbar";
-import { Button } from "@/components/ui/button";
 import {
   Award,
   BookOpen,
@@ -63,29 +61,13 @@ const About = () => {
           <div className="mx-auto max-w-4xl px-4 py-20 text-center lg:py-28">
             <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900 sm:text-6xl">
               About{" "}
-              <span className="rounded-xl bg-cyan-500 px-3 py-1.5">9ralibre</span>
+              <span className="inline-block rotate-6 transform rounded-xl bg-cyan-500 px-3 py-1.5">9ralibre</span>
             </h1>
             <p className="mx-auto mt-8 max-w-3xl text-base leading-relaxed text-zinc-800 sm:text-lg">
               Plateforme educative pour apprendre facilement avec des videos,
               cours et quiz interactifs. Nous avons cree 9ralibre pour offrir un
               espace moderne, simple et utile pour tous les etudiants.
             </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Button
-                asChild
-                size="lg"
-                className="h-12 rounded-lg bg-zinc-950 px-8 text-base font-semibold text-white hover:bg-zinc-800"
-              >
-                <Link to="/cours">Explorer les cours</Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                className="h-12 rounded-lg border-zinc-200 bg-white px-8 text-base font-semibold text-zinc-900 hover:bg-zinc-100"
-              >
-                <Link to="/videos">Voir les vidéos</Link>
-              </Button>
-            </div>
           </div>
         </section>
 
