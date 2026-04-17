@@ -41,7 +41,14 @@ export function NavUser() {
 
   const handleLogout = async()=>{
     await axios.post(`${apiUrl}/prof/logout`,{},{withCredentials:true})
-    navigate(`/prof-connexion`);
+    if(data?.role === "Professeur"){
+      navigate(`/prof-connexion`);
+    }
+
+    if(data?.role === "Admin"){
+      navigate(`/admin-connexion`);
+    }
+    
     window.location.reload()
   }
 
@@ -97,10 +104,13 @@ export function NavUser() {
                 onCheckedChange={toggleTheme}
               />
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/prof/settings')}>
-                <Settings />
-                Paramètre
-              </DropdownMenuItem>
+              {data?.role === "Professeur" && (
+                <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/prof/settings')}>
+                  <Settings />
+                  Paramètre
+                </DropdownMenuItem>
+              )}
+              
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={()=>handleLogout()} variant='destructive' className="cursor-pointer">
