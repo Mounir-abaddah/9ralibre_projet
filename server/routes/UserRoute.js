@@ -11,6 +11,21 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const {completeProfileShema,EventsShema} = require("../validations/authValidation");
+const { sendBlockedAccountEmail } = require("../services/emailServices");
+const ModerationLog = require("../models/ModerationLogModel");
+const Appeal = require("../models/AppealModel");
+
+const ensureAdmin = async (req, res, next) => {
+  try {
+    const admin = await User.findById(req.user.userId).select("role");
+    if (!admin || admin.role !== "Admin") {
+      return res.status(403).json({ success: false, message: "Accès admin requis" });
+    }
+    next();
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+};
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -49,6 +64,8 @@ router.get("/profile", authMiddleware, async (req, res) => {
       accountVerified: user.accountVerified,
       completeProfile: user.completeProfile,
       followers:user.followers,
+      blockedUntil: user.blockedUntil,
+      blockReason: user.blockReason,
     };
     return res.status(200).json({ user: saveViewUser, success: true });
   } catch (err) {
@@ -588,6 +605,189 @@ router.put("/changePassword", authMiddleware, async (req, res) => {
     return res
       .status(500)
       .send({ message: "Une erreur est survenue", success: false, err });
+  }
+});
+
+router.get("/admin/users", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const { search = "" } = req.query;
+    const searchRegex = new RegExp(search, "i");
+    const users = await User.find({
+      role: { $ne: "Admin" },
+      $or: [{ nom: searchRegex }, { prenom: searchRegex }, { email: searchRegex }],
+    })
+      .select("nom prenom email role niveaux blockedUntil blockReason accountVerified status createdAt")
+      .sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, users });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.patch("/admin/users/:userId/block", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { days, reason = "" } = req.body;
+    const daysNumber = Number(days);
+    if (!Number.isFinite(daysNumber) || daysNumber < 0) {
+      return res.status(400).json({ success: false, message: "Nombre de jours invalide" });
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
+    }
+    if (user.role === "Admin") {
+      return res.status(400).json({ success: false, message: "Blocage admin interdit" });
+    }
+    if (daysNumber === 0) {
+      user.blockedUntil = null;
+      user.blockReason = "";
+    } else {
+      const blockedUntil = new Date();
+      blockedUntil.setDate(blockedUntil.getDate() + daysNumber);
+      user.blockedUntil = blockedUntil;
+      user.blockReason = reason;
+    }
+    await user.save();
+    await ModerationLog.create({
+      admin: req.user.userId,
+      targetUser: user._id,
+      action: daysNumber === 0 ? "UNBLOCK" : "BLOCK",
+      reason: reason || "",
+      meta: {
+        days: daysNumber,
+        blockedUntil: user.blockedUntil,
+      },
+    });
+    if (daysNumber > 0) {
+      try {
+        await sendBlockedAccountEmail(user, user.blockedUntil, reason);
+      } catch (emailErr) {
+        console.error("Erreur envoi email de blocage:", emailErr);
+      }
+    }
+    return res.status(200).json({
+      success: true,
+      message: daysNumber === 0 ? "Utilisateur débloqué" : "Utilisateur bloqué",
+      user: {
+        id: user._id,
+        blockedUntil: user.blockedUntil,
+        blockReason: user.blockReason,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.get("/admin/reports", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const videos = await VideosModel.find({
+      $or: [{ reports: { $exists: true, $not: { $size: 0 } } }, { "comments.reports": { $exists: true, $not: { $size: 0 } } }],
+    })
+      .populate("professeur", "nom prenom email")
+      .populate("reports.user", "nom prenom email role")
+      .populate("comments.user", "nom prenom email role")
+      .populate("comments.reports.user", "nom prenom email role")
+      .select("title videoUrl professeur reports comments")
+      .sort({ updatedAt: -1 });
+
+    const videoReports = [];
+    const commentReports = [];
+
+    videos.forEach((video) => {
+      (video.reports || []).forEach((report) => {
+        videoReports.push({
+          videoId: video._id,
+          title: video.title,
+          videoUrl: video.videoUrl,
+          professeur: video.professeur,
+          report,
+        });
+      });
+      (video.comments || []).forEach((comment) => {
+        (comment.reports || []).forEach((report) => {
+          commentReports.push({
+            videoId: video._id,
+            title: video.title,
+            commentId: comment._id,
+            commentText: comment.text,
+            commentAuthor: comment.user,
+            professeur: video.professeur,
+            report,
+          });
+        });
+      });
+    });
+
+    return res.status(200).json({
+      success: true,
+      videoReports,
+      commentReports,
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.get("/admin/moderation-logs", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const logs = await ModerationLog.find()
+      .populate("admin", "nom prenom email")
+      .populate("targetUser", "nom prenom email role")
+      .sort({ createdAt: -1 })
+      .limit(200);
+    return res.status(200).json({ success: true, logs });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.get("/admin/appeals", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const appeals = await Appeal.find()
+      .populate("user", "nom prenom email blockedUntil")
+      .populate("reviewedBy", "nom prenom email")
+      .sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, appeals });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.patch("/admin/appeals/:appealId/review", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const { appealId } = req.params;
+    const { status, reviewNote = "" } = req.body;
+    if (!["APPROVED", "REJECTED"].includes(status)) {
+      return res.status(400).json({ success: false, message: "Statut invalide" });
+    }
+    const appeal = await Appeal.findById(appealId).populate("user");
+    if (!appeal) {
+      return res.status(404).json({ success: false, message: "Demande introuvable" });
+    }
+    appeal.status = status;
+    appeal.reviewNote = reviewNote;
+    appeal.reviewedBy = req.user.userId;
+    appeal.reviewedAt = new Date();
+    await appeal.save();
+
+    if (status === "APPROVED" && appeal.user) {
+      appeal.user.blockedUntil = null;
+      appeal.user.blockReason = "";
+      await appeal.user.save();
+      await ModerationLog.create({
+        admin: req.user.userId,
+        targetUser: appeal.user._id,
+        action: "APPEAL_REVIEWED",
+        reason: reviewNote || "Appeal approved",
+        meta: { appealId: appeal._id, result: status },
+      });
+    }
+
+    return res.status(200).json({ success: true, message: "Demande traitée", appeal });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
   }
 });
 
