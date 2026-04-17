@@ -43,6 +43,15 @@ import ProtectedNiveauRoute from './components/ProtectedRoute/ProtectedNiveauRou
 import About from './pages/About/About';
 import { CrispVisibilityController } from './utils/crispVisibilityController';
 import ProfPlayVideos from './pages/auth/Professeur/Prof-videos/ProfPlayVideos';
+import ProtectedRouteAdmin from './components/ProtectedRouteAdmin/ProtectedRouteAdmin';
+import AdminDashboard from './pages/auth/Admin/Dashboard/AdminDashboard';
+import LayoutsAdmin from './components/LayoutsAdmin/LayoutsAdmin';
+import AdminConnexion from './pages/auth/Admin/Admin-connexion/AdminConnexion';
+import AdminUsers from './pages/auth/Admin/Users/AdminUsers';
+import AdminSignals from './pages/auth/Admin/Signals/AdminSignals';
+import AdminModerationLog from './pages/auth/Admin/Moderation-log/AdminModerationLog';
+import AdminAppeals from './pages/auth/Admin/Appeals/AdminAppeals';
+import AppealPage from './pages/Appeal/AppealPage';
 
 
 const App = () => {
@@ -59,6 +68,8 @@ const App = () => {
         <Route path='/prof-inscription' element={<ProfInscription />} />
         <Route path='/connexion' element={<Connexion />} />
         <Route path='/prof-connexion' element={<ProfConnexion />} />
+        <Route path='/admin-connexion' element={<AdminConnexion />} />
+        <Route path='/appeal' element={<AppealPage />} />
         <Route path='/password/reset' element={<OublierMotdepasse />} />
         <Route path='/prof/password/reset' element={<ProfForgotPassword />} />
         <Route path='/password/reset/:token' element={<ModificationMotdepasse />} />
@@ -84,6 +95,7 @@ const App = () => {
             <Route path='/Paramètre/:niveaux' element={<Layouts><Settings /></Layouts>} />
           </Route>
         </Route>
+
         <Route element={<ProtectedRouteProf />}>
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
           <Route path='/prof/cours'  element={<LayoutsProf><ProfCours /></LayoutsProf>} />
@@ -96,6 +108,14 @@ const App = () => {
           <Route path='/prof/settings'  element={<LayoutsProf><ProfSettings /></LayoutsProf>} />
         </Route>
         <Route />
+
+        <Route element={<ProtectedRouteAdmin />}>
+          <Route path='/admin/dashboard' element={<LayoutsAdmin><AdminDashboard /></LayoutsAdmin>} />
+          <Route path='/admin/users' element={<LayoutsAdmin><AdminUsers /></LayoutsAdmin>} />
+          <Route path='/admin/signals' element={<LayoutsAdmin><AdminSignals /></LayoutsAdmin>} />
+          <Route path='/admin/moderation-log' element={<LayoutsAdmin><AdminModerationLog /></LayoutsAdmin>} />
+          <Route path='/admin/appeals' element={<LayoutsAdmin><AdminAppeals /></LayoutsAdmin>} />
+        </Route>
       </Routes>
     </BrowserRouter>
     </ThemeProvider>
