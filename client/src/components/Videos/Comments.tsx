@@ -12,6 +12,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import DeleteModal from './DeleteModal'
 import ReplieComments from '@/components/Videos/ReplieComments'
+import ReportModal from './ReportModal'
 export interface CommentsTypes{
     videos:TypeVideos
     getVideos:()=>void;
@@ -31,6 +32,7 @@ const Comments = ({videos,getVideos}:CommentsTypes) => {
 
 
     const [showReplies,setShowReplies]=useState<string | null>(null);
+    const [reportCommentId, setReportCommentId] = useState<string | null>(null);
 
 
     const handlePostComments = async()=>{
@@ -187,7 +189,12 @@ return (
                                                 </>
                                             ):(
                                                 <>
-                                                    <Button className='flex w-full cursor-pointer items-center gap-2 text-xs'><Flag size={14}/>Signaler</Button>
+                                                    <Button
+                                                        className='flex w-full cursor-pointer items-center gap-2 text-xs'
+                                                        onClick={() => setReportCommentId(comments._id)}
+                                                    >
+                                                        <Flag size={14}/>Signaler
+                                                    </Button>
                                                 </>
                                             )}
                                         </div>
@@ -203,6 +210,16 @@ return (
                 commentId={commentToDelete}
                 setCommentToDelete={setCommentToDelete}
                 onConfirm={handleDeleteComments}
+            />
+        )}
+        {reportCommentId && (
+            <ReportModal
+                open={Boolean(reportCommentId)}
+                onOpenChange={(open) => {
+                    if (!open) setReportCommentId(null);
+                }}
+                endpoint={`${apiUrl}/videos/report-comment/${videoId}/${reportCommentId}`}
+                title="Signaler ce commentaire"
             />
         )}
     </>
