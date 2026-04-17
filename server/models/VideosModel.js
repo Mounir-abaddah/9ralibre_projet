@@ -58,12 +58,26 @@ const VideosShema = new mongoose.Schema({
             text: { type: String, required: true },
             createdAt: { type: Date, default: Date.now },
             likes:[ {type:mongoose.Schema.Types.ObjectId , ref:"User" }],
+            reports: [
+                {
+                    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+                    reason: { type: String, required: true },
+                    createdAt: { type: Date, default: Date.now },
+                }
+            ],
             replies:[{
                 user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
                 text: { type: String, required: true },
                 createdAt: { type: Date, default: Date.now },
                 likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] 
             }],
+        }
+    ],
+    reports: [
+        {
+            user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+            reason: { type: String, required: true },
+            createdAt: { type: Date, default: Date.now },
         }
     ],
 },{
