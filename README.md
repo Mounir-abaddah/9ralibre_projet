@@ -1,214 +1,130 @@
-# 📡 Chat Temps Réel avec Socket.IO
+# Fonctionnalités Admin ajoutées
 
-## 🧠 Description
+Ce document résume les changements implémentés pour l'espace admin.
 
-Ce projet implémente un système de chat en temps réel utilisant
-**Socket.IO** avec :
+## 1) Connexion admin + redirection
 
--   Frontend : React + Socket.IO Client
--   Backend : Node.js + Express + Socket.IO Server
+- Nouvelle route backend: `POST /auth/admin/connexion`
+- La route `POST /auth/connexion` refuse maintenant les comptes `Admin` (message: utiliser la connexion admin).
+- Côté frontend:
+  - Page `client/src/pages/auth/Admin/Admin-connexion/AdminConnexion.tsx` connectée à `/auth/admin/connexion`.
+  - Redirection de `Home` vers `/admin/dashboard` si l'utilisateur connecté a le rôle admin.
 
-Fonctionnalités principales :
+## 2) Accès home/élève bloqué pour admin
 
--   ✅ Envoi et réception de messages en temps réel
--   ✅ Statut En ligne / Hors ligne
--   ✅ Système de confirmation "Vu" (✓✓)
--   ✅ Gestion des rooms par conversation
--   ✅ Synchronisation automatique des utilisateurs connectés
+- Dans `Home`, si `data.role === "Admin"`, redirection automatique vers l’espace admin.
+- Les routes élèves protégées restent déjà inaccessibles aux admins via `ProtectedRoute`.
 
-------------------------------------------------------------------------
+## 3) Gestion utilisateurs admin (hors comptes Admin)
 
-# ⚙️ Architecture Socket
+### Nouvelles données User
 
-Le système fonctionne avec :
+- `blockedUntil: Date | null`
+- `blockReason: string`
+- Rôle `Admin` ajouté dans l'enum `role`.
 
--   Des événements personnalisés (custom events)
--   Des rooms (salons privés)
--   Une Map des utilisateurs connectés
--   Une communication bidirectionnelle client ↔ serveur
+### Nouvelles routes backend
 
-------------------------------------------------------------------------
+- `GET /user/admin/users`
+  - Retourne tous les utilisateurs sauf les admins.
+- `PATCH /user/admin/users/:userId/block`
+  - Body: `{ "days": number, "reason": string }`
+  - `days > 0`: bloque l'utilisateur jusqu'à `now + days`.
+  - `days = 0`: débloque l'utilisateur.
 
-# 🖥️ Backend -- Fonctionnement Socket.IO
+### Règle de blocage appliquée
 
-## Initialisation du serveur
+- Middleware `authMiddleware` vérifie `blockedUntil`.
+- Si la date de blocage est future, l'accès API est refusé (`403`).
 
-``` js
-const { createServer } = require('http');
-const { Server } = require('socket.io');
+## 4) Signalement vidéos + commentaires
 
-const httpServer = createServer(app);
+### Modèle vidéo enrichi
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.FRONTEND_URL,
-    credentials: true
-  }
-});
-```
+Dans `VideosModel`:
 
-Le serveur HTTP est créé puis Socket.IO est attaché dessus. Le CORS
-autorise le frontend à se connecter.
+- `reports` au niveau vidéo.
+- `reports` au niveau commentaire.
 
-------------------------------------------------------------------------
+Chaque report contient:
 
-# 👥 Gestion des utilisateurs en ligne
+- `user`
+- `reason`
+- `createdAt`
 
-``` js
-const onlineUsers = new Map();
-```
+### Nouvelles routes backend
 
-Structure :
+- `POST /videos/report/:videoId`
+  - Body: `{ "reason": "..." }`
+- `POST /videos/report-comment/:videoId/:commentsId`
+  - Body: `{ "reason": "..." }`
 
-userId → socketId
+Un utilisateur ne peut signaler qu'une fois la même vidéo / le même commentaire.
 
-------------------------------------------------------------------------
+## 5) Récupération des signalements dans l'espace admin
 
-## 1️⃣ User Online
+- Nouvelle route backend: `GET /user/admin/reports`
+- Retourne:
+  - `videoReports[]`
+  - `commentReports[]`
 
-``` js
-socket.on("user:online", (userId) => {
-    onlineUsers.set(userId, socket.id);
-    io.emit("users:online", Array.from(onlineUsers.keys()));
-});
-```
+## 6) Pages admin frontend ajoutées
 
-Quand un utilisateur se connecte :
+- `client/src/pages/auth/Admin/Dashboard/AdminDashboard.tsx`
+- `client/src/pages/auth/Admin/Users/AdminUsers.tsx`
+- `client/src/pages/auth/Admin/Signals/AdminSignals.tsx`
 
--   Il envoie son userId
--   On l'enregistre dans la Map
--   On broadcast la liste des users connectés
+Routes frontend ajoutées:
 
-Cela permet d'afficher : 🟢 En ligne\
-🔴 Hors ligne
+- `/admin/dashboard`
+- `/admin/users`
+- `/admin/signals`
 
-------------------------------------------------------------------------
+## 7) Sécurité admin backend
 
-# 💬 Gestion des conversations (Rooms)
+Dans `UserRoute`, un guard `ensureAdmin` protège les endpoints admin.
 
-## Rejoindre une conversation
+---
 
-``` js
-socket.on("conversation:join", (conversationId) => {
-    socket.join(conversationId);
-});
-```
+Si tu veux, je peux faire une 2e passe pour:
 
-Chaque conversation est une room privée. Seuls les membres de la room
-reçoivent les messages.
+- ajouter des boutons "Signaler" dans les composants vidéo/commentaire côté UI élève,
+- améliorer le dashboard admin (filtres, pagination, actions sur signalements),
+- ajouter des statuts de traitement des signalements (en attente / résolu / rejeté).
 
-------------------------------------------------------------------------
+## 8) Modération + Appeals (ajouté)
 
-## Quitter une conversation
+### Backend
 
-``` js
-socket.on("conversation:leave", (conversationId) => {
-    socket.leave(conversationId);
-});
-```
+- Nouveau modèle: `ModerationLog`
+  - actions: `BLOCK`, `UNBLOCK`, `APPEAL_REVIEWED`
+- Nouveau modèle: `Appeal`
+  - statut: `PENDING`, `APPROVED`, `REJECTED`
 
-------------------------------------------------------------------------
+Routes ajoutées:
 
-# ✉️ Envoi et Réception des messages
+- `GET /user/admin/moderation-logs`
+- `GET /user/admin/appeals`
+- `PATCH /user/admin/appeals/:appealId/review`
+- `POST /auth/appeal` (publique, pour envoyer une demande de déblocage)
 
-## Envoi côté client
+Comportement:
 
-1.  Message sauvegardé en base via HTTP
-2.  Message envoyé via socket
+- Chaque blocage/déblocage crée une entrée de log de modération.
+- Une demande d’appel approuvée débloque automatiquement l’utilisateur.
 
-``` js
-socket.emit("message:send", newMessage);
-```
+### Frontend
 
-------------------------------------------------------------------------
+Pages ajoutées:
 
-## Réception côté serveur
+- `client/src/pages/auth/Admin/Moderation-log/AdminModerationLog.tsx`
+- `client/src/pages/auth/Admin/Appeals/AdminAppeals.tsx`
+- `client/src/pages/Appeal/AppealPage.tsx`
 
-``` js
-socket.on("message:send", (message) => {
-    socket.to(message.conversationId)
-          .emit("message:receive", message);
-});
-```
+Routes frontend:
 
-Explication :
+- `/admin/moderation-log`
+- `/admin/appeals`
+- `/appeal`
 
--   On envoie le message
--   Seulement aux autres membres de la room
--   Pas à l'expéditeur
-
-------------------------------------------------------------------------
-
-# 👁️ Système "Vu"
-
-## Quand un message est lu
-
-``` js
-socket.emit("message:seen", {
-  conversationId,
-  userId
-});
-```
-
-## Côté serveur
-
-``` js
-socket.on("message:seen", ({ conversationId, userId }) => {
-    socket.to(conversationId)
-          .emit("message:seen:update", { conversationId, userId });
-});
-```
-
-Cela met à jour le statut :
-
-✓ Envoyé\
-✓✓ Vu
-
-------------------------------------------------------------------------
-
-# 🔌 Déconnexion
-
-``` js
-socket.on("disconnect", () => {
-    for (const [userId, socketId] of onlineUsers.entries()) {
-        if (socketId === socket.id) {
-            onlineUsers.delete(userId);
-            break;
-        }
-    }
-    io.emit("users:online", Array.from(onlineUsers.keys()));
-});
-```
-
-Quand un utilisateur se déconnecte :
-
--   On le supprime de la Map
--   On met à jour la liste globale
-
-------------------------------------------------------------------------
-
-# 🚀 Résumé du Flux Temps Réel
-
-Connexion → user:online\
-Rejoindre conversation → conversation:join\
-Envoyer message → message:send\
-Recevoir message → message:receive\
-Message lu → message:seen\
-Mise à jour vu → message:seen:update\
-Déconnexion → mise à jour users:online
-
-------------------------------------------------------------------------
-
-# 🏁 Conclusion
-
-Cette implémentation permet :
-
--   Une communication instantanée
--   Une gestion propre des utilisateurs connectés
--   Une séparation claire entre sauvegarde BDD (HTTP) et temps réel
-    (Socket)
--   Un système proche de WhatsApp en comportement
-
-------------------------------------------------------------------------
-
-Auteur : Mounir
+Navigation admin mise à jour pour inclure les deux nouvelles pages.
