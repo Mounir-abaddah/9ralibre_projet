@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { RoughNotation } from "react-rough-notation";
@@ -16,6 +16,7 @@ const Connexion = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const {fetchData} = useProtectedRoutes()
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -28,6 +29,15 @@ const Connexion = () => {
 
   const [loading, setLoading] = useState(false);
   const [serverMessage, setServerMessage] = useState("");
+  const [isBlockedNotice, setIsBlockedNotice] = useState(false);
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error === "blocked") {
+      setServerMessage("Votre compte est temporairement bloqué. Consultez votre email pour plus d'informations.");
+      setIsBlockedNotice(true);
+    }
+  }, [searchParams]);
 
   const regexEmail = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const regexPassword =
@@ -138,9 +148,14 @@ const Connexion = () => {
           <OAuth text_1="Se connecter avec Google" />
         </div>
         {serverMessage && (
-          <p className="w-full rounded-md border-l-2 border-red-500 bg-red-100 p-2 text-red-700">
-            {serverMessage}
-          </p>
+          <div className="w-full rounded-md border-l-2 border-red-500 bg-red-100 p-2 text-red-700">
+            <p>{serverMessage}</p>
+            {isBlockedNotice && (
+              <Link to="/appeal" className="mt-1 inline-block text-sm font-semibold underline">
+                Faire une demande de déblocage
+              </Link>
+            )}
+          </div>
         )}
 
         <form onSubmit={handleForm} className="flex w-full flex-col gap-1.5">
