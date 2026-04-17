@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["Non renseigné", "Etudiant", "Etudiante", "Professeur"],
+      enum: ["Non renseigné", "Etudiant", "Etudiante", "Professeur", "Admin"],
       default: "Non renseigné",
     },
     email: {
@@ -51,6 +51,14 @@ const UserSchema = new mongoose.Schema(
       type:String,
       default:"pending",
       enum:['pending','approved']
+    },
+    blockedUntil: {
+      type: Date,
+      default: null,
+    },
+    blockReason: {
+      type: String,
+      default: "",
     },
     events: [
       {
