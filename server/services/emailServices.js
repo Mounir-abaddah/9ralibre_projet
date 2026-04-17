@@ -325,7 +325,41 @@ async function oublierMotdepasseProfesseur(user, resetLink) {
   return transporter.sendMail(mailOptions);
 }
 
+async function sendBlockedAccountEmail(user, blockedUntil, reason = "") {
+  const mailOptions = {
+    from: process.env.EMAIL_CLIENT,
+    to: user.email,
+    subject: "Votre compte 9ralibre a été temporairement bloqué",
+    html: `
+      <div style="font-family: Arial, sans-serif; background:#f4f4f7; padding:20px;">
+        <div style="max-width:560px; margin:auto; background:#fff; padding:24px; border-radius:10px;">
+          <h2 style="margin:0 0 16px; color:#dc2626;">Compte temporairement bloqué</h2>
+          <p style="color:#333; font-size:14px; line-height:1.6;">
+            Bonjour ${user.prenom || ""} ${user.nom || ""},
+          </p>
+          <p style="color:#333; font-size:14px; line-height:1.6;">
+            Votre compte sur <strong>9ralibre</strong> est temporairement bloqué.
+          </p>
+          <p style="color:#333; font-size:14px; line-height:1.6;">
+            <strong>Date de fin du blocage :</strong> ${new Date(blockedUntil).toLocaleString("fr-FR")}
+          </p>
+          ${
+            reason
+              ? `<p style="color:#333; font-size:14px; line-height:1.6;"><strong>Raison :</strong> ${reason}</p>`
+              : ""
+          }
+          <p style="color:#666; font-size:12px; margin-top:18px;">
+            Si vous pensez qu'il s'agit d'une erreur, contactez l'administration.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+
+  return transporter.sendMail(mailOptions);
+}
 
 
 
-module.exports = { sendVerificationEmail, oublierMotdepasse , repliesCommentaire , likeCommentaire ,oublierMotdepasseProfesseur  };
+
+module.exports = { sendVerificationEmail, oublierMotdepasse , repliesCommentaire , likeCommentaire ,oublierMotdepasseProfesseur, sendBlockedAccountEmail };
