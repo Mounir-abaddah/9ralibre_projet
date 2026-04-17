@@ -23,6 +23,7 @@ import Pagination from "@/components/Pagination/Pagination";
 import { useCoursFilter } from "@/store/useCoursFilter";
 import AsideVideos from "@/components/Videos/AsideVideos";
 import { useDebounce } from "@/hooks/use-debounce";
+import ReportModal from "@/components/Videos/ReportModal";
 
 const Videos = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -37,6 +38,7 @@ const Videos = () => {
   const debouncedSearch = useDebounce(search, 500);
   const [searchParams, setSearchParams] = useSearchParams();
   const [savedItems, setSavedItems] = useState<string[]>([]);
+  const [reportVideoId, setReportVideoId] = useState<string | null>(null);
   const itemsPerPage = 15;
 
   // 🔹 Fetch videos
@@ -246,7 +248,7 @@ const Videos = () => {
                             <DropdownMenuItem>
                               <Share /> Partager
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setReportVideoId(item._id)}>
                               <Flag /> Signaler
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
@@ -275,6 +277,16 @@ const Videos = () => {
           </div>
         )}
       </div>
+      {reportVideoId && (
+        <ReportModal
+          open={Boolean(reportVideoId)}
+          onOpenChange={(open) => {
+            if (!open) setReportVideoId(null);
+          }}
+          endpoint={`${apiUrl}/videos/report/${reportVideoId}`}
+          title="Signaler cette vidéo"
+        />
+      )}
     </div>
   );
 };
