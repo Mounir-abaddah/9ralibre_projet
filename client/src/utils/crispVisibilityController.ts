@@ -12,7 +12,7 @@ export const CrispVisibilityController = () => {
 
   useEffect(() => {
     if (!window.$crisp) return;
-    const isProfRoute = location.pathname.startsWith('/prof') || location.pathname.startsWith('/Chat/start/');
+    const isProfRoute = location.pathname.startsWith('/prof') || location.pathname.startsWith('/Chat/start/') || location.pathname.startsWith('/Quiz/start');
     window.$crisp.push(["do", isProfRoute ? "chat:hide" : "chat:show"]);
   }, [location.pathname]);
 
