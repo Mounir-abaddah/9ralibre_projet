@@ -32,7 +32,15 @@ const ResultatQuizShema = new mongoose.Schema({
                 type:String,
             }
         }
-    ]
+    ],
+    disqualified: {
+        type: Boolean,
+        default: false
+    },
+    disqualifiedReason: {
+        type: String,
+        default: null
+    }
 },{
     timestamps: true 
 });
