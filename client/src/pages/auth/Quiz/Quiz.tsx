@@ -86,15 +86,17 @@ const QuizPage = () => {
     }, [apiUrl, niveaux, currentPage]);
 
 
+
+
     return (
     <>
     {quizList.length > 0 ? (
         <>
         <div className="mb-8 flex flex-col gap-2">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 md:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl dark:text-zinc-100">
             Quiz
             {niveaux ? (
-              <span className="ml-2 text-base font-semibold text-zinc-500 dark:text-zinc-400">
+              <span className="ml-2 text-base font-semibold text-amber-500 dark:text-amber-400">
                 · {niveaux}
               </span>
             ) : null}
@@ -116,7 +118,7 @@ const QuizPage = () => {
             {quizList.map((quiz) => {
               const visual = getMatiereVisual(quiz.matiere?.nom);
               const MatiereIcon = visual.icon;
-
+              const isBlockedByCheating = !!quiz.blockedByCheating;              
               return (
                 <div
                   key={quiz._id}
@@ -156,10 +158,14 @@ const QuizPage = () => {
                       </div>
                     </div>
 
-                    {quiz.alreadyPassed ? (
+                    {quiz.alreadyPassed && !isBlockedByCheating ? (
                       <Badge className="shrink-0 bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                         <Check className="mr-1 h-3.5 w-3.5" />
                         Fait
+                      </Badge>
+                    ) : isBlockedByCheating ? (
+                      <Badge className="shrink-0 bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
+                        Bloqué
                       </Badge>
                     ) : (
                       <Badge className="shrink-0 bg-amber-500/15 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
@@ -194,13 +200,21 @@ const QuizPage = () => {
                       </div>
                     </div>
 
-                    {quiz.alreadyPassed ? (
+                    {quiz.alreadyPassed && !isBlockedByCheating  ? (
                       <Button
                         onClick={() => navigate(`/Quiz/resultat/${quiz._id}`)}
                         size="sm"
                         className="shrink-0 cursor-pointer bg-zinc-900 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
                       >
                         Voir résultat
+                      </Button>
+                    ) : isBlockedByCheating ? (
+                      <Button
+                        size="sm"
+                        disabled
+                        className="shrink-0 cursor-not-allowed bg-rose-100 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300"
+                      >
+                        Quiz bloqué 
                       </Button>
                     ) : (
                       <Button
