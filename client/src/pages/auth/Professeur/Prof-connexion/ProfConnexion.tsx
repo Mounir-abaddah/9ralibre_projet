@@ -99,8 +99,7 @@ const ProfConnexion = () => {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-amber-500 px-4">
-
+    <div  className="relative flex min-h-screen items-center justify-center bg-[url('/public/backgorund_teacher.jpg')] bg-cover bg-no-repeat  px-4">
       {/* Logo */}
       <Link to={'/'}>
         <img
