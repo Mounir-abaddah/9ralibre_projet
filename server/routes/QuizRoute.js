@@ -55,9 +55,13 @@ router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
             userId:req.user.userId
         });
         const passedQuiz = usersResults.map(r => r.quizId.toString());
+        const disqualifiedQuiz = usersResults
+            .filter((r) => r.disqualified)
+            .map((r) => r.quizId.toString());
         const finalQuiz = quiz.map(q => ({
             ...q.toObject(),
-            alreadyPassed: passedQuiz.includes(q._id.toString())
+            alreadyPassed: passedQuiz.includes(q._id.toString()),
+            blockedByCheating: disqualifiedQuiz.includes(q._id.toString())
         }))
         const totalQuiz = await Quiz.countDocuments({niveaux:niveaux})
         res.json({limit,skip,totalQuiz,finalQuiz});
@@ -67,22 +71,38 @@ router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
 });
 
 router.get('/:quizId', authMiddleware, async (req, res) => {
-try {
-    const quiz = await Quiz.findById(req.params.quizId)
-    .populate("professeur","nom prenom")
-    .populate("niveaux","nom")
-    .populate("matiere","nom")
-    .select("-questions.correctAnswer");
+    try {
+        const quizId = req.params.quizId;
+        const userId = req.user.userId;
 
-    if(!quiz){
-    return res.status(404).json({message:"Quiz non trouvé"});
+        const userResult = await ResultsQuiz.find({ quizId });
+
+        const isDisqualified = userResult.find(
+            r => r.userId.toString() === userId && r.disqualified
+        );
+
+        if (isDisqualified) {
+            return res.status(403).json({
+                message: "Accès refusé : vous êtes disqualifié",
+                reason: isDisqualified.disqualifiedReason
+            });
+        }
+
+        const quiz = await Quiz.findById(quizId)
+            .populate("professeur", "nom prenom")
+            .populate("niveaux", "nom")
+            .populate("matiere", "nom")
+            .select("-questions.correctAnswer");
+
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz non trouvé" });
+        }
+
+        res.json(quiz);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    res.json(quiz);
-
-} catch(error){
-    res.status(500).json({message:error.message});
-}
 });
 
 router.post('/submit',authMiddleware,async(req,res)=>{
@@ -106,6 +126,9 @@ router.post('/submit',authMiddleware,async(req,res)=>{
     });
 
     if (alreadyDone) {
+        if (alreadyDone.disqualified) {
+            return res.status(403).json({ message: "Quiz bloqué suite à une tentative de triche" });
+        }
         return res.status(400).json({ message: "Vous avez déjà passé ce quiz" });
     }
 
@@ -132,10 +155,60 @@ router.post('/submit',authMiddleware,async(req,res)=>{
     res.json(result);
 });
 
+router.post('/report-cheating', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { quizId, reason } = req.body;
+
+        if (!quizId) {
+            return res.status(400).json({ message: "quizId est requis" });
+        }
+
+        const quiz = await Quiz.findByIdAndUpdate(quizId, {
+            $addToSet: { participants: userId }
+        });
+
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz non trouvé" });
+        }
+
+        const existingResult = await ResultsQuiz.findOne({ userId, quizId });
+        if (existingResult) {
+            if (!existingResult.disqualified) {
+                existingResult.disqualified = true;
+                existingResult.disqualifiedReason = reason || "Suspicion de triche";
+                await existingResult.save();
+            }
+            return res.json({ success: true, blocked: true });
+        }
+
+        await ResultsQuiz.create({
+            userId,
+            quizId,
+            score: 0,
+            totalQuestions: quiz.questions.length,
+            wrongAnswers: [],
+            disqualified: true,
+            disqualifiedReason: reason || "Suspicion de triche"
+        });
+
+        res.status(201).json({ success: true, blocked: true });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 router.get('/results/:quizId',authMiddleware,async(req,res)=>{
     const userId = req.user.userId;
     const {quizId} = req.params;
     const results = await ResultsQuiz.find({quizId,userId:userId}).populate("quizId","text");
+    const userResult = results.find(r => r.userId._id.toString() === userId);
+    if (userResult && userResult.disqualified === true) {
+            return res.status(403).json({
+                message: "Vous êtes disqualifié de ce quiz",
+                reason: userResult.disqualifiedReason
+            });
+    }
     res.json(results);
 })
 
@@ -143,9 +216,20 @@ router.get('/leaderboard/:quizId', authMiddleware, async (req, res) => {
     try {
         const quizId = req.params.quizId;
         const userId = req.user.userId;
+        
         const results = await ResultsQuiz.find({ quizId,userId:userId })
             .populate('userId', 'nom prenom role')
             .sort({ score: -1 });
+
+        const userResult = results.find(r => r.userId._id.toString() === userId);
+
+        if (userResult && userResult.disqualified) {
+            return res.status(403).json({
+                message: "Vous êtes disqualifié de ce quiz",
+                reason: userResult.disqualifiedReason
+            });
+        }
+
         res.json(results);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -154,11 +238,14 @@ router.get('/leaderboard/:quizId', authMiddleware, async (req, res) => {
 
 router.get('/check/:quizId', authMiddleware, async (req, res) => {
     try {
-        const alreadyDone = await ResultsQuiz.findOne({
+        const result = await ResultsQuiz.findOne({
             userId: req.user.userId,
             quizId: req.params.quizId,
         });
-        res.json({ alreadyPassed: !!alreadyDone });
+        res.json({
+            alreadyPassed: !!result,
+            blockedByCheating: !!result?.disqualified
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
