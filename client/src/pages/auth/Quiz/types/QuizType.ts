@@ -17,6 +17,7 @@ export interface Quiz{
     professeur:Professeur
     questions:question[];
     alreadyPassed:boolean;
+    blockedByCheating?: boolean;
     createdAt:string;
     updatedAt:string;
 }
@@ -31,6 +32,7 @@ export interface QuizProf{
     questions:question[];
     participants:string[]
     alreadyPassed:boolean;
+    blockedByCheating?: boolean;
     createdAt:string;
     updatedAt:string;
 }
