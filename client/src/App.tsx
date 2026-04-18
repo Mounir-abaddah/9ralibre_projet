@@ -78,6 +78,7 @@ const App = () => {
         <Route element={<ProtectedRoute />}> 
           <Route path='/Profile/:name' element={<Layouts><Profile /></Layouts>} />
           <Route path='/Chat/start/:chatId' element={<Layouts><ChatStart /></Layouts>} />
+          <Route path='/Quiz/resultat/:quizId' element={<Layouts><Resultat /></Layouts>} />
         <Route element={<ProtectedNiveauRoute />}>
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
             <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
