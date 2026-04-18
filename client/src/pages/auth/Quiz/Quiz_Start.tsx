@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Quiz } from "./types/QuizType";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { BookAlert, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ const Quiz_Start = () => {
     const navigate = useNavigate()
     const [StartQuiz,setStartQuiz] = useState<Quiz | null>(null);
     const [checkQuiz,setCheckQuiz] = useState(false)
+    const [blockedByCheating, setBlockedByCheating] = useState(false);
     const [currentQuestions,setCurrentQuestions] = useState(0);
     const [selected, setSelected] = useState<number | null>(null);
     const [answers, setAnswers] = useState<number[]>([]);
@@ -27,14 +28,75 @@ const Quiz_Start = () => {
         const checkQuiz = async()=>{
             const res = await axios.get(`${apiUrl}/quiz/check/${quizId}`,{withCredentials:true});
             setCheckQuiz(res.data.alreadyPassed)
+            setBlockedByCheating(!!res.data.blockedByCheating);
         }
         getQuizById();
         checkQuiz();
     },[apiUrl, quizId]);
 
+    useEffect(() => {
+        if (checkQuiz || !StartQuiz) return;
+
+        const closeQuizForCheating = async () => {
+            if (quizId) {
+                try {
+                    await axios.post(`${apiUrl}/quiz/report-cheating`, {
+                        quizId,
+                        reason: "Sortie de page ou tentative d'inspection"
+                    }, { withCredentials: true });
+                } catch {
+                    // Do not block navigation when API call fails.
+                }
+            }
+            toast.error("Quiz fermé: tentative de triche détectée.");
+            navigate(`/Quiz/${niveaux}?cheated=1&quizId=${quizId}`, { replace: true });
+        };
+
+        const onVisibilityChange = () => {
+            if (document.hidden) {
+                closeQuizForCheating();
+            }
+        };
+
+        const onBlur = () => {
+            closeQuizForCheating();
+        };
+
+        const onContextMenu = (event: MouseEvent) => {
+            event.preventDefault();
+            toast.error("Clic droit désactivé pendant le quiz.");
+        };
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            const key = event.key.toLowerCase();
+            const inspectShortcut =
+                event.key === "F12" ||
+                (event.ctrlKey && event.shiftKey && ["i", "j", "c"].includes(key)) ||
+                (event.ctrlKey && key === "u");
+
+            if (inspectShortcut) {
+                event.preventDefault();
+                closeQuizForCheating();
+            }
+        };
+
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        window.addEventListener("blur", onBlur);
+        window.addEventListener("contextmenu", onContextMenu);
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => {
+            document.removeEventListener("visibilitychange", onVisibilityChange);
+            window.removeEventListener("blur", onBlur);
+            window.removeEventListener("contextmenu", onContextMenu);
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [StartQuiz, checkQuiz, navigate, niveaux]);
+
     if(!StartQuiz) return <div>Aucun Quiz est disponible avec ce id </div>
 
     const currentIndexQuestion = StartQuiz.questions[currentQuestions]
+    const isLastQuestion = currentQuestions >= StartQuiz.questions.length - 1;
     const labels = ["A", "B", "C", "D"];
 
     const handlePrev = ()=>{
@@ -60,16 +122,20 @@ const Quiz_Start = () => {
         <div className="flex min-h-screen flex-col items-center justify-center gap-6 text-center">
         <div className="rounded-2xl bg-white p-10 shadow-md">
             <h2 className="text-2xl font-bold text-gray-800">
-                🎉 Quiz déjà complété
+                {blockedByCheating ? "Quiz bloqué" : "🎉 Quiz déjà complété"}
             </h2>
             <p className="mt-3 text-gray-500">
-                Vous avez déjà passé ce quiz.
+                {blockedByCheating
+                    ? "Ce quiz est bloqué suite à une tentative de triche."
+                    : "Vous avez déjà passé ce quiz."}
             </p>
             <div className="mt-6 flex gap-4">
-                <Button onClick={() => navigate(`/Quiz/resultat/${quizId}`)}
-                    className="cursor-pointer bg-lime-400 text-black hover:bg-lime-500">
-                    Voir mon résultat
-                </Button>
+                {!blockedByCheating && (
+                    <Button onClick={() => navigate(`/Quiz/resultat/${quizId}`)}
+                        className="cursor-pointer bg-lime-400 text-black hover:bg-lime-500">
+                        Voir mon résultat
+                    </Button>
+                )}
                 <Button variant="secondary" className="cursor-pointer" onClick={() => navigate(`/Quiz/${niveaux}`)}>
                     Retour
                 </Button>
@@ -81,13 +147,15 @@ const Quiz_Start = () => {
 
     return (
         <div className="flex min-h-screen w-full flex-col items-center justify-around p-6">
-            <span dir="rtl" className="rounded-md bg-amber-100 p-2 text-base text-amber-800">
-            «مَنْ غَشَّنَا فَلَيْسَ مِنَّا»⚠️
+            <span className="flex items-center justify-center rounded-md bg-amber-100 p-2 text-center text-sm text-amber-800">
+                <BookAlert /> Si vous trichez, vous ne trichez que vous-meme. Le quiz se fermera automatiquement.
             </span>            
             <div className="flex w-full items-center space-x-4 p-2">
-                <Button variant={'destructive'} className="cursor-pointer" onClick={()=>navigate(`/Quiz/${niveaux}`)}>
-                    <X />
-                </Button>
+                {isLastQuestion && (
+                    <Button variant={'destructive'} className="cursor-pointer" onClick={()=>navigate(`/Quiz/${niveaux}`)}>
+                        <X />
+                    </Button>
+                )}
                 <Progress className="h-4" color="amber" value={
                     ((currentQuestions + 1) /StartQuiz.questions.length) * 100
                 }/>
@@ -137,7 +205,7 @@ const Quiz_Start = () => {
                     <Button onClick={handlePrev} size={'lg'} disabled={currentQuestions === 0} className="cursor-pointer gap-1.5 font-medium">
                         <ChevronLeft size={16} /> Précédent
                     </Button>
-                    {currentQuestions >= StartQuiz.questions.length - 1 ?
+                    {isLastQuestion ?
                         // eslint-disable-next-line no-irregular-whitespace
                         <Button size={'lg'} onClick={handleSubmitQuestions} className="cursor-pointer bg-lime-500 text-white hover:bg-lime-600">Terminer🎉​</Button>
                         :
