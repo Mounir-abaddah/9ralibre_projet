@@ -373,7 +373,6 @@ router.post('/post-videos-reply-commentaires/:videoId/:commentsId',authMidllewar
             const user = await UserModel.findById(userId);
             const commentsOwner = await UserModel.findById(comments.user._id);
             const replies = comments.replies[comments.replies.length - 1];
-            console.log(replies);
             await repliesCommentaire(user,commentsOwner,videos.title,comments.text,replies.text,videos.videoUrl)
         }
         res.status(200).send({
