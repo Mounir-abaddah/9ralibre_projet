@@ -140,10 +140,10 @@ async function oublierMotdepasseProfesseur(user, resetLink) {
 }
 
 // ─── 4. Réponse à un commentaire ──────────────────────────────────────────────
-async function repliesCommentaire(user, userReplies, videoTitle, commentsText, replyText, videoLink) {
+async function repliesCommentaire(sender, receiver, videoTitle, commentsText, replyText, videoLink) {
   const content = `
-    <p>Bonjour <strong>${user.nom}</strong>,</p>
-    <p><strong>${userReplies.nom}</strong> a répondu à votre commentaire sur la vidéo : <strong>${videoTitle}</strong></p>
+    <p>Bonjour <strong>${receiver.nom}</strong>,</p>
+    <p><strong>${sender.nom}</strong> a répondu à votre commentaire sur la vidéo : <strong>${videoTitle}</strong></p>
     <p style="margin-bottom:4px; font-size:13px; color:#6b7280;">Votre commentaire :</p>
     ${quoteBox(commentsText, "#0ea5e9")}
     <p style="margin-bottom:4px; font-size:13px; color:#6b7280;">Réponse :</p>
@@ -154,7 +154,7 @@ async function repliesCommentaire(user, userReplies, videoTitle, commentsText, r
 
   return transporter.sendMail({
     from: process.env.EMAIL_CLIENT,
-    to: user.email,
+    to: receiver.email,
     subject: "Nouvelle réponse 💬",
     html: emailLayout(content),
   });
