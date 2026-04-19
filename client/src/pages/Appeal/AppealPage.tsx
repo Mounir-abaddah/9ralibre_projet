@@ -37,8 +37,8 @@ const AppealPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-100 p-4">
-      <div className="w-full max-w-xl rounded-xl border bg-white p-6 shadow-sm">
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="w-full max-w-xl rounded-xl border  p-6 shadow-sm">
         <h1 className="text-2xl font-semibold">Demande de déblocage</h1>
         <p className="mt-1 text-sm text-zinc-500">
           Si votre compte est bloqué, envoyez votre demande ici.
