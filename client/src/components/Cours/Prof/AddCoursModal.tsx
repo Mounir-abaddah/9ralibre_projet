@@ -50,7 +50,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
   const [matiereSelected, setMatiereSelected] = useState("");
   const [filiere, setFiliere] = useState("");
   const [title, setTitle] = useState("");
-  const [semestre, setSemestre] = useState("");
+  const [semestre, setSemestre] = useState("Non renseigné");
   const [file, setFile] = useState<File | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [bannerError, setBannerError] = useState("");
@@ -62,10 +62,21 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
     fetchData();
   }, [fetchData]);
 
-  const showFiliere =
-    niveaux === "TC" || niveaux === "1BAC" || niveaux === "2BAC";
+  
 
   const filiereByNiveau: Record<string, string[]> = {
+    "1AC": [
+      "Science",
+    ],
+    "2AC": [
+      "Science",
+    ],
+    "3AC": [
+      "Science",
+    ],
+    "TC": [
+      "Science",
+    ],
     "1BAC": [
       "Sciences Mathématiques",
       "Sciences Expérimentales",
@@ -92,7 +103,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
   }
 
 
-   useEffect(() => {
+  useEffect(() => {
     if (cours) {
       setTitle(cours.title);
       setType(cours.type);
@@ -300,7 +311,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                 </SelectContent>
               </Select>
               {fieldErrors.type && (
-                <p className="text-sm text-destructive">{fieldErrors.type}</p>
+                <p className="text-destructive text-sm">{fieldErrors.type}</p>
               )}
             </div>
 
@@ -326,6 +337,9 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                   <SelectValue placeholder="Semestre" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="Non renseigné">
+                    Non renseigné
+                  </SelectItem>
                   <SelectItem value="Premier Semestre">
                     Premier Semestre
                   </SelectItem>
@@ -341,7 +355,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
           </div>
 
           {/* Filiere */}
-          {showFiliere && (
+          
             <div className="w-full space-y-2">
               <Label>Filière</Label>
               <Select
@@ -375,7 +389,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                 <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
               )}
             </div>
-          )}
+          
 
           <div className="space-y-2">
             <Label>PDF</Label>
