@@ -91,7 +91,7 @@ return (
                 </div>
                 {/*****LIKES ET SHARE ET SAVE *****/}
                 <div className="flex gap-2">
-                    <Button variant={'outline'} className={`flex cursor-pointer items-center gap-1 rounded-md  text-xs transition-all duration-200 hover:bg-gray-100 active:scale-95 ${isLike ? 'text-red-500' : ''}`} onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#000'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
+                    <Button variant={'outline'} className={`flex cursor-pointer items-center gap-1 rounded-md  text-xs transition-all duration-200 hover:bg-gray-100 active:scale-95 ${isLike ? 'text-red-500' : ''}`} onClick={handleLikes}><Heart color={isLike ? '#FF2E2E' : '#292727'} fill={isLike ? '#FF2E2E' : '#fff'}/>{videos.likes.length}</Button>
                     <Button variant={'outline'} className="hidden cursor-pointer md:flex lg:flex"><Share />Partager</Button>
                     <Button variant="outline" className={`hidden cursor-pointer items-center gap-1 transition-all duration-200 md:flex lg:flex ${isSaved ? 'bg-amber-50 text-amber-500' : ''}`} onClick={handleSave}><Bookmark color={isSaved ? '#FF9500' : '#000'} fill={isSaved ? '#FF9500' : '#fff'} />{isSaved ? 'Enregistré' : 'Enregistrer'} </Button>
                     <Popover>
