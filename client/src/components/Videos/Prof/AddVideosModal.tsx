@@ -88,23 +88,33 @@ const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal)
     fetchData();
   }, []);
 
-  // Filière dynamique
-  const showFiliere =
-    niveauxLabel === "TC" ||
-    niveauxLabel === "1BAC" ||
-    niveauxLabel === "2BAC";
-
   const filiereByNiveau: Record<string, string[]> = {
+    "1AC": [
+      "Science",
+    ],
+    "2AC": [
+      "Science",
+    ],
+    "3AC": [
+      "Science",
+    ],
+    "TC": [
+      "Science",
+    ],
     "1BAC": [
       "Sciences Mathématiques",
       "Sciences Expérimentales",
-      "Sciences Éco",
+      "Sciences et Technologies Électriques",
+      "Sciences et Technologies Mécaniques",
+      "Sciences Économiques et Gestion",
+      "Lettres et Sciences Humaines",
     ],
     "2BAC": [
       "Sciences Mathématiques A",
       "Sciences Mathématiques B",
+      "Sciences Physiques",
       "SVT",
-      "PC",
+      "Sciences Économiques",
     ],
   };
 
@@ -356,7 +366,6 @@ const handleSubmit = async () => {
           </div>
           <div className="flex w-full items-center justify-between gap-2">
             {/* Filière */}
-            {showFiliere && (
               <div className="w-full space-y-2">
                 <Label>Filière</Label>
                 <Select
@@ -390,7 +399,6 @@ const handleSubmit = async () => {
                   <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
                 )}
               </div>
-            )}
             {/* Visibilité */}
             <div className="w-full space-y-2">
               <Label>Visibilité</Label>
