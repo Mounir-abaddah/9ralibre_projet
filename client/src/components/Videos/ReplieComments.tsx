@@ -23,6 +23,7 @@ export interface RepliesTypes{
 const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShowReplies}:RepliesTypes) => {
   
   const apiUrl = import.meta.env.VITE_API_URL;
+  const [loading,setLoading] = useState(false)
   const {videoId} = useParams();
   const {data} = useProtectedRoutes();
   const [showEmojieReplies,setShowEmojieReplies]=useState(false);
@@ -34,9 +35,18 @@ const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShow
 
 
   const handlePostReply = async()=>{
-    await axios.post(`${apiUrl}/videos/post-videos-reply-commentaires/${videoId}/${commentsId}`,{text:repliestext},{withCredentials:true})
-    setShowReplies(null);
-    await getVideos();
+    if (loading) return;
+    try{
+      setLoading(true)
+      await axios.post(`${apiUrl}/videos/post-videos-reply-commentaires/${videoId}/${commentsId}`,{text:repliestext},{withCredentials:true})
+      setShowReplies(null);
+      await getVideos();
+    }catch(error){
+      console.log(error);
+    }finally{
+      setLoading(false)
+    }
+    
   }
 
   const handleLikeReply = async(replyId:string)=>{
@@ -83,7 +93,7 @@ const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShow
           </span>
           <span className="flex items-end justify-end space-x-2">
             <Button size={'sm'} onClick={()=>setShowReplies(null)} variant={'outline'} className="cursor-pointer bg-amber-400 hover:bg-amber-500">Annuler</Button>
-            <Button size={'sm'} onClick={()=>handlePostReply()} className="cursor-pointer hover:bg-amber-500 dark:bg-amber-400"><Send/></Button>
+            <Button size={'sm'} onClick={()=>handlePostReply()} disabled={loading || repliestext.trim().length < 1} className="cursor-pointer hover:bg-amber-500 dark:bg-amber-400"><Send/></Button>
           </span>
         </div>
       )}
