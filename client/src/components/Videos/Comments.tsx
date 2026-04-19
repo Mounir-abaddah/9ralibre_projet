@@ -20,6 +20,7 @@ export interface CommentsTypes{
 
 const Comments = ({videos,getVideos}:CommentsTypes) => {
     const apiUrl = import.meta.env.VITE_API_URL;
+    const [loading, setLoading] = useState(false);
     const {videoId} = useParams()
     const {data} = useProtectedRoutes();
     const [comments,setComments]=useState("")
@@ -36,6 +37,24 @@ const Comments = ({videos,getVideos}:CommentsTypes) => {
 
 
     const handlePostComments = async()=>{
+        if (loading) return;
+        try{
+            setLoading(true);
+            await axios.post(
+                `${apiUrl}/videos/post-videos-commentaires/${videoId}`,
+                { text: comments },
+                { withCredentials: true }
+            );
+
+            setComments("");
+            setAfficherButtonComments(false);
+            await getVideos();
+        }catch(error){
+            console.error(error);
+        }finally{
+            setLoading(true)
+        }
+
         await axios.post(`${apiUrl}/videos/post-videos-commentaires/${videoId}`,{text:comments},{withCredentials:true});
         setComments("");
         setAfficherButtonComments(false)
@@ -162,7 +181,7 @@ return (
                                 {/************* COMMENTAIRES J'aime et REPONDRE *****************/}
                                 <div className='flex items-center space-x-2'>
                                     <span onClick={() => handleLikeComment(comments._id)} className='flex cursor-pointer items-center gap-1 text-xs' > <Heart size={16} fill={data?.id && comments.likes.includes(data.id) ? "#FF2E2E" : "none"} color={data?.id && comments.likes.includes(data.id) ? "#FF2E2E" : "currentColor"} /> {comments.likes.length} </span>
-                                    <span onClick={()=>setShowReplies(comments._id)} className='cursor-pointer rounded-md p-0.5 text-xs transition duration-200 hover:bg-amber-500'>Repondre</span>
+                                    {data?.id !== comments.user._id && (<span onClick={()=>setShowReplies(comments._id)} className='cursor-pointer rounded-md p-0.5 text-xs transition duration-200 hover:bg-amber-500'>Repondre</span>)}
                                 </div>
                                 <ReplieComments 
                                     videos={videos}
