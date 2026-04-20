@@ -5,15 +5,16 @@ import {
 Moon,
 Sun,
 Menu,
-X,
 Atom, Calculator, FlaskConical,
 PlayCircle,
 Video,
 DraftingCompass,
 Book,
 Trophy,
+Lock,
 Brain,
-Bell
+Bell,
+House
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useProtectedRoutes, type typeAllData } from "@/store/userStore";
@@ -26,11 +27,16 @@ import { socket } from "@/config/socket";
 import type { typeChat } from "@/pages/auth/Chat/types/ChatType";
 import type { typeMessage } from "@/pages/auth/Chat/types/MessageType";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from '../ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
+import ConnexionModal from '../ConnexionModal/ConnexionModal';
 
 const Navbar = () => {
 const { theme, toggleTheme } = useTheme();
 const { data, fetchData, loading, error } = useProtectedRoutes();
 const isMobile = useIsMobile();
+const [isCompactNav, setIsCompactNav] = useState(isMobile);
+const [openModal,setOpenModal] = useState(false)
 const navigate = useNavigate()
 const [open, setOpen] = useState(false);
 const location = useLocation();
@@ -79,6 +85,31 @@ useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [data?.id, location.pathname, apiUrl]);
 
+useEffect(() => {
+    const checkCompactNav = () => {
+        setIsCompactNav(window.innerWidth < 1280);
+    };
+    checkCompactNav();
+    window.addEventListener("resize", checkCompactNav);
+    return () => window.removeEventListener("resize", checkCompactNav);
+}, []);
+
+useEffect(() => {
+    setOpen(false);
+}, [location.pathname]);
+
+useEffect(() => {
+    if (!(isCompactNav && open)) {
+        document.body.style.overflow = "";
+        return;
+    }
+
+    document.body.style.overflow = "hidden";
+    return () => {
+        document.body.style.overflow = "";
+    };
+}, [isCompactNav, open]);
+
 return (
     <>
     <div className="relative isolate z-[9999] flex w-full items-center justify-between overflow-visible bg-white/80 px-4 py-3 shadow-md backdrop-blur dark:bg-gray-900/80">
@@ -88,9 +119,9 @@ return (
         </Link>
         </div>
 
-        {!isMobile && <MenuLinkItem />}
+        {!isCompactNav && <MenuLinkItem />}
 
-        {!isMobile ? (
+        {!isCompactNav ? (
         <div className="flex items-center gap-3">
             {data ? (
             <>
@@ -159,55 +190,76 @@ return (
                     </div>
                 </PopoverContent>
             </Popover>
-            <button
-            onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
+            <Button
+                variant={'outline'}
+                size={'icon'}
+                onClick={toggleTheme}
             >
-            {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
-            <button
-            onClick={()=>navigate('/Drawing')}
-            className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
+                {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+            </Button>
+            <Button
+                variant={'outline'}
+                size={'icon'}
+                onClick={()=>navigate('/Drawing')}
             >
-            <DraftingCompass size={18}/>
-            </button>
+                <DraftingCompass size={18}/>
+            </Button>
             </>
             ) : (
             <>
-            <button
-            onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-lg border text-gray-800 transition hover:scale-110 hover:rotate-12 dark:text-white"
+            <Button
+                variant={'outline'}
+                size={'icon'}
+                onClick={toggleTheme}
+                className='cursor-pointer'
             >
-            {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
-            <Link
-            to="/inscription"
-            className="rounded-lg bg-amber-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-500"
-            >
-            Inscription
+                {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+            </Button>
+            <Button onClick={()=>setOpenModal(!openModal)} variant={'ghost'} className='cursor-pointer'><Lock />Connexion</Button>
+            <Link to="/inscription" >
+                <Button className='cursor-pointer bg-amber-400 hover:bg-amber-500'>Inscription</Button>
             </Link>
-            <Link
-            to="/prof-connexion"
-            className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-black transition hover:bg-cyan-500"
-            >
-            Espace Professeur
+            <Link to="/prof-connexion">
+                <Button className='cursor-pointer bg-cyan-400 hover:bg-cyan-500'>Espace Professeur</Button>
             </Link>
             </>
             )}
         </div>
         ) : (
-        <button onClick={() => setOpen(!open)}>
-            {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
+        <div className="flex items-center gap-2">
+            {!data && (
+            <Link to="/connexion">
+                <Button variant={'outline'} className="h-9 cursor-pointer px-3">Connexion</Button>
+            </Link>
+            )}
+            <button
+                onClick={() => setOpen(true)}
+                className="rounded-md p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label="Ouvrir le menu"
+            >
+                <Menu size={26} />
+            </button>
+        </div>
         )}
     </div>
 
-    {isMobile && open && (
-        // eslint-disable-next-line tailwindcss/no-custom-classname
-        <div className="animate-in slide-in-from-top fixed top-16 z-40 min-h-screen w-full bg-white px-5 py-6 dark:bg-gray-900">
-        <MobileMenu data={data} loading={loading}
-                error={error} fetchData={fetchData}/>
-        </div>
+    <Sheet open={isCompactNav && open} onOpenChange={setOpen}>
+        <SheetContent side="right" className="z-[10000] w-[85%] max-w-sm overflow-y-auto px-5 py-6 sm:w-[420px]">
+            <SheetHeader className="p-0">
+                <SheetTitle className='cursor-pointer'><Link to={'/'}><House /></Link></SheetTitle>
+            </SheetHeader>
+            <MobileMenu
+                data={data}
+                loading={loading}
+                error={error}
+                fetchData={fetchData}
+                onNavigate={() => setOpen(false)}
+            />
+        </SheetContent>
+    </Sheet>
+
+    {openModal && (
+        <ConnexionModal openModal={openModal} setOpenModal={setOpenModal}/>
     )}
     </>
 );
@@ -218,25 +270,39 @@ export default Navbar;
 
 
 
-const MobileMenu = ({data,loading,error,fetchData}:typeAllData) => {
+type MobileMenuProps = typeAllData & {
+    onNavigate: () => void;
+};
+
+const MobileMenu = ({data,loading,error,fetchData,onNavigate}:MobileMenuProps) => {
 return (
-    <div className="flex flex-col gap-6 text-gray-800 dark:text-white">
-    <Link to="/" className="text-lg font-semibold">Accueil</Link>
-    <Link to={`/cours/${data?.niveaux}`} className="text-lg font-semibold">Cours</Link>
-    <Link to={`/videos/${data?.niveaux}`} className="text-lg font-semibold">Vidéos</Link>
-    <Link to="/About" className="text-lg font-semibold">A propos</Link>
-    {data ? 
-        <Avatare data={data} loading={loading} error={error} fetchData={fetchData} /> 
-    : 
-        <>
-            <Link to="/inscription" className="rounded-lg bg-amber-400 p-2 text-center text-black">
-                Inscription
-            </Link>
-            <Link to="/connexion" className="rounded-lg bg-cyan-400 p-2 text-center text-black">
-                Espace Professeur
-            </Link>
-        </>
-    }
+    <div className="flex h-full w-full flex-col justify-between overflow-x-hidden p-2">
+        <div className='flex flex-col gap-6'>   
+            <Link to="/" onClick={onNavigate} className="text-lg font-semibold">Accueil</Link>
+            <Link to={`/cours/${data?.niveaux}`} onClick={onNavigate} className="text-lg font-semibold">Cours</Link>
+            <Link to={`/videos/${data?.niveaux}`} onClick={onNavigate} className="text-lg font-semibold">Vidéos</Link>
+            <Link to="/About" onClick={onNavigate} className="text-lg font-semibold">A propos</Link>
+            <Link to="/prof-connexion" onClick={onNavigate} className="text-lg font-semibold">Je suis professeur</Link>
+        </div>
+        <div>   
+            {data ? 
+                <Avatare data={data} loading={loading} error={error} fetchData={fetchData} /> 
+            : 
+                <div className='flex w-full flex-col items-center justify-around gap-2'>
+                    <Button size={'lg'} variant={'outline'} className='w-full border-amber-500 text-amber-500'>
+                        <Link to="/connexion" onClick={onNavigate}>
+                            Connexion
+                        </Link>
+                    </Button>
+                    <Button size={'lg'} className='w-full bg-cyan-500 text-white hover:bg-cyan-600'>
+                        <Link to="/inscription" onClick={onNavigate}>
+                            Inscription
+                        </Link>
+                    </Button>
+                </div>
+            }
+        </div>
+    
     </div>
 );
 };
