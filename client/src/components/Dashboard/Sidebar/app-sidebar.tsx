@@ -12,6 +12,7 @@ import {
   Flag,
   ScrollText,
   MailWarning,
+  UserCheck2,
 } from "lucide-react"
 import { NavMain } from "@/components/Dashboard/Sidebar/nav-main"
 import { NavUser } from "@/components/Dashboard/Sidebar/nav-user"
@@ -84,6 +85,11 @@ const dataAdmin = {
       title: "Utilisateur",
       url: "/admin/users",
       icon: Users,
+    },
+    {
+      title: "Professeurs",
+      url: "/admin/professors",
+      icon: UserCheck2,
     },
     {
       title: "Signalement",
