@@ -58,7 +58,7 @@ const AdminUsers = () => {
 
   const loadUsers = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/user/admin/users`, { withCredentials: true });
+      const response = await axios.get(`${apiUrl}/user/admin/prof/users`, { withCredentials: true });
       setUsers(response.data.users || []);
     } catch {
       toast.error("Impossible de charger les utilisateurs");
