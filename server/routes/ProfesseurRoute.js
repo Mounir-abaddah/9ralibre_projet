@@ -15,7 +15,7 @@ const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema,messageOUblierSchema,passwordResetShema} = require('../validations/professeurValidation');
-const {oublierMotdepasseProfesseur} = require('../services/emailServices')
+const { oublierMotdepasseProfesseur, sendProfessorRegistrationReceivedEmail } = require('../services/emailServices')
 const jwt = require('jsonwebtoken');
 
 function zodErrorPayload(err) {
@@ -888,7 +888,7 @@ router.post("/register", async (req, res) => {
     if (emailExists) {
       return res.status(400).json({
         success: false,
-        message: "Un compte avec cet email existe déjà",
+        message: "Impossible de créer un compte avec ces informations",
       });
     }
 
@@ -907,6 +907,11 @@ router.post("/register", async (req, res) => {
     });
 
     await newUser.save();
+    try {
+      await sendProfessorRegistrationReceivedEmail(newUser);
+    } catch (emailErr) {
+      console.error("Erreur envoi email inscription professeur:", emailErr);
+    }
 
     res.status(201).json({
       success: true,
@@ -932,6 +937,13 @@ router.post("/login", async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ success: false, message: "Email ou mot de passe incorrect", });
+    }
+
+    if (user.status === "declined") {
+      return res.status(403).json({
+        success: false,
+        message: "Votre demande professeur a été refusée. Veuillez vérifier votre email pour les conditions et corriger votre dossier.",
+      });
     }
 
     if (user.status !== "approved") {
