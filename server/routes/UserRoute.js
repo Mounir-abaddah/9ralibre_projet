@@ -11,7 +11,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const {completeProfileShema,EventsShema} = require("../validations/authValidation");
-const { sendBlockedAccountEmail } = require("../services/emailServices");
+const { sendBlockedAccountEmail, sendProfessorStatusEmail } = require("../services/emailServices");
 const ModerationLog = require("../models/ModerationLogModel");
 const Appeal = require("../models/AppealModel");
 
@@ -619,6 +619,68 @@ router.get("/admin/users", authMiddleware, ensureAdmin, async (req, res) => {
       .select("nom prenom email role niveaux blockedUntil blockReason accountVerified status createdAt")
       .sort({ createdAt: -1 });
     return res.status(200).json({ success: true, users });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.get("/admin/prof/users", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const { search = "" } = req.query;
+    const searchRegex = new RegExp(search, "i");
+    const users = await User.find({
+      role: { $ne: "Admin" },
+      status: { $ne: "declined" },
+      $or: [{ nom: searchRegex }, { prenom: searchRegex }, { email: searchRegex }],
+    })
+      .select("nom prenom email role niveaux blockedUntil blockReason accountVerified status createdAt")
+      .sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, users });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur serveur", err });
+  }
+});
+
+router.patch("/admin/professeurs/:userId/status", authMiddleware, ensureAdmin, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { status, conditions = "" } = req.body;
+
+    if (!["approved", "declined"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Statut invalide. Utilisez approved ou declined",
+      });
+    }
+
+    const professeur = await User.findById(userId);
+    if (!professeur) {
+      return res.status(404).json({ success: false, message: "Professeur introuvable" });
+    }
+    if (professeur.role !== "Professeur") {
+      return res.status(400).json({ success: false, message: "Cet utilisateur n'est pas un professeur" });
+    }
+
+    professeur.status = status;
+    await professeur.save();
+
+    try {
+      await sendProfessorStatusEmail(professeur, status, conditions);
+    } catch (emailErr) {
+      console.error("Erreur envoi email statut professeur:", emailErr);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: status === "approved" ? "Professeur approuvé" : "Professeur refusé",
+      professeur: {
+        id: professeur._id,
+        nom: professeur.nom,
+        prenom: professeur.prenom,
+        email: professeur.email,
+        status: professeur.status,
+      },
+    });
   } catch (err) {
     return res.status(500).json({ success: false, message: "Erreur serveur", err });
   }
