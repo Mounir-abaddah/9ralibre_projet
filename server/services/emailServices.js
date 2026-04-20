@@ -197,6 +197,62 @@ async function sendBlockedAccountEmail(user, blockedUntil, reason = "") {
   });
 }
 
+// ─── 7. Validation professeur (approbation/refus) ────────────────────────────
+async function sendProfessorStatusEmail(user, status, conditions = "") {
+  const isApproved = status === "approved";
+  const title = isApproved
+    ? "Votre demande professeur a été approuvée"
+    : "Votre demande professeur a été refusée";
+
+  const content = `
+    <p>Bonjour <strong>${user.prenom || ""} ${user.nom || ""}</strong>,</p>
+    <p>
+      ${
+        isApproved
+          ? "Bonne nouvelle ! Votre compte professeur sur <strong>9ralibre</strong> a été approuvé."
+          : "Votre demande de compte professeur sur <strong>9ralibre</strong> n'a pas été approuvée pour le moment."
+      }
+    </p>
+    ${
+      conditions
+        ? `<p><strong>Conditions / motif :</strong></p>${quoteBox(conditions, isApproved ? "#22c55e" : "#ef4444")}`
+        : ""
+    }
+    <p style="font-size:13px; color:#6b7280;">
+      ${
+        isApproved
+          ? "Vous pouvez maintenant vous connecter et accéder à vos fonctionnalités professeur."
+          : "Vous pouvez corriger les points mentionnés puis soumettre une nouvelle demande."
+      }
+    </p>
+  `;
+
+  return transporter.sendMail({
+    from: process.env.EMAIL_CLIENT,
+    to: user.email,
+    subject: title,
+    html: emailLayout(content),
+  });
+}
+
+// ─── 8. Réception d'inscription professeur ────────────────────────────────────
+async function sendProfessorRegistrationReceivedEmail(user) {
+  const content = `
+    <p>Bonjour <strong>${user.prenom || ""} ${user.nom || ""}</strong>,</p>
+    <p>Nous avons bien reçu votre demande d'inscription en tant que professeur sur <strong>9ralibre</strong>.</p>
+    <p>Votre dossier est actuellement en cours de vérification par l'administration.</p>
+    ${quoteBox("Vous recevrez un nouvel email dès qu'une décision sera prise (approbation ou refus).", "#0ea5e9")}
+    <p style="font-size:13px; color:#6b7280;">Merci pour votre patience.</p>
+  `;
+
+  return transporter.sendMail({
+    from: process.env.EMAIL_CLIENT,
+    to: user.email,
+    subject: "Demande d'inscription professeur reçue",
+    html: emailLayout(content),
+  });
+}
+
 module.exports = {
   sendVerificationEmail,
   oublierMotdepasse,
@@ -204,4 +260,6 @@ module.exports = {
   likeCommentaire,
   oublierMotdepasseProfesseur,
   sendBlockedAccountEmail,
+  sendProfessorStatusEmail,
+  sendProfessorRegistrationReceivedEmail,
 };
