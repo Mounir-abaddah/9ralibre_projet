@@ -51,6 +51,7 @@ import AdminUsers from './pages/auth/Admin/Users/AdminUsers';
 import AdminSignals from './pages/auth/Admin/Signals/AdminSignals';
 import AdminModerationLog from './pages/auth/Admin/Moderation-log/AdminModerationLog';
 import AdminAppeals from './pages/auth/Admin/Appeals/AdminAppeals';
+import AdminProfessors from './pages/auth/Admin/Professors/AdminProfessors';
 import AppealPage from './pages/Appeal/AppealPage';
 
 
@@ -114,6 +115,7 @@ const App = () => {
           <Route path='/admin/dashboard' element={<LayoutsAdmin><AdminDashboard /></LayoutsAdmin>} />
           <Route path='/admin/users' element={<LayoutsAdmin><AdminUsers /></LayoutsAdmin>} />
           <Route path='/admin/signals' element={<LayoutsAdmin><AdminSignals /></LayoutsAdmin>} />
+          <Route path='/admin/professors' element={<LayoutsAdmin><AdminProfessors /></LayoutsAdmin>} />
           <Route path='/admin/moderation-log' element={<LayoutsAdmin><AdminModerationLog /></LayoutsAdmin>} />
           <Route path='/admin/appeals' element={<LayoutsAdmin><AdminAppeals /></LayoutsAdmin>} />
         </Route>
