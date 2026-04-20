@@ -26,6 +26,7 @@ const LayoutsAdmin = ({ children }: PropsWithChildren) => {
     "/admin/dashboard": "Dashboard",
     "/admin/users": "Utilisateurs",
     "/admin/signals": "Signalements",
+    "/admin/professors": "Professeurs",
     "/admin/moderation-log": "Moderation Log",
     "/admin/appeals": "Appeals",
   };
