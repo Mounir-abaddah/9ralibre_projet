@@ -372,13 +372,14 @@ const Settings = () => {
                       Langue
                     </Label>
                     <Select
+                    defaultValue="FR"
                       onValueChange={(value) => handleChange("langue", value)}
                     >
-                      <SelectTrigger className="w-full border-slate-200 dark:border-slate-700">
+                      <SelectTrigger defaultValue="FR" className="w-full border-slate-200 dark:border-slate-700">
                         <SelectValue placeholder="Sélectionnez votre langue" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
+                      <SelectContent defaultValue="FR">
+                        <SelectGroup defaultValue="FR">
                           <SelectLabel>Langues disponibles</SelectLabel>
                           <SelectItem value="FR">Français</SelectItem>
                           <SelectItem value="EN">Anglais</SelectItem>
