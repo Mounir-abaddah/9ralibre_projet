@@ -12,6 +12,7 @@ type AdminUser = {
   email: string;
   role: string;
   niveaux: string;
+  status?: "pending" | "approved" | "declined";
   blockedUntil?: string | null;
   createdAt?: string;
 };
@@ -42,6 +43,7 @@ const AdminDashboard = () => {
   const [videoReports, setVideoReports] = useState<ReportItem[]>([]);
   const [commentReports, setCommentReports] = useState<ReportItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingProfessorId, setUpdatingProfessorId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -111,6 +113,50 @@ const AdminDashboard = () => {
   }, [videoReports, commentReports]);
 
   const totalReports = videoReports.length + commentReports.length;
+
+  const handleProfessorStatusChange = async (
+    user: AdminUser,
+    status: "approved" | "declined",
+  ) => {
+    const conditions = window.prompt(
+      status === "approved"
+        ? "Conditions / message pour le professeur (optionnel):"
+        : "Motif / conditions du refus (optionnel):",
+      "",
+    );
+
+    if (conditions === null) return;
+
+    try {
+      setUpdatingProfessorId(user._id);
+      await axios.patch(
+        `${apiUrl}/user/admin/professeurs/${user._id}/status`,
+        { status, conditions: conditions.trim() },
+        { withCredentials: true },
+      );
+
+      setUsers((prev) =>
+        prev.map((item) =>
+          item._id === user._id
+            ? {
+                ...item,
+                status,
+              }
+            : item,
+        ),
+      );
+
+      toast.success(
+        status === "approved"
+          ? "Professeur approuvé et email envoyé"
+          : "Professeur refusé et email envoyé",
+      );
+    } catch {
+      toast.error("Impossible de mettre à jour le statut du professeur");
+    } finally {
+      setUpdatingProfessorId(null);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -203,6 +249,8 @@ const AdminDashboard = () => {
             <div className="space-y-3">
               {latestUsers.map((user) => {
                 const isBlocked = Boolean(user.blockedUntil && new Date(user.blockedUntil) > new Date());
+                const isPendingProf = user.role === "Professeur" && user.status === "pending";
+                const isDeclinedProf = user.role === "Professeur" && user.status === "declined";
                 return (
                   <article key={user._id} className="flex items-center justify-between rounded-lg border p-3">
                     <div>
@@ -213,10 +261,42 @@ const AdminDashboard = () => {
                       <p className="text-xs text-zinc-500">
                         {user.role} {user.niveaux && user.niveaux !== "Non renseigné" ? `- ${user.niveaux}` : ""}
                       </p>
+                      {user.role === "Professeur" ? (
+                        <p className="text-xs text-zinc-500">
+                          Statut:{" "}
+                          {user.status === "approved"
+                            ? "Approuvé"
+                            : user.status === "declined"
+                              ? "Refusé"
+                              : "En attente"}
+                        </p>
+                      ) : null}
                     </div>
-                    <Badge className={isBlocked ? "bg-red-600 text-white" : "bg-emerald-600 text-white"}>
-                      {isBlocked ? "Bloqué" : "Actif"}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      {(isPendingProf || isDeclinedProf) && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleProfessorStatusChange(user, "approved")}
+                            disabled={updatingProfessorId === user._id}
+                            className="rounded-md bg-emerald-600 px-2 py-1 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            Approuver
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleProfessorStatusChange(user, "declined")}
+                            disabled={updatingProfessorId === user._id}
+                            className="rounded-md bg-red-600 px-2 py-1 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            Refuser
+                          </button>
+                        </>
+                      )}
+                      <Badge className={isBlocked ? "bg-red-600 text-white" : "bg-emerald-600 text-white"}>
+                        {isBlocked ? "Bloqué" : "Actif"}
+                      </Badge>
+                    </div>
                   </article>
                 );
               })}
@@ -229,6 +309,10 @@ const AdminDashboard = () => {
         <Link to="/admin/users" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
           <h3 className="font-semibold">Utilisateurs</h3>
           <p className="text-sm text-zinc-500">Blocage/déblocage des comptes et suivi des statuts.</p>
+        </Link>
+        <Link to="/admin/professors" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
+          <h3 className="font-semibold">Professeurs</h3>
+          <p className="text-sm text-zinc-500">Approuver ou décliner les demandes professeurs.</p>
         </Link>
         <Link to="/admin/signals" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
           <h3 className="font-semibold">Signalements</h3>
