@@ -50,7 +50,7 @@ const UserSchema = new mongoose.Schema(
     status:{
       type:String,
       default:"pending",
-      enum:['pending','approved']
+      enum:['pending','approved','declined']
     },
     blockedUntil: {
       type: Date,
