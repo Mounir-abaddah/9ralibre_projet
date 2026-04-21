@@ -20,7 +20,7 @@ const AppealPage = () => {
     }
     try {
       setLoading(true);
-      const response = await axios.post(`${apiUrl}/auth/appeal`, {
+      const response = await axios.post(`${apiUrl}/admin/appeal`, {
         email,
         message,
       });
