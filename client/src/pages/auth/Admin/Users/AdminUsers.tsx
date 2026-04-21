@@ -58,7 +58,7 @@ const AdminUsers = () => {
 
   const loadUsers = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/user/admin/prof/users`, { withCredentials: true });
+      const response = await axios.get(`${apiUrl}/admin/prof/users`, { withCredentials: true });
       setUsers(response.data.users || []);
     } catch {
       toast.error("Impossible de charger les utilisateurs");
@@ -78,7 +78,7 @@ const AdminUsers = () => {
     try {
       setSubmitting(true);
       await axios.patch(
-        `${apiUrl}/user/admin/users/${user._id}/block`,
+        `${apiUrl}/admin/users/${user._id}/block`,
         { days, reason },
         { withCredentials: true },
       );
