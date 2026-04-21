@@ -49,8 +49,8 @@ const AdminDashboard = () => {
     const loadDashboard = async () => {
       try {
         const [usersResponse, reportsResponse] = await Promise.all([
-          axios.get(`${apiUrl}/user/admin/users`, { withCredentials: true }),
-          axios.get(`${apiUrl}/user/admin/reports`, { withCredentials: true }),
+          axios.get(`${apiUrl}/admin/users`, { withCredentials: true }),
+          axios.get(`${apiUrl}/admin/reports`, { withCredentials: true }),
         ]);
 
         setUsers(usersResponse.data.users || []);
