@@ -31,7 +31,7 @@ const AdminSignals = () => {
   useEffect(() => {
     const loadReports = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/user/admin/reports`, { withCredentials: true });
+        const response = await axios.get(`${apiUrl}/admin/reports`, { withCredentials: true });
         setVideoReports(response.data.videoReports || []);
         setCommentReports(response.data.commentReports || []);
       } catch {
