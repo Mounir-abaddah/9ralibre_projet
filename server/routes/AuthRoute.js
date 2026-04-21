@@ -7,7 +7,7 @@ const nodemailer = require('nodemailer');
 const passport = require('passport')
 const {registerShema , loginSchema , messageOUblierSchema,passwordResetShema} = require('../validations/authValidation');
 const { sendVerificationEmail, oublierMotdepasse } = require('../services/emailServices');
-const Appeal = require("../models/AppealModel");
+
 
 
 router.post('/register',async(req,res)=>{
@@ -109,43 +109,6 @@ router.post('/connexion',async(req,res)=>{
     }
 })
 
-router.post('/admin/connexion', async (req, res) => {
-  try {
-    const { email, password } = loginSchema.parse(req.body);
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).send({ message: "Email ou mot de passe incorrect", success: false });
-    }
-    if (user.role !== "Admin") {
-      return res.status(403).send({ message: "Accès réservé aux admins", success: false });
-    }
-    if (!user.accountVerified) {
-      return res.status(400).send({ message: "Compte non vérifié", success: false });
-    }
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(400).send({ message: "Email ou mot de passe incorrect", success: false });
-    }
-    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: "5d",
-    });
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-    return res.status(200).send({ message: "Connexion admin réussie", success: true });
-  } catch (err) {
-    if (err.name === "ZodError") {
-      return res.status(400).send({
-        success: false,
-        message: err.issues.map((e) => e.message),
-      });
-    }
-    return res.status(500).send({ message: "Une erreure est survenue", success: false });
-  }
-});
 
 router.post('/oublierMotdepasse',async(req,res)=>{
     try{
@@ -251,49 +214,7 @@ router.post('/logout', (req, res) => {
     }
 });
 
-router.post("/appeal", async (req, res) => {
-  try {
-    const { email, message } = req.body;
-    if (!email || !message || message.trim().length < 10) {
-      return res.status(400).json({
-        success: false,
-        message: "Email et message (10 caractères min) sont requis",
-      });
-    }
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ success: false, message: "Utilisateur introuvable" });
-    }
-    if (!user.blockedUntil || user.blockedUntil <= new Date()) {
-      return res.status(400).json({
-        success: false,
-        message: "Ce compte n'est pas bloqué actuellement",
-      });
-    }
-
-    const existsPending = await Appeal.findOne({ user: user._id, status: "PENDING" });
-    if (existsPending) {
-      return res.status(400).json({
-        success: false,
-        message: "Une demande est déjà en attente",
-      });
-    }
-
-    await Appeal.create({
-      user: user._id,
-      email,
-      message: message.trim(),
-    });
-
-    return res.status(201).json({
-      success: true,
-      message: "Demande envoyée avec succès",
-    });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Erreur serveur", err });
-  }
-});
 
 
 module.exports = router
