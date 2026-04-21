@@ -19,7 +19,7 @@ const AdminConnexion = () => {
     setError("");
     try {
       const response = await axios.post(
-        `${apiUrl}/auth/admin/connexion`,
+        `${apiUrl}/admin/connexion`,
         form,
         { withCredentials: true },
       );
