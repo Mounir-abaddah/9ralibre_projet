@@ -28,7 +28,7 @@ const AdminAppeals = () => {
 
   const loadAppeals = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/user/admin/appeals`, {
+      const response = await axios.get(`${apiUrl}/admin/appeals`, {
         withCredentials: true,
       });
       setAppeals(response.data.appeals || []);
@@ -47,7 +47,7 @@ const AdminAppeals = () => {
     const reviewNote = window.prompt("Note admin (optionnel):", "") || "";
     try {
       await axios.patch(
-        `${apiUrl}/user/admin/appeals/${appealId}/review`,
+        `${apiUrl}/admin/appeals/${appealId}/review`,
         { status, reviewNote },
         { withCredentials: true },
       );
