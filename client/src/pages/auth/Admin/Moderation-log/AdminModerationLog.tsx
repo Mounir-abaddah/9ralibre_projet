@@ -28,7 +28,7 @@ const AdminModerationLog = () => {
   useEffect(() => {
     const loadLogs = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/user/admin/moderation-logs`, {
+        const response = await axios.get(`${apiUrl}/admin/moderation-logs`, {
           withCredentials: true,
         });
         setLogs(response.data.logs || []);
