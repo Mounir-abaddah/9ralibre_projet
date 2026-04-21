@@ -30,6 +30,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from '../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import ConnexionModal from '../ConnexionModal/ConnexionModal';
+import AvatarMobile from './AvatarMobile';
 
 const Navbar = () => {
 const { theme, toggleTheme } = useTheme();
@@ -195,7 +196,7 @@ return (
                 size={'icon'}
                 onClick={toggleTheme}
             >
-                {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
             <Button
                 variant={'outline'}
@@ -213,7 +214,7 @@ return (
                 onClick={toggleTheme}
                 className='cursor-pointer'
             >
-                {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
             <Button onClick={()=>setOpenModal(!openModal)} variant={'ghost'} className='cursor-pointer'><Lock />Connexion</Button>
             <Link to="/inscription" >
@@ -274,37 +275,42 @@ type MobileMenuProps = typeAllData & {
     onNavigate: () => void;
 };
 
-const MobileMenu = ({data,loading,error,fetchData,onNavigate}:MobileMenuProps) => {
-return (
-    <div className="flex h-full w-full flex-col justify-between overflow-x-hidden p-2">
-        <div className='flex flex-col gap-6'>   
-            <Link to="/" onClick={onNavigate} className="text-lg font-semibold">Accueil</Link>
-            <Link to={`/cours/${data?.niveaux}`} onClick={onNavigate} className="text-lg font-semibold">Cours</Link>
-            <Link to={`/videos/${data?.niveaux}`} onClick={onNavigate} className="text-lg font-semibold">Vidéos</Link>
-            <Link to="/About" onClick={onNavigate} className="text-lg font-semibold">A propos</Link>
-            <Link to="/prof-connexion" onClick={onNavigate} className="text-lg font-semibold">Je suis professeur</Link>
-        </div>
-        <div>   
-            {data ? 
-                <Avatare data={data} loading={loading} error={error} fetchData={fetchData} /> 
-            : 
-                <div className='flex w-full flex-col items-center justify-around gap-2'>
-                    <Button size={'lg'} variant={'outline'} className='w-full border-amber-500 text-amber-500'>
-                        <Link to="/connexion" onClick={onNavigate}>
-                            Connexion
-                        </Link>
-                    </Button>
-                    <Button size={'lg'} className='w-full bg-cyan-500 text-white hover:bg-cyan-600'>
-                        <Link to="/inscription" onClick={onNavigate}>
-                            Inscription
-                        </Link>
-                    </Button>
+const MobileMenu = ({ data, onNavigate }: MobileMenuProps) => {
+  return (
+    <div className="flex h-full flex-col justify-between p-3">
+        <div className="flex flex-col gap-6">
+
+                {data && <AvatarMobile data={data} />}
+
+                {/* MENU */}
+                <div className="flex flex-col gap-4">
+                <Link to="/" onClick={onNavigate}>Accueil</Link>
+                <Link to={`/cours/${data?.niveaux}`} onClick={onNavigate}>Cours</Link>
+                <Link to={`/videos/${data?.niveaux}`} onClick={onNavigate}>Vidéos</Link>
+                {!data && (
+                    <>
+                        <Link to="/About" onClick={onNavigate}>A propos</Link>
+                        <Link to="/prof-connexion" onClick={onNavigate}>Je suis professeur</Link>
+                    </>
+                )}
                 </div>
-            }
+            </div>
+
+            {/* BOTTOM */}
+            {!data ? (
+                <div className="flex flex-col gap-2">
+                <Link to="/connexion">
+                    <Button variant="outline" className="w-full">Connexion</Button>
+                </Link>
+                <Link to="/inscription">
+                    <Button className="w-full bg-cyan-500">Inscription</Button>
+                </Link>
+                </div>
+            ):(
+                <Button variant={'destructive'} className='cursor-pointer'>Se déconnecter</Button>
+            )}
         </div>
-    
-    </div>
-);
+  );
 };
 
 const MenuLinkItem = () => {
