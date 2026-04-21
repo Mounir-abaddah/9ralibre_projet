@@ -55,7 +55,7 @@ const AdminProfessors = () => {
 
   const loadProfessors = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/user/admin/users`, { withCredentials: true });
+      const response = await axios.get(`${apiUrl}/admin/users`, { withCredentials: true });
       const allUsers: ProfessorUser[] = response.data.users || [];
       setProfessors(allUsers.filter((item) => item.role === "Professeur"));
     } catch {
