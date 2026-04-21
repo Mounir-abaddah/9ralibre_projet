@@ -36,7 +36,6 @@ import ProfChat from './pages/auth/Professeur/Prof-chat/ProfChat';
 import ProfChatStart from './pages/auth/Professeur/Prof-chat/ProfChatStart';
 import ProfSettings from './pages/auth/Professeur/Prof-settings/ProfSettings';
 import ProfInscription from './pages/auth/Professeur/Prof-inscription/ProfInscription';
-import BoiteMerveille from './pages/auth/Histoire/BoiteMerveille';
 import ProfForgotPassword from './pages/auth/Professeur/Prof-forgotPassword/ProfForgotPassword';
 import ProfResetPassword from './pages/auth/Professeur/Prof-resetPassword/ProfResetPassword';
 import ProtectedNiveauRoute from './components/ProtectedRoute/ProtectedNiveauRoute';
@@ -53,6 +52,7 @@ import AdminModerationLog from './pages/auth/Admin/Moderation-log/AdminModeratio
 import AdminAppeals from './pages/auth/Admin/Appeals/AdminAppeals';
 import AdminProfessors from './pages/auth/Admin/Professors/AdminProfessors';
 import AppealPage from './pages/Appeal/AppealPage';
+import Histoire_details from './pages/auth/Histoire/Histoire_details';
 
 
 const App = () => {
@@ -87,7 +87,7 @@ const App = () => {
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
             <Route path='/Histoire/:niveaux' element={<Layouts><Histoire /></Layouts>} />
-            <Route path='/Histoire/Boite/:niveaux' element={<Layouts><BoiteMerveille /></Layouts>} />
+            <Route path='/Histoire/:histoire/:niveaux' element={<Layouts><Histoire_details /></Layouts>} />
             <Route path='/Quiz/:niveaux' element={<Layouts><Quiz /></Layouts>} />
             <Route path='/Quiz/start/:niveaux/:quizId' element={<Quiz_Start />} />
             <Route path='/Quiz/resultat/:quizId' element={<Layouts><Resultat /></Layouts>} />
