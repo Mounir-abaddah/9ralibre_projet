@@ -17,6 +17,7 @@ import {
   Play,
   Video,
 } from "lucide-react";
+import { fr } from "date-fns/locale";
 
 interface Video {
   _id: string;
@@ -27,6 +28,18 @@ interface Cours {
   _id: string;
   title: string;
   pdfUrl?: string;
+}
+
+interface CalendarItem {
+  type: string;
+  titre: string;
+  Description?: string;
+}
+
+interface CalendarEvent {
+  _id: string;
+  Date: string;
+  items: CalendarItem[];
 }
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -43,6 +56,7 @@ const Dashboard = () => {
   const [totalSavedVideos, setTotalSavedVideos] = useState(0);
   const [totalSavedCours, setTotalSavedCours] = useState(0);
   const [loadingSaved, setLoadingSaved] = useState(true);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   const enumParams = ["1AC", "2AC", "3AC", "TC", "1BAC", "2BAC"];
 
@@ -78,10 +92,22 @@ const Dashboard = () => {
     }
   };
 
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/user/getEvenements`, {
+        withCredentials: true,
+      });
+      setEvents(res.data?.events || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
     fetchSaved();
     fetchTotals();
+    fetchEvents();
   }, []);
 
   if (!enumParams.includes(niveaux || "")) {
@@ -133,6 +159,17 @@ const Dashboard = () => {
       iconClass: "text-sky-600 dark:text-sky-400",
     },
   ];
+
+  const eventDates = events.map((event) => new Date(event.Date));
+  const nextEvents = events
+    .flatMap((event) =>
+      (event.items || []).map((item) => ({
+        date: new Date(event.Date),
+        ...item,
+      })),
+    )
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .slice(0, 4);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full">
@@ -313,8 +350,38 @@ const Dashboard = () => {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+                modifiers={{ hasEvent: eventDates }}
+                locale={fr}
+                modifiersClassNames={{ hasEvent: "bg-amber-100 text-amber-900 font-semibold" }}
+                className="w-full rounded-xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+                classNames={{
+                  day:`p-1 m-2 w-full`
+                }}
               />
+            </CardContent>
+            <CardContent className="pt-0">
+              <p className="mb-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                Prochains événements
+              </p>
+              {nextEvents.length === 0 ? (
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Aucun événement planifié
+                </p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {nextEvents.map((event, index) => (
+                    <li
+                      key={`${event.titre}-${index}`}
+                      className="rounded-md border border-slate-200 px-2 py-1.5 text-xs dark:border-slate-700"
+                    >
+                      <span className="font-medium">
+                        {event.date.toLocaleDateString("fr-FR")}
+                      </span>{" "}
+                      - {event.type}: {event.titre}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </CardContent>
           </Card>
 
