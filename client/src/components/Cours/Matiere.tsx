@@ -1,11 +1,12 @@
 import { XCircle } from "lucide-react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 export interface Coursitems{
-    name:string
+    nom:string
 }
 export interface CoursMatiere{
-    items:Coursitems[]
     onChangeMatiere?: (name: string) => void
     onChangeSemestre?: (name: string) => void
     onChangeType?: (name: string) => void
@@ -16,7 +17,7 @@ export interface CoursMatiere{
     selectedFiliere?:string|null
     niveaux?:string
 }
-const Matiere = ({  items,
+const Matiere = ({
     onChangeMatiere,
     onChangeSemestre,
     onChangeType,
@@ -26,17 +27,40 @@ const Matiere = ({  items,
     selectedType,
     selectedFiliere,niveaux}:CoursMatiere) => {
 
-    const bgItems = {
-        "Mathématiques":"data-[state=checked]:bg-red-400",
-        "Physique et Chimie":"data-[state=checked]:bg-cyan-400",
-        "SVT":"data-[state=checked]:bg-teal-400",
-        "Informatique":"data-[state=checked]:bg-sky-400",
-        "Arabe":"data-[state=checked]:bg-orange-400",
-        "Français":"data-[state=checked]:bg-orange-400",
-        "Anglais":"data-[state=checked]:bg-orange-400",
-        "Histoire Géographie":"data-[state=checked]:bg-amber-400",
-        "Éducation Islamique":"data-[state=checked]:bg-blue-400",
-    }
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const [matieres, setMatieres] = useState<Coursitems[]>([]);
+        const bgItems = {
+            "Mathématiques":"data-[state=checked]:bg-red-400",
+            "Physique et Chimie":"data-[state=checked]:bg-cyan-400",
+            "Sciences de la Vie et de la Terre (SVT)":"data-[state=checked]:bg-teal-400",
+            "Informatique":"data-[state=checked]:bg-sky-400",
+            "Arabe":"data-[state=checked]:bg-orange-400",
+            "Français":"data-[state=checked]:bg-orange-400",
+            "Anglais":"data-[state=checked]:bg-orange-400",
+            "Histoire Géographie":"data-[state=checked]:bg-amber-400",
+            "Éducation Islamique":"data-[state=checked]:bg-blue-400",
+        }
+
+        useEffect(() => {
+            if (!niveaux) return;
+
+            const getMatiere = async () => {
+                try {
+                const res = await axios.get(
+                    `${apiUrl}/user/fetch-matiere/${niveaux}`,
+                    { withCredentials: true }
+                );
+
+                setMatieres(res.data); // 🔥 IMPORTANT
+                } catch (err) {
+                console.error(err);
+                }
+            };
+
+            getMatiere();
+        }, [niveaux]);
+
+
     
   return (
     <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -49,8 +73,14 @@ const Matiere = ({  items,
             <SelectContent>
                 <SelectGroup>
                     <SelectLabel>Choisissez une matière</SelectLabel>
-                    {items.map((item,index)=>(
-                    <SelectItem key={index} value={item.name} className={`${bgItems[item.name as keyof typeof bgItems]}`}>{item.name}</SelectItem>
+                    {matieres.map((item, index) => (
+                        <SelectItem
+                            key={index}
+                            value={item.nom}
+                            className={`${bgItems[item.nom as keyof typeof bgItems]}`}
+                        >
+                            {item.nom}
+                        </SelectItem>
                     ))}
                 </SelectGroup>
             </SelectContent>
