@@ -14,7 +14,8 @@ Trophy,
 Lock,
 Brain,
 Bell,
-House
+House,
+Calendar
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useProtectedRoutes, type typeAllData } from "@/store/userStore";
@@ -134,7 +135,9 @@ return (
             />
             <Popover>
                 <PopoverTrigger asChild>
-                    <button
+                    <Button
+                        variant={'outline'}
+                        size={'icon'}
                         className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
                         aria-label="Notifications"
                     >
@@ -144,7 +147,7 @@ return (
                                 {unreadTotal > 99 ? "99+" : unreadTotal}
                             </span>
                         )}
-                    </button>
+                    </Button>
                 </PopoverTrigger>
                 <PopoverContent className="relative top-6 w-92 p-0 shadow-2xl">
                     <div className="flex items-center justify-between border-b p-3">
@@ -194,7 +197,16 @@ return (
             <Button
                 variant={'outline'}
                 size={'icon'}
+                className='cursor-pointer'
+                onClick={()=>navigate(`/Calendrier/${data.niveaux}`)}
+            >
+                <Calendar />
+            </Button>
+            <Button
+                variant={'outline'}
+                size={'icon'}
                 onClick={toggleTheme}
+                className='cursor-pointer'
             >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
@@ -202,6 +214,7 @@ return (
                 variant={'outline'}
                 size={'icon'}
                 onClick={()=>navigate('/Drawing')}
+                className='cursor-pointer'
             >
                 <DraftingCompass size={18}/>
             </Button>
