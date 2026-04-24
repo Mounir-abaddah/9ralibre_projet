@@ -53,6 +53,7 @@ import AdminAppeals from './pages/auth/Admin/Appeals/AdminAppeals';
 import AdminProfessors from './pages/auth/Admin/Professors/AdminProfessors';
 import AppealPage from './pages/Appeal/AppealPage';
 import Histoire_details from './pages/auth/Histoire/Histoire_details';
+import Calendrier from './pages/auth/Calendrier/Calendrier';
 
 
 const App = () => {
@@ -83,6 +84,7 @@ const App = () => {
           <Route path='/Drawing' element={<Layouts><DrawExcalidraw /></Layouts>} />
         <Route element={<ProtectedNiveauRoute />}>
             <Route path='/Dashboard/:niveaux' element={<Layouts><Dashboard /></Layouts>} />
+            <Route path='/Calendrier/:niveaux' element={<Layouts><Calendrier /></Layouts>} />
             <Route path='/Cours/:niveaux' element={<Layouts><Cours /></Layouts>} />
             <Route path='/Videos/:niveaux' element={<Layouts><Videos /></Layouts>} />
             <Route path='/Videos/:niveaux/:videoId' element={<Layouts><PlayVideo /></Layouts>} />
