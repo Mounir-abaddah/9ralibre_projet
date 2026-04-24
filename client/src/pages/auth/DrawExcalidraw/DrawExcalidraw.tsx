@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { GitHubDark, Google } from "developer-icons";
@@ -9,6 +10,7 @@ export default function DrawExcalidraw() {
     const savedDrawing = localStorage.getItem("drawing");
     return savedDrawing ? JSON.parse(savedDrawing) : [];
   });
+  const {theme} = useTheme();
   useEffect(() => {
     localStorage.setItem("drawing", JSON.stringify(elements));
   }, [elements]);
@@ -20,6 +22,7 @@ export default function DrawExcalidraw() {
   return (
     <div className="size-full" style={{ height: "590px" }}>
       <Excalidraw
+        theme={theme === "dark" ? "dark" : "light"}
         langCode="fr-FR"
         initialData={{ elements }}
         onChange={(updatedElements) => setElements(updatedElements)}
