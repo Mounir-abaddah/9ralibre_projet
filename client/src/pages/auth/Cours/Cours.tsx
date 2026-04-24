@@ -1,5 +1,5 @@
 import CardAside from '@/components/Cours/CardAside';
-import Matiere, { type Coursitems} from '@/components/Cours/Matiere';
+import Matiere from '@/components/Cours/Matiere';
 import Pagination from '@/components/Pagination/Pagination';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -59,18 +59,6 @@ const Cours = () => {
     }
   }, []);
 
-  const optionsCollege:Coursitems[] = [
-    { name: "Mathématiques"},
-    { name: "Physique et Chimie"},
-    { name: "SVT"},
-    { name: "Informatique"},
-    { name: "Arabe"},
-    { name: "Français"},
-    { name: "Anglais"},
-    { name: "Histoire Géographie"},
-    { name: "Éducation Islamique"},
-  ];
-
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -126,6 +114,15 @@ const Cours = () => {
     "Anglais":"bg-orange-400",
     "Histoire Géographie":"bg-amber-400",
     "Éducation Islamique":"bg-blue-400",
+    "Sciences de la Vie et de la Terre (SVT)":"bg-teal-500",
+    "Philosophie":"bg-red-500",
+    "Sciences Végétales et Animales (SVA)":"bg-green-500",
+    "Sciences de l'ingénieur":"bg-violet-500",
+    "Économie et Organisation Administrative des Entreprises":"bg-blue-500",
+    "Comptabilité et Mathématiques financières":"bg-zink-500",
+    "Économie générale et Statistiques":"bg-cyan-500",
+    "Droit":"bg-orange-500",
+    "Informatique de gestion":"bg-mauve-500"
   }
 
   useEffect(()=>{
@@ -199,7 +196,6 @@ const Cours = () => {
         </div>
           <Matiere
           niveaux={niveaux}
-          items={optionsCollege}
           selectedMatiere={matiere}
           selectedSemestre={semestre}
           selectedType={type}
