@@ -104,7 +104,7 @@ const AdminProfessors = () => {
     try {
       setSubmitting(true);
       await axios.patch(
-        `${apiUrl}/user/admin/professeurs/${selectedProfessor._id}/status`,
+        `${apiUrl}/admin/professeurs/${selectedProfessor._id}/status`,
         { status: targetStatus, conditions: conditions.trim() },
         { withCredentials: true },
       );
