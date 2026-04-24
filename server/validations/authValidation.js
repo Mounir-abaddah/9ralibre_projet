@@ -56,7 +56,16 @@ const itemShema = z.object({
 })
 
 const EventsShema = z.object({
-  Date:z.string().transform(val=>new Date(val)).refine(val => !isNaN(val.getTime()),{message:"Date invalide"}),
+  Date:z.string()
+    .transform(val=>new Date(val))
+    .refine(val => !isNaN(val.getTime()),{message:"Date invalide"})
+    .refine((val) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selected = new Date(val);
+      selected.setHours(0, 0, 0, 0);
+      return selected >= today;
+    }, { message: "Les dates passées ne sont pas autorisées" }),
   items: z.array(itemShema).min(1, "Au moins un événement est requis")
 });
 
