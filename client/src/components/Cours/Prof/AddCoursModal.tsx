@@ -247,7 +247,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                 >
                   <SelectValue placeholder="Choisir une matière"/>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   {matiere.map((mat) => (
                     <SelectItem key={mat._id} value={mat._id}>
                       {mat.nom}
@@ -256,7 +256,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                 </SelectContent>
               </Select>
               {fieldErrors.matiere && (
-                <p className="text-sm text-destructive">{fieldErrors.matiere}</p>
+                <p className="text-destructive text-sm">{fieldErrors.matiere}</p>
               )}
             </div>
           </div>
