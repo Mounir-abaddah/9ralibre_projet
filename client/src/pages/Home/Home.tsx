@@ -165,8 +165,13 @@ function LandingPage({ user }: { user: typedata | null }) {
     },
     {
       icon: Calendar,
-      title: "Organisation",
-      desc: "Tableau de bord et repères pour structurer votre année.",
+      title: "Calendrier de révision",
+      desc: "Planifiez vos objectifs semaine par semaine et suivez vos échéances.",
+    },
+    {
+      icon: BookOpen,
+      title: "Histoires inspirantes",
+      desc: "Découvrez des parcours d'élèves pour rester motivé tout au long de l'année.",
     },
   ];
 
@@ -221,7 +226,9 @@ function LandingPage({ user }: { user: typedata | null }) {
               ) : (
                 <>
                   Cours PDF, vidéos pédagogiques et quiz sur une interface simple
-                  — pensée pour les élèves qui veulent gagner du temps.
+                  — pensée pour les élèves qui veulent gagner du temps, planifier
+                  leurs révisions avec un calendrier et suivre des histoires
+                  inspirantes.
                 </>
               )}
             </p>
@@ -688,7 +695,7 @@ export function HomeFooter({ user }: { user: typedata | null }) {
             </h3>
             <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
               Une question sur la plateforme ? Utilisez la messagerie une fois
-              connecté ou contactez-nous via les réseaux sociaux.
+              connecté ou contactez-nous via les réseaux sociaux. <a href="mailto:contact@9ralibre.com" className="border-b-2 border-b-cyan-400">contact@9ralibre.com</a>
             </p>
           </div>
         </div>
@@ -696,7 +703,7 @@ export function HomeFooter({ user }: { user: typedata | null }) {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-zinc-200 pt-8 text-center text-xs text-zinc-500 sm:flex-row sm:text-left dark:border-zinc-800 dark:text-zinc-500">
           <p>© {new Date().getFullYear()} 9ralibre. Tous droits réservés.</p>
           <p className="max-w-md sm:text-right">
-            Plateforme éducative — Maroc.
+            Plateforme éducative — 9ralibre.
           </p>
         </div>
       </div>
