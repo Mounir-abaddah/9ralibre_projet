@@ -8,76 +8,149 @@ import { useProtectedRoutes } from '@/store/userStore'
 
 const Histoire = () => {
     document.title = "Histoire | 9ralibre"
-    const {data} =   useProtectedRoutes();
+    const { data } = useProtectedRoutes();
 
     const books = [
-    {
-        img: boite_A_Merveille,
-        title: "La Boîte à merveilles",
-        author: "Ahmed Sefrioui",
-        path: `/Histoire/Boite/${data?.niveaux}`
-    },
-    {
-        img: antigone,
-        title: "Antigone",
-        author: "Jean Anouilh",
-        path: `/Histoire/Antigone/${data?.niveaux}`
-    },
-    {
-        img: Derniere,
-        title: "Le Dernier Jour d’un condamné",
-        author: "Victor Hugo",
-        path: `/Histoire/DJC/${data?.niveaux}`
-    },
-    {
-        img: Candide,
-        title: "Candide ou l'optimisme",
-        author: "Voltaire",
-        path: `/Histoire/Candide/${data?.niveaux}`
-    },
-    {
-        img: Honore,
-        title: "Le Père Goriot",
-        author: "Honoré de Balzac",
-        path: `/Histoire/Honore/${data?.niveaux}`
-    }
+        {
+            img: boite_A_Merveille,
+            title: "La Boîte à merveilles",
+            author: "Ahmed Sefrioui",
+            year: "1954",
+            genre: "Roman autobiographique",
+            path: `/Histoire/Boite/${data?.niveaux}`
+        },
+        {
+            img: antigone,
+            title: "Antigone",
+            author: "Jean Anouilh",
+            year: "1944",
+            genre: "Tragédie moderne",
+            path: `/Histoire/Antigone/${data?.niveaux}`
+        },
+        {
+            img: Derniere,
+            title: "Le Dernier Jour d'un condamné",
+            author: "Victor Hugo",
+            year: "1829",
+            genre: "Roman",
+            path: `/Histoire/DJC/${data?.niveaux}`
+        },
+        {
+            img: Candide,
+            title: "Candide ou l'Optimisme",
+            author: "Voltaire",
+            year: "1759",
+            genre: "Conte philosophique",
+            path: `/Histoire/Candide/${data?.niveaux}`
+        },
+        {
+            img: Honore,
+            title: "Le Père Goriot",
+            author: "Honoré de Balzac",
+            year: "1835",
+            genre: "Roman réaliste",
+            path: `/Histoire/Honore/${data?.niveaux}`
+        }
     ];
 
-return (
-    <>
-        <div>
-            <h1 className='text-2xl font-semibold'>Découvertes organisées</h1>
-            <p className="max-w-3xl text-sm text-gray-600">
-                Découvrez un univers d’histoires captivantes à travers une collection d’œuvres littéraires soigneusement sélectionnées. 
-                Du patrimoine marocain aux grands classiques français, chaque livre vous invite à explorer des récits profonds, 
-                à développer votre esprit critique et à enrichir votre culture générale.
-            </p>
-        </div>
-        <div className="grid w-full grid-cols-1 place-items-center gap-8 p-8 sm:grid-cols-2 md:grid-cols-3">
-            {books.map((book, i) => (
-                <div key={i} className="book group w-[260px] cursor-pointer">
-                    <Link to={book.path}>
-                        <div className="book-inner relative h-[380px] w-full">
-                        <div className="book-cover absolute inset-0 overflow-hidden rounded-xl shadow-2xl">
-                            <img
-                            src={book.img}
-                            alt={book.title}
-                            className="h-full w-full object-cover"
-                            />
-                        </div>
-                        <div className="book-side rounded-r-xl"></div>
-                        </div>
-                    </Link>
+    return (
+        <div className="px-4 py-8">
 
-                    <p className="mt-3 text-center text-lg font-semibold">
-                        {book.title} - {book.author}
-                    </p>
+            {/* ── Header ── */}
+            <div className="mb-10 border-l-2 border-amber-400 pl-4">
+                <p className="mb-1 text-xs font-medium tracking-widest text-amber-500 uppercase">
+                    Collection littéraire
+                </p>
+                <h1 className="mb-3 text-4xl leading-tight font-light text-gray-900 dark:text-gray-100">
+                    Œuvres <span className="italic">choisies</span>
+                </h1>
+                <p className="max-w-lg text-sm leading-relaxed font-light text-gray-500 dark:text-gray-400">
+                    Du patrimoine marocain aux grands classiques français — chaque œuvre vous invite
+                    à explorer des récits profonds et à enrichir votre culture générale.
+                </p>
+                <div className="mt-4 flex items-center gap-2 text-xs tracking-widest text-gray-400 uppercase">
+                    <span className="block h-px w-5 bg-amber-400" />
+                    {books.length} œuvres disponibles
                 </div>
-            ))}
+            </div>
+
+            {/* ── Divider ── */}
+            <div className="mb-10 flex items-center gap-3">
+                <div className="h-px flex-1 bg-gradient-to-r from-stone-200 to-transparent dark:from-stone-700" />
+                <div className="h-1.5 w-1.5 rotate-45 bg-amber-400" />
+                <div className="h-px flex-1 bg-gradient-to-l from-stone-200 to-transparent dark:from-stone-700" />
+            </div>
+
+            {/* ── Grid ── */}
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {books.map((book, i) => (
+                    <div key={i} className="group">
+                        <Link to={book.path}>
+                            {/* Book cover wrapper */}
+                            <div className="relative aspect-[2/3] w-full overflow-hidden rounded-r-xl
+                                            shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform duration-500
+                                            ease-out
+                                            group-hover:-translate-y-2
+                                            group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
+
+                                {/* Spine illusion */}
+                                <div className="absolute top-1 bottom-1 left-0 z-10 w-1
+                                                rounded-l-sm bg-gradient-to-r from-stone-500 to-stone-300" />
+
+                                {/* Cover image */}
+                                <img
+                                    src={book.img}
+                                    alt={book.title}
+                                    className="h-full w-full object-cover
+                                               transition-transform duration-500
+                                               group-hover:scale-105"
+                                />
+
+                                {/* Genre badge */}
+                                <div className="absolute top-2 right-2 z-20
+                                                -translate-y-1 rounded-sm bg-black/70
+                                                px-2 py-0.5
+                                                text-[10px] tracking-wider text-amber-200
+                                                uppercase opacity-0
+                                                transition-all duration-300
+                                                group-hover:translate-y-0 group-hover:opacity-100">
+                                    {book.genre}
+                                </div>
+
+                                {/* Bottom overlay + CTA */}
+                                <div className="absolute inset-x-0 bottom-0 z-20
+                                                flex items-end justify-center bg-gradient-to-t
+                                                from-black/85 via-black/30 to-transparent
+                                                px-3 pt-10 pb-3
+                                                opacity-0 transition-opacity duration-300
+                                                group-hover:opacity-100">
+                                    <span className="rounded-sm border border-amber-400/50
+                                                     px-3 py-1 text-[11px]
+                                                     tracking-widest text-amber-200 uppercase">
+                                        Lire →
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* Book metadata */}
+                        <div className="mt-3">
+                            <p className="text-sm leading-snug font-normal text-gray-800 dark:text-gray-200">
+                                {book.title}
+                            </p>
+                            <p className="mt-1.5 flex items-center gap-1.5 text-xs font-light text-gray-400">
+                                <span className="inline-block h-px w-3 shrink-0 bg-amber-400" />
+                                {book.author}
+                            </p>
+                            <p className="mt-0.5 pl-[18px] text-[11px] text-gray-300 dark:text-gray-600">
+                                {book.year}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-    </>
-    
-);
+    );
 };
 
 export default Histoire;
