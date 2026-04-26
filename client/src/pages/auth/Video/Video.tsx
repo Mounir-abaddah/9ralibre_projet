@@ -24,6 +24,8 @@ import { useCoursFilter } from "@/store/useCoursFilter";
 import AsideVideos from "@/components/Videos/AsideVideos";
 import { useDebounce } from "@/hooks/use-debounce";
 import ReportModal from "@/components/Videos/ReportModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Videos = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -207,17 +209,27 @@ const Videos = () => {
                           <Link
                             to={`/Profile/${item.professeur.nom}-${item.professeur.prenom}`}
                           >
-                            <img
-                              src={item.professeur.image}
-                              className="size-8 rounded-full object-cover md:size-10"
-                              loading="lazy"
-                            />
+                            <Avatar size="lg">
+                              <AvatarImage src={item.professeur.image} alt="logo_professeur" />
+                              <AvatarFallback>
+                                {item.professeur.nom[0]}
+                                {item.professeur.prenom[0]}
+                              </AvatarFallback>
+                            </Avatar>
                           </Link>
 
                           <div>
-                            <h3 className="line-clamp-2 text-base font-medium text-gray-700 md:text-lg">
-                              {item.title}
-                            </h3>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <h3 className="line-clamp-2 text-sm font-medium text-gray-700">
+                                  {item.title}
+                                </h3>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{item.title}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            
                             <p className="text-sm font-semibold text-gray-500">
                               {item.professeur.nom} {item.professeur.prenom}
                             </p>
@@ -233,11 +245,11 @@ const Videos = () => {
 
                         {/* Dropdown */}
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger asChild className="relative">
                             <EllipsisVertical
                               size={18}
                               color="#000"
-                              className="cursor-pointer"
+                              className="shrink-0 cursor-pointer"
                             />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="start">
