@@ -31,7 +31,7 @@ const Cours = () => {
     const [searchParams,setSearchParams]=useSearchParams();
     const [totalCours,setTotalCours]=useState(0);
     const [currentPage,setCurrentPage]=useState(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 16;
 
   const buildPdfUrl = useCallback(
     (professeurId: string, pdfUrl: string) => `${apiUrl}/uploads/files/${professeurId}/${pdfUrl}`,
@@ -113,16 +113,16 @@ const Cours = () => {
     "Français":"bg-orange-400",
     "Anglais":"bg-orange-400",
     "Histoire Géographie":"bg-amber-400",
-    "Éducation Islamique":"bg-blue-400",
+    "Education Islamique":"bg-blue-400",
     "Sciences de la Vie et de la Terre (SVT)":"bg-teal-500",
     "Philosophie":"bg-red-500",
     "Sciences Végétales et Animales (SVA)":"bg-green-500",
     "Sciences de l'ingénieur":"bg-violet-500",
     "Économie et Organisation Administrative des Entreprises":"bg-blue-500",
-    "Comptabilité et Mathématiques financières":"bg-zink-500",
+    "Comptabilité et Mathématiques financières":"bg-zinc-500",
     "Économie générale et Statistiques":"bg-cyan-500",
     "Droit":"bg-orange-500",
-    "Informatique de gestion":"bg-mauve-500"
+    "Informatique de gestion":"bg-indigo-500"
   }
 
   useEffect(()=>{
@@ -246,7 +246,7 @@ const Cours = () => {
               </span>
             </div>
             <CardHeader className='mt-2 flex items-center justify-between'>
-              <CardTitle className='leading-4'>{item.type}: {item.title}</CardTitle>
+              <CardTitle className='leading-5'>{item.type}: {item.title}</CardTitle>
               <DropdownMenu>
                 <DropdownMenuTrigger aria-label="Menu d'actions">
                   <CardTitle className='cursor-pointer rounded-md p-2 transition-all duration-200 hover:bg-slate-200'>
