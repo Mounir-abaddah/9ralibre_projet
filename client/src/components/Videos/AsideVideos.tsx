@@ -75,16 +75,27 @@ const AsideVideos = ({
     { name: "Sciences Mathématiques A" },
     { name: "Sciences Mathématiques B" },
     { name: "Sciences Physiques" },
-    { name: "SVT" },
+    { name: "Sciences de la Vie et de la Terre (SVT)" },
+    { name: "Sciences Agronomiques" },
+    { name: "Sciences et Technologies Électriques" },
+    { name: "Sciences et Technologies Mécaniques" },
     { name: "Sciences Économiques" },
+    { name: "Sciences de Gestion Comptable (SGC)" },
     { name: "Lettres" },
+    { name: "Sciences Humaines" },
   ];
 
   const activeFiltersCount = [matiere, filiere].filter(Boolean).length;
 
   const FilterContent = () => (
     <div className="space-y-4 p-2">
-
+      {/* RESET */}
+      {activeFiltersCount > 0 && (
+        <Button variant="outline" onClick={resetFilters} className="w-full">
+          <X size={16} className="mr-2" />
+          Réinitialiser
+        </Button>
+      )}
       {/* MATIERE */}
       <div className="space-y-3 rounded-md bg-gray-800 p-2">
         <h3 className="text-sm font-semibold text-white">Matières</h3>
@@ -136,14 +147,6 @@ const AsideVideos = ({
             ))}
           </RadioGroup>
         </div>
-      )}
-
-      {/* RESET */}
-      {activeFiltersCount > 0 && (
-        <Button variant="outline" onClick={resetFilters} className="w-full">
-          <X size={16} className="mr-2" />
-          Réinitialiser
-        </Button>
       )}
     </div>
   );
