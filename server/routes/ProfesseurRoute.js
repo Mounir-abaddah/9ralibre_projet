@@ -178,7 +178,7 @@ router.get("/getCours", authMiddlewares, profMiddleware, async (req, res) => {
     const { semestre, type, filiere, search } = req.query;
 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6;
+    const limit = parseInt(req.query.limit) || 16;
     const skip = (page - 1) * limit;
 
     const queryObject = {
