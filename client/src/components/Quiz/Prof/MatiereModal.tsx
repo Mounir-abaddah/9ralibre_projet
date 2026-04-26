@@ -42,21 +42,40 @@ const MatiereModal = ({
   const niveauxLabel = data?.niveaux ?? "";
 
   const filiereByNiveau: Record<string, string[]> = {
+    "1AC": [
+      "Science",
+    ],
+    "2AC": [
+      "Science",
+    ],
+    "3AC": [
+      "Science",
+    ],
     "TC": [
-      "Sciences Mathématiques",
-      "Sciences Expérimentales",
-      "Sciences Éco",
+      "Sciences",
+      "Technologies",
+      "Lettres et Sciences Humaines",
     ],
     "1BAC": [
       "Sciences Mathématiques",
       "Sciences Expérimentales",
-      "Sciences Éco",
+      "Sciences et Technologies Électriques",
+      "Sciences et Technologies Mécaniques",
+      "Sciences Économiques et Gestion",
+      "Lettres et Sciences Humaines",
     ],
     "2BAC": [
       "Sciences Mathématiques A",
       "Sciences Mathématiques B",
-      "SVT",
-      "PC",
+      "Sciences Physiques",
+      "Sciences de la Vie et de la Terre (SVT)",
+      "Sciences Agronomiques",
+      "Sciences et Technologies Électriques",
+      "Sciences et Technologies Mécaniques",
+      "Sciences Économiques",
+      "Sciences de Gestion Comptable (SGC)",
+      "Lettres",
+      "Sciences Humaines",
     ],
   };
 
