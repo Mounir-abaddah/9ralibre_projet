@@ -75,7 +75,9 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
       "Science",
     ],
     "TC": [
-      "Science",
+      "Sciences",
+      "Technologies",
+      "Lettres et Sciences Humaines",
     ],
     "1BAC": [
       "Sciences Mathématiques",
@@ -89,8 +91,14 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
       "Sciences Mathématiques A",
       "Sciences Mathématiques B",
       "Sciences Physiques",
-      "SVT",
+      "Sciences de la Vie et de la Terre (SVT)",
+      "Sciences Agronomiques",
+      "Sciences et Technologies Électriques",
+      "Sciences et Technologies Mécaniques",
       "Sciences Économiques",
+      "Sciences de Gestion Comptable (SGC)",
+      "Lettres",
+      "Sciences Humaines",
     ],
   };
 
