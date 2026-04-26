@@ -163,8 +163,8 @@ return (
                         Avant d’enregistrer le quiz, cliquez sur le bouton{" "}
                         <strong className="w-full font-semibold">Paramètres</strong>{" "}
                         (icône engrenage) en haut à droite, puis renseignez la{" "}
-                        <strong className="font-semibold">matière</strong> et la{" "}
-                        <strong className="font-semibold">filière</strong> dans la fenêtre qui s’ouvre.
+                        matière  et la{" "}
+                        filière  dans la fenêtre qui s’ouvre.
                     </AlertDescription>
                 </Alert>
             )}
