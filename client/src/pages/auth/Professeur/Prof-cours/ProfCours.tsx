@@ -31,6 +31,7 @@ import toast from "react-hot-toast"
 import { useSearchParams } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { useDebounce } from "@/hooks/use-debounce"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const ProfCours = () => {
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -45,7 +46,7 @@ const [currentPage, setCurrentPage] = useState(() => {
 });
 const [totalCours, setTotalCours] = useState(0);
 const [matiere, setMatiere] = useState<Matiere[]>([])
-const [limit] = useState(6);
+const [limit] = useState(16);
 const [selectedCours, setSelectedCours] = useState<CoursType | null>(null);
 const [search, setSearch] = useState(() => {
   return searchParams.get("search") || ""
@@ -195,18 +196,31 @@ return (
             <TableBody>
                 {Cours.map((cours) => (
                 <TableRow key={cours._id}>
-
-                    <TableCell>{cours.title}</TableCell>
-
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <TableCell className="line-clamp-1 max-w-[190px] truncate">
+                                {cours.title}
+                            </TableCell>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{cours.title}</p>
+                        </TooltipContent>
+                    </Tooltip>
                     <TableCell>
                     <span className={`rounded px-2 py-1 text-xs ${bgItems[cours.type as keyof typeof bgItems]}`}>
                         {cours.type}
                     </span>
                     </TableCell>
-
-                    <TableCell>
-                    {cours.matiere?.nom || "-"}
-                    </TableCell>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <TableCell className="line-clamp-1 max-w-[190px] truncate">
+                                {cours.matiere?.nom || "-"}
+                            </TableCell>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{cours.matiere?.nom || "-"}</p>
+                        </TooltipContent>
+                    </Tooltip>
 
                     <TableCell className="hidden md:table-cell">
                     {cours.semestre}
