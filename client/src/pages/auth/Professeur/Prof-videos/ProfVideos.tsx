@@ -165,9 +165,16 @@ const ProfVideos = () => {
             <TableCell className="flex max-w-[300px] items-start gap-3">
                 <img src={vid.thumbnail} alt="thumbnail" className="h-12 w-16 rounded-md object-cover"/>
                 <div className="flex flex-col">
-                    <span className="line-clamp-1 font-medium">
-                        {vid.title}
-                    </span>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                        <span className="line-clamp-1 max-w-[290px] truncate">
+                            {vid.title}
+                        </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{vid.title}</p>
+                        </TooltipContent>
+                    </Tooltip>
                     <span className="line-clamp-4 max-w-[220px] text-xs break-words text-gray-500">
                         {vid.description}
                     </span>
