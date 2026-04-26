@@ -1,24 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Lightbulb, Timer, BookOpen, ListChecks, Flame, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Lightbulb, Timer, BookOpen, ListChecks } from "lucide-react";
 
 const CardAside = () => {
-
-  // ➤ Tu peux remplacer ces données par un fetch venant du backend
-  const popularCours = [
-    {
-      title: "Examen National Maths 2023",
-      url: "/cours/examen-national-maths-2023",
-    },
-    {
-      title: "Cours Physique : Mouvement & Forces",
-      url: "/cours/physique-mouvement-forces",
-    },
-    {
-      title: "SVT — Génétique Thème 2",
-      url: "/cours/svt-genetique-theme2",
-    },
-  ];
 
   return (
     <div className="w-full space-y-6 lg:min-h-screen">
@@ -49,31 +32,6 @@ const CardAside = () => {
           </div>
         </CardContent>
       </Card>
-
-
-      {/* ------------------ 2️⃣ Carte Cours les plus consultés ------------------- */}
-      <Card className="top-80 -z-20 shadow-md lg:sticky">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-            <Flame className="text-red-500" size={20} />
-            Cours les plus consultés
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="space-y-3">
-          {popularCours.map((cours, index) => (
-            <Link 
-              key={index} 
-              to={cours.url}
-              className="flex items-center gap-2 rounded-md p-2 text-sm transition-all hover:bg-slate-100"
-            >
-              <FileText size={16} className="text-amber-600" />
-              <span className="text-gray-700">{cours.title}</span>
-            </Link>
-          ))}
-        </CardContent>
-      </Card>
-
     </div>
   );
 };
