@@ -89,13 +89,13 @@ router.post('/connexion',async(req,res)=>{
             return res.status(400).send({message:"Email ou mot de passe incorrect",success:false})
         }
         const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{
-            expiresIn : "1d"
+            expiresIn : "2d"
         });
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 48 * 60 * 60 * 1000,
         });
         return res.status(200).send({message: "Connexion réussie",user:{niveaux:user.niveaux},success: true,});
   }catch(err){
@@ -184,12 +184,12 @@ router.get('/google/callback', passport.authenticate('google', {session:false , 
     if (role?.blockedUntil && role.blockedUntil > new Date()) {
       return res.redirect(`${process.env.FRONTEND_URL}/connexion?error=blocked`);
     }
-    const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn : "1d"});
+    const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn : "2d"});
     res.cookie("token",token,{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 48 * 60 * 60 * 1000,
     })
     res.redirect(`${process.env.FRONTEND_URL}/Dashboard/${role.niveaux}`);
 });
