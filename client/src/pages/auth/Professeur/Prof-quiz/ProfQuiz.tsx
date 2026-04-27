@@ -9,7 +9,7 @@ import {
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus, Search, Trash, Users } from "lucide-react";
+import { Plus, Search, Trash, Users, X } from "lucide-react";
 import Pagination from "@/components/Pagination/Pagination";
 import type { QuizProf } from "../../Quiz/types/QuizType";
 import {
@@ -158,7 +158,7 @@ const ProfQuiz = () => {
                         }}
                         className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
                         >
-                        ✕
+                        <X size={18}/>
                         </button>
                     )}
                 </div>
