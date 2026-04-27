@@ -109,7 +109,7 @@ const Save = () => {
             <div className="rounded-full bg-amber-500 p-3">
               <Bookmark className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-300">
               Mes enregistrements
             </h1>
           </div>
@@ -157,11 +157,11 @@ const Save = () => {
                   {savedVideos.map((video) => (
                     <div
                       key={video._id}
-                      className="group overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-xl"
+                      className="group overflow-hidden rounded-xl  shadow-md transition-all duration-300 hover:shadow-xl"
                     >
                       {/* Thumbnail */}
                       <Link to={`/watch/${video._id}`}>
-                        <div className="relative overflow-hidden bg-gray-200 pt-[56.25%]">
+                        <div className="relative overflow-hidden  pt-[56.25%]">
                           <img
                             src={video.thumbnail}
                             alt={video.title}
@@ -257,7 +257,7 @@ const Save = () => {
                 </div>
               </>
             ) : (
-              <div className="rounded-xl border-2 border-dashed border-gray-300 bg-white p-12 text-center">
+              <div className="rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
                 <Play className="mx-auto mb-4 h-16 w-16 text-gray-300" />
                 <h3 className="mb-2 text-xl font-semibold text-gray-900">
                   Aucune vidéo enregistrée
@@ -391,7 +391,7 @@ const Save = () => {
 
         {/* Empty State */}
         {!hasContent && (
-          <div className="rounded-xl border-2 border-dashed border-gray-300 bg-white p-12 text-center">
+          <div className="rounded-xl border-2 border-dashed border-gray-300  p-12 text-center">
             <Bookmark className="mx-auto mb-4 h-16 w-16 text-gray-300" />
             <h3 className="mb-2 text-xl font-semibold text-gray-900">
               Aucun contenu enregistré
