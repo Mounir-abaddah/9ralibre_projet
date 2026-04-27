@@ -6,7 +6,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import type { TypeVideos } from "./types/video.type";
+import type { Matiere, TypeVideos } from "./types/video.type";
 import { Bookmark, EllipsisVertical, Flag, Play, Share } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -32,11 +32,11 @@ const Videos = () => {
   document.title = "Videos | 9ralibre";
   const navigate = useNavigate();
   const { niveaux } = useParams();
+  const [Fetchmatiere,setFetchMatiere] = useState<Matiere[]>([])
   const [videos, setVideos] = useState<TypeVideos[]>([]);
   const [totalVideos, setTotalVideos] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { search, setSearch, filiere, setFiliere, matiere, setMatiere } =
-    useCoursFilter();
+  const { search, setSearch, filiere, setFiliere, matiere, setMatiere } =useCoursFilter();
   const debouncedSearch = useDebounce(search, 500);
   const [searchParams, setSearchParams] = useSearchParams();
   const [savedItems, setSavedItems] = useState<string[]>([]);
@@ -126,6 +126,15 @@ const Videos = () => {
     getSaves();
   }, [apiUrl]);
 
+
+  useEffect(()=>{
+    const getMatiere = async()=>{
+      const res = await axios.get(`${apiUrl}/user/fetch-matiere/${niveaux}`,{withCredentials:true}); 
+      setFetchMatiere(res.data); 
+    }
+    getMatiere()
+  },[])
+
   return (
     <>
         <div className="mb-8 flex flex-col gap-2">
@@ -153,6 +162,7 @@ const Videos = () => {
             setSearch={setSearch}
             setMatiere={setMatiere}
             setFiliere={setFiliere}
+            Fetchmatiere={Fetchmatiere}
           />
         </aside>
 
