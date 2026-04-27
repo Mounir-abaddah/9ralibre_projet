@@ -220,7 +220,7 @@ const Videos = () => {
                             to={`/Profile/${item.professeur.nom}-${item.professeur.prenom}`}
                           >
                             <Avatar size="lg">
-                              <AvatarImage src={item.professeur.image} alt="logo_professeur" />
+                              <AvatarImage src={`${apiUrl}/uploads/images/${item.professeur._id}/${item.professeur.image}`} alt="logo_professeur" />
                               <AvatarFallback>
                                 {item.professeur.nom[0]}
                                 {item.professeur.prenom[0]}
