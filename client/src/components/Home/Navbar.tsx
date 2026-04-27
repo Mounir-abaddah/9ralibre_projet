@@ -133,15 +133,23 @@ return (
                 loading={loading}
                 error={error}
             />
+            <Button
+                    variant={'outline'}
+                    size={'icon'}
+                    onClick={toggleTheme}
+                    className='cursor-pointer'
+            >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </Button> 
             <Popover>
                 <PopoverTrigger asChild>
                     <Button
                         variant={'outline'}
                         size={'icon'}
-                        className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
+                        className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
                         aria-label="Notifications"
                     >
-                        <Bell size={18}/>
+                        <Bell />
                         {unreadTotal > 0 && (
                             <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
                                 {unreadTotal > 99 ? "99+" : unreadTotal}
@@ -149,7 +157,7 @@ return (
                         )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="relative top-6 w-92 p-0 shadow-2xl">
+                <PopoverContent className="relative top-6 right-1 w-92 p-0 shadow-2xl">
                     <div className="flex items-center justify-between border-b p-3">
                         <p className="text-sm font-semibold">Notifications</p>
                         <button
@@ -201,14 +209,6 @@ return (
                 onClick={()=>navigate(`/Calendrier/${data.niveaux}`)}
             >
                 <Calendar />
-            </Button>
-            <Button
-                variant={'outline'}
-                size={'icon'}
-                onClick={toggleTheme}
-                className='cursor-pointer'
-            >
-                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
             <Button
                 variant={'outline'}
