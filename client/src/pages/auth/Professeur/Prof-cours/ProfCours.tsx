@@ -2,7 +2,7 @@ import Pagination from "@/components/Pagination/Pagination"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import axios from "axios"
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import no_data from '@/assets/images/cours/No data-cuate.png'
 import AddCoursModal from "@/components/Cours/Prof/AddCoursModal"
@@ -160,7 +160,7 @@ return (
                     onClick={() => setSearch("")}
                     className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
                     >
-                    ✕
+                    <X size={18}/>
                     </button>
                 )}
             </div>
