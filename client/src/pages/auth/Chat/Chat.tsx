@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { typeChat } from "./types/ChatType";
 const Chat = () => {
+    document.title = " Messagerie | 9ralibre"
     const apiUrl = import.meta.env.VITE_API_URL;
     const [conversation, setConversation] = useState<typeChat[]>([]);
     const fetchConversations = async () => {
