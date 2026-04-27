@@ -382,8 +382,6 @@ const Settings = () => {
                         <SelectGroup defaultValue="FR">
                           <SelectLabel>Langues disponibles</SelectLabel>
                           <SelectItem value="FR">Français</SelectItem>
-                          <SelectItem value="EN">Anglais</SelectItem>
-                          <SelectItem value="AR">Arabe</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
