@@ -70,4 +70,5 @@ export interface AsideVideosProps {
   setSearch: (value: string | null) => void;
   setMatiere: (value: string | null) => void;
   setFiliere: (value: string | null) => void;
+  Fetchmatiere: Matiere[];
 }
