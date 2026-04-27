@@ -21,6 +21,7 @@ const AsideVideos = ({
   setSearch,
   setMatiere,
   setFiliere,
+  Fetchmatiere,
 }: AsideVideosProps) => {
   const { niveaux } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,31 +32,27 @@ const AsideVideos = ({
     setFiliere(null);
   };
 
-  const matieres_college = [
-    { name: "Mathématiques", color: "text-red-400" },
-    { name: "Physique et Chimie", color: "text-cyan-400" },
-    { name: "SVT", color: "text-teal-400" },
-    { name: "Informatique", color: "text-sky-400" },
-    { name: "Arabe", color: "text-orange-400" },
-    { name: "Français", color: "text-orange-400" },
-    { name: "Anglais", color: "text-orange-400" },
-    { name: "Histoire Géographie", color: "text-amber-400" },
-    { name: "Éducation Islamique", color: "text-blue-400" },
-  ];
-
-  const matieres_Lycee = [
-    { name: "Mathématiques", color: "text-red-400" },
-    { name: "Physique et Chimie", color: "text-cyan-400" },
-    { name: "SVT", color: "text-teal-400" },
-    { name: "Informatique", color: "text-sky-400" },
-    { name: "Arabe", color: "text-orange-400" },
-    { name: "Français", color: "text-orange-400" },
-    { name: "Anglais", color: "text-orange-400" },
-    { name: "Histoire Géographie", color: "text-amber-400" },
-    { name: "Éducation Islamique", color: "text-blue-400" },
-    { name: "Philosophie", color: "text-blue-400" },
-  ];
-
+  const bgItems = {
+    "Mathématiques":"text-red-400",
+    "Physique et Chimie":"text-cyan-400",
+    "SVT":"text-teal-400",
+    "Informatique":"text-sky-400",
+    "Arabe":"text-orange-400",
+    "Français":"text-orange-400",
+    "Anglais":"text-orange-400",
+    "Histoire Géographie":"text-amber-400",
+    "Education Islamique":"text-blue-400",
+    "Sciences de la Vie et de la Terre (SVT)":"text-teal-500",
+    "Philosophie":"text-red-500",
+    "Sciences Végétales et Animales (SVA)":"text-green-500",
+    "Sciences de l'ingénieur":"text-violet-500",
+    "Économie et Organisation Administrative des Entreprises":"text-blue-500",
+    "Comptabilité et Mathématiques financières":"text-zinc-500",
+    "Économie générale et Statistiques":"text-cyan-500",
+    "Droit":"text-orange-500",
+    "Informatique de gestion":"text-indigo-500"
+  }
+  
   const filièreTC = [
     { name: "Sciences" },
     { name: "Technologies" },
@@ -105,20 +102,15 @@ const AsideVideos = ({
           onValueChange={(value) => setMatiere(value)}
           className="space-y-2"
         >
-          {(niveaux === "1AC" || niveaux === "2AC" || niveaux === "3AC" || niveaux === "TC"
-            ? matieres_college
-            : matieres_Lycee
-          ).map((item, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              <RadioGroupItem value={item.name} id={`matiere-${index}`} />
-              <Label
-                htmlFor={`matiere-${index}`}
-                className={`cursor-pointer ${item.color}`}
-              >
-                {item.name}
+          {Fetchmatiere.map((mat)=>(
+            <div key={mat._id} className="flex items-center space-x-2">
+              <RadioGroupItem value={mat.nom} id={`matiere-${mat._id}`} />
+              <Label  htmlFor={`matiere-${mat._id}`} className={`cursor-pointer ${mat._id} ${bgItems[mat.nom as keyof typeof bgItems]}`}>
+                {mat.nom}
               </Label>
-            </div>
+          </div>
           ))}
+          
         </RadioGroup>
       </div>
 
