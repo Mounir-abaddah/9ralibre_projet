@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactPlayer from 'react-player';
+import miniature from '@/assets/images/Miniature.png';
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -287,6 +288,7 @@ function LandingPage({ user }: { user: typedata | null }) {
           <div className="w-full">
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
               <ReactPlayer
+                light={<img src={miniature} alt='Thumbnail' />}
                 src="https://youtu.be/5OdVJbNCSso?si=eXdHCABtLMHq9CVm"
                 controls
                 width="100%"
