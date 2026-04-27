@@ -9,36 +9,37 @@ import toast from "react-hot-toast"
 import { fr } from "react-day-picker/locale";
 
 const Calendrier = () => {
-  const apiUrl = import.meta.env.VITE_API_URL
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [type, setType] = useState("Examen")
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
-  const [editingItemId, setEditingItemId] = useState<string | null>(null)
-  const [editType, setEditType] = useState("")
-  const [editTitle, setEditTitle] = useState("")
-  const [editDescription, setEditDescription] = useState("")
-  const [events, setEvents] = useState<
-    { _id: string; Date: string; items: { _id: string; type: string; titre: string; Description?: string }[] }[]
-  >([])
+    document.title = "Calendrier | 9ralibre"
+    const apiUrl = import.meta.env.VITE_API_URL
+    const [date, setDate] = useState<Date | undefined>(new Date())
+    const [type, setType] = useState("Examen")
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
+    const [editingItemId, setEditingItemId] = useState<string | null>(null)
+    const [editType, setEditType] = useState("")
+    const [editTitle, setEditTitle] = useState("")
+    const [editDescription, setEditDescription] = useState("")
+    const [events, setEvents] = useState<
+        { _id: string; Date: string; items: { _id: string; type: string; titre: string; Description?: string }[] }[]
+    >([])
 
-  const fetchEvents = async () => {
-    try {
-      const res = await axios.get(`${apiUrl}/user/getEvenements`, {
-        withCredentials: true,
-      })
-      setEvents(res.data?.events || [])
-    } catch (error) {
-      console.log(error)
-      toast.error("Impossible de récupérer les événements")
+    const fetchEvents = async () => {
+        try {
+        const res = await axios.get(`${apiUrl}/user/getEvenements`, {
+            withCredentials: true,
+        })
+        setEvents(res.data?.events || [])
+        } catch (error) {
+        console.log(error)
+        toast.error("Impossible de récupérer les événements")
+        }
     }
-  }
 
-  useEffect(() => {
-    fetchEvents()
-  }, [])
+    useEffect(() => {
+        fetchEvents()
+    }, [])
 
     const handleAddEvent = () => {
         if (!date || !title.trim() || !type.trim()) {
@@ -64,70 +65,70 @@ const Calendrier = () => {
         .finally(() => setLoading(false))
     }
 
-    const selectedDateKey = date ? format(date, "yyyy-MM-dd") : ""
-    const selectedDateItems = useMemo(() => {
-        return events
-          .filter((event) => format(new Date(event.Date), "yyyy-MM-dd") === selectedDateKey)
-          .flatMap((event) => event.items)
-    }, [events, selectedDateKey])
+        const selectedDateKey = date ? format(date, "yyyy-MM-dd") : ""
+        const selectedDateItems = useMemo(() => {
+            return events
+            .filter((event) => format(new Date(event.Date), "yyyy-MM-dd") === selectedDateKey)
+            .flatMap((event) => event.items)
+        }, [events, selectedDateKey])
 
-    const highlightedDates = useMemo(() => events.map((event) => new Date(event.Date)), [events])
-    const totalItems = useMemo(() => events.reduce((sum, event) => sum + (event.items?.length || 0), 0),[events],)
+        const highlightedDates = useMemo(() => events.map((event) => new Date(event.Date)), [events])
+        const totalItems = useMemo(() => events.reduce((sum, event) => sum + (event.items?.length || 0), 0),[events],)
 
-    const handleDeleteItem = async (itemId: string) => {
-      setActionLoadingId(itemId)
-      try {
-        await axios.delete(`${apiUrl}/user/events/items/${itemId}`, { withCredentials: true })
-        toast.success("Événement supprimé")
-        await fetchEvents()
-      } catch (error) {
-        console.log(error)
-        toast.error("Impossible de supprimer l'événement")
-      } finally {
-        setActionLoadingId(null)
-      }
-    }
+        const handleDeleteItem = async (itemId: string) => {
+        setActionLoadingId(itemId)
+        try {
+            await axios.delete(`${apiUrl}/user/events/items/${itemId}`, { withCredentials: true })
+            toast.success("Événement supprimé")
+            await fetchEvents()
+        } catch (error) {
+            console.log(error)
+            toast.error("Impossible de supprimer l'événement")
+        } finally {
+            setActionLoadingId(null)
+        }
+        }
 
-    const startEditItem = (item: { _id: string; type: string; titre: string; Description?: string }) => {
-      setEditingItemId(item._id)
-      setEditType(item.type)
-      setEditTitle(item.titre)
-      setEditDescription(item.Description || "")
-    }
+        const startEditItem = (item: { _id: string; type: string; titre: string; Description?: string }) => {
+        setEditingItemId(item._id)
+        setEditType(item.type)
+        setEditTitle(item.titre)
+        setEditDescription(item.Description || "")
+        }
 
-    const cancelEdit = () => {
-      setEditingItemId(null)
-      setEditType("")
-      setEditTitle("")
-      setEditDescription("")
-    }
+        const cancelEdit = () => {
+        setEditingItemId(null)
+        setEditType("")
+        setEditTitle("")
+        setEditDescription("")
+        }
 
-    const handleSaveEdit = async (itemId: string) => {
-      if (!editType.trim() || !editTitle.trim()) {
-        toast.error("Type et titre sont obligatoires")
-        return
-      }
-      setActionLoadingId(itemId)
-      try {
-        await axios.patch(
-          `${apiUrl}/user/events/items/${itemId}`,
-          {
-            type: editType.trim(),
-            titre: editTitle.trim(),
-            Description: editDescription.trim() || "",
-          },
-          { withCredentials: true },
-        )
-        toast.success("Événement modifié")
-        cancelEdit()
-        await fetchEvents()
-      } catch (error) {
-        console.log(error)
-        toast.error("Impossible de modifier l'événement")
-      } finally {
-        setActionLoadingId(null)
-      }
-    }
+        const handleSaveEdit = async (itemId: string) => {
+        if (!editType.trim() || !editTitle.trim()) {
+            toast.error("Type et titre sont obligatoires")
+            return
+        }
+        setActionLoadingId(itemId)
+        try {
+            await axios.patch(
+            `${apiUrl}/user/events/items/${itemId}`,
+            {
+                type: editType.trim(),
+                titre: editTitle.trim(),
+                Description: editDescription.trim() || "",
+            },
+            { withCredentials: true },
+            )
+            toast.success("Événement modifié")
+            cancelEdit()
+            await fetchEvents()
+        } catch (error) {
+            console.log(error)
+            toast.error("Impossible de modifier l'événement")
+        } finally {
+            setActionLoadingId(null)
+        }
+        }
 
 return (
     <div className="min-h-[calc(100vh-4rem)] w-full">
