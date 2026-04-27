@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react"
 import type { Matiere, TypeProfVideos } from "../../Video/types/video.type";
 import axios from "axios";
-import { Eye, Heart, MessageCircle, MoreHorizontalIcon, Pen, Plus, Search, Trash } from "lucide-react";
+import { Eye, Heart, MessageCircle, MoreHorizontalIcon, Pen, Plus, Search, Trash, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger,TooltipContent } from "@/components/ui/tooltip";
@@ -140,7 +140,7 @@ const ProfVideos = () => {
                     onClick={() => setSearch("")}
                     className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
                     >
-                    ✕
+                    <X size={18}/>
                     </button>
                 )}
             </div>
@@ -160,9 +160,9 @@ const ProfVideos = () => {
         </TableHeader>
         <TableBody>
         {videos.map((vid)=>(
-        <TableRow key={vid._id} onClick={()=>window.open(`/prof/videos/play/${vid._id}`,'_blank')}>
+        <TableRow key={vid._id}>
             {/* VIDEO */}
-            <TableCell className="flex max-w-[300px] items-start gap-3">
+            <TableCell className="flex max-w-[300px] items-start gap-3"  onClick={()=>window.open(`/prof/videos/play/${vid._id}`,'_blank')}>
                 <img src={vid.thumbnail} alt="thumbnail" className="h-12 w-16 rounded-md object-cover"/>
                 <div className="flex flex-col">
                     <Tooltip>
@@ -275,14 +275,14 @@ const ProfVideos = () => {
         </TableBody>
     </Table>
     {totalVideos > limit && (
-      <div className="mt-4">
-        <Pagination
-          totalItems={totalVideos}
-          itemsPerPage={limit}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+        <div className="mt-4">
+            <Pagination
+            totalItems={totalVideos}
+            itemsPerPage={limit}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            />
+        </div>
     )}
     <Tooltip>
         <div className="group fixed right-6 bottom-6">
