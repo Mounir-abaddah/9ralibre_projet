@@ -4,6 +4,7 @@ const Niveaux = require('../models/NiveauxModel');
 const Quiz = require('../models/QuizModel');
 const ResultsQuiz = require('../models/ResultatQuizModel');
 const authMiddleware = require('../middlewares/authMiddleware');
+const UserModels = require('../models/UserModel');
 
 router.post('/add-quiz', authMiddleware, async (req, res) => {
     try {
@@ -33,6 +34,7 @@ router.post('/add-quiz', authMiddleware, async (req, res) => {
 });
 
 router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
+    const userId = req.user.userId
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1)*limit;
@@ -42,6 +44,7 @@ router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
         if (!niveaux) {
             return res.status(404).json({ message: "Niveau non trouvé" });
         }
+        const user = await UserModels.findById(userId).select('niveaux');
         const quiz = await Quiz.find({ niveaux: niveaux })
         .populate("professeur","nom prenom image role")
         .populate("niveaux","nom")
@@ -50,6 +53,10 @@ router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
         .limit(limit)
         .skip(skip)
         .sort({createdAt:-1});
+
+        if (user.niveaux !== niveauxName) {
+            return res.status(403).json({success: false,message: "Accès refusé"});
+        }
 
         const usersResults = await ResultsQuiz.find({
             userId:req.user.userId
