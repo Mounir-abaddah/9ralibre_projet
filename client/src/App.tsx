@@ -54,6 +54,7 @@ import AdminProfessors from './pages/auth/Admin/Professors/AdminProfessors';
 import AppealPage from './pages/Appeal/AppealPage';
 import Histoire_details from './pages/auth/Histoire/Histoire_details';
 import Calendrier from './pages/auth/Calendrier/Calendrier';
+import ProfCalendrier from './pages/auth/Professeur/Prof-calendrier/ProfCalendrier';
 
 
 const App = () => {
@@ -102,6 +103,7 @@ const App = () => {
 
         <Route element={<ProtectedRouteProf />}>
           <Route path='/prof/dashboard'  element={<LayoutsProf><ProfDashboard /></LayoutsProf>} />
+          <Route path='/prof/calendrier'  element={<LayoutsProf><ProfCalendrier /></LayoutsProf>} />
           <Route path='/prof/cours'  element={<LayoutsProf><ProfCours /></LayoutsProf>} />
           <Route path='/prof/videos'  element={<LayoutsProf><ProfVideos /></LayoutsProf>} />
           <Route path='/prof/videos/play/:videoId'  element={<LayoutsProf><ProfPlayVideos /></LayoutsProf>} />
