@@ -118,11 +118,7 @@ router.get("/profile/:name", authMiddleware, async (req, res) => {
   }
 });
 
-router.post(
-  "/uploadImage",
-  authMiddleware,
-  upload.single("avatar"),
-  async (req, res) => {
+router.post("/uploadImage",authMiddleware,upload.single("avatar"),async (req, res) => {
     try {
       if (!req.file) {
         return res
