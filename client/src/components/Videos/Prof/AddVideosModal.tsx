@@ -197,6 +197,190 @@ const handleSubmit = async () => {
   }
 };
 
+const filiereMatiereMap: Record<string, string[]> = {
+  "Science": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Sciences": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Technologies": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Lettres et Sciences Humaines": [
+    "Mathématiques",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Sciences Mathématiques A": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences Mathématiques B": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences Physiques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences de la Vie et de la Terre (SVT)": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences Agronomiques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Sciences Végétales et Animales (SVA)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences et Technologies Électriques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences et Technologies Mécaniques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences Économiques": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences de Gestion Comptable (SGC)": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Lettres": [
+    "Mathématiques",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Education Islamique",
+  ],
+
+  "Sciences Humaines": [
+    "Mathématiques",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Education Islamique",
+  ],
+};
+
+const filteredMatieres = form.filiere
+  ? matiere.filter((mat) =>
+      filiereMatiereMap[form.filiere]?.includes(mat.nom)
+    )
+  : [];
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-full max-w-2xl">
@@ -244,39 +428,40 @@ const handleSubmit = async () => {
               )}
             </div>
 
-            <div className="w-full space-y-2">
-              <Label>Matière</Label>
-              <Select
-                value={form.matiere}
-                onValueChange={(value) => {
-                  setForm({ ...form, matiere: value });
-                  setFieldErrors((p) => {
-                    const n = { ...p };
-                    delete n.matiere;
-                    return n;
-                  });
-                }}
-              >
-                <SelectTrigger
-                  className={cn(
-                    "w-full",
-                    fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
-                  )}
+             {/* Filière */}
+              <div className="w-full space-y-2">
+                <Label>Filière</Label>
+                <Select
+                  value={form.filiere}
+                  onValueChange={(value) => {
+                    setForm({ ...form, filiere: value });
+                    setFieldErrors((p) => {
+                      const n = { ...p };
+                      delete n.filiere;
+                      return n;
+                    });
+                  }}
                 >
-                  <SelectValue placeholder="Choisir une matière" />
-                </SelectTrigger>
-                <SelectContent>
-                  {matiere.map((mat) => (
-                    <SelectItem key={mat._id} value={mat._id}>
-                      {mat.nom}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {fieldErrors.matiere && (
-                <p className="text-sm text-destructive">{fieldErrors.matiere}</p>
-              )}
-            </div>
+                  <SelectTrigger
+                    className={cn(
+                      "w-full",
+                      fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
+                    )}
+                  >
+                    <SelectValue placeholder="Choisir filière" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(filiereByNiveau[niveauxLabel] ?? []).map((f) => (
+                      <SelectItem key={f} value={f}>
+                        {f}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {fieldErrors.filiere && (
+                  <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
+                )}
+              </div>
           </div>
 
           {/* Titre */}
@@ -373,40 +558,40 @@ const handleSubmit = async () => {
             </div>
           </div>
           <div className="flex w-full items-center justify-between gap-2">
-            {/* Filière */}
-              <div className="w-full space-y-2">
-                <Label>Filière</Label>
-                <Select
-                  value={form.filiere}
-                  onValueChange={(value) => {
-                    setForm({ ...form, filiere: value });
-                    setFieldErrors((p) => {
-                      const n = { ...p };
-                      delete n.filiere;
-                      return n;
-                    });
-                  }}
+            <div className="w-full space-y-2">
+              <Label>Matière</Label>
+              <Select
+                value={form.matiere}
+                disabled={!form.filiere}
+                onValueChange={(value) => {
+                  setForm({ ...form, matiere: value });
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.matiere;
+                    return n;
+                  });
+                }}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
+                  )}
                 >
-                  <SelectTrigger
-                    className={cn(
-                      "w-full",
-                      fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
-                    )}
-                  >
-                    <SelectValue placeholder="Choisir filière" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(filiereByNiveau[niveauxLabel] ?? []).map((f) => (
-                      <SelectItem key={f} value={f}>
-                        {f}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fieldErrors.filiere && (
-                  <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
-                )}
-              </div>
+                  <SelectValue placeholder="Choisir une matière" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredMatieres.map((mat) => (
+                    <SelectItem key={mat._id} value={mat._id}>
+                      {mat.nom}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldErrors.matiere && (
+                <p className="text-sm text-destructive">{fieldErrors.matiere}</p>
+              )}
+            </div>
             {/* Visibilité */}
             <div className="w-full space-y-2">
               <Label>Visibilité</Label>
