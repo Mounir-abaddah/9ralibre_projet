@@ -34,11 +34,11 @@ const CardProf = ({ data }: Props) => {
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="flex w-full items-center space-x-4">
       {cards.map((card, i) => (
         <div
           key={i}
-          className={`rounded-2xl ${card.color} p-[1px] shadow-md transition`}
+          className={`rounded-2xl ${card.color} w-full p-[1px] shadow-md transition`}
         >
           <div className="flex flex-col gap-2 rounded-2xl bg-white p-4 dark:bg-gray-900">
             <div className="flex items-center justify-between text-sm text-gray-500">
