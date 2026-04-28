@@ -95,7 +95,28 @@ const passwordResetShema = z.object({
 });
 
 
+const itemShema = z.object({
+  type:z.string().regex(/^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/,{message:"Le type contient des caractères non autorisés"}).min(3,"Le type doit contenir au moins 3 caractères"),
+  titre:z.string().regex(/^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/,{message:"Le titre contient des caractères non autorisés"}).min(3,"Le titre doit contenir au moins 3 caractères"),
+  Description:z.string().regex(/^[a-zA-ZÀ-ÿ0-9\s'’.,;:!?()/ -]{1,100}$/,{message:"La description contient des caractères non autorisés"}).max(100,"La description est trop longue").optional(),
+})
+
+const EventsShema = z.object({
+  Date:z.string()
+    .transform(val=>new Date(val))
+    .refine(val => !isNaN(val.getTime()),{message:"Date invalide"})
+    .refine((val) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selected = new Date(val);
+      selected.setHours(0, 0, 0, 0);
+      return selected >= today;
+    }, { message: "Les dates passées ne sont pas autorisées" }),
+  items: z.array(itemShema).min(1, "Au moins un événement est requis")
+});
 
 
-module.exports = {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema,messageOUblierSchema,passwordResetShema}
+
+
+module.exports = {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema,messageOUblierSchema,passwordResetShema,EventsShema}
 
