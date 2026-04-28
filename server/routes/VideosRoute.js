@@ -12,6 +12,7 @@ const {repliesCommentaire,likeCommentaire} = require('../services/emailServices'
 {/*********************** Get all videos par le Nom ***********************/}
 router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     try{
+    const userId = req.user.userId;
     const {nameNiveaux} = req.params;
     let { page = 1, limit = 15, matiere, title, filiere , search } = req.query;
     page = Number(page);
@@ -20,6 +21,11 @@ router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
     const niveaux = await NiveauxModel.findOne({nom:nameNiveaux});
     if(!niveaux){
         return res.status(400).send({message:"aucune niveaux est disponible",success:false})
+    }
+
+    const user = await UserModel.findById(userId).select("niveaux");
+    if (user.niveaux !== nameNiveaux) {
+        return res.status(403).json({success: false,message: "Accès refusé",});
     }
     const objectSearch = {
         niveaux:niveaux._id,
@@ -54,8 +60,8 @@ router.get('/get-all-videos/:nameNiveaux',authMidllewares,async(req,res)=>{
         .skip(skip)
         .limit(limit).sort({createdAt:-1}),
         VideosModel.countDocuments(objectSearch)
-    ])
-    res.status(200).json({
+    ]);
+    return res.status(200).json({
         success:true,
         page,
         limit,
