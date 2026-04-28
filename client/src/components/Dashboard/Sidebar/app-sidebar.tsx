@@ -13,6 +13,7 @@ import {
   ScrollText,
   MailWarning,
   UserCheck2,
+  Calendar1
 } from "lucide-react"
 import { NavMain } from "@/components/Dashboard/Sidebar/nav-main"
 import { NavUser } from "@/components/Dashboard/Sidebar/nav-user"
@@ -38,6 +39,12 @@ const dataProfesseur = {
       title: "Dashboard",
       url: "/prof/dashboard",
       icon: Table2,
+      isActive: true,
+    },
+    {
+      title: "Calendrier",
+      url: "/prof/calendrier",
+      icon: Calendar1 ,
       isActive: true,
     },
     {
