@@ -26,6 +26,7 @@ const LayoutsProf = ({ children }: PropsWithChildren) => {
   // 🧠 mapping des routes
   const breadcrumbMap: Record<string, string> = {
     "/prof/dashboard": "Dashboard",
+    "/prof/calendrier": "Calendrier",
     "/prof/cours": "Cours",
     "/prof/videos": "Videos",
     "/prof/quiz": "Quiz",
