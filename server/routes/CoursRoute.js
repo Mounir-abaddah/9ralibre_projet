@@ -19,9 +19,7 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
 
     const niveau = await Niveaux.findOne({ nom: niveauxNom });
     if (!niveau) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Niveau non trouvé" });
+      return res.status(404).json({ success: false, message: "Niveau non trouvé" });
     }
 
     let matiereQuery = { niveaux: niveau._id };
@@ -89,7 +87,7 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    const user = await User.findById(userId).select("savedCours");
+    const user = await User.findById(userId).select("savedCours niveaux");
     const savedCoursSet = new Set(
       (user?.savedCours || []).map((id) => id.toString()),
     );
@@ -101,6 +99,11 @@ router.get("/getCours/:niveauxNom", authMiddleware, async (req, res) => {
         isSaved: savedCoursSet.has(coursItem._id.toString()),
       };
     });
+
+    if (user.niveaux !== niveauxNom) {
+      return res.status(403).json({success: false,message: "Accès refusé"});
+    }
+
 
     return res.json({
       success: true,
