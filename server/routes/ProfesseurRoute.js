@@ -14,7 +14,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
-const {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema,messageOUblierSchema,passwordResetShema} = require('../validations/professeurValidation');
+const {addCoursSchema,addVideoSchema,updateVideoSchema,addQuizSchema,registerSchema,loginSchema,messageOUblierSchema,passwordResetShema,EventsShema} = require('../validations/professeurValidation');
 const { oublierMotdepasseProfesseur, sendProfessorRegistrationReceivedEmail } = require('../services/emailServices')
 const jwt = require('jsonwebtoken');
 
@@ -1082,6 +1082,216 @@ router.post('/logout', (req, res) => {
             success: false
         });
     }
+});
+
+{/***********************************************Calendrier*/}
+
+router.get("/getEvenements", authMiddlewares,profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(400)
+        .send({
+          message:
+            "Impossible de récupérer les événements pour cet utilisateur.",
+          success: false,
+        });
+    }
+    const sortedEvents = [...user.events].sort(
+      (a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime(),
+    );
+    return res.status(200).send({ events: sortedEvents, success: true });
+  } catch (err) {
+    return res
+      .status(500)
+      .send({
+        message:
+          "Une erreur interne est survenue. Veuillez réessayer plus tard",
+        success: false,
+        err,
+      });
+  }
+});
+
+router.post("/postEvents", authMiddlewares,profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const EventsShemaValidation = EventsShema.parse(req.body);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(400)
+        .send({
+          message: "Impossible d'ajouter l'événement. Veuillez réessayer.",
+          success: false,
+        });
+    }
+    const dateTostring = EventsShemaValidation.Date.toDateString();
+    const DateExister = user.events.find(
+      (e) => e.Date.toDateString() === dateTostring,
+    );
+    if (DateExister) {
+      DateExister.items.push(...EventsShemaValidation.items);
+    }
+    if (!DateExister) {
+      user.events.push({
+        Date: EventsShemaValidation.Date,
+        items: EventsShemaValidation.items,
+      });
+    }
+    await user.save();
+    const sortedEvents = [...user.events].sort(
+      (a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime(),
+    );
+    return res.status(200).send({
+      message: "Événement ajouté avec succès.",
+      success: true,
+      events: sortedEvents,
+    });
+  } catch (err) {
+    if (err.name === "ZodError") {
+      return res.status(400).send({
+        success: false,
+        message: err.issues.map((e) => e.message),
+      });
+    }
+    return res
+      .status(500)
+      .send({ message: "Une erreur est survenue", success: false, err });
+  }
+});
+
+router.delete("/deleteEvents/:eventId", authMiddlewares,profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const eventId = req.params.eventId;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { events: { _id: eventId } } },
+      { new: true },
+    );
+    if (!user) {
+      return res
+        .status(400)
+        .send({
+          message: "Impossible de supprimer l'événement. Veuillez réessayer.",
+          success: false,
+        });
+    }
+    return res
+      .status(200)
+      .send({ message: "Événement supprimé avec succès.", success: true });
+  } catch (err) {
+    return res
+      .status(500)
+      .send({
+        message:
+          "Une erreur interne est survenue lors de la suppression de l'événement.",
+        success: false,
+        err,
+      });
+  }
+});
+
+router.patch("/events/items/:itemId", authMiddlewares,profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { itemId } = req.params;
+    const { type, titre, Description } = req.body;
+
+    if (!type || !titre) {
+      return res.status(400).send({
+        success: false,
+        message: "Le type et le titre sont obligatoires",
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "Utilisateur non trouvé",
+      });
+    }
+
+    let itemFound = false;
+    user.events.forEach((event) => {
+      event.items.forEach((item) => {
+        if (item._id.toString() === itemId) {
+          item.type = type;
+          item.titre = titre;
+          item.Description = Description || "";
+          itemFound = true;
+        }
+      });
+    });
+
+    if (!itemFound) {
+      return res.status(404).send({
+        success: false,
+        message: "Événement introuvable",
+      });
+    }
+
+    await user.save();
+    return res.status(200).send({
+      success: true,
+      message: "Événement modifié avec succès",
+    });
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: "Erreur serveur",
+      err,
+    });
+  }
+});
+
+router.delete("/events/items/:itemId", authMiddlewares,profMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { itemId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "Utilisateur non trouvé",
+      });
+    }
+
+    let itemDeleted = false;
+    user.events.forEach((event) => {
+      const initialLength = event.items.length;
+      event.items = event.items.filter((item) => item._id.toString() !== itemId);
+      if (event.items.length !== initialLength) {
+        itemDeleted = true;
+      }
+    });
+
+    user.events = user.events.filter((event) => event.items.length > 0);
+
+    if (!itemDeleted) {
+      return res.status(404).send({
+        success: false,
+        message: "Événement introuvable",
+      });
+    }
+
+    await user.save();
+    return res.status(200).send({
+      success: true,
+      message: "Événement supprimé avec succès",
+    });
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: "Erreur serveur",
+      err,
+    });
+  }
 });
 
 
