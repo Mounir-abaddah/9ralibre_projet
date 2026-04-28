@@ -80,12 +80,14 @@ const ChatProf = ({ messages }: ChatProfProps) => {
                 {mes.text}
               </span>
               <span className="mt-1 text-[11px] text-gray-400">
-                {new Date(mes.createdAt).toLocaleString("fr-FR",{
+                {mes.createdAt && (
+                  <>{new Date(mes.createdAt).toLocaleString("fr-FR",{
                   day:"numeric",
                   month:"long",
                   hour:"2-digit",
                   minute:"2-digit"
-                })}
+                })}</>
+                )}
               </span>
             </div>
           </div>
