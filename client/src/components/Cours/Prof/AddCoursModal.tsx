@@ -198,6 +198,187 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
     }
   };
 
+const filiereMatiereMap: Record<string, string[]> = {
+  "Science": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Sciences": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Technologies": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Lettres et Sciences Humaines": [
+    "Mathématiques",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Sciences Mathématiques A": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences Mathématiques B": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences Physiques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences de la Vie et de la Terre (SVT)": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences Agronomiques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Sciences Végétales et Animales (SVA)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences et Technologies Électriques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences et Technologies Mécaniques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences Économiques": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences de Gestion Comptable (SGC)": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Lettres": [
+    "Mathématiques",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Education Islamique",
+  ],
+
+  "Sciences Humaines": [
+    "Mathématiques",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Education Islamique",
+  ],
+};
+
+  const filteredMatieres = filiere? matiere.filter((mat) =>filiereMatiereMap[filiere]?.includes(mat.nom)): [];
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-full max-w-2xl">
@@ -235,14 +416,14 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
               <Input value={niveaux || "Non renseigné"} disabled />
             </div>
             <div className="w-full space-y-2">
-              <Label>Matière</Label>
+              <Label>Filière</Label>
               <Select
-                value={matiereSelected}
+                value={filiere}
                 onValueChange={(v) => {
-                  setMatiereSelected(v);
-                  setFieldErrors((prev) => {
-                    const n = { ...prev };
-                    delete n.matiere;
+                  setFiliere(v);
+                  setFieldErrors((p) => {
+                    const n = { ...p };
+                    delete n.filiere;
                     return n;
                   });
                 }}
@@ -250,21 +431,21 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
                 <SelectTrigger
                   className={cn(
                     "w-full",
-                    fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
+                    fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Choisir une matière"/>
+                  <SelectValue placeholder="Filière" />
                 </SelectTrigger>
-                <SelectContent position="popper">
-                  {matiere.map((mat) => (
-                    <SelectItem key={mat._id} value={mat._id}>
-                      {mat.nom}
+                <SelectContent>
+                  {(filiereByNiveau[niveaux] ?? []).map((f) => (
+                    <SelectItem key={f} value={f}>
+                      {f}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {fieldErrors.matiere && (
-                <p className="text-destructive text-sm">{fieldErrors.matiere}</p>
+              {fieldErrors.filiere && (
+                <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
               )}
             </div>
           </div>
@@ -361,40 +542,38 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
               )}
             </div>
           </div>
-
-          {/* Filiere */}
-          
             <div className="w-full space-y-2">
-              <Label>Filière</Label>
+              <Label>Matière</Label>
               <Select
-                value={filiere}
+                value={matiereSelected}
                 onValueChange={(v) => {
-                  setFiliere(v);
-                  setFieldErrors((p) => {
-                    const n = { ...p };
-                    delete n.filiere;
+                  setMatiereSelected(v);
+                  setFieldErrors((prev) => {
+                    const n = { ...prev };
+                    delete n.matiere;
                     return n;
                   });
                 }}
+                disabled={!filiere}
               >
                 <SelectTrigger
                   className={cn(
                     "w-full",
-                    fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
+                    fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Filière" />
+                  <SelectValue placeholder="Choisir une matière"/>
                 </SelectTrigger>
-                <SelectContent>
-                  {(filiereByNiveau[niveaux] ?? []).map((f) => (
-                    <SelectItem key={f} value={f}>
-                      {f}
+                <SelectContent position="popper">
+                  {filteredMatieres.map((mat) => (
+                    <SelectItem key={mat._id} value={mat._id}>
+                      {mat.nom}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {fieldErrors.filiere && (
-                <p className="text-sm text-destructive">{fieldErrors.filiere}</p>
+              {fieldErrors.matiere && (
+                <p className="text-destructive text-sm">{fieldErrors.matiere}</p>
               )}
             </div>
           
