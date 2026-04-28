@@ -12,6 +12,7 @@ import { fr } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { MoveUpRight } from "lucide-react";
 import Chart from "@/components/Dashboard/Chart/Chart";
+import { Link } from "react-router-dom";
 
 
 interface CalendarItem {
@@ -160,14 +161,15 @@ const ProfDashboard = () => {
           <CardHeader>
             <CardTitle className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <span>Calendrier</span>
-
-              <Button
-                variant="ghost"
-                className="justify-start text-xs text-amber-500 hover:text-amber-600 sm:justify-end"
-              >
-                Ajouter un événement
-                <MoveUpRight size={16} />
-              </Button>
+              <Link to={'/prof/calendrier'} className="cursor-pointer">
+                <Button
+                  variant="ghost"
+                  className="cursor-pointer justify-start text-xs text-amber-500 hover:text-amber-600 sm:justify-end"
+                >
+                  Ajouter un événement
+                  <MoveUpRight size={16} />
+                </Button>
+              </Link>
             </CardTitle>
           </CardHeader>
 
