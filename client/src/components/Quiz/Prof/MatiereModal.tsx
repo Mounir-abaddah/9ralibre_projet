@@ -91,6 +91,191 @@ const MatiereModal = ({
     getMatiere();
   }, []);
 
+  const filiereMatiereMap: Record<string, string[]> = {
+  "Science": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Sciences": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Technologies": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Lettres et Sciences Humaines": [
+    "Mathématiques",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Informatique",
+  ],
+  "Sciences Mathématiques A": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences Mathématiques B": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences Physiques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences de la Vie et de la Terre (SVT)": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences Agronomiques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de la Vie et de la Terre (SVT)",
+    "Sciences Végétales et Animales (SVA)",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences et Technologies Électriques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences et Technologies Mécaniques": [
+    "Mathématiques",
+    "Physique et Chimie",
+    "Sciences de l'ingénieur",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+  ],
+
+  "Sciences Économiques": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Sciences de Gestion Comptable (SGC)": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
+  "Lettres": [
+    "Mathématiques",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Education Islamique",
+  ],
+
+  "Sciences Humaines": [
+    "Mathématiques",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Philosophie",
+    "Histoire Géographie",
+    "Education Islamique",
+  ],
+};
+
+const filteredMatieres = filiereValue
+  ? matiere.filter((mat) =>
+      filiereMatiereMap[filiereValue]?.includes(mat.nom)
+    )
+  : [];
+
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogContent>
@@ -103,25 +288,8 @@ const MatiereModal = ({
             <Label>Niveau</Label>
             <Input value={data?.niveaux || "Non défini"} disabled />
         </div>
-
-        
         <div className="flex items-center justify-between gap-2">
-            <div className="w-full space-y-2">
-            <Label>Matière</Label>
-            <Select value={matiereValue} onValueChange={setMatiereValue}>
-                <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choisir matière" className="w-full"/>
-                </SelectTrigger>
-                <SelectContent>
-                {matiere.map((mat) => (
-                    <SelectItem key={mat._id} value={mat._id}>
-                    {mat.nom}
-                    </SelectItem>
-                ))}
-                </SelectContent>
-            </Select>
-            </div>
-            {data?.niveaux === "1AC" || data?.niveaux==="2AC" || data?.niveaux==="3AC" ? (
+          {data?.niveaux === "1AC" || data?.niveaux==="2AC" || data?.niveaux==="3AC" ? (
               <div>
 
               </div>
@@ -145,7 +313,21 @@ const MatiereModal = ({
                 </div>
               </div>
             )}
-            
+            <div className="w-full space-y-2">
+            <Label>Matière</Label>
+            <Select value={matiereValue} onValueChange={setMatiereValue}>
+                <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choisir matière" className="w-full"/>
+                </SelectTrigger>
+                <SelectContent>
+                {filteredMatieres.map((mat) => (
+                    <SelectItem key={mat._id} value={mat._id}>
+                    {mat.nom}
+                    </SelectItem>
+                ))}
+                </SelectContent>
+            </Select>
+            </div>
         </div>
         
 
