@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Plus, Save, Settings, Trash } from "lucide-react";
+import {Plus, Save, Settings, Trash } from "lucide-react";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
@@ -130,10 +130,7 @@ const handleSubmit = async () => {
 return (
     <>
         <div className="min-h-screen space-y-6 p-6">
-            <div className="flex items-center justify-between gap-3">
-                <Button onClick={()=>navigate(-1)} variant="outline" className="cursor-pointer">
-                    <ArrowLeft />
-                </Button>
+            <div className="flex w-full items-end justify-end gap-3">
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
