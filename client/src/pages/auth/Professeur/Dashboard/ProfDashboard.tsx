@@ -20,8 +20,6 @@ interface CalendarItem {
   Description?: string;
 }
 
-
-
 interface CalendarEvent {
   _id: string;
   Date: string;
@@ -31,10 +29,9 @@ interface CalendarEvent {
 
 const ProfDashboard = () => {
   document.title = "Dashboard | 9ralibre";
-
+  const dateToday = new Date()
   const apiUrl = import.meta.env.VITE_API_URL;
   const { data, fetchData } = useProfProtectedRoutes();
-
   const [message, setMessage] = useState([]);
   const [activities, setActivities] = useState([]);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -82,6 +79,8 @@ const ProfDashboard = () => {
     fetchEvents();
   },[])
 
+  
+
 
     const eventDates = events.map((event) => new Date(event.Date));
     const nextEvents = events.flatMap((event) =>(event.items || []).map((item) => ({
@@ -106,7 +105,7 @@ const ProfDashboard = () => {
       </div>
 
       <div className="w-fit rounded-xl bg-cyan-500 px-4 py-2 text-xs font-medium text-white shadow md:text-sm">
-        {date?.toLocaleDateString("fr-FR", {
+        {dateToday?.toLocaleDateString("fr-FR", {
           weekday: "long",
           year: "numeric",
           month: "long",
