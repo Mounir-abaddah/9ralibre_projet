@@ -131,7 +131,7 @@ const AdminProfessors = () => {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border bg-amber-500 p-5 text-white shadow-sm">
+      <div className="rounded-xl border bg-zinc-900  p-5 text-white shadow-sm">
         <h1 className="text-2xl font-semibold">Validation des professeurs</h1>
         <p className="text-sm text-indigo-100">
           Consulte tous les comptes professeurs et approuve/refuse les demandes avec notification email.
