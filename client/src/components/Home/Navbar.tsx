@@ -150,9 +150,9 @@ return (
                 </TooltipContent>
             </Tooltip>
             <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger>
                     <Tooltip>
-                        <TooltipTrigger asChild>
+                        <TooltipTrigger>
                             <Button
                                 variant={'outline'}
                                 size={'icon'}
