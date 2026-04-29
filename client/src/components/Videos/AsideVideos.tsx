@@ -85,7 +85,7 @@ const AsideVideos = ({
   const activeFiltersCount = [matiere, filiere].filter(Boolean).length;
 
   const FilterContent = () => (
-    <div className="space-y-4 p-2">
+    <div className="max-h-[90vh] space-y-4 overflow-y-auto p-2">
       {/* RESET */}
       {activeFiltersCount > 0 && (
         <Button variant="outline" onClick={resetFilters} className="w-full">
