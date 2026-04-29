@@ -150,72 +150,80 @@ return (
                 </TooltipContent>
             </Tooltip>
             <Popover>
-                <PopoverTrigger>
+                <PopoverTrigger asChild>
                     <Tooltip>
-                        <TooltipTrigger>
-                            <Button
-                                variant={'outline'}
-                                size={'icon'}
-                                className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
-                                aria-label="Notifications"
+                        <Popover>
+                            <TooltipTrigger asChild>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant={'outline'}
+                                        size={'icon'}
+                                        className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
+                                        aria-label="Notifications"
+                                    >
+                                        <Bell />
+                                        {unreadTotal > 0 && (
+                                            <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
+                                                {unreadTotal > 99 ? "99+" : unreadTotal}
+                                            </span>
+                                        )}
+                                    </Button>
+                                </PopoverTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Notification</p>
+                            </TooltipContent>
+                            <PopoverContent
+                                align="end"
+                                sideOffset={10}
+                                className="z-[999999] w-92 p-0 shadow-2xl"
                             >
-                                <Bell />
-                                {unreadTotal > 0 && (
-                                    <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
-                                        {unreadTotal > 99 ? "99+" : unreadTotal}
-                                    </span>
-                                )}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className='z-[99999999999999]'>
-                            <p>Notification</p>
-                        </TooltipContent>
+                                <div className="flex items-center justify-between border-b p-3">
+                                            <p className="text-sm font-semibold">Notifications</p>
+                                            <button
+                                                className="text-xs text-cyan-600 hover:underline"
+                                                onClick={() => navigate(`/Chat/${data.niveaux}`)}
+                                                type="button"
+                                            >
+                                                Ouvrir la messagerie
+                                            </button>
+                                        </div>
+                                        <div className="max-h-80 overflow-y-auto p-2">
+                                            {conversations.filter(c => c.unreadCount > 0).length === 0 ? (
+                                                <div className="p-3 text-sm text-gray-500">
+                                                    Aucune notification pour le moment.
+                                                </div>
+                                            ) : (
+                                                conversations
+                                                    .filter(c => c.unreadCount > 0)
+                                                    .slice(0, 8)
+                                                    .map((conv) => {
+                                                        const otherUser = conv.members.find(m => m._id !== data.id);
+                                                        const title = otherUser ? `${otherUser.nom} ${otherUser.prenom}` : "Conversation";
+                                                        const preview = conv.lastMessage?.text ?? "";
+                                                        return (
+                                                            <button
+                                                                key={conv._id}
+                                                                type="button"
+                                                                onClick={() => navigate(`/Chat/start/${conv._id}`)}
+                                                                className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                                                            >
+                                                                <div className="min-w-0">
+                                                                    <p className="truncate text-sm font-medium">{title}</p>
+                                                                    <p className="line-clamp-2 text-xs text-gray-500">{preview}</p>
+                                                                </div>
+                                                                <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                                                                    {conv.unreadCount}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    })
+                                            )}
+                                        </div>
+                            </PopoverContent>
+                        </Popover>
                     </Tooltip>
                 </PopoverTrigger>
-                <PopoverContent className="relative top-6 right-1 w-92 p-0 shadow-2xl">
-                    <div className="flex items-center justify-between border-b p-3">
-                        <p className="text-sm font-semibold">Notifications</p>
-                        <button
-                            className="text-xs text-cyan-600 hover:underline"
-                            onClick={() => navigate(`/Chat/${data.niveaux}`)}
-                            type="button"
-                        >
-                            Ouvrir la messagerie
-                        </button>
-                    </div>
-                    <div className="max-h-80 overflow-y-auto p-2">
-                        {conversations.filter(c => c.unreadCount > 0).length === 0 ? (
-                            <div className="p-3 text-sm text-gray-500">
-                                Aucune notification pour le moment.
-                            </div>
-                        ) : (
-                            conversations
-                                .filter(c => c.unreadCount > 0)
-                                .slice(0, 8)
-                                .map((conv) => {
-                                    const otherUser = conv.members.find(m => m._id !== data.id);
-                                    const title = otherUser ? `${otherUser.nom} ${otherUser.prenom}` : "Conversation";
-                                    const preview = conv.lastMessage?.text ?? "";
-                                    return (
-                                        <button
-                                            key={conv._id}
-                                            type="button"
-                                            onClick={() => navigate(`/Chat/start/${conv._id}`)}
-                                            className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
-                                        >
-                                            <div className="min-w-0">
-                                                <p className="truncate text-sm font-medium">{title}</p>
-                                                <p className="line-clamp-2 text-xs text-gray-500">{preview}</p>
-                                            </div>
-                                            <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
-                                                {conv.unreadCount}
-                                            </span>
-                                        </button>
-                                    );
-                                })
-                        )}
-                    </div>
-                </PopoverContent>
             </Popover>
             <Tooltip>
                 <TooltipTrigger asChild>
@@ -292,73 +300,81 @@ return (
                     {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
                 </Button>
                 <Popover>
-                <PopoverTrigger>
+                <PopoverTrigger asChild>
                     <Tooltip>
-                        <TooltipTrigger>
-                            <Button
-                                variant={'outline'}
-                                size={'icon'}
-                                className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
-                                aria-label="Notifications"
+                        <Popover>
+                            <TooltipTrigger asChild>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant={'outline'}
+                                        size={'icon'}
+                                        className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
+                                        aria-label="Notifications"
+                                    >
+                                        <Bell />
+                                        {unreadTotal > 0 && (
+                                            <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
+                                                {unreadTotal > 99 ? "99+" : unreadTotal}
+                                            </span>
+                                        )}
+                                    </Button>
+                                </PopoverTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Notification</p>
+                            </TooltipContent>
+                            <PopoverContent
+                                align="center"
+                                sideOffset={10}
+                                className="z-[999999] w-92 p-0 shadow-2xl"
                             >
-                                <Bell />
-                                {unreadTotal > 0 && (
-                                    <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
-                                        {unreadTotal > 99 ? "99+" : unreadTotal}
-                                    </span>
-                                )}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className='z-[99999999999999]'>
-                            <p>Notification</p>
-                        </TooltipContent>
+                                <div className="flex items-center justify-between border-b p-3">
+                                            <p className="text-sm font-semibold">Notifications</p>
+                                            <button
+                                                className="text-xs text-cyan-600 hover:underline"
+                                                onClick={() => navigate(`/Chat/${data.niveaux}`)}
+                                                type="button"
+                                            >
+                                                Ouvrir la messagerie
+                                            </button>
+                                        </div>
+                                        <div className="max-h-80 overflow-y-auto p-2">
+                                            {conversations.filter(c => c.unreadCount > 0).length === 0 ? (
+                                                <div className="p-3 text-sm text-gray-500">
+                                                    Aucune notification pour le moment.
+                                                </div>
+                                            ) : (
+                                                conversations
+                                                    .filter(c => c.unreadCount > 0)
+                                                    .slice(0, 8)
+                                                    .map((conv) => {
+                                                        const otherUser = conv.members.find(m => m._id !== data.id);
+                                                        const title = otherUser ? `${otherUser.nom} ${otherUser.prenom}` : "Conversation";
+                                                        const preview = conv.lastMessage?.text ?? "";
+                                                        return (
+                                                            <button
+                                                                key={conv._id}
+                                                                type="button"
+                                                                onClick={() => navigate(`/Chat/start/${conv._id}`)}
+                                                                className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                                                            >
+                                                                <div className="min-w-0">
+                                                                    <p className="truncate text-sm font-medium">{title}</p>
+                                                                    <p className="line-clamp-2 text-xs text-gray-500">{preview}</p>
+                                                                </div>
+                                                                <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                                                                    {conv.unreadCount}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    })
+                                            )}
+                                        </div>
+                            </PopoverContent>
+                        </Popover>
                     </Tooltip>
                 </PopoverTrigger>
-                <PopoverContent align="end" sideOffset={30} className="top-26 w-[95vw] max-w-sm p-0 shadow-2xl sm:max-w-md md:w-[500px]">
-                    <div className="flex items-center justify-between border-b p-3">
-                        <p className="text-sm font-semibold">Notifications</p>
-                        <button
-                            className="text-xs text-cyan-600 hover:underline"
-                            onClick={() => navigate(`/Chat/${data.niveaux}`)}
-                            type="button"
-                        >
-                            Ouvrir la messagerie
-                        </button>
-                    </div>
-                    <div className="max-h-80 overflow-y-auto p-2">
-                        {conversations.filter(c => c.unreadCount > 0).length === 0 ? (
-                            <div className="p-3 text-sm text-gray-500">
-                                Aucune notification pour le moment.
-                            </div>
-                        ) : (
-                            conversations
-                                .filter(c => c.unreadCount > 0)
-                                .slice(0, 8)
-                                .map((conv) => {
-                                    const otherUser = conv.members.find(m => m._id !== data.id);
-                                    const title = otherUser ? `${otherUser.nom} ${otherUser.prenom}` : "Conversation";
-                                    const preview = conv.lastMessage?.text ?? "";
-                                    return (
-                                        <button
-                                            key={conv._id}
-                                            type="button"
-                                            onClick={() => navigate(`/Chat/start/${conv._id}`)}
-                                            className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
-                                        >
-                                            <div className="min-w-0">
-                                                <p className="truncate text-sm font-medium">{title}</p>
-                                                <p className="line-clamp-2 text-xs text-gray-500">{preview}</p>
-                                            </div>
-                                            <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
-                                                {conv.unreadCount}
-                                            </span>
-                                        </button>
-                                    );
-                                })
-                        )}
-                    </div>
-                </PopoverContent>
-            </Popover>     
+            </Popover>   
                 <Button
                     variant={'outline'}
                     size={'icon'}
