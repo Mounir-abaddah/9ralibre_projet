@@ -306,19 +306,19 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Link to="/admin/users" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
+        <Link to="/admin/users" className="rounded-lg border p-4 shadow-sm transition">
           <h3 className="font-semibold">Utilisateurs</h3>
           <p className="text-sm text-zinc-500">Blocage/déblocage des comptes et suivi des statuts.</p>
         </Link>
-        <Link to="/admin/professors" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
+        <Link to="/admin/professors" className="rounded-lg border p-4 shadow-sm transition">
           <h3 className="font-semibold">Professeurs</h3>
           <p className="text-sm text-zinc-500">Approuver ou décliner les demandes professeurs.</p>
         </Link>
-        <Link to="/admin/signals" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
+        <Link to="/admin/signals" className="rounded-lg border p-4 shadow-sm transition">
           <h3 className="font-semibold">Signalements</h3>
           <p className="text-sm text-zinc-500">Analyse des signalements vidéo et commentaires.</p>
         </Link>
-        <Link to="/admin/appeals" className="rounded-lg border p-4 shadow-sm transition hover:bg-zinc-50">
+        <Link to="/admin/appeals" className="rounded-lg border p-4 shadow-sm transition">
           <h3 className="font-semibold">Recours</h3>
           <p className="text-sm text-zinc-500">Valider ou rejeter les demandes d'appel utilisateur.</p>
         </Link>
