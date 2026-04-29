@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import axios from "axios";
 import {
   ArrowRight,
+  ArrowUpRight,
   BookMarked,
   BookOpen,
   CalendarDays,
@@ -332,30 +333,38 @@ const Dashboard = () => {
         </section>
 
         {/* Calendrier + derniers sauvegardés */}
-        <div className="grid gap-6 lg:grid-cols-5">
+        <div className="w-full space-y-6 lg:grid lg:grid-cols-5 lg:gap-6">
           <Card className="border-slate-200/80 shadow-sm lg:col-span-2 dark:border-slate-800">
-            <CardHeader>
+            <CardHeader className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CalendarDays className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                 <div>
                   <CardTitle className="text-base">Planning</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-xs">
                     Garde une vue sur ton mois
                   </CardDescription>
                 </div>
               </div>
+              <div>
+                <Link to={`/calendrier/${data?.niveaux}`} className="flex w-max items-center gap-2 text-[10px] text-amber-500 hover:border-b-2 hover:border-b-amber-500">
+                  Voir le calendrier <ArrowUpRight size={14}/>
+                </Link>
+              </div>
             </CardHeader>
-            <CardContent className="flex justify-center pb-4">
+            <CardContent className="flex w-full justify-center pb-4">
               <Calendar
                 mode="single"
                 selected={date}
                 onSelect={setDate}
                 modifiers={{ hasEvent: eventDates }}
                 locale={fr}
-                modifiersClassNames={{ hasEvent: "bg-amber-100 text-amber-900 font-semibold" }}
+                modifiersClassNames={{
+                  hasEvent: "bg-amber-100 text-amber-900 font-semibold",
+                }}
                 className="w-full rounded-xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-900"
                 classNames={{
-                  day:`p-1 m-2 w-full`
+                  cell: "flex justify-between items-center",
+                  day: "size-full m-1",    
                 }}
               />
             </CardContent>
