@@ -32,6 +32,7 @@ import { Button } from '../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import ConnexionModal from '../ConnexionModal/ConnexionModal';
 import AvatarMobile from './AvatarMobile';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 const Navbar = () => {
 const { theme, toggleTheme } = useTheme();
@@ -133,29 +134,43 @@ return (
                 loading={loading}
                 error={error}
             />
-            <Button
-                    variant={'outline'}
-                    size={'icon'}
-                    onClick={toggleTheme}
-                    className='cursor-pointer'
-            >
-                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </Button> 
-            <Popover>
-                <PopoverTrigger asChild>
+            <Tooltip>
+                <TooltipTrigger asChild>
                     <Button
                         variant={'outline'}
                         size={'icon'}
-                        className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
-                        aria-label="Notifications"
+                        onClick={toggleTheme}
+                        className='cursor-pointer'
                     >
-                        <Bell />
-                        {unreadTotal > 0 && (
-                            <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
-                                {unreadTotal > 99 ? "99+" : unreadTotal}
-                            </span>
-                        )}
-                    </Button>
+                        {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                    </Button> 
+                </TooltipTrigger>
+                <TooltipContent className='z-[99999999999999]'>
+                    <p>Appearance</p>
+                </TooltipContent>
+            </Tooltip>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant={'outline'}
+                                size={'icon'}
+                                className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
+                                aria-label="Notifications"
+                            >
+                                <Bell />
+                                {unreadTotal > 0 && (
+                                    <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
+                                        {unreadTotal > 99 ? "99+" : unreadTotal}
+                                    </span>
+                                )}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className='z-[99999999999999]'>
+                            <p>Notification</p>
+                        </TooltipContent>
+                    </Tooltip>
                 </PopoverTrigger>
                 <PopoverContent className="relative top-6 right-1 w-92 p-0 shadow-2xl">
                     <div className="flex items-center justify-between border-b p-3">
@@ -202,33 +217,54 @@ return (
                     </div>
                 </PopoverContent>
             </Popover>
-            <Button
-                variant={'outline'}
-                size={'icon'}
-                className='cursor-pointer'
-                onClick={()=>navigate(`/Calendrier/${data.niveaux}`)}
-            >
-                <Calendar />
-            </Button>
-            <Button
-                variant={'outline'}
-                size={'icon'}
-                onClick={()=>navigate('/Drawing')}
-                className='cursor-pointer'
-            >
-                <DraftingCompass size={18}/>
-            </Button>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant={'outline'}
+                        size={'icon'}
+                        className='cursor-pointer'
+                        onClick={()=>navigate(`/Calendrier/${data.niveaux}`)}
+                    >
+                        <Calendar />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent className='z-[99999999999999]'>
+                    <p>Calendrier</p>
+                </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant={'outline'}
+                        size={'icon'}
+                        onClick={()=>navigate('/Drawing')}
+                        className='cursor-pointer'
+                    >
+                        <DraftingCompass size={18}/>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent className='z-[99999999999999]'>
+                    <p>Paint</p>
+                </TooltipContent>
+            </Tooltip>
             </>
             ) : (
             <>
-            <Button
-                variant={'outline'}
-                size={'icon'}
-                onClick={toggleTheme}
-                className='cursor-pointer'
-            >
-                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </Button>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant={'outline'}
+                        size={'icon'}
+                        onClick={toggleTheme}
+                        className='cursor-pointer'
+                    >
+                        {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                    </Button> 
+                </TooltipTrigger>
+                <TooltipContent className='z-[99999999999999]'>
+                    <p>Appearance</p>
+                </TooltipContent>
+            </Tooltip>
             <Button onClick={()=>setOpenModal(!openModal)} variant={'ghost'} className='cursor-pointer'><Lock />Connexion</Button>
             <Link to="/inscription" >
                 <Button className='cursor-pointer bg-amber-400 hover:bg-amber-500'>Inscription</Button>
@@ -243,7 +279,7 @@ return (
         <div className="flex items-center gap-2">
             {!data ? (
             <Link to="/connexion">
-                <Button variant={'outline'} className="h-9 cursor-pointer px-3">Connexion</Button>
+                <Button variant={'outline'} className="h-9 cursor-pointer px-3"><Lock size={16}/>Connexion</Button>
             </Link>
             ):(
                 <>
@@ -254,7 +290,75 @@ return (
                     className='cursor-pointer'
                 >
                     {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-                </Button>     
+                </Button>
+                <Popover>
+                <PopoverTrigger>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button
+                                variant={'outline'}
+                                size={'icon'}
+                                className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
+                                aria-label="Notifications"
+                            >
+                                <Bell />
+                                {unreadTotal > 0 && (
+                                    <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
+                                        {unreadTotal > 99 ? "99+" : unreadTotal}
+                                    </span>
+                                )}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className='z-[99999999999999]'>
+                            <p>Notification</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </PopoverTrigger>
+                <PopoverContent align="end" sideOffset={30} className="top-26 w-[95vw] max-w-sm p-0 shadow-2xl sm:max-w-md md:w-[500px]">
+                    <div className="flex items-center justify-between border-b p-3">
+                        <p className="text-sm font-semibold">Notifications</p>
+                        <button
+                            className="text-xs text-cyan-600 hover:underline"
+                            onClick={() => navigate(`/Chat/${data.niveaux}`)}
+                            type="button"
+                        >
+                            Ouvrir la messagerie
+                        </button>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto p-2">
+                        {conversations.filter(c => c.unreadCount > 0).length === 0 ? (
+                            <div className="p-3 text-sm text-gray-500">
+                                Aucune notification pour le moment.
+                            </div>
+                        ) : (
+                            conversations
+                                .filter(c => c.unreadCount > 0)
+                                .slice(0, 8)
+                                .map((conv) => {
+                                    const otherUser = conv.members.find(m => m._id !== data.id);
+                                    const title = otherUser ? `${otherUser.nom} ${otherUser.prenom}` : "Conversation";
+                                    const preview = conv.lastMessage?.text ?? "";
+                                    return (
+                                        <button
+                                            key={conv._id}
+                                            type="button"
+                                            onClick={() => navigate(`/Chat/start/${conv._id}`)}
+                                            className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                                        >
+                                            <div className="min-w-0">
+                                                <p className="truncate text-sm font-medium">{title}</p>
+                                                <p className="line-clamp-2 text-xs text-gray-500">{preview}</p>
+                                            </div>
+                                            <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                                                {conv.unreadCount}
+                                            </span>
+                                        </button>
+                                    );
+                                })
+                        )}
+                    </div>
+                </PopoverContent>
+            </Popover>     
                 <Button
                     variant={'outline'}
                     size={'icon'}
@@ -273,13 +377,14 @@ return (
                 </Button>
                 </>
             )}
-            <button
+            <Button
+                variant={'outline'}
                 onClick={() => setOpen(true)}
-                className="rounded-md p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="cursor-pointer rounded-md p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800"
                 aria-label="Ouvrir le menu"
             >
                 <Menu size={26} />
-            </button>
+            </Button>
         </div>
         )}
     </div>
@@ -340,10 +445,10 @@ const MobileMenu = ({ data, onNavigate }: MobileMenuProps) => {
             {!data ? (
                 <div className="flex flex-col gap-2">
                 <Link to="/connexion">
-                    <Button variant="outline" className="w-full">Connexion</Button>
+                    <Button variant="outline" className="w-full cursor-pointer">Connexion</Button>
                 </Link>
                 <Link to="/inscription">
-                    <Button className="w-full bg-cyan-500">Inscription</Button>
+                    <Button className="w-full cursor-pointer bg-cyan-500 hover:bg-cyan-600">Inscription</Button>
                 </Link>
                 </div>
             ):(
