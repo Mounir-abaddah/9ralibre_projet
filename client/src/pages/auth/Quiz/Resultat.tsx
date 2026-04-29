@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { Results } from "./types/ResultsType";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BicepsFlexed, Medal, PartyPopper, ThumbsUp, Trophy } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 
 const ScoreCircle = ({ score, total }: { score: number; total: number }) => {
@@ -27,7 +29,7 @@ const ScoreCircle = ({ score, total }: { score: number; total: number }) => {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold text-gray-900">{score}/{total}</span>
+        <span className="text-2xl font-bold ">{score}/{total}</span>
         <span className="text-sm text-gray-400">{percentage}%</span>
       </div>
     </div>
@@ -36,10 +38,10 @@ const ScoreCircle = ({ score, total }: { score: number; total: number }) => {
 
 const getPerformanceLabel = (score: number, total: number) => {
   const pct = total > 0 ? (score / total) * 100 : 0;
-  if (pct === 100) return "Parfait ! 🏆";
-  if (pct >= 70) return "Excellent ! 🎉";
-  if (pct >= 50) return "Bien ! 👍";
-  return "Peut mieux faire 💪";
+  if (pct === 100) return <div className="flex items-center justify-center gap-2"> Parfait ! <Trophy /></div>;
+  if (pct >= 70) return <div className="flex items-center justify-center gap-2">Excellent ! <PartyPopper /></div>;
+  if (pct >= 50) return <div className="flex items-center justify-center gap-2">Bien ! <ThumbsUp /></div>;
+  return <div className="flex items-center justify-center gap-2">Peut mieux faire <BicepsFlexed /></div>;
 };
 
 const Resultat = () => {
@@ -107,42 +109,45 @@ const Resultat = () => {
       <div className="flex flex-col-reverse gap-4 space-x-4 md:flex-row lg:flex-row">
         <div className="mx-auto flex w-full flex-col gap-4">
           {/* Carte score */}
-          <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
+          <Card className="rounded-2xl  p-8 text-center shadow-sm">
             <ScoreCircle score={results.score} total={results.totalQuestions} />
-            <p className="mt-5 text-xl font-bold text-gray-900">
+            <p className="mt-5 text-xl font-bold ">
               {getPerformanceLabel(results.score, results.totalQuestions)}
             </p>
             <p className="mt-1 text-sm text-gray-400">{results.quizId.text}</p>
-          </div>
+          </Card>
           {/* Récapitulatif */}
           <h2 className="mt-2 text-base font-bold text-gray-900 dark:text-white">
             Récapitulatif des réponses
           </h2>
           <div className="flex flex-col gap-3">
             {Array.from({ length: correctAnswers }).map((_, i) => (
-              <div
+              <Card
                 key={`correct-${i}`}
-                className="rounded-xl border-l-4 border-green-500 bg-white p-4 shadow-sm"
+                className="rounded-xl border-l-4 border-green-500  p-4 shadow-sm"
               >
+                <CardContent>
                 <div className="flex items-center gap-3">
                   <span className="text-lg font-bold text-green-500">✔</span>
-                  <span className="font-semibold text-gray-800">Bonne réponse</span>
+                  <span className="font-semibold ">Bonne réponse</span>
                 </div>
                 <div className="mt-2">
                   <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
                     Correct ✓
                   </span>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
             {results.wrongAnswers.map((wa) => (
-              <div
+              <Card
                 key={wa._id}
-                className="rounded-xl border-l-4 border-red-400 bg-white p-4 shadow-sm"
+                className="rounded-xl border-l-4 border-red-400 p-4 shadow-sm"
               >
+                <CardContent>
                 <div className="flex items-center gap-3">
                   <span className="text-lg font-bold text-red-400">✗</span>
-                  <span className="font-semibold text-gray-800">{wa.question}</span>
+                  <span className="font-semibold ">{wa.question}</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
@@ -152,13 +157,14 @@ const Resultat = () => {
                     Bonne réponse : {wa.correctAnswer}
                   </span>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
         {/* Leaderboard */}
         <div className="w-full lg:mt-8">
-          <h2 className="mb-4 text-lg font-bold">🏆 Leaderboard</h2>
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><Trophy fill="#FFC107" color="#FFC107"/> Leaderboard</h2>
 
           <div className="flex flex-col gap-3">
             {leaderboard
@@ -167,18 +173,19 @@ const Resultat = () => {
                 const percentage = Math.round((player.score / player.totalQuestions) * 100);
 
                 const medal =
-                  index === 0 ? "🥇" :
+                  index === 0 ? <Medal /> :
                   index === 1 ? "🥈" :
                   index === 2 ? "🥉" : null;
 
                 return (
-                  <div
+                  <Card
                     key={player._id}
-                    className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
+                    className="flex items-center justify-between rounded-xl p-4 shadow-sm transition hover:shadow-md"
                   >
+                    <CardContent>
                     {/* LEFT */}
                     <div className="flex items-center gap-3">
-                      <span className="w-6 text-lg font-bold text-gray-400">
+                      <span className="w-6 text-lg font-bold ">
                         {medal ?? `#${index + 1}`}
                       </span>
 
@@ -194,11 +201,12 @@ const Resultat = () => {
                         </AvatarFallback>
                       </Avatar>
 
-                      <span className="font-semibold dark:text-black">
+                      <span className="font-semibold">
                         {player.userId.nom} {player.userId.prenom}
                       </span>
                     </div>
-
+                    </CardContent>
+                    <CardContent>
                     {/* RIGHT */}
                     <div className="flex items-center gap-4">
                       <span className="text-sm text-gray-400">
@@ -209,7 +217,8 @@ const Resultat = () => {
                         {percentage}%
                       </span>
                     </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 );
               })}
           </div>
