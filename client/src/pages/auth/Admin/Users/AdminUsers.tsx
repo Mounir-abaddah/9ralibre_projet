@@ -135,7 +135,7 @@ const AdminUsers = () => {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border  bg-amber-500 p-5 text-white shadow-sm">
+      <div className="rounded-xl border  bg-zinc-900  p-5 text-white shadow-sm">
         <h1 className="text-2xl font-semibold">Gestion des utilisateurs</h1>
         <p className="text-sm text-zinc-500">
           Liste des comptes (hors admins), avec blocage et déblocage rapide.
