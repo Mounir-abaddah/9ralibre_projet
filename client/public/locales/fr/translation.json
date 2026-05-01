@@ -1,0 +1,762 @@
+{
+  "nav": {
+    "learn": "Apprendre",
+    "videos": "Cours en vidéo",
+    "quiz": "Quiz & Exercices",
+    "about": "À propos",
+    "connexion": "Connexion",
+    "inscription": "Inscription",
+    "teacherSpace": "Espace Professeur",
+    "logout": "Se déconnecter",
+    "openMessaging": "Ouvrir la messagerie",
+    "notifications": "Notifications",
+    "noNotifications": "Aucune notification pour le moment.",
+    "appearance": "Apparence",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair",
+    "language": "Langue",
+    "calendar": "Calendrier",
+    "paint": "Paint",
+    "notification": "Notification",
+    "newMessage": "Nouveau message reçu",
+    "openMenu": "Ouvrir le menu",
+    "home": "Accueil",
+    "courses": "Cours",
+    "iAmTeacher": "Je suis professeur",
+    "dashboard": "Tableau de bord",
+    "stories": "Histoire",
+    "messaging": "Messagerie",
+    "saved": "Enregistrés",
+    "settings": "Paramètres",
+    "conversation": "Conversation",
+    "courses_menu": {
+      "maths": {
+        "title": "Mathématiques",
+        "description": "Algèbre, analyse..."
+      },
+      "physics": {
+        "title": "Physique et Chimie",
+        "description": "Mécanique, électricité"
+      },
+      "svt": {
+        "title": "SVT",
+        "description": "SVT"
+      },
+      "all": {
+        "title": "Tous les cours",
+        "description": "Parcourir tous les cours"
+      }
+    },
+    "videos_menu": {
+      "maths": {
+        "title": "Mathématiques",
+        "description": "Cours vidéo, exercices corrigés"
+      },
+      "physics": {
+        "title": "Physique-Chimie",
+        "description": "Expériences et démonstrations"
+      },
+      "svt": {
+        "title": "SVT",
+        "description": "Cours animés et simulations"
+      },
+      "all": {
+        "title": "Toutes les vidéos",
+        "description": "Parcourir l'intégralité du contenu"
+      }
+    },
+    "quiz_menu": {
+      "available": {
+        "title": "Quiz disponibles",
+        "description": "Tester vos connaissances"
+      },
+      "results": {
+        "title": "Résultats",
+        "description": "Voir vos scores"
+      }
+    }
+  },
+  "modal": {
+    "title": "Je me connecte",
+    "noAccount": "Pas encore membre ?",
+    "signUpLink": "Inscrivez-vous"
+  },
+  "auth": {
+    "headline1": "Commençons",
+    "headline2": "à apprendre avec",
+    "backToSite": "Retour au site",
+    "fields": {
+      "email": "Email :",
+      "emailPlaceholder": "Votre adresse email",
+      "password": "Mot de passe :",
+      "passwordPlaceholder": "Votre mot de passe",
+      "confirmPassword": "Confirmation du mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez votre mot de passe"
+    },
+    "errors": {
+      "invalidEmail": "Veuillez entrer une adresse email valide",
+      "weakPassword": "Minimum huit caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+      "weakPasswordLong": "Le mot de passe doit contenir au minimum 8 caractères, avec une majuscule, une minuscule, un chiffre et un caractère spécial.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "connexion": {
+    "pageTitle": "Je me connecte | 9ralibre",
+    "subtitle": "Veuillez vous connecter ou vous inscrire pour continuer",
+    "noAccount": "Pas encore de compte ?",
+    "signUpLink": "Inscrivez-vous",
+    "oauthGoogle": "Se connecter avec Google",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Connectez-vous",
+    "blocked": "Votre compte est temporairement bloqué. Consultez votre email pour plus d'informations.",
+    "unblockRequest": "Faire une demande de déblocage"
+  },
+  "inscription": {
+    "pageTitle": "Inscription gratuite | 9ralibre",
+    "subtitle": "Veuillez vous inscrire ou vous connecter",
+    "alreadyAccount": "Déjà un compte ?",
+    "loginLink": "Connectez-vous",
+    "oauthGoogle": "S'inscrire avec Google",
+    "submit": "Inscrivez-vous",
+    "successToast": "Vous allez recevoir un email pour vérifier votre compte 🎉"
+  },
+  "completeProfile": {
+    "pageTitle": "Compléter le profil | 9ralibre",
+    "welcomeTitle": "Bienvenue ! 👋",
+    "welcomeDescription": "Veuillez compléter les informations suivantes pour une meilleure expérience.",
+    "steps": {
+      "personalInfo": "ℹ️ Informations personnelles",
+      "uploadPhoto": "📷 Importez votre photo",
+      "studyLevel": "🎓 Niveau d’étude"
+    },
+    "stepCount": "{{current}} / {{total}}",
+    "buttons": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "finish": "Terminer",
+      "sending": "Envoi..."
+    },
+    "form": {
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "enterLastName": "Entrez votre nom",
+      "enterFirstName": "Entrez votre prénom",
+      "status": "Votre statut",
+      "selectStatus": "Sélectionnez votre statut",
+      "studyLevel": "Votre niveau d’étude",
+      "selectCategory": "Sélectionnez votre catégorie",
+      "specificLevel": "Niveau spécifique",
+      "selectLevel": "Sélectionnez votre niveau"
+    },
+    "roleOptions": {
+      "male": "Etudiant",
+      "female": "Etudiante"
+    },
+    "upload": {
+      "warningTitle": "Avertissement",
+      "warningText": "Les photos contenant de la nudité ou un contenu inapproprié peuvent entraîner un",
+      "warningStrong": "bannissement immédiat",
+      "title": "Importez votre photo",
+      "optional": "(optionnel)",
+      "action": "Cliquez ou déposez une image ici",
+      "remove": "Supprimer",
+      "previewAlt": "Aperçu de l’image"
+    },
+    "errors": {
+      "lastName": "Veuillez entrer un nom valide",
+      "firstName": "Veuillez entrer un prénom valide",
+      "role": "Veuillez sélectionner votre statut",
+      "level": "Veuillez sélectionner votre niveau"
+    },
+    "toast": {
+      "success": "Profil complété avec succès !",
+      "error": "Erreur lors de l’envoi du profil"
+    },
+    "categories": {
+      "college": "College",
+      "lycee": "Lycée"
+    }
+  },
+  "resetPassword": {
+    "title": "Nouveau mot de passe",
+    "label": "Nouveau mot de passe",
+    "placeholder": "Tapez votre nouveau mot de passe",
+    "submit": "Réinitialiser le mot de passe"
+  },
+  "forgotPassword": {
+    "title": "Mot de passe oublié ?",
+    "instruction": "Entrez simplement l'adresse e-mail avec laquelle vous vous êtes inscrit·e et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "submit": "Envoyer le lien de réinitialisation de mot de passe",
+    "rememberLink": "Finalement, je m'en rappelle !",
+    "checkInbox": "📧 Vérifiez votre boîte mail",
+    "confirmationText": "Si un compte existe avec",
+    "confirmationSuffix": ", vous recevrez un lien de réinitialisation dans quelques instants.",
+    "backToLogin": "Retour à la connexion"
+  },
+  "notFound": {
+    "title": "Page Non Trouvée",
+    "description": "Désolé, la page que vous cherchez n'existe pas.",
+    "backHome": "Retour à l'accueil"
+  },
+  "verifyEmail": {
+    "pageTitle": "Confirmation de votre compte | 9ralibre",
+    "loading": "Vérification en cours...",
+    "success": "Votre email a été vérifié avec succès !",
+    "redirecting": "Redirection dans {{count}} seconde{{count, plural, one {} other {s}}}...",
+    "failed": "Impossible de vérifier votre email.",
+    "invalidLink": "Lien invalide ou expiré"
+  },
+  "home": {
+    "loading": "Chargement…",
+    "dialog": {
+      "title": "Bienvenue",
+      "description1": "Merci de vous être inscrit sur",
+      "description2": "Vérifiez votre boîte mail ou vos spams pour activer votre compte.",
+      "ok": "OK"
+    },
+    "hero": {
+      "connected": "Vous êtes connecté",
+      "level": "Collège & lycée",
+      "title": "La plateforme qui centralise vos révisions",
+      "greetingPrefix": "Bonjour",
+      "level_label": "niveau",
+      "greetingSuffix": "Retrouvez cours, vidéos et quiz depuis votre espace.",
+      "guestDescription": "Cours PDF, vidéos pédagogiques et quiz sur une interface simple — pensée pour les élèves qui veulent gagner du temps, planifier leurs révisions avec un calendrier et suivre des histoires inspirantes.",
+      "cta": {
+        "dashboard": "Mon tableau de bord",
+        "courses": "Mes cours",
+        "start": "Commencer gratuitement",
+        "login": "J'ai un compte"
+      },
+      "teacherLabel": "Enseignant ?",
+      "teacherLink": "Accéder à l'espace professeur"
+    },
+    "quickLinks": {
+      "sectionTitle": "Accès rapide à votre espace",
+      "dashboard": "Tableau de bord",
+      "dashboardDesc": "Vue d'ensemble",
+      "courses": "Cours",
+      "coursesDesc": "PDF & documents",
+      "videos": "Vidéos",
+      "videosDesc": "Cours en vidéo",
+      "quiz": "Quiz",
+      "quizDesc": "S'entraîner",
+      "messaging": "Messagerie",
+      "messagingDesc": "Échanges",
+      "saves": "Enregistrements",
+      "savesDesc": "Favoris"
+    },
+    "stats": {
+      "levels": { "label": "niveaux", "sub": "Du collège au bac" },
+      "formats": { "label": "formats", "sub": "Cours, vidéos, quiz" },
+      "account": { "label": "compte", "sub": "Tout au même endroit" }
+    },
+    "features": {
+      "sectionTitle": "Tout ce dont vous avez besoin pour réviser",
+      "sectionDesc": "Une expérience pensée pour la concentration : peu de bruit, des contenus structurés, des accès rapides.",
+      "library": {
+        "title": "Bibliothèque de cours",
+        "desc": "PDF, fiches et annales organisés par matière et par niveau."
+      },
+      "videos": {
+        "title": "Vidéos claires",
+        "desc": "Revoyez les leçons quand vous voulez, sur ordinateur ou mobile."
+      },
+      "quiz": {
+        "title": "Quiz corrigés",
+        "desc": "Entraînez-vous avec des QCM et suivez vos progrès."
+      },
+      "messaging": {
+        "title": "Échanges",
+        "desc": "Posez vos questions et restez en lien avec la communauté."
+      },
+      "bookmarks": {
+        "title": "Favoris",
+        "desc": "Enregistrez cours et vidéos pour les retrouver en un clic."
+      },
+      "calendar": {
+        "title": "Calendrier de révision",
+        "desc": "Planifiez vos objectifs semaine par semaine et suivez vos échéances."
+      },
+      "stories": {
+        "title": "Histoires inspirantes",
+        "desc": "Découvrez des parcours d'élèves pour rester motivé tout au long de l'année."
+      }
+    },
+    "steps": {
+      "sectionTitle": "Comment ça marche",
+      "step1": {
+        "title": "Créez un compte",
+        "text": "Inscription rapide — choisissez votre niveau scolaire."
+      },
+      "step2": {
+        "title": "Explorez le contenu",
+        "text": "Cours, vidéos et quiz adaptés au programme."
+      },
+      "step3": {
+        "title": "Progressez",
+        "text": "Révisez à votre rythme et gardez le fil."
+      }
+    },
+    "levels": {
+      "title": "Du 1AC au 2BAC",
+      "desc": "Sélectionnez votre niveau après inscription : le contenu affiché correspond à votre filière scolaire."
+    },
+    "trust": {
+      "title": "Compte personnel",
+      "subtitle": "Accès sécurisé, profil modifiable à tout moment.",
+      "point1": "Contenu regroupé par matière",
+      "point2": "Interface lisible jour et nuit",
+      "point3": "Accès depuis le navigateur"
+    },
+    "cta": {
+      "userTitle": "Poursuivre sur 9ralibre",
+      "userDesc": "Votre contenu et vos favoris vous attendent sur votre tableau de bord.",
+      "openDashboard": "Ouvrir le tableau de bord",
+      "mySaves": "Mes enregistrements",
+      "guestTitle": "Prêt à structurer vos révisions ?",
+      "guestDesc": "Rejoignez les élèves qui utilisent 9ralibre pour préparer les contrôles et les examens.",
+      "createAccount": "Créer mon compte",
+      "login": "Se connecter"
+    },
+    "footer": {
+      "tagline": "Cours, vidéos et quiz pour le collège et le lycée — un seul endroit pour réviser sereinement.",
+      "nav": {
+        "title": "Navigation",
+        "home": "Accueil",
+        "dashboard": "Tableau de bord",
+        "courses": "Cours",
+        "videos": "Vidéos",
+        "settings": "Paramètres"
+      },
+      "resources": {
+        "title": "Ressources",
+        "quiz": "Quiz",
+        "saves": "Enregistrements",
+        "teacherSpace": "Espace professeur"
+      },
+      "contact": {
+        "title": "Contact",
+        "desc": "Une question sur la plateforme ? Utilisez la messagerie une fois connecté ou contactez-nous via les réseaux sociaux."
+      },
+      "rights": "Tous droits réservés.",
+      "platform": "Plateforme éducative — 9ralibre."
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "À propos",
+      "description": "Plateforme éducative pour apprendre facilement avec des vidéos, cours et quiz interactifs. Nous avons créé 9ralibre pour offrir un espace moderne, simple et utile à tous les étudiants."
+    },
+    "mission": {
+      "title": "Mission",
+      "description": "Notre mission est de rendre l'apprentissage accessible à tous les étudiants grâce à du contenu de qualité créé par des professeurs."
+    },
+    "offering": {
+      "title": "Ce que nous proposons",
+      "subtitle": "Une expérience complète autour de trois formats essentiels.",
+      "videos": {
+        "title": "Vidéos",
+        "point1": "Cours en vidéo",
+        "point2": "Explications simples et claires"
+      },
+      "pdf": {
+        "title": "Cours PDF",
+        "point1": "Documents téléchargeables",
+        "point2": "Examens et exercices corrigés"
+      },
+      "quiz": {
+        "title": "Quiz",
+        "point1": "Tester ses connaissances",
+        "point2": "Voir ses erreurs pour progresser"
+      }
+    },
+    "professors": {
+      "title": "Professeurs",
+      "point1": "Contenus créés par des professeurs",
+      "point2": "Profils vérifiés avec accountVerified et status",
+      "point3": "Possibilité de suivre un professeur"
+    },
+    "students": {
+      "title": "Étudiants",
+      "point1": "Sauvegarder les cours importants",
+      "point2": "Suivre sa progression dans le temps",
+      "point3": "Passer des quiz par matière",
+      "point4": "Suivre ses professeurs préférés"
+    },
+    "whyChoose": {
+      "title": "Pourquoi choisir 9ralibre",
+      "point1": "Interface simple et rapide",
+      "point2": "Contenu structuré par niveau",
+      "point3": "Interaction via likes et commentaires",
+      "point4": "Suivi de progression pour rester motivé"
+    },
+    "support": {
+      "title": "Support & contact",
+      "description": "Besoin d'aide ? Notre chat support via Crisp est disponible pour vous accompagner. Vous pouvez aussi nous contacter par email."
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "share": "Partager",
+    "report": "Signaler",
+    "back": "Retour",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "download": "Télécharger",
+    "viewAll": "Tout voir",
+    "remove": "Retirer",
+    "teacher": "Professeur",
+    "subscribe": "S’abonner",
+    "alreadySubscribed": "Déjà abonné(e)"
+  },
+  "appeal": {
+    "pageTitle": "Demande de déblocage | 9ralibre",
+    "validationMessage": "Le message doit contenir au moins 10 caractères.",
+    "submitError": "Impossible d'envoyer la demande",
+    "title": "Demande de déblocage",
+    "subtitle": "Si votre compte est bloqué, envoyez votre demande ici.",
+    "emailPlaceholder": "Votre email",
+    "messagePlaceholder": "Expliquez pourquoi votre compte doit être débloqué...",
+    "sending": "Envoi...",
+    "submit": "Envoyer la demande",
+    "backToLogin": "Retour à la connexion"
+  },
+  "chat": {
+    "pageTitle": "Messagerie | 9ralibre",
+    "welcomeTitle": "Bienvenue sur votre espace de messagerie",
+    "welcomeDescription": "Échangez facilement avec vos professeurs ou vos camarades : posez vos questions, partagez vos ressources et collaborez en toute simplicité.",
+    "online": "● En ligne",
+    "offline": "● Hors ligne",
+    "seen": "✓✓ Vu",
+    "sent": "✓ Envoyé",
+    "messagePlaceholder": "Rédiger un message ...",
+    "send": "Envoyer"
+  },
+  "stories": {
+    "pageTitle": "Histoire | 9ralibre",
+    "notFound": "Histoire non trouvée",
+    "collection": "Collection littéraire",
+    "title": "Œuvres",
+    "titleHighlight": "choisies",
+    "description": "Du patrimoine marocain aux grands classiques français — chaque œuvre vous invite à explorer des récits profonds et à enrichir votre culture générale.",
+    "availableWorks_one": "{{count}} œuvre disponible",
+    "availableWorks_other": "{{count}} œuvres disponibles",
+    "read": "Lire",
+    "genres": {
+      "autobiographicalNovel": "Roman autobiographique",
+      "modernTragedy": "Tragédie moderne",
+      "novel": "Roman",
+      "philosophicalTale": "Conte philosophique",
+      "realistNovel": "Roman réaliste"
+    }
+  },
+  "quiz": {
+    "pageTitle": "Quiz | 9ralibre",
+    "subtitle": "Choisissez un quiz et démarrez en quelques minutes.",
+    "done": "Fait",
+    "blocked": "Bloqué",
+    "new": "Nouveau",
+    "questionsCount_one": "{{count}} question",
+    "questionsCount_other": "{{count}} questions",
+    "viewResult": "Voir résultat",
+    "blockedQuiz": "Quiz bloqué",
+    "start": "Commencer",
+    "noQuiz": "Aucun quiz trouvé avec ces filtres.",
+    "cheatingReason": "Sortie de page ou tentative d'inspection",
+    "closedCheating": "Quiz fermé: tentative de triche détectée.",
+    "rightClickDisabled": "Clic droit désactivé pendant le quiz.",
+    "notFound": "Aucun Quiz est disponible avec ce id",
+    "answerAll": "Veuillez répondre à toutes les questions",
+    "alreadyCompleted": "🎉 Quiz déjà complété",
+    "blockedCheatingDescription": "Ce quiz est bloqué suite à une tentative de triche.",
+    "alreadyPassed": "Vous avez déjà passé ce quiz.",
+    "viewMyResult": "Voir mon résultat",
+    "cheatingWarning": "Si vous trichez, vous ne trichez que vous-meme. Le quiz se fermera automatiquement.",
+    "finish": "Terminer🎉",
+    "results": {
+      "loadError": "Impossible de charger les résultats.",
+      "noneFound": "Aucun résultat trouvé.",
+      "perfect": "Parfait !",
+      "excellent": "Excellent !",
+      "good": "Bien !",
+      "canImprove": "Peut mieux faire",
+      "answersSummary": "Récapitulatif des réponses",
+      "correctAnswer": "Bonne réponse",
+      "correct": "Correct ✓",
+      "yourAnswer": "Votre réponse",
+      "correctAnswerLabel": "Bonne réponse",
+      "leaderboard": "Leaderboard"
+    }
+  },
+  "video": {
+    "pageTitle": "Videos | 9ralibre",
+    "description": "Explorez notre collection de vidéos éducatives pour mieux comprendre vos cours. Chaque vidéo est conçue pour vous aider à apprendre rapidement, renforcer vos connaissances et vous préparer efficacement avant de passer aux quiz.",
+    "noVideos": "Aucune vidéo disponible pour le moment",
+    "reportThisVideo": "Signaler cette vidéo",
+    "subscribersCount_one": "{{count}} abonné",
+    "subscribersCount_other": "{{count}} abonnés",
+    "viewsCount_one": "{{count}} vue",
+    "viewsCount_other": "{{count}} vues"
+  },
+  "save": {
+    "pageTitle": "Mes enregistrements | 9ralibre",
+    "pageHeading": "Mes enregistrements",
+    "noContentYet": "Aucun contenu enregistré pour le moment",
+    "contentCount": "Vous avez {{videos}} vidéo(s) et {{cours}} cours enregistrés",
+    "videosTab": "Vidéos",
+    "coursesTab": "Cours",
+    "noSavedVideos": "Aucune vidéo enregistrée",
+    "noSavedVideosDescription": "Commencez à enregistrer des vidéos que vous aimez pour les retrouver plus tard.",
+    "viewPdf": "Voir le PDF",
+    "noSavedCourses": "Aucun cours enregistré",
+    "noSavedCoursesDescription": "Commencez à enregistrer des cours que vous aimez pour les retrouver plus tard.",
+    "noContent": "Aucun contenu enregistré",
+    "noContentDescription": "Commencez à enregistrer des vidéos et des cours pour les retrouver plus tard.",
+    "discoverVideos": "Découvrir les vidéos",
+    "discoverCourses": "Découvrir les cours"
+  },
+  "calendar": {
+    "pageTitle": "Calendrier | 9ralibre",
+    "fetchError": "Impossible de récupérer les événements",
+    "requiredFields": "Date, type et titre sont obligatoires",
+    "added": "Événement ajouté",
+    "addError": "Échec de l'ajout de l'événement",
+    "deleted": "Événement supprimé",
+    "deleteError": "Impossible de supprimer l'événement",
+    "editRequired": "Type et titre sont obligatoires",
+    "updated": "Événement modifié",
+    "updateError": "Impossible de modifier l'événement",
+    "title": "Calendrier",
+    "subtitle": "Planifie tes examens, devoirs et rappels importants.",
+    "plannedDates": "Dates planifiées",
+    "events": "Événements",
+    "monthView": "Vue mensuelle",
+    "markedDates": "Dates marquées",
+    "addEvent": "Ajouter un événement",
+    "selectedDate": "Date sélectionnée :",
+    "none": "Aucune",
+    "typePlaceholder": "Type (ex: Examen)",
+    "titlePlaceholder": "Titre de l'événement...",
+    "descriptionPlaceholder": "Description (optionnelle)",
+    "adding": "Ajout...",
+    "add": "Ajouter",
+    "dayEvents": "Événements du jour",
+    "noDate": "Aucune date",
+    "noEventsForDate": "Aucun événement pour cette date.",
+    "type": "Type",
+    "eventTitle": "Titre",
+    "description": "Description"
+  },
+  "courses": {
+    "pageTitle": "Cours | 9ralibre",
+    "defaultPdfName": "cours.pdf",
+    "libraryTitle": "Bibliothèque des Cours",
+    "quickSearch": "Recherche rapide :",
+    "searchPlaceholder": "Rechercher un cours ou un professeur...",
+    "resetAll": "Réinitialiser tout",
+    "resultsCount_one": "{{count}} cours trouvé",
+    "resultsCount_other": "{{count}} cours trouvés",
+    "filtered": "(filtrés)",
+    "loading": "Chargement des cours...",
+    "viewPdf": "Voir le pdf",
+    "noCoursesWithFilters": "Aucun cours trouvé avec ces filtres.",
+    "resetFilters": "Réinitialiser les filtres"
+  },
+  "dashboard": {
+    "pageTitle": "Tableau de bord | 9ralibre",
+    "student": "Étudiant",
+    "studentSpace": "Espace étudiant",
+    "greeting": "Bonjour, {{name}}",
+    "intro": "Retrouve tes cours, vidéos et quiz pour le niveau {{level}}.",
+    "levelBadge": "Niveau {{level}}",
+    "completeProfile": "Complète ton profil dans les paramètres",
+    "exploreCoursesButton": "Explorer les cours",
+    "savedVideosTitle": "Vidéos enregistrées",
+    "savedVideosDescription": "Dans tes favoris vidéo",
+    "savedCoursesTitle": "Cours enregistrés",
+    "savedCoursesDescription": "PDF et documents sauvegardés",
+    "quizTitle": "Quiz",
+    "quizText": "Entraîne-toi avec les quiz de ton niveau.",
+    "viewQuizzesButton": "Voir les quiz",
+    "quickAccessTitle": "Accès rapides",
+    "planningTitle": "Planning",
+    "planningDescription": "Garde une vue sur ton mois",
+    "seeCalendar": "Voir le calendrier",
+    "upcomingEvents": "Prochains événements",
+    "noEvents": "Aucun événement planifié",
+    "latestSavedTitle": "Derniers enregistrements",
+    "latestSavedDescription": "Vidéos et cours que tu as récemment sauvegardés",
+    "viewAll": "Tout voir",
+    "noSavedItemsTitle": "Aucun enregistrement pour l’instant",
+    "noSavedItemsDescription": "Enregistre des cours ou des vidéos depuis les listes pour les retrouver ici.",
+    "videos": "Vidéos",
+    "courses": "Cours",
+    "videoBadge": "Vidéo",
+    "courseBadge": "Cours",
+    "quickLinks": {
+      "courses": {
+        "label": "Cours",
+        "description": "PDF, exercices, examens"
+      },
+      "videos": {
+        "label": "Vidéos",
+        "description": "Cours en vidéo"
+      },
+      "quiz": {
+        "label": "Quiz",
+        "description": "S’entraîner et tester"
+      },
+      "saved": {
+        "label": "Enregistrements",
+        "description": "Tout ce que tu as sauvegardé"
+      }
+    }
+  },
+  "profile": {
+    "loadError": "Erreur lors du chargement du profil",
+    "notFound": "Profil introuvable",
+    "sendMessage": "Envoyer un message"
+  },
+  "settings": {
+    "pageTitle": "Paramètres | 9ralibre",
+    "title": "Paramètres",
+    "subtitle": "Gérez vos informations personnelles et votre sécurité",
+    "profileUpdated": "Profil mis à jour avec succès",
+    "updateError": "Erreur lors de la mise à jour",
+    "profileUpdateError": "Erreur lors de la mise à jour du profil",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordChanged": "Mot de passe changé avec succès",
+    "changeError": "Erreur lors du changement",
+    "passwordChangeError": "Erreur lors du changement du mot de passe",
+    "imageUploaded": "Image téléchargée avec succès",
+    "uploadError": "Erreur lors du téléchargement",
+    "imageDeleted": "Image supprimée avec succès",
+    "deleteError": "Erreur lors de la suppression",
+    "tabs": {
+      "informations": "Informations",
+      "security": "Sécurité"
+    },
+    "profilePhoto": {
+      "title": "Photo de profil",
+      "description": "Téléchargez ou supprimez votre photo de profil",
+      "upload": "Télécharger"
+    },
+    "personalInfo": {
+      "title": "Informations personnelles",
+      "description": "Mettez à jour vos informations de profil"
+    },
+    "fields": {
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Votre nom",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Votre prénom",
+      "email": "Email",
+      "emailPlaceholder": "Votre email",
+      "level": "Niveaux",
+      "levelPlaceholder": "Sélectionnez votre niveau",
+      "middleSchool": "Collège",
+      "highSchool": "Lycée"
+    },
+    "saveChanges": "Enregistrer les modifications",
+    "password": {
+      "title": "Changer le mot de passe",
+      "description": "Mettez à jour votre mot de passe pour sécuriser votre compte",
+      "current": "Mot de passe actuel",
+      "currentPlaceholder": "Entrez votre mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "newPlaceholder": "Entrez votre nouveau mot de passe",
+      "confirm": "Confirmer le mot de passe",
+      "confirmPlaceholder": "Confirmez votre nouveau mot de passe",
+      "submit": "Changer le mot de passe",
+      "googleNotice": "Vous êtes connecté avec Google. Vous ne pouvez pas modifier le mot de passe ici."
+    }
+  },
+  "coursesAside": {
+    "title": "Conseils d’étude",
+    "tip1": "📌 Révise",
+    "tip1Part2": "puis fais une pause de",
+    "tip2": "📚 Résume le cours avant de commencer les exercices.",
+    "tip3": "⏳ Commence par les matières où tu es le plus à l’aise."
+  },
+  "courseFilters": {
+    "subjects": "Matières",
+    "chooseSubject": "Choisissez une matière",
+    "semester": "Semestre",
+    "chooseSemester": "Choisissez votre Semestre",
+    "firstSemester": "Premier Semestre",
+    "secondSemester": "Deuxième semestre",
+    "type": "Type",
+    "chooseType": "Selectionner votre type",
+    "course": "Cours",
+    "exercise": "Exercice",
+    "exam": "Examen",
+    "regionalExams": "Examen Régionnaux",
+    "nationalExams": "Examen Nationnaux",
+    "stream": "Filière",
+    "chooseStream": "Selectionner votre Filière"
+  },
+  "videoFilters": {
+    "reset": "Réinitialiser",
+    "subjects": "Matières",
+    "stream": "Filière",
+    "search": "Cherchez...",
+    "filters": "Filtres"
+  },
+  "videoComments": {
+    "title_one": "Commentaire ({{count}})",
+    "title_other": "Commentaires ({{count}})",
+    "sortBy": "Trier par",
+    "addComment": "Ajouter un commentaire...",
+    "update": "Mettre à jour",
+    "comment": "Commenter",
+    "reply": "Repondre",
+    "deleteTitle": "Supprimer le commentaire",
+    "deleteDescription": "Supprimer définitivement votre commentaire ?",
+    "reportComment": "Signaler ce commentaire"
+  },
+  "videoReplies": {
+    "replyTo": "Répondre à {{name}}"
+  },
+  "reportModal": {
+    "reasonTooShort": "Merci de donner une raison plus claire",
+    "sent": "Signalement envoyé",
+    "sendError": "Erreur pendant l'envoi du signalement",
+    "description": "Décris rapidement la raison du signalement.",
+    "placeholder": "Exemple: contenu inapproprié, spam, insultes...",
+    "sending": "Envoi...",
+    "send": "Envoyer"
+  },
+  "relatedVideos": {
+    "title": "Vidéos similaires"
+  },
+  "profVideos": {
+    "updated": "Videos modifié avec succès ✏️",
+    "added": "Videos ajouter avec succès ✏️",
+    "error": "Une erreur est survenue",
+    "serverError": "Erreur serveur. Réessayez plus tard.",
+    "editTitle": "Modifier la vidéo",
+    "addTitle": "Ajouter une vidéo",
+    "fillInfo": "Remplissez les informations",
+    "saveImpossible": "Enregistrement impossible",
+    "fieldsToFix": "Champs à corriger",
+    "checkFields": "Vérifiez les champs indiqués ci-dessous.",
+    "level": "Niveau",
+    "notProvided": "Non renseigné",
+    "chooseStream": "Choisir filière",
+    "title": "Titre",
+    "titlePlaceholder": "Titre de la vidéo",
+    "description": "Description",
+    "videoUrl": "Video URL",
+    "thumbnail": "Thumbnail",
+    "thumbnailPlaceholder": "Image URL (optionnel)",
+    "chooseSubject": "Choisir une matière",
+    "visibility": "Visibilité",
+    "private": "Privé"
+  }
+}
