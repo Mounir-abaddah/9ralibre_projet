@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 type ReportModalProps = {
   open: boolean;
@@ -13,23 +14,24 @@ type ReportModalProps = {
 };
 
 const ReportModal = ({ open, onOpenChange, endpoint, title = "Signaler", onSuccess }: ReportModalProps) => {
+  const { t } = useTranslation();
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (reason.trim().length < 3) {
-      toast.error("Merci de donner une raison plus claire");
+      toast.error(t("reportModal.reasonTooShort"));
       return;
     }
     try {
       setLoading(true);
       await axios.post(endpoint, { reason: reason.trim() }, { withCredentials: true });
-      toast.success("Signalement envoyé");
+      toast.success(t("reportModal.sent"));
       setReason("");
       onOpenChange(false);
       onSuccess?.();
     } catch {
-      toast.error("Erreur pendant l'envoi du signalement");
+      toast.error(t("reportModal.sendError"));
     } finally {
       setLoading(false);
     }
@@ -43,13 +45,13 @@ const ReportModal = ({ open, onOpenChange, endpoint, title = "Signaler", onSucce
         </DialogHeader>
         <div className="space-y-2">
           <p className="text-sm text-zinc-500">
-            Décris rapidement la raison du signalement.
+            {t("reportModal.description")}
           </p>
           <textarea
             rows={4}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Exemple: contenu inapproprié, spam, insultes..."
+            placeholder={t("reportModal.placeholder")}
             className="w-full resize-none rounded-md border p-2 text-sm outline-none"
           />
         </div>
@@ -60,7 +62,7 @@ const ReportModal = ({ open, onOpenChange, endpoint, title = "Signaler", onSucce
             onClick={() => onOpenChange(false)}
             disabled={loading}
           >
-            Annuler
+            {t("common.cancel")}
           </Button>
           <Button
             type="button"
@@ -68,7 +70,7 @@ const ReportModal = ({ open, onOpenChange, endpoint, title = "Signaler", onSucce
             disabled={loading}
             className="bg-red-500 hover:bg-red-600"
           >
-            {loading ? "Envoi..." : "Envoyer"}
+            {loading ? t("reportModal.sending") : t("reportModal.send")}
           </Button>
         </DialogFooter>
       </DialogContent>

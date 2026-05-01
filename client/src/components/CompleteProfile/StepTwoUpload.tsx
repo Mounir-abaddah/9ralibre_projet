@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { UploadCloud, CircleX } from "lucide-react";
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = () => {
@@ -29,17 +31,16 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
       <div className="flex items-start gap-3 rounded-lg border-l-4 border-amber-400 bg-gradient-to-r from-amber-50 to-amber-100 px-4 py-3 text-amber-800 shadow-sm">
         <span className="text-2xl leading-none">⚠️</span>
         <div>
-          <p className="font-semibold">Avertissement</p>
+          <p className="font-semibold">{t("completeProfile.upload.warningTitle")}</p>
           <p className="text-sm">
-            Les photos contenant de la nudité ou un contenu inapproprié peuvent
-            entraîner un <span className="font-semibold">bannissement immédiat</span>.
+            {t("completeProfile.upload.warningText")} <span className="font-semibold">{t("completeProfile.upload.warningStrong")}</span>.
           </p>
         </div>
       </div>
 
       <div className="space-y-4">
         <Label htmlFor="picture" className="text-sm font-medium text-gray-700">
-          Importez votre photo *<sup>(optionnel)</sup>
+          {t("completeProfile.upload.title")} <sup>{t("completeProfile.upload.optional")}</sup>
         </Label>
 
         <div
@@ -50,7 +51,7 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
             <>
               <UploadCloud className="mb-2 h-10 w-10 text-gray-400" />
               <p className="mb-2 text-sm text-gray-500">
-                Cliquez ou déposez une image ici
+                {t("completeProfile.upload.action")}
               </p>
               <input
                 ref={fileInputRef}
@@ -65,7 +66,7 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
             <div className="relative h-40 w-40 overflow-hidden rounded-xl shadow-md">
               <img
                 src={URL.createObjectURL(avatar)}
-                alt="Preview"
+                alt={t("completeProfile.upload.previewAlt")}
                 className="h-full w-full object-cover"
               />
               <button
@@ -76,7 +77,7 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
                 }}
                 className="absolute top-2 right-2 flex items-center gap-1 rounded-md bg-red-600/80 px-2 py-1 text-xs text-white transition hover:bg-red-700"
               >
-                <CircleX size={18} /> Supprimer
+                <CircleX size={18} /> {t("completeProfile.upload.remove")}
               </button>
             </div>
           )}

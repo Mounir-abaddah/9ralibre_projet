@@ -3,8 +3,10 @@ import Work_Chat from "@/assets/images/Work chat-cuate.png"
 import axios from "axios";
 import { useEffect, useState } from "react";
 import type { typeChat } from "./types/ChatType";
+import { useTranslation } from "react-i18next";
 const Chat = () => {
-    document.title = " Messagerie | 9ralibre"
+    const { t } = useTranslation();
+    document.title = t("chat.pageTitle")
     const apiUrl = import.meta.env.VITE_API_URL;
     const [conversation, setConversation] = useState<typeChat[]>([]);
     const fetchConversations = async () => {
@@ -25,10 +27,10 @@ return (
             <img src={Work_Chat} alt="chat_img" width={400} />
             <div className="text-center">
             <h2 className="text-2xl font-semibold text-gray-800">
-                Bienvenue sur votre espace de messagerie
+                {t("chat.welcomeTitle")}
             </h2>
             <p className="mt-2 text-gray-500">
-                Échangez facilement avec vos <span className="font-medium text-amber-600">professeurs</span> ou vos <span className="font-medium text-amber-600">camarades</span> — posez vos questions, partagez vos ressources et collaborez en toute simplicité.
+                {t("chat.welcomeDescription")}
             </p>
             </div>
         </div>

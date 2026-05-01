@@ -2,6 +2,7 @@ import { XCircle } from "lucide-react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select"
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { useTranslation } from "react-i18next"
 
 export interface Coursitems{
     nom:string
@@ -26,6 +27,7 @@ const Matiere = ({
     selectedSemestre,
     selectedType,
     selectedFiliere,niveaux}:CoursMatiere) => {
+        const { t } = useTranslation();
 
         const apiUrl = import.meta.env.VITE_API_URL;
         const [matieres, setMatieres] = useState<Coursitems[]>([]);
@@ -68,11 +70,11 @@ const Matiere = ({
             {selectedMatiere && (<span className="cursor-pointer" onClick={()=>onChangeMatiere?.("")}><XCircle color="#FF8A8A" strokeWidth={3} size={14}/></span>)}
             <Select value={selectedMatiere ?? ""} onValueChange={(value)=>{onChangeMatiere?.(value)}}>
             <SelectTrigger className="w-full">
-                <SelectValue placeholder="Matières" />
+                <SelectValue placeholder={t("courseFilters.subjects")} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectLabel>Choisissez une matière</SelectLabel>
+                    <SelectLabel>{t("courseFilters.chooseSubject")}</SelectLabel>
                     {matieres.map((item, index) => (
                         <SelectItem
                             key={index}
@@ -90,13 +92,13 @@ const Matiere = ({
         {selectedSemestre && (<span className="cursor-pointer" onClick={()=>onChangeSemestre?.("")}><XCircle color="#FF8A8A" strokeWidth={3} size={14}/></span>)}
         <Select value={selectedSemestre ?? ""} onValueChange={(value)=>{onChangeSemestre?.(value)}}>
             <SelectTrigger className="w-full">
-                <SelectValue placeholder="Semestre" />
+                <SelectValue placeholder={t("courseFilters.semester")} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                <SelectLabel>Choisissez votre Semestre</SelectLabel>
-                    <SelectItem value="Premier Semestre">Premier Semestre</SelectItem>
-                    <SelectItem value="Deuxième Semestre">Deuxième semestre</SelectItem>
+                <SelectLabel>{t("courseFilters.chooseSemester")}</SelectLabel>
+                    <SelectItem value="Premier Semestre">{t("courseFilters.firstSemester")}</SelectItem>
+                    <SelectItem value="Deuxième Semestre">{t("courseFilters.secondSemester")}</SelectItem>
                 </SelectGroup>
             </SelectContent>
         </Select>
@@ -105,16 +107,16 @@ const Matiere = ({
         {selectedType && (<span className="cursor-pointer" onClick={()=>onChangeType?.("")}><XCircle color="#FF8A8A" strokeWidth={3} size={14}/></span>)} 
         <Select value={selectedType ?? ""} onValueChange={(value)=>{onChangeType?.(value)}}>
             <SelectTrigger className="w-full">
-                <SelectValue placeholder="Type" />
+                <SelectValue placeholder={t("courseFilters.type")} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                <SelectLabel>Selectionner votre type</SelectLabel>
-                    <SelectItem value="Cours">Cours</SelectItem>
-                    <SelectItem value="Exercice">Exercice</SelectItem>
-                    <SelectItem value="Examen">Examen</SelectItem>
-                    {niveaux === "3AC" || niveaux === "1BAC" && <SelectItem value="Examen Régional">Examen Régionnaux</SelectItem>}
-                    {niveaux === "2BAC" && <SelectItem value="Examen National">Examen Nationnaux</SelectItem>}
+                <SelectLabel>{t("courseFilters.chooseType")}</SelectLabel>
+                    <SelectItem value="Cours">{t("courseFilters.course")}</SelectItem>
+                    <SelectItem value="Exercice">{t("courseFilters.exercise")}</SelectItem>
+                    <SelectItem value="Examen">{t("courseFilters.exam")}</SelectItem>
+                    {niveaux === "3AC" || niveaux === "1BAC" && <SelectItem value="Examen Régional">{t("courseFilters.regionalExams")}</SelectItem>}
+                    {niveaux === "2BAC" && <SelectItem value="Examen National">{t("courseFilters.nationalExams")}</SelectItem>}
                 </SelectGroup>
             </SelectContent>
         </Select>
@@ -124,11 +126,11 @@ const Matiere = ({
         {selectedFiliere && (<span className="cursor-pointer" onClick={()=>onChangeFiliere?.("")}><XCircle color="#FF8A8A" strokeWidth={3} size={14}/></span>)} 
         <Select value={selectedFiliere ?? ""} onValueChange={(value)=>{onChangeFiliere?.(value)}}>
             <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filière" />
+                <SelectValue placeholder={t("courseFilters.stream")} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                <SelectLabel>Selectionner votre Filière</SelectLabel>
+                <SelectLabel>{t("courseFilters.chooseStream")}</SelectLabel>
                 {niveaux === "TC" ? (
                     <>
                     <SelectItem value="Sciences">Sciences</SelectItem>

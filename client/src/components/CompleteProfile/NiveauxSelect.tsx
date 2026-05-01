@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Label } from "../ui/label";
 import { ChevronDown } from "lucide-react";
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const NiveauxSelect = ({ value, error, onChange }: Props) => {
+  const { t } = useTranslation();
   type Category = "College" | "Lycee";
   const [selectedCategory, setSelectedCategory] = useState<Category | "">("");
   const [showCategory, setShowCategory] = useState(false);
@@ -36,7 +38,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
   return (
     <div ref={ref} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <Label>Votre niveau d’étude</Label>
+        <Label>{t("completeProfile.form.studyLevel")}</Label>
         <div
           onClick={() => setShowCategory(!showCategory)}
           className={`relative flex w-full cursor-pointer items-center justify-between rounded-md border p-3 transition ${
@@ -44,7 +46,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
           }`}
         >
           <span className={`text-sm ${!selectedCategory && "text-slate-400"}`}>
-            {selectedCategory || "Sélectionnez votre catégorie"}
+            {selectedCategory ? t(`completeProfile.categories.${selectedCategory.toLowerCase()}`) : t("completeProfile.form.selectCategory")}
           </span>
           <ChevronDown
             size={16}
@@ -67,7 +69,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
                 }}
                 className="cursor-pointer rounded-md p-2 px-3 text-sm hover:bg-amber-100 dark:text-black"
               >
-                {cat}
+                {t(`completeProfile.categories.${cat.toLowerCase()}`)}
               </div>
             ))}
           </div>
@@ -76,7 +78,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
 
       {selectedCategory && (
         <div className="flex flex-col gap-1">
-          <Label>Niveau spécifique</Label>
+          <Label>{t("completeProfile.form.specificLevel")}</Label>
           <div
             onClick={() => setShowLevel(!showLevel)}
             className={`relative flex w-full cursor-pointer items-center justify-between rounded-md border p-3 transition ${
@@ -84,7 +86,7 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
             }`}
           >
             <span className={`text-sm ${!value && "text-slate-400"}`}>
-              {value || "Sélectionnez votre niveau"}
+              {value || t("completeProfile.form.selectLevel")}
             </span>
             <ChevronDown
               size={16}

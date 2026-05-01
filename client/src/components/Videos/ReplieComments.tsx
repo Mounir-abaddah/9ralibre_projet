@@ -10,6 +10,7 @@ import { useState } from "react";
 import { EmojiPicker, EmojiPickerContent, EmojiPickerSearch } from "../ui/emoji-picker";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export interface RepliesTypes{
     videos:TypeVideos
@@ -21,6 +22,7 @@ export interface RepliesTypes{
 }
 
 const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShowReplies}:RepliesTypes) => {
+  const { t } = useTranslation();
   
   const apiUrl = import.meta.env.VITE_API_URL;
   const [loading,setLoading] = useState(false)
@@ -74,7 +76,7 @@ const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShow
       {showReplies === commentsId && (
         <div className="space-y-2">
           <span className="flex w-full rounded-md border p-2">
-            <textarea value={repliestext} onChange={(e)=>setRepliestext(e.target.value)} placeholder={`Répondre à ${parentComment?.user.nom} ${parentComment?.user.prenom}`}className="w-full resize-none border-none text-sm outline-0"/>
+            <textarea value={repliestext} onChange={(e)=>setRepliestext(e.target.value)} placeholder={t("videoReplies.replyTo", { name: `${parentComment?.user.nom || ""} ${parentComment?.user.prenom || ""}`.trim() })}className="w-full resize-none border-none text-sm outline-0"/>
             <Popover open={showEmojieReplies} onOpenChange={setShowEmojieReplies}>
               <PopoverTrigger>
                   <span className='cursor-pointer'><SmilePlus size={18} /></span>
@@ -92,7 +94,7 @@ const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShow
             </Popover>
           </span>
           <span className="flex items-end justify-end space-x-2">
-            <Button size={'sm'} onClick={()=>setShowReplies(null)} variant={'outline'} className="cursor-pointer bg-amber-400 hover:bg-amber-500">Annuler</Button>
+            <Button size={'sm'} onClick={()=>setShowReplies(null)} variant={'outline'} className="cursor-pointer bg-amber-400 hover:bg-amber-500">{t("common.cancel")}</Button>
             <Button size={'sm'} onClick={()=>handlePostReply()} disabled={loading || repliestext.trim().length < 1} className="cursor-pointer hover:bg-amber-500 dark:bg-amber-400"><Send/></Button>
           </span>
         </div>
@@ -118,8 +120,8 @@ const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShow
                       className="w-full resize-none rounded-md border p-2 text-sm"
                     />
                     <span className="flex gap-2">
-                      <Button onClick={()=>setEditReplies(null)} variant={'outline'} className="flex cursor-pointer items-end justify-end">Annuler</Button>
-                      <Button onClick={()=>handleEditReply(replies._id)} className="flex cursor-pointer items-end justify-end">Modifier</Button>
+                      <Button onClick={()=>setEditReplies(null)} variant={'outline'} className="flex cursor-pointer items-end justify-end">{t("common.cancel")}</Button>
+                      <Button onClick={()=>handleEditReply(replies._id)} className="flex cursor-pointer items-end justify-end">{t("common.edit")}</Button>
                     </span>                  
                     
                   </span>
@@ -140,12 +142,12 @@ const ReplieComments = ({videos,getVideos,commentsId,replies,showReplies,setShow
                           <div className='flex flex-col items-start space-y-2'>
                               {data?.id === replies.user._id ? (
                                   <>
-                                  <Button onClick={()=>setEditReplies(replies._id)} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Pencil size={14}/>Modifier</Button>
-                                  <Button onClick={()=>handleDelelteReply(replies._id)} variant={'destructive'} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Trash size={14}/>Supprimer</Button>
+                                  <Button onClick={()=>setEditReplies(replies._id)} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Pencil size={14}/>{t("common.edit")}</Button>
+                                  <Button onClick={()=>handleDelelteReply(replies._id)} variant={'destructive'} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Trash size={14}/>{t("common.delete")}</Button>
                                   </>
                               ):(
                                   <>
-                                      <Button className='flex w-full cursor-pointer items-center gap-2 text-xs'><Flag size={14}/>Signaler</Button>
+                                      <Button className='flex w-full cursor-pointer items-center gap-2 text-xs'><Flag size={14}/>{t("common.report")}</Button>
                                   </>
                               )}
                           </div>

@@ -13,12 +13,14 @@ import { useParams } from 'react-router-dom'
 import DeleteModal from './DeleteModal'
 import ReplieComments from '@/components/Videos/ReplieComments'
 import ReportModal from './ReportModal'
+import { useTranslation } from 'react-i18next';
 export interface CommentsTypes{
     videos:TypeVideos
     getVideos:()=>void;
 }
 
 const Comments = ({videos,getVideos}:CommentsTypes) => {
+    const { t } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
     const [loading, setLoading] = useState(false);
     const {videoId} = useParams()
@@ -88,8 +90,8 @@ return (
         <div className='w-full space-y-4'>
             {/****** COMMENTAIRES LENGTH ET FILTER *********/}
             <div className='flex items-center space-x-5'>
-                <span className='text-xl font-medium'>Commentaire ({videos.comments.length})</span>
-                <span className='flex items-center text-sm font-medium'><Funnel size={16}/>Trier par</span>
+                <span className='text-xl font-medium'>{t("videoComments.title", { count: videos.comments.length })}</span>
+                <span className='flex items-center text-sm font-medium'><Funnel size={16}/>{t("videoComments.sortBy")}</span>
             </div>
             {/*************COMMENTAIRES (TEXT) ET EMOJIE *****************/}
             <div className='flex w-full space-x-2'>
@@ -113,7 +115,7 @@ return (
                                 : setComments(e.target.value)
                             }
                             rows={2}
-                            placeholder="Ajouter un commentaire..."
+                            placeholder={t("videoComments.addComment")}
                             className="w-full resize-none text-sm outline-none"
                         />
                         <Popover open={emojiCommentsOpen} onOpenChange={setemojiCommentsOpen}>
@@ -145,10 +147,10 @@ return (
                             }}
                             className="cursor-pointer text-sm"
                         >
-                            Annuler
+                            {t("common.cancel")}
                         </button>
                         <Button className='cursor-pointer bg-cyan-500 text-white hover:bg-cyan-600' onClick={() => editingCommentId ? handleEditComment(editingCommentId) : handlePostComments()} disabled={(editingCommentId ? editingText : comments).length < 1}>
-                            {editingCommentId ? 'Mettre à jour' : 'Commenter'} <Send />
+                            {editingCommentId ? t("videoComments.update") : t("videoComments.comment")} <Send />
                         </Button>
                     </div>
                     )}
@@ -181,7 +183,7 @@ return (
                                 {/************* COMMENTAIRES J'aime et REPONDRE *****************/}
                                 <div className='flex items-center space-x-2'>
                                     <span onClick={() => handleLikeComment(comments._id)} className='flex cursor-pointer items-center gap-1 text-xs' > <Heart size={16} fill={data?.id && comments.likes.includes(data.id) ? "#FF2E2E" : "none"} color={data?.id && comments.likes.includes(data.id) ? "#FF2E2E" : "currentColor"} /> {comments.likes.length} </span>
-                                    {data?.id !== comments.user._id && (<span onClick={()=>setShowReplies(comments._id)} className='cursor-pointer rounded-md p-0.5 text-xs transition duration-200 hover:bg-amber-500'>Repondre</span>)}
+                                    {data?.id !== comments.user._id && (<span onClick={()=>setShowReplies(comments._id)} className='cursor-pointer rounded-md p-0.5 text-xs transition duration-200 hover:bg-amber-500'>{t("videoComments.reply")}</span>)}
                                 </div>
                                 <ReplieComments 
                                     videos={videos}
@@ -203,8 +205,8 @@ return (
                                         <div className='flex flex-col items-start space-y-2'>
                                             {data?.id === comments.user._id ? (
                                                 <>
-                                                <Button onClick={()=>{setEditingCommentId(comments._id);setEditingText(comments.text);setAfficherButtonComments(true)}} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Pencil size={14}/>Modifier</Button>
-                                                <Button onClick={()=>setCommentToDelete(comments._id)} variant={'destructive'} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Trash size={14}/>Supprimer</Button>
+                                                <Button onClick={()=>{setEditingCommentId(comments._id);setEditingText(comments.text);setAfficherButtonComments(true)}} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Pencil size={14}/>{t("common.edit")}</Button>
+                                                <Button onClick={()=>setCommentToDelete(comments._id)} variant={'destructive'} className='flex w-full cursor-pointer items-center gap-2 text-xs'><Trash size={14}/>{t("common.delete")}</Button>
                                                 </>
                                             ):(
                                                 <>
@@ -212,7 +214,7 @@ return (
                                                         className='flex w-full cursor-pointer items-center gap-2 text-xs'
                                                         onClick={() => setReportCommentId(comments._id)}
                                                     >
-                                                        <Flag size={14}/>Signaler
+                                                        <Flag size={14}/>{t("common.report")}
                                                     </Button>
                                                 </>
                                             )}
@@ -238,7 +240,7 @@ return (
                     if (!open) setReportCommentId(null);
                 }}
                 endpoint={`${apiUrl}/videos/report-comment/${videoId}/${reportCommentId}`}
-                title="Signaler ce commentaire"
+                title={t("videoComments.reportComment")}
             />
         )}
     </>

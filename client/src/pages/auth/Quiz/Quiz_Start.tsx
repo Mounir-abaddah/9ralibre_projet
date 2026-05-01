@@ -7,8 +7,10 @@ import { BookAlert, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const Quiz_Start = () => {
+    const { t } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
     const {quizId,niveaux} = useParams();
     const navigate = useNavigate()
@@ -42,13 +44,13 @@ const Quiz_Start = () => {
                 try {
                     await axios.post(`${apiUrl}/quiz/report-cheating`, {
                         quizId,
-                        reason: "Sortie de page ou tentative d'inspection"
+                        reason: t("quiz.cheatingReason")
                     }, { withCredentials: true });
                 } catch {
                     // Do not block navigation when API call fails.
                 }
             }
-            toast.error("Quiz fermé: tentative de triche détectée.");
+            toast.error(t("quiz.closedCheating"));
             navigate(`/Quiz/${niveaux}?cheated=1&quizId=${quizId}`, { replace: true });
         };
 
@@ -64,7 +66,7 @@ const Quiz_Start = () => {
 
         const onContextMenu = (event: MouseEvent) => {
             event.preventDefault();
-            toast.error("Clic droit désactivé pendant le quiz.");
+            toast.error(t("quiz.rightClickDisabled"));
         };
 
         const onKeyDown = (event: KeyboardEvent) => {
@@ -93,7 +95,7 @@ const Quiz_Start = () => {
         };
     }, [StartQuiz, checkQuiz, navigate, niveaux]);
 
-    if(!StartQuiz) return <div>Aucun Quiz est disponible avec ce id </div>
+    if(!StartQuiz) return <div>{t("quiz.notFound")}</div>
 
     const currentIndexQuestion = StartQuiz.questions[currentQuestions]
     const isLastQuestion = currentQuestions >= StartQuiz.questions.length - 1;
@@ -109,7 +111,7 @@ const Quiz_Start = () => {
 
     const handleSubmitQuestions = async () => {
         if (answers.length !== StartQuiz.questions.length) {
-            toast.error("Veuillez répondre à toutes les questions");
+            toast.error(t("quiz.answerAll"));
             return;
         }
         const res = await axios.post(`${apiUrl}/quiz/submit`,{ quizId, answers },{ withCredentials: true });
@@ -122,22 +124,22 @@ const Quiz_Start = () => {
         <div className="flex min-h-screen flex-col items-center justify-center gap-6 text-center">
         <div className="rounded-2xl bg-white p-10 shadow-md">
             <h2 className="text-2xl font-bold text-gray-800">
-                {blockedByCheating ? "Quiz bloqué" : "🎉 Quiz déjà complété"}
+                {blockedByCheating ? t("quiz.blockedQuiz") : t("quiz.alreadyCompleted")}
             </h2>
             <p className="mt-3 text-gray-500">
                 {blockedByCheating
-                    ? "Ce quiz est bloqué suite à une tentative de triche."
-                    : "Vous avez déjà passé ce quiz."}
+                    ? t("quiz.blockedCheatingDescription")
+                    : t("quiz.alreadyPassed")}
             </p>
             <div className="mt-6 flex gap-4">
                 {!blockedByCheating && (
                     <Button onClick={() => navigate(`/Quiz/resultat/${quizId}`)}
                         className="cursor-pointer bg-lime-400 text-black hover:bg-lime-500">
-                        Voir mon résultat
+                        {t("quiz.viewMyResult")}
                     </Button>
                 )}
                 <Button variant="secondary" className="cursor-pointer" onClick={() => navigate(`/Quiz/${niveaux}`)}>
-                    Retour
+                    {t("common.back")}
                 </Button>
             </div>
         </div>
@@ -148,7 +150,7 @@ const Quiz_Start = () => {
     return (
         <div className="flex min-h-screen w-full flex-col items-center justify-around p-6">
             <span className="flex items-center justify-center rounded-md bg-amber-100 p-2 text-center text-sm text-amber-800">
-                <BookAlert /> Si vous trichez, vous ne trichez que vous-meme. Le quiz se fermera automatiquement.
+                <BookAlert /> {t("quiz.cheatingWarning")}
             </span>            
             <div className="flex w-full items-center space-x-4 p-2">
                 {isLastQuestion && (
@@ -203,14 +205,14 @@ const Quiz_Start = () => {
                 <Separator />
                 <div className="flex w-full items-center justify-between">
                     <Button onClick={handlePrev} size={'lg'} disabled={currentQuestions === 0} className="cursor-pointer gap-1.5 font-medium">
-                        <ChevronLeft size={16} /> Précédent
+                        <ChevronLeft size={16} /> {t("common.previous")}
                     </Button>
                     {isLastQuestion ?
                         // eslint-disable-next-line no-irregular-whitespace
-                        <Button size={'lg'} onClick={handleSubmitQuestions} className="cursor-pointer bg-lime-500 text-white hover:bg-lime-600">Terminer🎉​</Button>
+                        <Button size={'lg'} onClick={handleSubmitQuestions} className="cursor-pointer bg-lime-500 text-white hover:bg-lime-600">{t("quiz.finish")}</Button>
                         :
                         <Button onClick={handleNext} size={'lg'} disabled={currentQuestions >= StartQuiz.questions.length - 1} className="cursor-pointer gap-1.5 bg-amber-400 font-medium text-black hover:bg-amber-500">
-                            Suivant <ChevronRight size={16} />
+                            {t("common.next")} <ChevronRight size={16} />
                         </Button>
                     }
                 </div>

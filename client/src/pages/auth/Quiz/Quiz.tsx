@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Pagination from "@/components/Pagination/Pagination";
 import No_Data_img from '@/assets/images/cours/No data-cuate.png'
+import { useTranslation } from "react-i18next";
 
 type MatiereVisual = {
   label: string;
@@ -58,8 +59,9 @@ const getMatiereVisual = (matiereNom?: string | null): MatiereVisual => {
 };
 
 const QuizPage = () => {
+    const { t } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
-    document.title = "Quiz | 9ralibre";
+    document.title = t("quiz.pageTitle");
     const { niveaux } = useParams();
     const navigate = useNavigate();
     const [quizList, setQuizList] = useState<Quiz[]>([]);
@@ -102,7 +104,7 @@ const QuizPage = () => {
             ) : null}
           </h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Choisissez un quiz et démarrez en quelques minutes.
+            {t("quiz.subtitle")}
           </p>
         </div>
 
@@ -161,16 +163,16 @@ const QuizPage = () => {
                     {quiz.alreadyPassed && !isBlockedByCheating ? (
                       <Badge className="shrink-0 bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                         <Check className="mr-1 h-3.5 w-3.5" />
-                        Fait
+                        {t("quiz.done")}
                       </Badge>
                     ) : isBlockedByCheating ? (
                       <Badge className="shrink-0 bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
-                        Bloqué
+                        {t("quiz.blocked")}
                       </Badge>
                     ) : (
                       <Badge className="shrink-0 bg-amber-500/15 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
                         <Play className="mr-1 h-3.5 w-3.5" />
-                        Nouveau
+                        {t("quiz.new")}
                       </Badge>
                     )}
                   </div>
@@ -195,7 +197,7 @@ const QuizPage = () => {
                           {quiz.professeur.nom} {quiz.professeur.prenom}
                         </Link>
                         <span className="block text-[11px] text-zinc-500 dark:text-zinc-400">
-                          {quiz.questions?.length ?? 0} question(s)
+                              {t("quiz.questionsCount", { count: quiz.questions?.length ?? 0 })}
                         </span>
                       </div>
                     </div>
@@ -206,7 +208,7 @@ const QuizPage = () => {
                         size="sm"
                         className="shrink-0 cursor-pointer bg-zinc-900 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
                       >
-                        Voir résultat
+                        {t("quiz.viewResult")}
                       </Button>
                     ) : isBlockedByCheating ? (
                       <Button
@@ -214,7 +216,7 @@ const QuizPage = () => {
                         disabled
                         className="shrink-0 cursor-not-allowed bg-rose-100 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300"
                       >
-                        Quiz bloqué 
+                        {t("quiz.blockedQuiz")}
                       </Button>
                     ) : (
                       <Button
@@ -222,7 +224,7 @@ const QuizPage = () => {
                         size="sm"
                         className="shrink-0 cursor-pointer bg-amber-500 text-xs font-semibold text-zinc-950 hover:bg-amber-600"
                       >
-                        Commencer
+                        {t("quiz.start")}
                       </Button>
                     )}
                   </div>
@@ -243,7 +245,7 @@ const QuizPage = () => {
         <div className="col-span-full mt-6 flex w-full flex-col items-center justify-center gap-2 text-center">
             <img src={No_Data_img} alt="no data" loading='lazy'  width={300} height={400}/>
             <p className="text-sm text-gray-500">
-                Aucun quiz trouvé avec ces filtres.
+                {t("quiz.noQuiz")}
             </p>
         </div>
     )}

@@ -1,68 +1,70 @@
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useNavigate, useParams } from 'react-router-dom'
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const VerificationEmail = () => {
-  document.title = "Confirmation de votre compte | 9ralibre"
-  const navigate = useNavigate()
-  const { token } = useParams()
-  const apiUrl = import.meta.env.VITE_API_URL
-  const [loading, setLoading] = useState<boolean>(true)
-  const [verified, setVerified] = useState<boolean>(false)
-  const [countdown, setCountdown] = useState<number>(5)
+  const { t } = useTranslation();
+  document.title = t('verifyEmail.pageTitle');
+  const navigate = useNavigate();
+  const { token } = useParams();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const [loading, setLoading] = useState<boolean>(true);
+  const [verified, setVerified] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(5);
 
   useEffect(() => {
     const handleValidationEmail = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/auth/confirm-email/${token}`)
+        const response = await axios.get(`${apiUrl}/auth/confirm-email/${token}`);
         if (response.data.success) {
-          setVerified(true)
+          setVerified(true);
         }
       } catch (error) {
         if (error && axios.isAxiosError(error)) {
-          toast.error(error.response?.data?.message || "Lien invalide ou expiré")
+          toast.error(error.response?.data?.message || t('verifyEmail.invalidLink'));
         }
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    handleValidationEmail()
-  }, [apiUrl, token])
+    handleValidationEmail();
+  }, [apiUrl, token, t]);
 
-  useEffect(()=>{
-    if(verified){
-      const interval = setInterval(()=>{
-        setCountdown((prev)=>prev-1)
-      },1000)
+  useEffect(() => {
+    if (verified) {
+      const interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
 
       const timeout = setTimeout(() => {
-          navigate('/connexion')
+        navigate('/connexion');
       }, 5000);
 
-    return ()=>{
-      clearInterval(interval)
-      clearTimeout(timeout)
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
     }
-  }
-  },[verified,navigate])
+  }, [verified, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
       {loading ? (
-        <p>⏳ Vérification en cours...</p>
+        <p>⏳ {t('verifyEmail.loading')}</p>
       ) : verified ? (
         <p>
-          ✅ Votre email a été vérifié avec succès !
+          ✅ {t('verifyEmail.success')}
           <br />
-          ⏳ Redirection dans {countdown} seconde{countdown > 1 ? 's' : ''}...
+          ⏳ {t('verifyEmail.redirecting', { count: countdown })}
         </p>
       ) : (
-        <p>❌ Impossible de vérifier votre email.</p>
+        <p>❌ {t('verifyEmail.failed')}</p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VerificationEmail
+export default VerificationEmail;

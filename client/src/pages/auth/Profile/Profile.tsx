@@ -9,8 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { fr } from "date-fns/locale";
 import { BookOpen, FileText, GraduationCap, MessageCircle, UserPlus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
+const { t } = useTranslation();
 const apiUrl = import.meta.env.VITE_API_URL;
 const { name } = useParams();
 const navigate = useNavigate();
@@ -77,7 +79,7 @@ useEffect(() => {
       const res = await axios.get(`${apiUrl}/user/profile/${name}`, { withCredentials: true });
       setProfile(res.data.user);
     }catch(err:unknown){
-      const msg = err instanceof axios.AxiosError ? (err.response?.data?.message || err.message) : "Erreur lors du chargement du profil";
+      const msg = err instanceof axios.AxiosError ? (err.response?.data?.message || err.message) : t("profile.loadError");
       setError(msg);
       setProfile(null);
     }finally{
@@ -151,9 +153,9 @@ const handleFollow = async () => {
   if (typeof res.data.followersCount === "number") setFollowersCount(res.data.followersCount);
 };
 
-if (loading) return <div className="p-6">Chargement...</div>;
+if (loading) return <div className="p-6">{t("common.loading")}</div>;
 if (error) return <div className="rounded-md bg-red-200 p-6 text-center text-xs text-red-900 lg:text-lg">{error}</div>;
-if (!profile) return <div className="p-6">Profil introuvable</div>;
+if (!profile) return <div className="p-6">{t("profile.notFound")}</div>;
 const meId = data?.id || data?._id;
 const isSelf = !!meId && meId.toString() === profile._id.toString();
 const isProfesseur = profile.role === "Professeur";
@@ -199,11 +201,11 @@ return (
               <div className="flex flex-col gap-2">
                 <Button className="cursor-pointer bg-amber-500 text-black hover:bg-amber-600" onClick={handleFollow}>
                   <UserPlus className="size-4" />
-                  {isFollowing ? "Déjà abonné(e)" : "S’abonner"}
+                  {isFollowing ? t("common.alreadySubscribed") : t("common.subscribe")}
                 </Button>
                 <Button variant="outline" className="cursor-pointer" onClick={handlePost}>
                   <MessageCircle className="size-4" />
-                  Envoyer un message
+                  {t("profile.sendMessage")}
                 </Button>
               </div>
             )}

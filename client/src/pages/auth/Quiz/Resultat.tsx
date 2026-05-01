@@ -5,6 +5,7 @@ import type { Results } from "./types/ResultsType";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BicepsFlexed, Medal, PartyPopper, ThumbsUp, Trophy } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 
 const ScoreCircle = ({ score, total }: { score: number; total: number }) => {
@@ -36,15 +37,16 @@ const ScoreCircle = ({ score, total }: { score: number; total: number }) => {
   );
 };
 
-const getPerformanceLabel = (score: number, total: number) => {
+const getPerformanceLabel = (score: number, total: number, t: (key: string) => string) => {
   const pct = total > 0 ? (score / total) * 100 : 0;
-  if (pct === 100) return <div className="flex items-center justify-center gap-2"> Parfait ! <Trophy /></div>;
-  if (pct >= 70) return <div className="flex items-center justify-center gap-2">Excellent ! <PartyPopper /></div>;
-  if (pct >= 50) return <div className="flex items-center justify-center gap-2">Bien ! <ThumbsUp /></div>;
-  return <div className="flex items-center justify-center gap-2">Peut mieux faire <BicepsFlexed /></div>;
+  if (pct === 100) return <div className="flex items-center justify-center gap-2"> {t("quiz.results.perfect")} <Trophy /></div>;
+  if (pct >= 70) return <div className="flex items-center justify-center gap-2">{t("quiz.results.excellent")} <PartyPopper /></div>;
+  if (pct >= 50) return <div className="flex items-center justify-center gap-2">{t("quiz.results.good")} <ThumbsUp /></div>;
+  return <div className="flex items-center justify-center gap-2">{t("quiz.results.canImprove")} <BicepsFlexed /></div>;
 };
 
 const Resultat = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const { quizId } = useParams();
   const [results, setResults] = useState<Results | null>(null);
@@ -61,7 +63,7 @@ const Resultat = () => {
         const data = Array.isArray(res.data) ? res.data[0] : res.data;
         setResults(data);
       } catch {
-        setError("Impossible de charger les résultats.");
+        setError(t("quiz.results.loadError"));
       } finally {
         setLoading(false);
       }
@@ -87,7 +89,7 @@ const Resultat = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f5f0e8]">
-        <p className="text-lg text-gray-400">Chargement...</p>
+        <p className="text-lg text-gray-400">{t("common.loading")}</p>
       </div>
     );
   }
@@ -95,7 +97,7 @@ const Resultat = () => {
   if (error || !results) {
     return (
       <div className="flex  items-center justify-center">
-        <p className="text-lg text-red-500">{error || "Aucun résultat trouvé."}</p>
+        <p className="text-lg text-red-500">{error || t("quiz.results.noneFound")}</p>
       </div>
     );
   }
@@ -112,13 +114,13 @@ const Resultat = () => {
           <Card className="rounded-2xl  p-8 text-center shadow-sm">
             <ScoreCircle score={results.score} total={results.totalQuestions} />
             <p className="mt-5 text-xl font-bold ">
-              {getPerformanceLabel(results.score, results.totalQuestions)}
+              {getPerformanceLabel(results.score, results.totalQuestions, t)}
             </p>
             <p className="mt-1 text-sm text-gray-400">{results.quizId.text}</p>
           </Card>
           {/* Récapitulatif */}
           <h2 className="mt-2 text-base font-bold text-gray-900 dark:text-white">
-            Récapitulatif des réponses
+            {t("quiz.results.answersSummary")}
           </h2>
           <div className="flex flex-col gap-3">
             {Array.from({ length: correctAnswers }).map((_, i) => (
@@ -129,11 +131,11 @@ const Resultat = () => {
                 <CardContent>
                 <div className="flex items-center gap-3">
                   <span className="text-lg font-bold text-green-500">✔</span>
-                  <span className="font-semibold ">Bonne réponse</span>
+                  <span className="font-semibold ">{t("quiz.results.correctAnswer")}</span>
                 </div>
                 <div className="mt-2">
                   <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                    Correct ✓
+                    {t("quiz.results.correct")}
                   </span>
                 </div>
                 </CardContent>
@@ -151,10 +153,10 @@ const Resultat = () => {
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
-                    Votre réponse : {wa.userAnswer}
+                    {t("quiz.results.yourAnswer")}: {wa.userAnswer}
                   </span>
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                    Bonne réponse : {wa.correctAnswer}
+                    {t("quiz.results.correctAnswerLabel")}: {wa.correctAnswer}
                   </span>
                 </div>
                 </CardContent>
@@ -164,7 +166,7 @@ const Resultat = () => {
         </div>
         {/* Leaderboard */}
         <div className="w-full lg:mt-8">
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><Trophy fill="#FFC107" color="#FFC107"/> Leaderboard</h2>
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><Trophy fill="#FFC107" color="#FFC107"/> {t("quiz.results.leaderboard")}</h2>
 
           <div className="flex flex-col gap-3">
             {leaderboard

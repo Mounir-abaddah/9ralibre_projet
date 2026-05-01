@@ -5,6 +5,7 @@ import { useState, type FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ralibre_logo from '@/assets/images/9ralibre.png';
+import { useTranslation } from 'react-i18next';
 
 interface ApiResponse {
   success: boolean;
@@ -12,23 +13,17 @@ interface ApiResponse {
 }
 
 const ModificationMotdepasse = () => {
+  const { t } = useTranslation();
   const { token } = useParams();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  const [form, setForm] = useState({
-    password: '',
-  });
-
-  const [errors, setErrors] = useState({
-    password: '',
-  });
-
+  const [form, setForm] = useState({ password: '' });
+  const [errors, setErrors] = useState({ password: '' });
   const [loading, setLoading] = useState(false);
   const [serverMessage, setServerMessage] = useState('');
 
-  const regexPassword =
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -49,8 +44,7 @@ const ModificationMotdepasse = () => {
     const newErrors = { password: '' };
 
     if (!regexPassword.test(form.password)) {
-      newErrors.password =
-        'Le mot de passe doit contenir au minimum 8 caractères, avec une majuscule, une minuscule, un chiffre et un caractère spécial.';
+      newErrors.password = t('auth.errors.weakPasswordLong');
       valid = false;
     }
 
@@ -75,8 +69,7 @@ const ModificationMotdepasse = () => {
       const err = error as AxiosError<{ message: string }>;
       if (err.response?.data?.message) {
         setServerMessage(err.response.data.message);
-        newErrors.password = ' ';
-        setErrors(newErrors);
+        setErrors({ password: ' ' });
       }
     } finally {
       setLoading(false);
@@ -86,12 +79,12 @@ const ModificationMotdepasse = () => {
   return (
     <div className="mx-auto max-w-xl">
       <header>
-        <img src={ralibre_logo} alt="9ralibre_logo" width={200} loading='lazy'/>
+        <img src={ralibre_logo} alt="9ralibre_logo" width={200} loading="lazy" />
       </header>
 
       <div className="rounded-t-lg bg-gray-100 px-6 py-4 text-center">
         <h2 className="mb-0 flex items-center justify-center text-xl font-semibold text-[#3F3F3F]">
-          <span>Nouveau mot de passe</span>
+          <span>{t('resetPassword.title')}</span>
         </h2>
       </div>
 
@@ -106,8 +99,8 @@ const ModificationMotdepasse = () => {
           <div className="mb-6">
             <Input
               id="password"
-              label="Nouveau mot de passe"
-              placeholder="Tapez votre nouveau mot de passe"
+              label={t('resetPassword.label')}
+              placeholder={t('resetPassword.placeholder')}
               type="password"
               value={form.password}
               onFocus={() => handleFocus('password')}
@@ -122,10 +115,11 @@ const ModificationMotdepasse = () => {
             type="submit"
             disabled={loading}
             className={`flex w-full items-center justify-center gap-2 rounded-md p-2
-              ${loading ? 'cursor-not-allowed bg-slate-300' : 'cursor-pointer bg-amber-400'} transition duration-300 ease-in hover:bg-amber-500`}
+              ${loading ? 'cursor-not-allowed bg-slate-300' : 'cursor-pointer bg-amber-400'}
+              transition duration-300 ease-in hover:bg-amber-500`}
           >
             {loading && <Loadering />}
-            <span className="text-[#3f3f3f]">Réinitialiser le mot de passe</span>
+            <span className="text-[#3f3f3f]">{t('resetPassword.submit')}</span>
           </button>
         </form>
 
@@ -133,7 +127,7 @@ const ModificationMotdepasse = () => {
 
         <div className="text-right">
           <Link to="/" className="border-b border-b-sky-400 dark:text-cyan-500">
-            Retour au site
+            {t('auth.backToSite')}
           </Link>
         </div>
       </div>

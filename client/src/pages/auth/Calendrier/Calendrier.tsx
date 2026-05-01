@@ -7,9 +7,11 @@ import { format } from "date-fns"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { fr } from "react-day-picker/locale";
+import { useTranslation } from "react-i18next";
 
 const Calendrier = () => {
-    document.title = "Calendrier | 9ralibre"
+    const { t } = useTranslation();
+    document.title = t("calendar.pageTitle")
     const apiUrl = import.meta.env.VITE_API_URL
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [type, setType] = useState("Examen")
@@ -33,7 +35,7 @@ const Calendrier = () => {
         setEvents(res.data?.events || [])
         } catch (error) {
         console.log(error)
-        toast.error("Impossible de récupérer les événements")
+        toast.error(t("calendar.fetchError"))
         }
     }
 
@@ -43,7 +45,7 @@ const Calendrier = () => {
 
     const handleAddEvent = () => {
         if (!date || !title.trim() || !type.trim()) {
-            toast.error("Date, type et titre sont obligatoires"); return;
+            toast.error(t("calendar.requiredFields")); return;
         }
         setLoading(true)
         axios.post( `${apiUrl}/user/postEvents`, {Date: date.toISOString(),items: [{
@@ -53,14 +55,14 @@ const Calendrier = () => {
             },],
         },{ withCredentials: true },)
         .then(async () => {
-            toast.success("Événement ajouté")
+            toast.success(t("calendar.added"))
             setTitle("")
             setDescription("")
             await fetchEvents()
         })
         .catch((error) => {
             console.log(error)
-            toast.error("Échec de l'ajout de l'événement")
+            toast.error(t("calendar.addError"))
         })
         .finally(() => setLoading(false))
     }
@@ -79,11 +81,11 @@ const Calendrier = () => {
         setActionLoadingId(itemId)
         try {
             await axios.delete(`${apiUrl}/user/events/items/${itemId}`, { withCredentials: true })
-            toast.success("Événement supprimé")
+            toast.success(t("calendar.deleted"))
             await fetchEvents()
         } catch (error) {
             console.log(error)
-            toast.error("Impossible de supprimer l'événement")
+            toast.error(t("calendar.deleteError"))
         } finally {
             setActionLoadingId(null)
         }
@@ -105,7 +107,7 @@ const Calendrier = () => {
 
         const handleSaveEdit = async (itemId: string) => {
         if (!editType.trim() || !editTitle.trim()) {
-            toast.error("Type et titre sont obligatoires")
+            toast.error(t("calendar.editRequired"))
             return
         }
         setActionLoadingId(itemId)
@@ -119,12 +121,12 @@ const Calendrier = () => {
             },
             { withCredentials: true },
             )
-            toast.success("Événement modifié")
+            toast.success(t("calendar.updated"))
             cancelEdit()
             await fetchEvents()
         } catch (error) {
             console.log(error)
-            toast.error("Impossible de modifier l'événement")
+            toast.error(t("calendar.updateError"))
         } finally {
             setActionLoadingId(null)
         }
@@ -136,18 +138,18 @@ return (
             <section className="rounded-2xl border p-5  shadow-lg sm:p-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold sm:text-3xl">Calendrier</h1>
+                        <h1 className="text-2xl font-bold sm:text-3xl">{t("calendar.title")}</h1>
                         <p className="mt-1 text-sm ">
-                            Planifie tes examens, devoirs et rappels importants.
+                            {t("calendar.subtitle")}
                         </p>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
                     <div className="rounded-lg bg-white/20 px-3 py-2">
-                        <p className="opacity-90">Dates planifiées</p>
+                        <p className="opacity-90">{t("calendar.plannedDates")}</p>
                         <p className="text-lg font-semibold">{events.length}</p>
                     </div>
                     <div className="rounded-lg bg-white/20 px-3 py-2">
-                        <p className="opacity-90">Événements</p>
+                        <p className="opacity-90">{t("calendar.events")}</p>
                         <p className="text-lg font-semibold">{totalItems}</p>
                     </div>
                 </div>
@@ -157,9 +159,9 @@ return (
         <div className="grid gap-6 xl:grid-cols-5">
             <div className="rounded-2xl border p-4 shadow-sm xl:col-span-3">
                 <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-100">Vue mensuelle</h2>
+                <h2 className="text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-100">{t("calendar.monthView")}</h2>
                 <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">
-                    Dates marquées
+                    {t("calendar.markedDates")}
                 </span>
                 </div>
             <div className="overflow-x-auto">
@@ -180,27 +182,27 @@ return (
         </div>
 
             <div className="w-full rounded-2xl border p-4 shadow-sm xl:col-span-2">
-                <h2 className="text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-100">Ajouter un événement</h2>
+                <h2 className="text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-100">{t("calendar.addEvent")}</h2>
                 <p className="mt-1 text-sm text-slate-500">
-                    Date sélectionnée :{" "}
-                    <span className="font-semibold text-slate-700 dark:text-slate-200">{date ? format(date, "PPP", { locale: fr }) : "Aucune"}</span>
+                    {t("calendar.selectedDate")}{" "}
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">{date ? format(date, "PPP", { locale: fr }) : t("calendar.none")}</span>
                 </p>
 
                 <div className="mt-4 w-full space-y-3">
                 <Input
-                    placeholder="Type (ex: Examen)"
+                    placeholder={t("calendar.typePlaceholder")}
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                 />
 
                 <Input
-                    placeholder="Titre de l'événement..."
+                    placeholder={t("calendar.titlePlaceholder")}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
 
                 <Textarea
-                    placeholder="Description (optionnelle)"
+                    placeholder={t("calendar.descriptionPlaceholder")}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={4}
@@ -208,7 +210,7 @@ return (
                 />
 
                 <Button onClick={handleAddEvent} disabled={loading} className="w-full cursor-pointer bg-amber-500 hover:bg-amber-600 ">
-                    {loading ? "Ajout..." : "Ajouter"}
+                    {loading ? t("calendar.adding") : t("calendar.add")}
                 </Button>
                 </div>
             </div>
@@ -216,15 +218,15 @@ return (
 
         <section className="rounded-2xl border p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-200">Événements du jour</h2>
+                <h2 className="text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-200">{t("calendar.dayEvents")}</h2>
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
-                {date ? format(date, "dd/MM/yyyy") : "Aucune date"}
+                {date ? format(date, "dd/MM/yyyy") : t("calendar.noDate")}
                 </span>
             </div>
 
             {selectedDateItems.length === 0 && (
                 <div className="rounded-xl border border-dashed  px-4 py-8 text-center dark:border-slate-200">
-                <p className="text-sm text-slate-500 dark:text-slate-200">Aucun événement pour cette date.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-200">{t("calendar.noEventsForDate")}</p>
                 </div>
             )}
 
@@ -236,18 +238,18 @@ return (
                         <Input
                             value={editType}
                             onChange={(e) => setEditType(e.target.value)}
-                            placeholder="Type"
+                            placeholder={t("calendar.type")}
                         />
                         <Input
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
-                            placeholder="Titre"
+                            placeholder={t("calendar.eventTitle")}
                         />
                         <Textarea
                             rows={3}
                             value={editDescription}
                             onChange={(e) => setEditDescription(e.target.value)}
-                            placeholder="Description"
+                            placeholder={t("calendar.description")}
                             className="resize-none"
                         />
                         <div className="flex flex-wrap gap-2">
@@ -256,10 +258,10 @@ return (
                                 onClick={() => handleSaveEdit(item._id)}
                                 disabled={actionLoadingId === item._id}
                             >
-                                Enregistrer
+                                {t("common.save")}
                             </Button>
                             <Button variant="outline" onClick={cancelEdit} disabled={actionLoadingId === item._id}>
-                                Annuler
+                                {t("common.cancel")}
                             </Button>
                         </div>
                     </div>
@@ -279,7 +281,7 @@ return (
                                 onClick={() => startEditItem(item)}
                                 disabled={actionLoadingId === item._id}
                             >
-                                Modifier
+                                {t("common.edit")}
                             </Button>
                             <Button
                                 size="sm"
@@ -287,7 +289,7 @@ return (
                                 onClick={() => handleDeleteItem(item._id)}
                                 disabled={actionLoadingId === item._id}
                             >
-                                Supprimer
+                                {t("common.delete")}
                             </Button>
                         </div>
                       </>

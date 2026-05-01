@@ -24,9 +24,11 @@ import { useProtectedRoutes } from "@/store/userStore";
 import { Upload, Trash2, Lock, User } from "lucide-react";
 import { useState, useRef } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const Settings = () => {
-  document.title = "Paramètres | 9ralibre"
+  const { t } = useTranslation();
+  document.title = t("settings.pageTitle")
   const apiUrl = import.meta.env.VITE_API_URL;
   const { data } = useProtectedRoutes();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -70,18 +72,18 @@ const Settings = () => {
       );
 
       if (resData.data.success) {
-        setSuccess("Profil mis à jour avec succès");
+        setSuccess(t("settings.profileUpdated"));
         window.location.reload()
         window.location.href = `/Paramètre/${formData?.niveaux}`
       } else {
-        setError(resData.data.message || "Erreur lors de la mise à jour");
+        setError(resData.data.message || t("settings.updateError"));
       }
     } catch (error) {
       const errorMessage =
         error instanceof axios.AxiosError
           ? error.response?.data?.message
-          : "Erreur lors de la mise à jour du profil";
-      setError(errorMessage || "Erreur lors de la mise à jour du profil");
+          : t("settings.profileUpdateError");
+      setError(errorMessage || t("settings.profileUpdateError"));
       console.error("Erreur:", error);
     }
   };
@@ -92,7 +94,7 @@ const Settings = () => {
       setSuccess(null);
 
       if (formData.newPassword !== formData.confirmPassword) {
-        setError("Les mots de passe ne correspondent pas");
+        setError(t("settings.passwordMismatch"));
         return;
       }
 
@@ -106,7 +108,7 @@ const Settings = () => {
       );
 
       if (data.success) {
-        setSuccess("Mot de passe changé avec succès");
+        setSuccess(t("settings.passwordChanged"));
         setFormData({
           ...formData,
           password: "",
@@ -114,14 +116,14 @@ const Settings = () => {
           confirmPassword: "",
         });
       } else {
-        setError(data.message || "Erreur lors du changement");
+        setError(data.message || t("settings.changeError"));
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof axios.AxiosError
           ? error.response?.data?.message
-          : "Erreur lors du changement du mot de passe";
-      setError(errorMessage || "Erreur lors du changement du mot de passe");
+          : t("settings.passwordChangeError");
+      setError(errorMessage || t("settings.passwordChangeError"));
       console.error("Erreur:", error);
     }
   };
@@ -143,16 +145,16 @@ const Settings = () => {
 
       if (response.data.success) {
         setUserImage(response.data.image);
-        setSuccess("Image téléchargée avec succès");
+        setSuccess(t("settings.imageUploaded"));
       } else {
-        setError(response.data.message || "Erreur lors du téléchargement");
+        setError(response.data.message || t("settings.uploadError"));
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof axios.AxiosError
           ? error.response?.data?.message
-          : "Erreur lors du téléchargement";
-      setError(errorMessage || "Erreur lors du téléchargement");
+          : t("settings.uploadError");
+      setError(errorMessage || t("settings.uploadError"));
       console.error("Erreur:", error);
     } finally {
       setIsLoading(false);
@@ -168,16 +170,16 @@ const Settings = () => {
 
       if (response.data.success) {
         setUserImage(null);
-        setSuccess("Image supprimée avec succès");
+        setSuccess(t("settings.imageDeleted"));
       } else {
-        setError(response.data.message || "Erreur lors de la suppression");
+        setError(response.data.message || t("settings.deleteError"));
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof axios.AxiosError
           ? error.response?.data?.message
-          : "Erreur lors de la suppression";
-      setError(errorMessage || "Erreur lors de la suppression");
+          : t("settings.deleteError");
+      setError(errorMessage || t("settings.deleteError"));
       console.error("Erreur:", error);
     } finally {
       setIsLoading(false);
@@ -201,10 +203,10 @@ const Settings = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="mb-2 text-4xl font-bold text-slate-900 dark:text-white">
-            Paramètres
+            {t("settings.title")}
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Gérez vos informations personnelles et votre sécurité
+            {t("settings.subtitle")}
           </p>
         </div>
 
@@ -213,11 +215,11 @@ const Settings = () => {
           <TabsList className="mb-6 grid w-full grid-cols-2">
             <TabsTrigger value="personal" className="flex cursor-pointer items-center gap-2">
               <User className="size-4" />
-              <span>Informations</span>
+              <span>{t("settings.tabs.informations")}</span>
             </TabsTrigger>
             <TabsTrigger value="security" className="flex cursor-pointer items-center gap-2">
               <Lock className="size-4" />
-              <span>Sécurité</span>
+              <span>{t("settings.tabs.security")}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -237,9 +239,9 @@ const Settings = () => {
             {/* Avatar Section */}
             <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
-                <CardTitle>Photo de profil</CardTitle>
+                <CardTitle>{t("settings.profilePhoto.title")}</CardTitle>
                 <CardDescription>
-                  Téléchargez ou supprimez votre photo de profil
+                  {t("settings.profilePhoto.description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -272,7 +274,7 @@ const Settings = () => {
                       className="cursor-pointer gap-2 bg-amber-600 hover:bg-amber-700"
                     >
                       <Upload className="size-4" />
-                      {isLoading ? "Chargement..." : "Télécharger"}
+                      {isLoading ? t("common.loading") : t("settings.profilePhoto.upload")}
                     </Button>
                     <Button
                       onClick={handleDeleteImage}
@@ -281,7 +283,7 @@ const Settings = () => {
                       className="cursor-pointer gap-2"
                     >
                       <Trash2 className="size-4" />
-                      Supprimer
+                      {t("common.delete")}
                     </Button>
                   </div>
                 </div>
@@ -291,97 +293,78 @@ const Settings = () => {
             {/* Personal Info Section */}
             <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
-                <CardTitle>Informations personnelles</CardTitle>
+                <CardTitle>{t("settings.personalInfo.title")}</CardTitle>
                 <CardDescription>
-                  Mettez à jour vos informations de profil
+                  {t("settings.personalInfo.description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="nom" className="text-sm font-medium">
-                      Nom
+                      {t("settings.fields.lastName")}
                     </Label>
                     <Input
                       id="nom"
                       type="text"
                       value={formData.nom}
                       onChange={(e) => handleChange("nom", e.target.value)}
-                      placeholder="Votre nom"
+                      placeholder={t("settings.fields.lastNamePlaceholder")}
                       className="border-slate-200 dark:border-slate-700"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="prenom" className="text-sm font-medium">
-                      Prénom
+                      {t("settings.fields.firstName")}
                     </Label>
                     <Input
                       id="prenom"
                       type="text"
                       value={formData.prenom}
                       onChange={(e) => handleChange("prenom", e.target.value)}
-                      placeholder="Votre prénom"
+                      placeholder={t("settings.fields.firstNamePlaceholder")}
                       className="border-slate-200 dark:border-slate-700"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
-                    Email
+                    {t("settings.fields.email")}
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
-                    placeholder="Votre email"
+                    placeholder={t("settings.fields.emailPlaceholder")}
                     className="border-slate-200 dark:border-slate-700"
                   />
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="niveaux" className="text-sm font-medium">
-                      Niveaux
+                      {t("settings.fields.level")}
                     </Label>
                     <Select
                       value={formData.niveaux}
                       onValueChange={(value) => handleChange("niveaux", value)}
                     >
                       <SelectTrigger className="w-full border-slate-200 dark:border-slate-700">
-                        <SelectValue placeholder="Sélectionnez votre niveau" />
+                        <SelectValue placeholder={t("settings.fields.levelPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Collège</SelectLabel>
+                          <SelectLabel>{t("settings.fields.middleSchool")}</SelectLabel>
                           <SelectItem value="1AC">1AC</SelectItem>
                           <SelectItem value="2AC">2AC</SelectItem>
                           <SelectItem value="3AC">3AC</SelectItem>
                           </SelectGroup>
                         <SelectSeparator />
                         <SelectGroup>
-                          <SelectLabel>Lycée</SelectLabel>
+                          <SelectLabel>{t("settings.fields.highSchool")}</SelectLabel>
                           <SelectItem value="TC">TC</SelectItem>
                           <SelectItem value="1BAC">1BAC</SelectItem>
                           <SelectItem value="2BAC">2BAC</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="langue" className="text-sm font-medium">
-                      Langue
-                    </Label>
-                    <Select
-                    defaultValue="FR"
-                      onValueChange={(value) => handleChange("langue", value)}
-                    >
-                      <SelectTrigger defaultValue="FR" className="w-full border-slate-200 dark:border-slate-700">
-                        <SelectValue placeholder="Sélectionnez votre langue" />
-                      </SelectTrigger>
-                      <SelectContent defaultValue="FR">
-                        <SelectGroup defaultValue="FR">
-                          <SelectLabel>Langues disponibles</SelectLabel>
-                          <SelectItem value="FR">Français</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -393,7 +376,7 @@ const Settings = () => {
                   onClick={handleSavePersonal}
                   className="cursor-pointer bg-cyan-600 hover:bg-cyan-700"
                 >
-                  Enregistrer les modifications
+                  {t("settings.saveChanges")}
                 </Button>
               </div>
             </Card>
@@ -415,9 +398,9 @@ const Settings = () => {
             {data?.provider === "local" ? (
               <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
-                <CardTitle>Changer le mot de passe</CardTitle>
+                <CardTitle>{t("settings.password.title")}</CardTitle>
                 <CardDescription>
-                  Mettez à jour votre mot de passe pour sécuriser votre compte
+                  {t("settings.password.description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -426,20 +409,20 @@ const Settings = () => {
                     htmlFor="currentPassword"
                     className="text-sm font-medium"
                   >
-                    Mot de passe actuel
+                    {t("settings.password.current")}
                   </Label>
                   <Input
                     id="currentPassword"
                     type="password"
                     value={formData.password}
                     onChange={(e) => handleChange("password", e.target.value)}
-                    placeholder="Entrez votre mot de passe actuel"
+                    placeholder={t("settings.password.currentPlaceholder")}
                     className="border-slate-200 dark:border-slate-700"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="newPassword" className="text-sm font-medium">
-                    Nouveau mot de passe
+                    {t("settings.password.new")}
                   </Label>
                   <Input
                     id="newPassword"
@@ -448,7 +431,7 @@ const Settings = () => {
                     onChange={(e) =>
                       handleChange("newPassword", e.target.value)
                     }
-                    placeholder="Entrez votre nouveau mot de passe"
+                    placeholder={t("settings.password.newPlaceholder")}
                     className="border-slate-200 dark:border-slate-700"
                   />
                 </div>
@@ -457,7 +440,7 @@ const Settings = () => {
                     htmlFor="confirmPassword"
                     className="text-sm font-medium"
                   >
-                    Confirmer le mot de passe
+                    {t("settings.password.confirm")}
                   </Label>
                   <Input
                     id="confirmPassword"
@@ -466,7 +449,7 @@ const Settings = () => {
                     onChange={(e) =>
                       handleChange("confirmPassword", e.target.value)
                     }
-                    placeholder="Confirmez votre nouveau mot de passe"
+                    placeholder={t("settings.password.confirmPlaceholder")}
                     className="border-slate-200 dark:border-slate-700"
                   />
                 </div>
@@ -476,13 +459,13 @@ const Settings = () => {
                   onClick={handleChangePassword}
                   className="bg-cyan-600 hover:bg-cyan-700"
                 >
-                  Changer le mot de passe
+                  {t("settings.password.submit")}
                 </Button>
               </div>
               </Card>
             ):(
               <Card className="">
-                <CardContent className="rounded-md text-sm">Vous êtes connecté avec Google. Vous ne pouvez pas modifier le mot de passe ici.</CardContent>
+                <CardContent className="rounded-md text-sm">{t("settings.password.googleNotice")}</CardContent>
               </Card>
             )}
             

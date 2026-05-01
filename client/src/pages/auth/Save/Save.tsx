@@ -7,10 +7,12 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { fr } from "date-fns/locale";
 import Pagination from "@/components/Pagination/Pagination";
 import type { SavedCours, SavedVideo, SaveResponse } from "./types/SaveType";
+import { useTranslation } from "react-i18next";
 
 type TabType = "videos" | "cours";
 
 const Save = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const {niveaux} = useParams();
   const [activeTab, setActiveTab] = useState<TabType>("videos");
@@ -54,7 +56,7 @@ const Save = () => {
   }, [apiUrl, coursPage]);
 
   useEffect(() => {
-    document.title = "Mes enregistrements | 9ralibre";
+    document.title = t("save.pageTitle");
     getSavedVideos();
     getSavedCours();
   }, [getSavedVideos, getSavedCours]);
@@ -110,13 +112,13 @@ const Save = () => {
               <Bookmark className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-300">
-              Mes enregistrements
+              {t("save.pageHeading")}
             </h1>
           </div>
           <p className="text-lg text-gray-600">
             {!hasContent
-              ? "Aucun contenu enregistré pour le moment"
-              : `Vous avez ${savedVideos.length} vidéo(s) et ${savedCours.length} cours enregistrés`}
+              ? t("save.noContentYet")
+              : t("save.contentCount", { videos: savedVideos.length, cours: savedCours.length })}
           </p>
         </div>
 
@@ -132,7 +134,7 @@ const Save = () => {
               }`}
             >
               <Play className="h-4 w-4" />
-              Vidéos ({savedVideos.length})
+              {t("save.videosTab")} ({savedVideos.length})
             </button>
             <button
               onClick={() => setActiveTab("cours")}
@@ -143,7 +145,7 @@ const Save = () => {
               }`}
             >
               <BookOpen className="h-4 w-4" />
-              Cours ({savedCours.length})
+              {t("save.coursesTab")} ({savedCours.length})
             </button>
           </div>
         )}
@@ -239,7 +241,7 @@ const Save = () => {
                           size="sm"
                         >
                           <Bookmark className="mr-2 h-4 w-4" />
-                          Retirer
+                          {t("common.remove")}
                         </Button>
                       </div>
                     </div>
@@ -260,11 +262,10 @@ const Save = () => {
               <div className="rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
                 <Play className="mx-auto mb-4 h-16 w-16 text-gray-300" />
                 <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Aucune vidéo enregistrée
+                  {t("save.noSavedVideos")}
                 </h3>
                 <p className="mb-6 text-gray-600">
-                  Commencez à enregistrer des vidéos que vous aimez pour les
-                  retrouver plus tard.
+                  {t("save.noSavedVideosDescription")}
                 </p>
               </div>
             )}
@@ -320,7 +321,7 @@ const Save = () => {
                             <p className="text-xs font-medium text-gray-900">
                               {cours.professeur.nom} {cours.professeur.prenom}
                             </p>
-                            <p className="text-xs text-gray-500">Professeur</p>
+                            <p className="text-xs text-gray-500">{t("common.teacher")}</p>
                           </div>
                         </div>
 
@@ -347,7 +348,7 @@ const Save = () => {
                               size="sm"
                               className="w-full bg-amber-500 hover:bg-amber-600"
                             >
-                              Voir le PDF
+                              {t("save.viewPdf")}
                             </Button>
                           </a>
                           <Button
@@ -378,11 +379,10 @@ const Save = () => {
               <div className="rounded-xl border-2 border-dashed border-gray-300 bg-white p-12 text-center">
                 <BookOpen className="mx-auto mb-4 h-16 w-16 text-gray-300" />
                 <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Aucun cours enregistré
+                  {t("save.noSavedCourses")}
                 </h3>
                 <p className="mb-6 text-gray-600">
-                  Commencez à enregistrer des cours que vous aimez pour les
-                  retrouver plus tard.
+                  {t("save.noSavedCoursesDescription")}
                 </p>
               </div>
             )}
@@ -394,16 +394,15 @@ const Save = () => {
           <div className="rounded-xl border-2 border-dashed border-gray-300  p-12 text-center">
             <Bookmark className="mx-auto mb-4 h-16 w-16 text-gray-300" />
             <h3 className="mb-2 text-xl font-semibold text-gray-900">
-              Aucun contenu enregistré
+              {t("save.noContent")}
             </h3>
             <p className="mb-6 text-gray-600">
-              Commencez à enregistrer des vidéos et des cours pour les retrouver
-              plus tard.
+              {t("save.noContentDescription")}
             </p>
             <div className="flex justify-center gap-4">
               <Link to={`/Videos/${niveaux}`}>
                 <Button className="bg-amber-500 hover:bg-amber-600">
-                  Découvrir les vidéos
+                  {t("save.discoverVideos")}
                 </Button>
               </Link>
               <Link to={`/Cours/${niveaux}`}>
@@ -411,7 +410,7 @@ const Save = () => {
                   variant="outline"
                   className="border-amber-200 text-amber-600 hover:bg-amber-50"
                 >
-                  Découvrir les cours
+                  {t("save.discoverCourses")}
                 </Button>
               </Link>
             </div>

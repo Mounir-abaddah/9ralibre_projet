@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import type { AsideVideosProps } from "@/pages/auth/Video/types/video.type";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { useTranslation } from "react-i18next";
 
 const AsideVideos = ({
   search,
@@ -23,6 +24,7 @@ const AsideVideos = ({
   setFiliere,
   Fetchmatiere,
 }: AsideVideosProps) => {
+  const { t } = useTranslation();
   const { niveaux } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -90,12 +92,12 @@ const AsideVideos = ({
       {activeFiltersCount > 0 && (
         <Button variant="outline" onClick={resetFilters} className="w-full">
           <X size={16} className="mr-2" />
-          Réinitialiser
+          {t("videoFilters.reset")}
         </Button>
       )}
       {/* MATIERE */}
       <div className="space-y-3 rounded-md bg-gray-800 p-2">
-        <h3 className="text-sm font-semibold text-white">Matières</h3>
+        <h3 className="text-sm font-semibold text-white">{t("videoFilters.subjects")}</h3>
 
         <RadioGroup
           value={matiere || ""}
@@ -117,7 +119,7 @@ const AsideVideos = ({
       {/* FILIERE */}
       {(niveaux === "TC" || niveaux === "1BAC" || niveaux === "2BAC") && (
         <div className="space-y-3 rounded-md bg-gray-800 p-2">
-          <h3 className="text-sm font-semibold text-white">Filière</h3>
+          <h3 className="text-sm font-semibold text-white">{t("videoFilters.stream")}</h3>
 
           <RadioGroup
             value={filiere || ""}
@@ -148,7 +150,7 @@ const AsideVideos = ({
       {/* SEARCH */}
       <Input
         type="text"
-        placeholder="Cherchez..."
+        placeholder={t("videoFilters.search")}
         value={search || ""}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -159,7 +161,7 @@ const AsideVideos = ({
           <SheetTrigger asChild>
             <Button variant="outline" className="w-full">
               <Filter size={18} className="mr-2" />
-              Filtres
+              {t("videoFilters.filters")}
               {activeFiltersCount > 0 && (
                 <span className="ml-2 rounded-full bg-amber-400 px-2 text-xs">
                   {activeFiltersCount}
@@ -170,7 +172,7 @@ const AsideVideos = ({
 
           <SheetContent side="left" className="absolute z-[9999999999] w-80 overflow-y-auto">
             <SheetHeader>
-              <SheetTitle>Filtres</SheetTitle>
+              <SheetTitle>{t("videoFilters.filters")}</SheetTitle>
             </SheetHeader>
             <FilterContent />
           </SheetContent>

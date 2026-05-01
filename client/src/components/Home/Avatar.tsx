@@ -7,22 +7,24 @@ import { Book, BookmarkCheck, BookOpen, BookType, ChevronDown, LogOut, MessageCi
 import { Link, useLocation } from "react-router-dom"
 import axios from "axios"
 import { createPortal } from "react-dom"
+import { useTranslation } from "react-i18next";
 
 const Avatare = ({ data }: typeAllData) => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [menuOpen, setMenuOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
   const location = useLocation(); 
 
   const menuList = [
-    { name: "Dashboard", icon: <Sheet size={18} />, path: `/Dashboard/${data?.niveaux}` },
-    { name: "Cours", icon: <Book size={18} />, path: `/Cours/${data?.niveaux}` },
-    { name: "Videos", icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
-    { name: "Quiz", icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
-    { name: "Histoire", icon: <BookOpen size={18} />, path: `/Histoire/${data?.niveaux}` },
-    { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Chat/${data?.niveaux}` },
-    { name: "Enregistrer", icon: <BookmarkCheck size={18} />, path: `/Save/${data?.niveaux}` },
-    { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
+    { name: t("nav.dashboard"), icon: <Sheet size={18} />, path: `/Dashboard/${data?.niveaux}` },
+    { name: t("nav.courses"), icon: <Book size={18} />, path: `/Cours/${data?.niveaux}` },
+    { name: t("nav.videos"), icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
+    { name: t("nav.quiz"), icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
+    { name: t("nav.stories"), icon: <BookOpen size={18} />, path: `/Histoire/${data?.niveaux}` },
+    { name: t("nav.messaging"), icon: <MessageCircleMoreIcon size={18} />, path: `/Chat/${data?.niveaux}` },
+    { name: t("nav.saved"), icon: <BookmarkCheck size={18} />, path: `/Save/${data?.niveaux}` },
+    { name: t("nav.settings"), icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
 
   const handleLogout = async()=>{
@@ -59,7 +61,7 @@ const Avatare = ({ data }: typeAllData) => {
       {menuOpen &&
         createPortal(
           <div
-            className="fixed top-[50px] right-[60px] z-[9999] mt-4 w-68 origin-top-right pt-2"
+            className="fixed top-[50px] right-[280px] z-[9999] mt-4 w-68 origin-top-right pt-2"
             onMouseEnter={() => setMenuOpen(true)}
             onMouseLeave={() => setMenuOpen(false)}
           >
@@ -92,7 +94,7 @@ const Avatare = ({ data }: typeAllData) => {
                   className="w-full cursor-pointer justify-start gap-2 border border-red-100 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
                 >
                   <LogOut size={16} />
-                  Se déconnecter
+                  {t("nav.logout")}
                 </Button>
               </div>
             </div>

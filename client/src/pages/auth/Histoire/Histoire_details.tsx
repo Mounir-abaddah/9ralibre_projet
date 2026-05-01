@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const histoiresMap: Record<string, string> = {
   Boite: "https://heyzine.com/flip-book/a29fb4c790.html?hideToolbar=1",
@@ -9,12 +10,13 @@ const histoiresMap: Record<string, string> = {
 };
 
 const Histoire_details = () => {
+  const { t } = useTranslation();
   const { histoire } = useParams();
 
   const src = histoire ? histoiresMap[histoire] : null;
 
   if (!src) {
-    return <div className="mt-10 text-center">Histoire non trouvée</div>;
+    return <div className="mt-10 text-center">{t("stories.notFound")}</div>;
   }
 
   return (

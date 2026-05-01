@@ -5,9 +5,11 @@ import Candide from '/Candide.jpg'
 import Honore from '/Honore.jpeg'
 import { Link } from 'react-router-dom'
 import { useProtectedRoutes } from '@/store/userStore'
+import { useTranslation } from 'react-i18next'
 
 const Histoire = () => {
-    document.title = "Histoire | 9ralibre"
+    const { t } = useTranslation();
+    document.title = t("stories.pageTitle")
     const { data } = useProtectedRoutes();
 
     const books = [
@@ -16,7 +18,7 @@ const Histoire = () => {
             title: "La Boîte à merveilles",
             author: "Ahmed Sefrioui",
             year: "1954",
-            genre: "Roman autobiographique",
+            genre: t("stories.genres.autobiographicalNovel"),
             path: `/Histoire/Boite/${data?.niveaux}`
         },
         {
@@ -24,7 +26,7 @@ const Histoire = () => {
             title: "Antigone",
             author: "Jean Anouilh",
             year: "1944",
-            genre: "Tragédie moderne",
+            genre: t("stories.genres.modernTragedy"),
             path: `/Histoire/Antigone/${data?.niveaux}`
         },
         {
@@ -32,7 +34,7 @@ const Histoire = () => {
             title: "Le Dernier Jour d'un condamné",
             author: "Victor Hugo",
             year: "1829",
-            genre: "Roman",
+            genre: t("stories.genres.novel"),
             path: `/Histoire/DJC/${data?.niveaux}`
         },
         {
@@ -40,7 +42,7 @@ const Histoire = () => {
             title: "Candide ou l'Optimisme",
             author: "Voltaire",
             year: "1759",
-            genre: "Conte philosophique",
+            genre: t("stories.genres.philosophicalTale"),
             path: `/Histoire/Candide/${data?.niveaux}`
         },
         {
@@ -48,7 +50,7 @@ const Histoire = () => {
             title: "Le Père Goriot",
             author: "Honoré de Balzac",
             year: "1835",
-            genre: "Roman réaliste",
+            genre: t("stories.genres.realistNovel"),
             path: `/Histoire/Honore/${data?.niveaux}`
         }
     ];
@@ -59,18 +61,17 @@ const Histoire = () => {
             {/* ── Header ── */}
             <div className="mb-10 border-l-2 border-amber-400 pl-4">
                 <p className="mb-1 text-xs font-medium tracking-widest text-amber-500 uppercase">
-                    Collection littéraire
+                    {t("stories.collection")}
                 </p>
                 <h1 className="mb-3 text-4xl leading-tight font-light text-gray-900 dark:text-gray-100">
-                    Œuvres <span className="italic">choisies</span>
+                    {t("stories.title")} <span className="italic">{t("stories.titleHighlight")}</span>
                 </h1>
                 <p className="max-w-lg text-sm leading-relaxed font-light text-gray-500 dark:text-gray-400">
-                    Du patrimoine marocain aux grands classiques français — chaque œuvre vous invite
-                    à explorer des récits profonds et à enrichir votre culture générale.
+                    {t("stories.description")}
                 </p>
                 <div className="mt-4 flex items-center gap-2 text-xs tracking-widest text-gray-400 uppercase">
                     <span className="block h-px w-5 bg-amber-400" />
-                    {books.length} œuvres disponibles
+                    {t("stories.availableWorks", { count: books.length })}
                 </div>
             </div>
 
@@ -127,7 +128,7 @@ const Histoire = () => {
                                     <span className="rounded-sm border border-amber-400/50
                                                      px-3 py-1 text-[11px]
                                                      tracking-widest text-amber-200 uppercase">
-                                        Lire →
+                                        {t("stories.read")} →
                                     </span>
                                 </div>
                             </div>

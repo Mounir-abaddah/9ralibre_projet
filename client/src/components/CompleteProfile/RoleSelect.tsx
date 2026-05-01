@@ -1,4 +1,5 @@
 import { useRef, useState , useEffect} from "react";
+import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const RoleSelect = ({value,error,onChange}:Props) => {
+    const { t } = useTranslation();
     const [show,setShow] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -20,13 +22,13 @@ const RoleSelect = ({value,error,onChange}:Props) => {
       return () => document.removeEventListener("mousedown", handleClick);
     },[]);
     const options = [
-      { name: "Etudiant", icon: "👨‍🎓​" },
-      { name: "Etudiante", icon: "​👩‍🎓​" },
+      { value: "Etudiant", label: t("completeProfile.roleOptions.male"), icon: "👨‍🎓" },
+      { value: "Etudiante", label: t("completeProfile.roleOptions.female"), icon: "👩‍🎓" },
     ];
 
   return (
     <div ref={ref} className="flex flex-col gap-1">
-      <Label id="status">Votre statut</Label>
+      <Label id="status">{t("completeProfile.form.status")}</Label>
       <div
         onClick={() => setShow(!show)}
         className={`relative flex w-full cursor-pointer items-center justify-between rounded-md border p-3 transition ${
@@ -34,7 +36,7 @@ const RoleSelect = ({value,error,onChange}:Props) => {
         }`}
       >
         <h3 className={`text-sm ${!value && "font-normal text-slate-400"}`}>
-          {value || "Sélectionnez votre statut"}
+          {value || t("completeProfile.form.selectStatus")}
         </h3>
         <ChevronDown
           size={16}
@@ -52,13 +54,13 @@ const RoleSelect = ({value,error,onChange}:Props) => {
             <div
               key={index}
               onClick={() => {
-                onChange(item.name);
+                onChange(item.value);
                 setShow(false);
               }}
               className="flex cursor-pointer items-center gap-2 rounded-md p-2 px-3 text-sm hover:bg-amber-100 dark:text-black"
             >
               <span>{item.icon}</span>
-              <span>{item.name}</span>
+              <span>{item.label}</span>
             </div>
           ))}
         </div>

@@ -26,10 +26,12 @@ import { useDebounce } from "@/hooks/use-debounce";
 import ReportModal from "@/components/Videos/ReportModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTranslation } from "react-i18next";
 
 const Videos = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
-  document.title = "Videos | 9ralibre";
+  document.title = t("video.pageTitle");
   const navigate = useNavigate();
   const { niveaux } = useParams();
   const [Fetchmatiere,setFetchMatiere] = useState<Matiere[]>([])
@@ -147,9 +149,7 @@ const Videos = () => {
             ) : null}
           </h1>
           <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-            Explorez notre collection de vidéos éducatives pour mieux comprendre vos cours. 
-            Chaque vidéo est conçue pour vous aider à apprendre rapidement, renforcer vos connaissances 
-            et vous préparer efficacement avant de passer aux quiz.
+            {t("video.description")}
           </p>
         </div>
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -280,14 +280,14 @@ const Videos = () => {
                                   }
                                 />
                                 {savedItems.includes(item._id)
-                                  ? "Enregistré"
-                                  : "Enregistrer"}
+                                  ? t("common.saved")
+                                  : t("common.save")}
                               </DropdownMenuItem>
                               <DropdownMenuItem>
-                                <Share /> Partager
+                                <Share /> {t("common.share")}
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setReportVideoId(item._id)}>
-                                <Flag /> Signaler
+                                <Flag /> {t("common.report")}
                               </DropdownMenuItem>
                             </DropdownMenuGroup>
                           </DropdownMenuContent>
@@ -311,7 +311,7 @@ const Videos = () => {
           ) : (
             <div className="flex w-full flex-col items-center justify-center">
               <img src={No_Data} alt="no data" width={400} loading="lazy" />
-              <p>Aucune vidéo disponible pour le moment</p>
+              <p>{t("video.noVideos")}</p>
             </div>
           )}
         </div>
@@ -322,7 +322,7 @@ const Videos = () => {
               if (!open) setReportVideoId(null);
             }}
             endpoint={`${apiUrl}/videos/report/${reportVideoId}`}
-            title="Signaler cette vidéo"
+            title={t("video.reportThisVideo")}
           />
         )}
       </div>

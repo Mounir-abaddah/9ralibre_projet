@@ -7,8 +7,10 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { fr } from 'date-fns/locale';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const RelatedVideo = () => {
+    const { t } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const {niveaux,videoId} = useParams();
@@ -36,7 +38,7 @@ const RelatedVideo = () => {
 
   return (
     <div className='w-full space-y-4'>
-        <h2 className='w-full border-b text-2xl font-bold'>Related Videos</h2>
+        <h2 className='w-full border-b text-2xl font-bold'>{t("relatedVideos.title")}</h2>
         {videos.map((video)=>(
             <div key={video._id} className='flex w-full cursor-pointer' onClick={()=>{navigate(`/Videos/${niveaux}/${video._id}`);window.location.reload()}}>
                 <div className='flex w-full gap-2'>
@@ -63,7 +65,7 @@ const RelatedVideo = () => {
                         </div>
                         <div>
                             <span className='text-sm text-gray-400'>{video.professeur.nom} {video.professeur.prenom}</span>
-                            <span><h3 className="text-xs font-bold text-gray-500">{video.views} vues . {formatDistanceToNow(new Date(video.createdAt),{addSuffix:true,locale:fr})}</h3></span>
+                            <span><h3 className="text-xs font-bold text-gray-500">{t("video.viewsCount", { count: video.views })} . {formatDistanceToNow(new Date(video.createdAt),{addSuffix:true,locale:fr})}</h3></span>
                         </div>
                     </div>
                 </div>
@@ -75,10 +77,10 @@ const RelatedVideo = () => {
                     <DropdownMenuContent className="w-56" align="start">
                         <DropdownMenuGroup>
                         <DropdownMenuItem className="cursor-pointer">
-                            <Share />Partager
+                            <Share />{t("common.share")}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="cursor-pointer">
-                            <Flag />Signaler
+                            <Flag />{t("common.report")}
                         </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>

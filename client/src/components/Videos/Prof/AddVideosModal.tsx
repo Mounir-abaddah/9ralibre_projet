@@ -32,6 +32,7 @@ import {
   messagesFromApiData,
   type ProfApiErrorBody,
 } from "@/utils/profApiErrors";
+import { useTranslation } from "react-i18next";
 
 interface typeModal {
   open: boolean;
@@ -42,6 +43,7 @@ interface typeModal {
 }
 
 const AddVideosModal = ({ open, setOpen, matiere, onSuccess,videos }: typeModal) => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const { data, fetchData } = useProfProtectedRoutes();
  
@@ -158,7 +160,7 @@ const handleSubmit = async () => {
         },
         { withCredentials: true }
       );
-      toast.success("Videos modifié avec succès ✏️");
+      toast.success(t("profVideos.updated"));
     } else {
       // ➕ ADD
       await axios.post(
@@ -169,7 +171,7 @@ const handleSubmit = async () => {
         },
         { withCredentials: true }
       );
-      toast.success("Videos ajouter avec succès ✏️");
+      toast.success(t("profVideos.added"));
     }
 
     setOpen(false);
@@ -186,13 +188,13 @@ const handleSubmit = async () => {
           ? data.message.trim()
           : messagesFromApiData(data).join(" · ");
       if (!issues?.length) {
-        setBannerError(msg || "Une erreur est survenue");
+        setBannerError(msg || t("profVideos.error"));
       }
       if (err.response?.status && err.response.status >= 500) {
-        toast.error("Erreur serveur. Réessayez plus tard.");
+        toast.error(t("profVideos.serverError"));
       }
     } else {
-      setBannerError("Une erreur est survenue");
+      setBannerError(t("profVideos.error"));
     }
   }
 };
@@ -385,9 +387,9 @@ const filteredMatieres = form.filiere
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-full max-w-2xl">
         <DialogHeader>
-          <DialogTitle> {videos ? "Modifier la vidéo" : "Ajouter une vidéo"} </DialogTitle>
+          <DialogTitle> {videos ? t("profVideos.editTitle") : t("profVideos.addTitle")} </DialogTitle>
           <DialogDescription>
-            Remplissez les informations
+            {t("profVideos.fillInfo")}
           </DialogDescription>
         </DialogHeader>
 
@@ -395,7 +397,7 @@ const filteredMatieres = form.filiere
           {bannerError && (
             <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900">
               <CircleAlert className="size-4 shrink-0" />
-              <AlertTitle className="text-sm font-semibold">Enregistrement impossible</AlertTitle>
+              <AlertTitle className="text-sm font-semibold">{t("profVideos.saveImpossible")}</AlertTitle>
               <AlertDescription className="text-sm text-red-800">
                 {bannerError}
               </AlertDescription>
@@ -405,9 +407,9 @@ const filteredMatieres = form.filiere
           {Object.keys(fieldErrors).length > 0 && !bannerError && (
             <Alert className="border-amber-200 bg-amber-50 text-amber-950">
               <CircleAlert className="size-4 shrink-0 text-amber-700" />
-              <AlertTitle className="text-sm font-semibold">Champs à corriger</AlertTitle>
+              <AlertTitle className="text-sm font-semibold">{t("profVideos.fieldsToFix")}</AlertTitle>
               <AlertDescription className="text-sm text-amber-900">
-                Vérifiez les champs indiqués ci-dessous.
+                {t("profVideos.checkFields")}
               </AlertDescription>
             </Alert>
           )}
@@ -415,9 +417,9 @@ const filteredMatieres = form.filiere
           {/* Niveau + Matière */}
           <div className="flex gap-2">
             <div className="w-full space-y-2">
-              <Label>Niveau</Label>
+              <Label>{t("profVideos.level")}</Label>
               <Input
-                value={niveauxLabel || "Non renseigné"}
+                value={niveauxLabel || t("profVideos.notProvided")}
                 disabled
                 className={cn(
                   fieldErrors.niveaux && "border-destructive ring-1 ring-destructive/30"
@@ -430,7 +432,7 @@ const filteredMatieres = form.filiere
 
              {/* Filière */}
               <div className="w-full space-y-2">
-                <Label>Filière</Label>
+                <Label>{t("courseFilters.stream")}</Label>
                 <Select
                   value={form.filiere}
                   onValueChange={(value) => {
@@ -448,7 +450,7 @@ const filteredMatieres = form.filiere
                       fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
                     )}
                   >
-                    <SelectValue placeholder="Choisir filière" />
+                    <SelectValue placeholder={t("profVideos.chooseStream")} />
                   </SelectTrigger>
                   <SelectContent>
                     {(filiereByNiveau[niveauxLabel] ?? []).map((f) => (
@@ -466,7 +468,7 @@ const filteredMatieres = form.filiere
 
           {/* Titre */}
           <div className="space-y-2">
-            <Label>Titre</Label>
+            <Label>{t("profVideos.title")}</Label>
             <Input
               value={form.title}
               onChange={(e) => {
@@ -477,7 +479,7 @@ const filteredMatieres = form.filiere
                   return n;
                 });
               }}
-              placeholder="Titre de la vidéo"
+              placeholder={t("profVideos.titlePlaceholder")}
               className={cn(
                 fieldErrors.title && "border-destructive ring-1 ring-destructive/30"
               )}
@@ -489,7 +491,7 @@ const filteredMatieres = form.filiere
 
           {/* Description */}
           <div className="space-y-2">
-            <Label>Description</Label>
+            <Label>{t("profVideos.description")}</Label>
             <Textarea
               value={form.description}
               onChange={(e) => {
@@ -500,7 +502,7 @@ const filteredMatieres = form.filiere
                   return n;
                 });
               }}
-              placeholder="Description"
+              placeholder={t("profVideos.description")}
               className={cn(
                 fieldErrors.description && "border-destructive ring-1 ring-destructive/30"
               )}
@@ -513,7 +515,7 @@ const filteredMatieres = form.filiere
           {/* URL + Thumbnail */}
           <div className="flex gap-2">
             <div className="w-full space-y-2">
-              <Label>Video URL</Label>
+              <Label>{t("profVideos.videoUrl")}</Label>
               <Input
                 value={form.videoUrl}
                 type="url"
@@ -535,7 +537,7 @@ const filteredMatieres = form.filiere
               )}
             </div>
             <div className="w-full space-y-2">
-              <Label>Thumbnail</Label>
+              <Label>{t("profVideos.thumbnail")}</Label>
               <Input
                 value={form.thumbnail}
                 type="url"
@@ -547,7 +549,7 @@ const filteredMatieres = form.filiere
                     return n;
                   });
                 }}
-                placeholder="Image URL (optionnel)"
+                placeholder={t("profVideos.thumbnailPlaceholder")}
                 className={cn(
                   fieldErrors.thumbnail && "border-destructive ring-1 ring-destructive/30"
                 )}
@@ -559,7 +561,7 @@ const filteredMatieres = form.filiere
           </div>
           <div className="flex w-full items-center justify-between gap-2">
             <div className="w-full space-y-2">
-              <Label>Matière</Label>
+              <Label>{t("videoFilters.subjects")}</Label>
               <Select
                 value={form.matiere}
                 disabled={!form.filiere}
@@ -578,7 +580,7 @@ const filteredMatieres = form.filiere
                     fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Choisir une matière" />
+                  <SelectValue placeholder={t("profVideos.chooseSubject")} />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredMatieres.map((mat) => (
@@ -594,7 +596,7 @@ const filteredMatieres = form.filiere
             </div>
             {/* Visibilité */}
             <div className="w-full space-y-2">
-              <Label>Visibilité</Label>
+              <Label>{t("profVideos.visibility")}</Label>
               <Select
                 value={form.visibility}
                 onValueChange={(value) => {
@@ -612,11 +614,11 @@ const filteredMatieres = form.filiere
                     fieldErrors.visibility && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Visibilité" />
+                  <SelectValue placeholder={t("profVideos.visibility")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Public">Public</SelectItem>
-                  <SelectItem value="Private">Privé</SelectItem>
+                  <SelectItem value="Private">{t("profVideos.private")}</SelectItem>
                 </SelectContent>
               </Select>
               {fieldErrors.visibility && (
@@ -627,14 +629,14 @@ const filteredMatieres = form.filiere
           {/* Buttons */}
           <div className="flex justify-end gap-2 ">
             <Button variant="outline" onClick={() => setOpen(false)} className="cursor-pointer">
-              Annuler
+              {t("common.cancel")}
             </Button>
 
             <Button
               onClick={handleSubmit}
               className="cursor-pointer bg-amber-500 hover:bg-amber-600"
             >
-              {videos ? "Modifier" : "Ajouter"}
+              {videos ? t("common.edit") : t("calendar.add")}
             </Button>
           </div>
         </div>

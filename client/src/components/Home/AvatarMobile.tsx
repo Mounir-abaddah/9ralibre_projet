@@ -3,24 +3,26 @@ import { ChevronDown, Book, Video, BookType, Sheet, BookOpen, MessageCircleMoreI
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { typedata } from "@/store/userStore";
+import { useTranslation } from "react-i18next";
 
 interface typeAvatar {
   data: typedata;
 }
 
 const AvatarMobile = ({ data }: typeAvatar) => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [open, setOpen] = useState(false);
 
   const menuList = [
-    { name: "Dashboard", icon: <Sheet size={18} />, path: `/Dashboard/${data?.niveaux}` },
-    { name: "Cours", icon: <Book size={18} />, path: `/Cours/${data?.niveaux}` },
-    { name: "Videos", icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
-    { name: "Quiz", icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
-    { name: "Histoire", icon: <BookOpen size={18} />, path: `/Histoire/${data?.niveaux}` },
-    { name: "Messagerie", icon: <MessageCircleMoreIcon size={18} />, path: `/Chat/${data?.niveaux}` },
-    { name: "Enregistrer", icon: <BookmarkCheck size={18} />, path: `/Save/${data?.niveaux}` },
-    { name: "Paramètre", icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
+    { name: t("nav.dashboard"), icon: <Sheet size={18} />, path: `/Dashboard/${data?.niveaux}` },
+    { name: t("nav.courses"), icon: <Book size={18} />, path: `/Cours/${data?.niveaux}` },
+    { name: t("nav.videos"), icon: <Video size={18} />, path: `/Videos/${data?.niveaux}` },
+    { name: t("nav.quiz"), icon: <BookType size={18} />, path: `/Quiz/${data?.niveaux}` },
+    { name: t("nav.stories"), icon: <BookOpen size={18} />, path: `/Histoire/${data?.niveaux}` },
+    { name: t("nav.messaging"), icon: <MessageCircleMoreIcon size={18} />, path: `/Chat/${data?.niveaux}` },
+    { name: t("nav.saved"), icon: <BookmarkCheck size={18} />, path: `/Save/${data?.niveaux}` },
+    { name: t("nav.settings"), icon: <Settings size={18} />, path: `/Paramètre/${data?.niveaux}` },
   ]
 
   return (

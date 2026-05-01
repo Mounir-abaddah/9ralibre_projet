@@ -1,6 +1,7 @@
 import Input from "@/components/Form/Input";
 import type { ErrorType, FormDatatype } from "./utils/type"
 import RoleSelect from "./RoleSelect";
+import { useTranslation } from "react-i18next";
 
 interface Props{
     formData:FormDatatype;
@@ -10,13 +11,15 @@ interface Props{
 }
 
 const StepOneForm = ({formData,errors,onChange,onFocus}:Props) => {
+  const { t } = useTranslation();
+
   return (
     <div className="mt-2 flex w-full flex-col gap-5">
-    <div className="flex w-full gap-2">
+    <div className="flex flex-col gap-2 md:flex-row">
       <Input
-        label="Nom"
+        label={t("completeProfile.form.lastName")}
         id="Nom"
-        placeholder="Entrez votre nom"
+        placeholder={t("completeProfile.form.enterLastName")}
         value={formData.nom}
         onChange={(val) => onChange("nom", val)}
         onFocus={() => onFocus("nom")}
@@ -24,9 +27,9 @@ const StepOneForm = ({formData,errors,onChange,onFocus}:Props) => {
         className="dark:text-white"
       />
       <Input
-        label="Prénom"
+        label={t("completeProfile.form.firstName")}
         id="Prenom"
-        placeholder="Entrez votre prénom"
+        placeholder={t("completeProfile.form.enterFirstName")}
         value={formData.prenom}
         onChange={(val) => onChange("prenom", val)}
         onFocus={() => onFocus("prenom")}

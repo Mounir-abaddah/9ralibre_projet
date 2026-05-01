@@ -14,11 +14,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import No_Data_img from '@/assets/images/cours/No data-cuate.png'
 import type { CoursType} from './types/CoursType';
+import { useTranslation } from 'react-i18next';
 
 
 
 const Cours = () => {
-    document.title = "Cours | 9ralibre"
+    const { t } = useTranslation();
+    document.title = t("courses.pageTitle")
     const apiUrl = import.meta.env.VITE_API_URL;
     const {niveaux} = useParams();
     const {matiere,semestre,type,filiere,setMatiere,setSemestre,setType,setFiliere,resetAll}=useCoursFilter();
@@ -39,7 +41,7 @@ const Cours = () => {
   );
 
   const handleDownloadPdf = useCallback(async (url: string, filename?: string) => {
-    const safeName = (filename?.trim() ? filename.trim() : 'cours.pdf').replace(/[\\/:*?"<>|]+/g, '-');
+    const safeName = (filename?.trim() ? filename.trim() : t("courses.defaultPdfName")).replace(/[\\/:*?"<>|]+/g, '-');
     try {
       const res = await axios.get(url, {
         responseType: 'blob',
@@ -185,14 +187,14 @@ const Cours = () => {
       <div className='flex w-full flex-col gap-3'>
         <div className="mb-2 flex flex-col gap-1">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-gray-600">
-            Bibliothèque des Cours {niveaux ? <span className="text-amber-500 capitalize">- {niveaux}</span> : ''}
+            {t("courses.libraryTitle")} {niveaux ? <span className="text-amber-500 capitalize">- {niveaux}</span> : ''}
           </h1>
         </div>
         <div className='flex w-full gap-4'>
       <div className='flex w-full flex-col items-start justify-between gap-2'>
         <div className='flex w-full flex-col gap-2'>
-          <Label htmlFor='mySearch' className='text-base font-semibold text-gray-700'>Recherche rapide :</Label>
-          <Input id='mySearch' type='text' value={search} disabled={loading} onChange={(e)=>setSearch(e.target.value)} placeholder='Rechercher un cours ou un professeur...' className='text-xs selection:bg-amber-500 focus-visible:ring-amber-500/50'/>
+          <Label htmlFor='mySearch' className='text-base font-semibold text-gray-700'>{t("courses.quickSearch")}</Label>
+          <Input id='mySearch' type='text' value={search} disabled={loading} onChange={(e)=>setSearch(e.target.value)} placeholder={t("courses.searchPlaceholder")} className='text-xs selection:bg-amber-500 focus-visible:ring-amber-500/50'/>
         </div>
           <Matiere
           niveaux={niveaux}
@@ -208,15 +210,15 @@ const Cours = () => {
       </div>
       {(matiere || semestre || type || filiere || search) && (
         <button onClick={handleResetAll} disabled={loading} className="flex cursor-pointer items-center justify-end gap-1 text-sm text-gray-600 transition-colors hover:text-red-600">
-          <XCircle size={16} />Réinitialiser tout
+          <XCircle size={16} />{t("courses.resetAll")}
         </button>
       )}
     </div>
     {totalCours > itemsPerPage && (
       <div className="flex flex-col items-start justify-between">
         <p className="text-sm text-gray-600">
-          {totalCours} cours trouvé{totalCours > 1 ? 's' : ''} 
-          {(matiere || semestre || type || filiere) && ' (filtrés)'}
+          {t("courses.resultsCount", { count: totalCours })}
+          {(matiere || semestre || type || filiere) && ` ${t("courses.filtered")}`}
         </p>
         <Pagination 
           itemsPerPage={itemsPerPage} 
@@ -230,7 +232,7 @@ const Cours = () => {
     {loading && (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-        <span className="ml-2 text-gray-600">Chargement des cours...</span>
+        <span className="ml-2 text-gray-600">{t("courses.loading")}</span>
       </div>
     )}
 
@@ -242,7 +244,7 @@ const Cours = () => {
             <div className={`absolute top-0 left-0 flex items-center gap-2 rounded-br-2xl ${bgItems[item.matiere.nom as keyof typeof bgItems]} px-3 py-1 text-xs font-medium text-white shadow-sm`}>
               <span className="flex items-center gap-1">
                 <IconeProfesseur />
-                Professeur : <Link to={`/Profile/${encodeURIComponent(`${item.professeur.nom}-${item.professeur.prenom}`)}`} className="text-xs font-semibold hover:underline">{`${item.professeur.nom} ${item.professeur.prenom}`.toUpperCase()}</Link>
+                {t("common.teacher")} : <Link to={`/Profile/${encodeURIComponent(`${item.professeur.nom}-${item.professeur.prenom}`)}`} className="text-xs font-semibold hover:underline">{`${item.professeur.nom} ${item.professeur.prenom}`.toUpperCase()}</Link>
               </span>
             </div>
             <CardHeader className='mt-2 flex items-center justify-between'>
@@ -259,7 +261,7 @@ const Cours = () => {
                         onClick={() => handleSaveCours(item._id)}
                         className={`flex cursor-pointer items-center justify-between`}
                       >
-                        {savedCoursMap[item._id] ? 'Enregistré' : 'Enregistrer'}
+                        {savedCoursMap[item._id] ? t("common.saved") : t("common.save")}
                         <Bookmark fill={savedCoursMap[item._id] ? '#F49E0B' : 'none'} color={savedCoursMap[item._id] ? '#F49E0B' : '#6B7280'} />
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -269,7 +271,7 @@ const Cours = () => {
                           void handleDownloadPdf(url, `${item.title}.pdf`);
                         }}
                       >
-                        Télécharger
+                        {t("common.download")}
                         <Download />
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -306,7 +308,7 @@ const Cours = () => {
                   className={`text-xs ${bgItems[item.matiere.nom as keyof typeof bgItems]} flex cursor-pointer items-center gap-2 rounded-md p-2 text-white transition-all hover:shadow-md`}
                   aria-label={`Voir le PDF de ${item.title}`}
                 >
-                  Voir le pdf<SquareArrowOutUpRight size={14}/>
+                  {t("courses.viewPdf")}<SquareArrowOutUpRight size={14}/>
                 </button>
               </Link>
             </CardFooter>
@@ -316,14 +318,14 @@ const Cours = () => {
           <div className="col-span-full mt-6 flex w-full flex-col items-center justify-center gap-2 text-center">
             <img src={No_Data_img} alt="no data" loading='lazy'  width={300} height={400}/>
             <p className="text-sm text-gray-500">
-              Aucun cours trouvé avec ces filtres.
+              {t("courses.noCoursesWithFilters")}
             </p>
             {(matiere || semestre || type || filiere || search) && (
               <button 
                 onClick={handleResetAll}
                 className="text-xs text-amber-600 hover:underline"
               >
-                Réinitialiser les filtres
+                {t("courses.resetFilters")}
               </button>
             )}
           </div>

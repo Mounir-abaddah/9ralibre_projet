@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "../ui/button"
+import { useTranslation } from "react-i18next";
 
 interface typeModal{
   commentId:string;
@@ -14,21 +15,22 @@ interface typeModal{
   onConfirm: (id: string) => void;
 }
 const DeleteModal = ({ commentId, setCommentToDelete, onConfirm }: typeModal) => {
+  const { t } = useTranslation();
   return (
     <Dialog open>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Supprimer le commentaire</DialogTitle>
+                <DialogTitle>{t("videoComments.deleteTitle")}</DialogTitle>
                 <DialogDescription>
-                    Supprimer définitivement votre commentaire ?
+                    {t("videoComments.deleteDescription")}
                 </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-            <Button className="cursor-pointer" onClick={() => setCommentToDelete(null)}>Annuler</Button>
+            <Button className="cursor-pointer" onClick={() => setCommentToDelete(null)}>{t("common.cancel")}</Button>
             <Button variant={'destructive'} className="cursor-pointer" onClick={() => {
                         onConfirm(commentId);
                         setCommentToDelete(null);
-                    }}>Supprimer</Button>
+                    }}>{t("common.delete")}</Button>
         </DialogFooter>
         </DialogContent>
     </Dialog>
