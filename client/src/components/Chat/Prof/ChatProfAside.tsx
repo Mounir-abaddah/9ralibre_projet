@@ -5,8 +5,10 @@ import { useProfProtectedRoutes } from "@/store/userStore";
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ChatProfAside = () => {
+  const { t } = useTranslation();
   const {chatId} = useParams();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [conversation,setConversation] = useState<typeChat[]>([]);
@@ -40,7 +42,7 @@ const filteredConversations = conversation.filter((conv) => {
 
   return (
     <div className="space-y-2 p-3">
-        <Input type="text" placeholder="Rechercher dans les messageries" value={search} onChange={(e)=>setSearch(e.target.value)}/>
+        <Input type="text" placeholder={t("prof.chat.searchInMessaging")} value={search} onChange={(e)=>setSearch(e.target.value)}/>
         <div className="space-y-3">
           {filteredConversations.map((conv)=>{
             const otherUser = conv.members.find(memb => memb._id !== data?._id);
@@ -68,7 +70,7 @@ const filteredConversations = conversation.filter((conv) => {
                     <span className="text-sm">{otherUser.nom} {otherUser.prenom}</span>
                     <span className="line-clamp-1 text-sm text-gray-500">
                       <span className="text-xs font-medium text-gray-700">
-                        {isLastMessageMine ? "Vous : " : `${otherUser.nom} : `}
+                        {isLastMessageMine ? `${t("prof.chat.you")} : ` : `${otherUser.nom} : `}
                       </span>
                       {conv.lastMessage?.text}
                     </span>

@@ -24,8 +24,10 @@ import {
   type ProfApiErrorBody,
 } from "@/utils/profApiErrors"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next";
 
 const ProfInscription = () => {
+    const { t } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
@@ -68,11 +70,11 @@ const ProfInscription = () => {
         niveaux: ""
         }
 
-        if (!formData.nom) errors.nom = "Nom requis"
-        if (!formData.prenom) errors.prenom = "Prénom requis"
-        if (!formData.email) errors.email = "Email requis"
-        if (!formData.password) errors.password = "Mot de passe requis"
-        if (!formData.niveaux) errors.niveaux = "Niveau requis"
+        if (!formData.nom) errors.nom = t("prof.register.requiredLastName")
+        if (!formData.prenom) errors.prenom = t("prof.register.requiredFirstName")
+        if (!formData.email) errors.email = t("prof.register.requiredEmail")
+        if (!formData.password) errors.password = t("prof.register.requiredPassword")
+        if (!formData.niveaux) errors.niveaux = t("prof.register.requiredLevel")
 
         setErrFormData(errors)
 
@@ -98,7 +100,7 @@ const ProfInscription = () => {
         }
         } catch (err) {
             if (!axios.isAxiosError(err)) {
-                setErrorMsg("Une erreur est survenue");
+                setErrorMsg(t("prof.common.errorOccurred"));
                 return;
             }
             const data = err.response?.data as ProfApiErrorBody | undefined;
@@ -113,7 +115,7 @@ const ProfInscription = () => {
                 const msg =
                     typeof data?.message === "string" && data.message.trim()
                         ? data.message.trim()
-                        : messagesFromApiData(data).join(" · ") || "Erreur serveur";
+                        : messagesFromApiData(data).join(" · ") || t("prof.common.serverError");
                 setErrorMsg(msg);
             }
         } finally {
@@ -125,37 +127,37 @@ return (
     <div className="relative flex min-h-screen items-center justify-center bg-[url('/backgorund_teacher.jpg')] bg-cover bg-no-repeat px-4">
 
         {/* Logo */}
-        <Link to={'/'}><img src={logo} className="absolute top-4 left-4 w-20" /></Link>
+        <Link to={'/'}><img src={logo} alt={t("prof.auth.logoAlt")} className="absolute top-4 left-4 w-20" /></Link>
 
         <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border bg-white/70 shadow-2xl backdrop-blur-xl md:grid-cols-2 dark:bg-white">
 
         {/* Image */}
         <div className="hidden items-center justify-center bg-blue-50/50 p-6 md:flex">
-            <img src={Teacher_img} alt='teacher_img' className="max-w-md" />
+            <img src={Teacher_img} alt={t("prof.register.teacherImageAlt")} className="max-w-md" />
         </div>
 
         {/* Form */}
         <div className="flex flex-col justify-center space-y-4 p-8">
 
             <h2 className="mb-2 text-3xl font-bold dark:text-black">
-                Inscription
+                {t("prof.register.title")}
             </h2>
 
             <p className="mb-6 text-gray-500">
-                Créer votre compte enseignant
+                {t("prof.register.subtitle")}
             </p>
 
             <span className="mb-4 text-sm dark:text-gray-800">
-                Déjà un compte ?{" "}
+                {t("prof.register.alreadyAccount")}{" "}
                 <Link to="/prof-connexion" className="text-cyan-600 hover:underline">
-                Se connecter
+                {t("prof.register.loginLink")}
                 </Link>
             </span>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {successMsg && (
                     <Alert className="border-emerald-200 bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100">
-                        <AlertTitle className="text-sm font-semibold">Succès</AlertTitle>
+                        <AlertTitle className="text-sm font-semibold">{t("prof.register.successTitle")}</AlertTitle>
                         <AlertDescription className="text-sm text-emerald-800 dark:text-emerald-200">
                             {successMsg}
                         </AlertDescription>
@@ -165,7 +167,7 @@ return (
                 {errorMsg && (
                     <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100">
                         <CircleAlert className="size-4" />
-                        <AlertTitle className="text-sm font-semibold">Inscription impossible</AlertTitle>
+                        <AlertTitle className="text-sm font-semibold">{t("prof.register.impossibleTitle")}</AlertTitle>
                         <AlertDescription className="text-sm text-red-800 dark:text-red-200">
                             {errorMsg}
                         </AlertDescription>
@@ -176,22 +178,22 @@ return (
                 <div className='flex w-full gap-1.5'>
                     <Input
                         id="nom"
-                        label="Nom"
+                        label={t("prof.settings.lastName")}
                         value={formData.nom}
                         onChange={(value) => handleChange("nom", value)}
                         onFocus={() => handleFocus("nom")}
-                        placeholder="Nom"
+                        placeholder={t("prof.settings.lastName")}
                         error={errFormData.nom}
                         className='text-black dark:text-black'
                     />
 
                     <Input
                         id="prenom"
-                        label="Prénom"
+                        label={t("prof.settings.firstName")}
                         value={formData.prenom}
                         onChange={(value) => handleChange("prenom", value)}
                         onFocus={() => handleFocus("prenom")}
-                        placeholder="Prénom"
+                        placeholder={t("prof.settings.firstName")}
                         error={errFormData.prenom}
                         className='text-black dark:text-black'
                     />
@@ -200,20 +202,20 @@ return (
                 {/* Email */}
                 <Input
                 id="email"
-                label="Email"
+                label={t("prof.settings.email")}
                 type="email"
                 icon="mail"
                 value={formData.email}
                 onChange={(value) => handleChange("email", value)}
                 onFocus={() => handleFocus("email")}
-                placeholder="Email"
+                placeholder={t("prof.settings.email")}
                 error={errFormData.email}
                 className='text-black dark:text-black'
                 />
 
                 {/* Niveaux */}
                 <div className='space-y-1'>
-                <Label className='dark:text-black'>Niveaux</Label>
+                <Label className='dark:text-black'>{t("prof.settings.levels")}</Label>
 
                 <Select
                     value={formData.niveaux || undefined}
@@ -225,12 +227,12 @@ return (
                             errFormData.niveaux && "border-red-400 bg-red-50 dark:bg-red-950/30"
                         )}
                     >
-                    <SelectValue placeholder="Niveaux"/>
+                    <SelectValue placeholder={t("prof.settings.levels")}/>
                     </SelectTrigger>
 
                     <SelectContent>
                     <SelectGroup>
-                        <SelectLabel>Collège</SelectLabel>
+                        <SelectLabel>{t("settings.fields.middleSchool")}</SelectLabel>
                         <SelectItem value="1AC">1AC</SelectItem>
                         <SelectItem value="2AC">2AC</SelectItem>
                         <SelectItem value="3AC">3AC</SelectItem>
@@ -239,7 +241,7 @@ return (
                     <SelectSeparator />
 
                     <SelectGroup>
-                        <SelectLabel>Lycée</SelectLabel>
+                        <SelectLabel>{t("settings.fields.highSchool")}</SelectLabel>
                         <SelectItem value="TC">TC</SelectItem>
                         <SelectItem value="1BAC">1BAC</SelectItem>
                         <SelectItem value="2BAC">2BAC</SelectItem>
@@ -255,13 +257,13 @@ return (
                 {/* Password */}
                 <Input
                 id="password"
-                label="Mot de passe"
+                label={t("prof.settings.newPassword")}
                 type="password"
                 icon="lock"
                 value={formData.password}
                 onChange={(value) => handleChange("password", value)}
                 onFocus={() => handleFocus("password")}
-                placeholder="Mot de passe"
+                placeholder={t("prof.settings.newPassword")}
                 error={errFormData.password}
                 className='text-black dark:text-black'
                 />
@@ -271,14 +273,14 @@ return (
                 disabled={loading}
                 className="w-full cursor-pointer bg-amber-600 hover:bg-amber-700"
                 >
-                {loading ? "Création..." : "Créer un compte"}
+                {loading ? t("prof.register.creating") : t("prof.register.createAccount")}
                 </Button>
 
             </form>
 
 
             <p className="mt-6 text-center text-xs text-gray-400">
-                Après votre inscription, vous recevrez un email avec les détails. Nous pourrons vous contacter pour confirmer votre compte si nécessaire.
+                {t("prof.register.footerNote")}
             </p>
         </div>
     </div>

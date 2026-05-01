@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { MessageCircle } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next";
 
 interface MessageType {
   conversationId: string
@@ -22,6 +23,7 @@ interface ChatProfProps {
 }
 
 const ChatProf = ({ messages }: ChatProfProps) => {
+  const { t, i18n } = useTranslation();
   const unreadCount = messages.filter(m => m.unread).length
   const navigate = useNavigate();
   return (
@@ -30,19 +32,19 @@ const ChatProf = ({ messages }: ChatProfProps) => {
         <CardTitle className="flex w-full items-center justify-between">
           <span className="flex items-center gap-2">
             <MessageCircle size={20} />
-            Derniers messages
+            {t("prof.chat.latestMessages")}
           </span>
           <div className="flex items-center gap-3">
             {unreadCount > 0 && (
               <span className="flex items-center justify-center gap-2 rounded-full bg-cyan-100 px-3 py-1 text-xs font-medium text-cyan-700">
-                <span>{unreadCount}</span> nouveaux
+                <span>{unreadCount}</span> {t("prof.chat.new")}
               </span>
             )}
             <Link
               to="/prof/chat"
               className="w-max text-xs text-cyan-600 hover:underline"
             >
-              Voir tous
+              {t("prof.chat.viewAll")}
             </Link>
           </div>
         </CardTitle>
@@ -81,7 +83,7 @@ const ChatProf = ({ messages }: ChatProfProps) => {
               </span>
               <span className="mt-1 text-[11px] text-gray-400">
                 {mes.createdAt && (
-                  <>{new Date(mes.createdAt).toLocaleString("fr-FR",{
+                  <>{new Date(mes.createdAt).toLocaleString(i18n.language === "en" ? "en-US" : "fr-FR",{
                   day:"numeric",
                   month:"long",
                   hour:"2-digit",

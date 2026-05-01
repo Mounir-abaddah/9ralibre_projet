@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Lock, AppWindowMac } from "lucide-react";
+import { User, Lock, AppWindowMac, Languages } from "lucide-react";
 import { useProfProtectedRoutes } from "@/store/userStore";
 import toast from "react-hot-toast";
 import {
@@ -16,9 +16,13 @@ SelectTrigger,
 SelectValue,
 } from "@/components/ui/select";
 import { useTheme } from "@/context/ThemeContext";
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 
 const ProfSettings = () => {
+const { t } = useTranslation();
 const apiUrl = import.meta.env.VITE_API_URL;
+const [lang, setLang] = useState(localStorage.getItem("lang") || "Fr");
 const { data, fetchData } = useProfProtectedRoutes();
 const { theme, toggleTheme } = useTheme();
 const [nom, setNom] = useState("");
@@ -35,6 +39,11 @@ const [imageError, setImageError] = useState(false);
 useEffect(() => {
     fetchData();
 }, []);
+
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+    i18n.changeLanguage(lang.toLowerCase());
+  }, [lang]);
 
 useEffect(() => {
     if (data) {
@@ -75,10 +84,10 @@ const handleUpdateProfile = async () => {
     );
 
     await fetchData();
-    toast.success("Profil mis à jour ✅");
+    toast.success(t("prof.settings.profileUpdated"));
     } catch (err) {
     console.error(err);
-    toast.error("Erreur lors de la mise à jour");
+    toast.error(t("prof.settings.updateError"));
     } finally {
     setLoading(false);
     }
@@ -88,11 +97,11 @@ const handleUpdateProfile = async () => {
 const handleChangePassword = async () => {
     try {
     if (!oldPassword || !newPassword || !confirmPassword) {
-        return toast.error("Tous les champs sont obligatoires");
+        return toast.error(t("prof.settings.requiredFields"));
     }
 
     if (newPassword !== confirmPassword) {
-        return toast.error("Les mots de passe ne correspondent pas");
+        return toast.error(t("prof.settings.passwordMismatch"));
     }
 
     setLoading(true);
@@ -103,24 +112,52 @@ const handleChangePassword = async () => {
         { withCredentials: true },
     );
 
-    toast.success("Mot de passe changé ✅");
+    toast.success(t("prof.settings.passwordChanged"));
 
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
     } catch (err) {
     console.error(err);
-    toast.error("Erreur mot de passe");
+    toast.error(t("prof.settings.passwordError"));
     } finally {
     setLoading(false);
     }
 };
 
+const LangSelect = () => (
+    <>
+    <Label htmlFor="lang" id="lang">{t("nav.language")}</Label>
+    <Select value={lang} onValueChange={setLang}>
+        <SelectTrigger className="w-full">
+            <span className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
+            <Languages size={15} />
+            <SelectValue placeholder={t("nav.language")} />
+            </span>
+        </SelectTrigger>
+        <SelectContent className="z-[999999999999999] min-w-28 rounded-lg border">
+            <SelectGroup>
+            <SelectItem value="Fr">
+                <span className="flex items-center gap-2 text-xs font-medium">
+                <span>FR</span> Français
+                </span>
+            </SelectItem>
+            <SelectItem value="En">
+                <span className="flex items-center gap-2 text-xs font-medium">
+                <span>EN</span> English
+                </span>
+            </SelectItem>
+            </SelectGroup>
+        </SelectContent>
+    </Select>
+    </>
+)
+
 return (
     <div className="min-h-[calc(100vh-64px)] space-y-6 p-6">
     {/* HEADER */}
     <div>
-        <h1 className="text-2xl font-bold">Paramètres ⚙️</h1>
+        <h1 className="text-2xl font-bold">{t("prof.settings.title")} ⚙️</h1>
     </div>
 
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -128,12 +165,12 @@ return (
         <Card className="space-y-4 p-5">
         <div className="flex items-center gap-2 font-semibold">
             <User size={18} />
-            Profil
+            {t("prof.settings.profile")}
         </div>
 
         {/* IMAGE */}
         <div className="space-y-2">
-            <Label>Photo</Label>
+            <Label>{t("prof.settings.photo")}</Label>
 
             {data?.image && !imageError ? (
             <img
@@ -163,21 +200,21 @@ return (
         {/* NAME */}
         <div className="flex gap-2">
             <div className="w-full space-y-2">
-            <Label>Nom</Label>
+            <Label>{t("prof.settings.lastName")}</Label>
             <Input
                 value={nom}
                 onChange={(e) => setNom(e.target.value)}
-                placeholder="Nom"
+                placeholder={t("prof.settings.lastName")}
             />
             </div>
             <div className="w-full space-y-2">
             <Label htmlFor="prenom" id="prenom">
-                Prénom
+                {t("prof.settings.firstName")}
             </Label>
             <Input
                 value={prenom}
                 onChange={(e) => setPrenom(e.target.value)}
-                placeholder="Prénom"
+                placeholder={t("prof.settings.firstName")}
                 id="prenom"
             />
             </div>
@@ -185,14 +222,14 @@ return (
 
         <div className="w-full space-y-2">
             <Label id="email" htmlFor="email">
-            Email :
+            {t("prof.settings.email")}
             </Label>
             <Input id="email" value={data?.email} type="email" disabled />
         </div>
 
         <div className="w-full space-y-2">
             <Label htmlFor="niveaux" id="niveaux">
-            Niveaux
+            {t("prof.settings.levels")}
             </Label>
             <Input
             id="niveaux"
@@ -203,8 +240,7 @@ return (
             />
 
             <p className="flex items-center gap-1 text-xs text-gray-500">
-            ⚠️ Ce niveau ne peut pas être modifié. Pour toute modification,
-            veuillez contacter l’administration. 9ralibre@gmail.com
+            {t("prof.settings.levelWarning")}
             </p>
         </div>
 
@@ -213,7 +249,7 @@ return (
             className="w-full cursor-pointer"
             disabled={loading}
         >
-            Sauvegarder
+            {t("prof.settings.save")}
         </Button>
         </Card>
 
@@ -221,28 +257,28 @@ return (
         <Card className="space-y-4 p-5">
         <div className="flex items-center gap-2 font-semibold">
             <Lock size={18} />
-            Sécurité
+            {t("prof.settings.security")}
         </div>
 
         {data?.provider !== "google" ? (
             <>
             <Input
                 type="password"
-                placeholder="Ancien mot de passe"
+                placeholder={t("prof.settings.oldPassword")}
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
             />
 
             <Input
                 type="password"
-                placeholder="Nouveau mot de passe"
+                placeholder={t("prof.settings.newPassword")}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
             />
 
             <Input
                 type="password"
-                placeholder="Confirmer le mot de passe"
+                placeholder={t("prof.settings.confirmPassword")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />
@@ -252,7 +288,7 @@ return (
                 confirmPassword &&
                 newPassword !== confirmPassword && (
                 <p className="text-sm text-red-500">
-                    Les mots de passe ne correspondent pas
+                    {t("prof.settings.passwordMismatch")}
                 </p>
                 )}
             <Button
@@ -260,37 +296,46 @@ return (
                 className="w-full"
                 disabled={loading}
             >
-                Modifier mot de passe
+                {t("prof.settings.changePassword")}
             </Button>
             </>
         ) : (
             <p className="text-sm text-gray-500">
-            Compte connecté avec Google — mot de passe non disponible
+            {t("prof.settings.googlePasswordUnavailable")}
             </p>
         )}
         </Card>
         {/* SECURITY */}
-        <Card className="space-y-4 p-5">
-        <div className="flex items-center gap-2 font-semibold">
-            <AppWindowMac size={18} />
-            Preference
-        </div>
-        <div className="w-full space-y-2">
-            <Label id="Theme" htmlFor="Theme">
-            Thème
-            </Label>
-            <Select value={theme} onValueChange={toggleTheme}>
-            <SelectTrigger className="w-full">
-                <SelectValue placeholder="Theme" className="w-full" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectGroup>
-                <SelectItem value="light">☀️ Clair</SelectItem>
-                <SelectItem value="dark">🌙 Sombre</SelectItem>
-                </SelectGroup>
-            </SelectContent>
-            </Select>
-        </div>
+        <Card className="space-y-2 p-3">
+        <CardHeader className="flex items-center gap-2 font-semibold">
+            <CardTitle className="flex items-center gap-2">
+                <AppWindowMac size={18} />
+                {t("prof.settings.preferences")}
+            </CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="w-full space-y-2">
+                <Label id="Theme" htmlFor="Theme">
+                {t("nav.appearance")}
+                </Label>
+                <Select value={theme} onValueChange={toggleTheme}>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder={t("nav.appearance")} className="w-full" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                    <SelectItem value="light">☀️ {t("nav.lightMode")}</SelectItem>
+                    <SelectItem value="dark">🌙 {t("nav.darkMode")}</SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+                </Select>
+            </div>
+        </CardContent>
+        <CardContent>
+            <div className="w-full space-y-2">
+                <LangSelect />
+            </div>
+        </CardContent>
         </Card>
     </div>
     </div>

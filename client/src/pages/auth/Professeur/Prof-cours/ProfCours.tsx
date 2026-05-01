@@ -32,8 +32,10 @@ import { useSearchParams } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useTranslation } from "react-i18next";
 
 const ProfCours = () => {
+const { t, i18n } = useTranslation();
 const apiUrl = import.meta.env.VITE_API_URL;
 const { data } = useProfProtectedRoutes();
 const [searchParams, setSearchParams] = useSearchParams();
@@ -112,10 +114,10 @@ const handleDeleteCours = async (coursId: string) => {
         } else {
             await getCours();
         }
-        toast.success("Cours supprimé avec succès ✅");
+        toast.success(t("prof.courses.deletedSuccess"));
     } catch (error) {
         console.log(error);
-        toast.error("Erreur lors de la suppression ❌");
+        toast.error(t("prof.courses.deletedError"));
     }
 }
 
@@ -124,9 +126,9 @@ return (
     {/* HEADER */}
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 className="text-2xl font-semibold">Mes Cours</h1>
+            <h1 className="text-2xl font-semibold">{t("prof.courses.title")}</h1>
             <span className="text-sm text-gray-500">
-                {Cours.length} documents publiés
+                {t("prof.courses.publishedDocuments", { count: Cours.length })}
             </span>
         </div>
         <div className="flex flex-row-reverse items-center gap-2">
@@ -138,12 +140,12 @@ return (
             }}
             className="cursor-pointer"
             >
-                <Plus /> Ajouter
+                <Plus /> {t("prof.courses.add")}
             </Button>
             <div className="relative w-full max-w-3xl">
                 <Input
                     type="text"
-                    placeholder="Rechercher par titre..."
+                    placeholder={t("prof.courses.searchPlaceholder")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="pr-10 pl-10"
@@ -183,13 +185,13 @@ return (
             <Table className="min-w-[700px]">
             <TableHeader>
                 <TableRow>
-                <TableHead>Titre</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Matière</TableHead>
-                <TableHead className="hidden md:table-cell">Semestre</TableHead>
-                <TableHead className="hidden md:table-cell">Filière</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("prof.common.title")}</TableHead>
+                <TableHead>{t("prof.common.type")}</TableHead>
+                <TableHead>{t("prof.common.subject")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("prof.common.semester")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("prof.common.stream")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("prof.common.date")}</TableHead>
+                <TableHead className="text-right">{t("prof.common.actions")}</TableHead>
                 </TableRow>
             </TableHeader>
 
@@ -231,7 +233,7 @@ return (
                     </TableCell>
 
                     <TableCell className="hidden md:table-cell">
-                    {new Date(cours.createdAt).toLocaleDateString()}
+                    {new Date(cours.createdAt).toLocaleDateString(i18n.language === "en" ? "en-US" : "fr-FR")}
                     </TableCell>
 
                     <TableCell>
@@ -254,34 +256,34 @@ return (
                                     setSelectedCours(cours)
                                 }}
                             >
-                            Modifier
+                            {t("common.edit")}
                             </Button>
 
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button size="sm" variant="destructive">
-                                    Supprimer
+                                    {t("common.delete")}
                                     </Button>
                                 </AlertDialogTrigger>
 
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
                                     <AlertDialogTitle>
-                                        Confirmer la suppression
+                                        {t("prof.common.confirmDelete")}
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Êtes-vous sûr de vouloir supprimer ce cours ? Cette action est irréversible.
+                                        {t("prof.courses.deleteConfirm")}
                                     </AlertDialogDescription>
                                     </AlertDialogHeader>
 
                                     <AlertDialogFooter>
-                                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                    <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
 
                                     <AlertDialogAction
                                         onClick={() => handleDeleteCours(cours._id)}
                                         className="bg-red-600 hover:bg-red-700"
                                     >
-                                        Oui, supprimer
+                                        {t("prof.common.confirmDeleteAction")}
                                     </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -309,7 +311,7 @@ return (
     ) : (
         <div className="mt-10 flex flex-col items-center">
         <img src={no_data} className="w-72" />
-        <p className="mt-4 text-gray-500">Aucun cours</p>
+        <p className="mt-4 text-gray-500">{t("prof.courses.empty")}</p>
         </div>
     )}
 

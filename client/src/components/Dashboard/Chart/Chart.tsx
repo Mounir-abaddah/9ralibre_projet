@@ -10,8 +10,10 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next";
 
 const Chart = () => {
+const { t } = useTranslation();
 
 const apiUrl = import.meta.env.VITE_API_URL
 
@@ -34,7 +36,7 @@ useEffect(()=>{
 
 const chartConfig = {
   views: {
-    label: "Vues",
+    label: t("prof.chart.views"),
     color: "#F59E0B",
   },
   likes: {
@@ -48,7 +50,7 @@ return (
 <Card>
 
 <CardHeader>
-<CardTitle>Statistiques de la semaine</CardTitle>
+<CardTitle>{t("prof.chart.title")}</CardTitle>
 </CardHeader>
 
 <CardContent>

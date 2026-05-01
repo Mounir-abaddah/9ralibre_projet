@@ -1,32 +1,34 @@
 import type { typedataProf } from "@/store/userStore";
 import { BookType, Eye, Users, Video } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   data: typedataProf | null;
 }
 
 const CardProf = ({ data }: Props) => {
+  const { t } = useTranslation();
   const cards = [
     {
-      title: "Vidéos",
+      title: t("prof.dashboard.cards.videos"),
       value: data?.videos ?? 0,
       icon: <Video />,
       color: "from-indigo-500 to-blue-500",
     },
     {
-      title: "Vues",
+      title: t("prof.dashboard.cards.views"),
       value: data?.totalViews ?? 0,
       icon: <Eye />,
       color: "from-orange-400 to-yellow-500",
     },
     {
-      title: "Abonnés",
+      title: t("prof.dashboard.cards.subscribers"),
       value: data?.followers?.length ?? 0,
       icon: <Users />,
       color: "from-pink-500 to-rose-500",
     },
     {
-      title: "Quiz",
+      title: t("prof.dashboard.cards.quiz"),
       value: data?.quiz ?? 0,
       icon: <BookType />,
       color: "from-cyan-500 to-teal-500",

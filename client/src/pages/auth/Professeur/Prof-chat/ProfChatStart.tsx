@@ -11,8 +11,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { typeMessage } from "../../Chat/types/MessageType";
 import type { typeChat } from "../../Chat/types/ChatType";
 import ChatProfAside from "@/components/Chat/Prof/ChatProfAside";
+import { useTranslation } from "react-i18next";
 
 const ProfChatStart = () => {
+  const { t, i18n } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const { chatId } = useParams();
   const [chat, setChat] = useState<typeMessage[]>([]);
@@ -153,7 +155,7 @@ const ProfChatStart = () => {
                 {otherUser?.nom} {otherUser?.prenom}
               </p>
               <span className={`text-xs ${isOtherUserOnline ? "text-green-500" : "text-gray-400"}`}>
-                {isOtherUserOnline ? "● En ligne" : "● Hors ligne"}
+                {isOtherUserOnline ? t("chat.online") : t("chat.offline")}
               </span>
           </div>
           </div>
@@ -163,7 +165,7 @@ const ProfChatStart = () => {
               <Button variant="outline"><EllipsisVertical /></Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
-              <Button variant="destructive" className="w-full"><Flag /> Signaler</Button>
+              <Button variant="destructive" className="w-full"><Flag /> {t("common.report")}</Button>
             </PopoverContent>
           </Popover>
         </header>
@@ -183,9 +185,9 @@ const ProfChatStart = () => {
                     {msg.text}
                   </span>
                   <span className="text-[10px]">
-                    {new Date(msg.createdAt).toLocaleString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                    {new Date(msg.createdAt).toLocaleString(i18n.language === "en" ? "en-US" : "fr-FR", { hour: "2-digit", minute: "2-digit" })}
                     {myMessage && (
-                      <span className="ml-2">{isSeen ? "✓✓ Vu" : "✓ Envoyé"}</span>
+                      <span className="ml-2">{isSeen ? t("chat.seen") : t("chat.sent")}</span>
                     )}
                   </span>
                 </div>
@@ -199,13 +201,13 @@ const ProfChatStart = () => {
         <div className="flex shrink-0 items-center gap-2 border-t p-4">
           <Input
             type="text"
-            placeholder="Rédiger un message ..."
+            placeholder={t("chat.messagePlaceholder")}
             className="flex-1"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
           />
-          <Button variant="outline" onClick={handleSubmit}>Envoyer</Button>
+          <Button variant="outline" onClick={handleSubmit}>{t("chat.send")}</Button>
         </div>
 
       </div>

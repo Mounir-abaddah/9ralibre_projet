@@ -18,6 +18,7 @@ import type { Matiere } from "@/pages/auth/Cours/types/CoursType";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 interface typeModal {
   openModal: boolean;
@@ -32,6 +33,7 @@ const MatiereModal = ({
   setSelectedMatiere,
   setSelectedFiliere,
 }: typeModal) => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const [matiere, setMatiere] = useState<Matiere[]>([]);
@@ -280,13 +282,13 @@ const filteredMatieres = filiereValue
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Choisir Matière & Filière</DialogTitle>
+          <DialogTitle>{t("prof.modal.chooseSubjectAndStream")}</DialogTitle>
         </DialogHeader>
 
         {/* Niveau */}
         <div className="w-full space-y-2">
-            <Label>Niveau</Label>
-            <Input value={data?.niveaux || "Non défini"} disabled />
+            <Label>{t("prof.common.level")}</Label>
+            <Input value={data?.niveaux || t("prof.common.notDefined")} disabled />
         </div>
         <div className="flex items-center justify-between gap-2">
           {data?.niveaux === "1AC" || data?.niveaux==="2AC" || data?.niveaux==="3AC" ? (
@@ -297,10 +299,10 @@ const filteredMatieres = filiereValue
               <div className="w-full">
                 {/* Filière */}
                 <div className="w-full space-y-2">
-                <Label>Filière</Label>
+                <Label>{t("prof.common.stream")}</Label>
                 <Select value={filiereValue} onValueChange={setFiliereValue}>
                     <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Choisir filière" />
+                    <SelectValue placeholder={t("prof.modal.chooseStream")} />
                     </SelectTrigger>
                     <SelectContent>
                     {(filiereByNiveau[niveauxLabel] ?? []).map((f) => (
@@ -314,10 +316,10 @@ const filteredMatieres = filiereValue
               </div>
             )}
             <div className="w-full space-y-2">
-            <Label>Matière</Label>
+            <Label>{t("prof.common.subject")}</Label>
             <Select value={matiereValue} onValueChange={setMatiereValue}>
                 <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choisir matière" className="w-full"/>
+                <SelectValue placeholder={t("prof.modal.chooseSubject")} className="w-full"/>
                 </SelectTrigger>
                 <SelectContent>
                 {filteredMatieres.map((mat) => (
@@ -353,7 +355,7 @@ const filteredMatieres = filiereValue
               setOpenModal(false);
             }}
         >
-            Confirmer
+            {t("prof.modal.confirm")}
         </Button>
       </DialogContent>
     </Dialog>

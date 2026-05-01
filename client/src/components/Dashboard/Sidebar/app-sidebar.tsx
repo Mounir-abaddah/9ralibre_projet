@@ -27,6 +27,7 @@ import {
 import logo from '@/assets/images/9ralibre.png'
 import { Collapsible } from "@/components/ui/collapsible"
 import { useProtectedRoutes } from "@/store/userStore"
+import { useTranslation } from "react-i18next";
 
 const dataProfesseur = {
   user: {
@@ -118,6 +119,19 @@ const dataAdmin = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {data,fetchData} = useProtectedRoutes();
+  const { t } = useTranslation();
+
+  const dataProfesseur = {
+    navMain: [
+      { title: t("prof.sidebar.dashboard"), url: "/prof/dashboard", icon: Table2, isActive: true },
+      { title: t("prof.sidebar.calendar"), url: "/prof/calendrier", icon: Calendar1, isActive: true },
+      { title: t("prof.sidebar.courses"), url: "/prof/cours", icon: BookOpen },
+      { title: t("prof.sidebar.videos"), url: "/prof/videos", icon: Video },
+      { title: t("prof.sidebar.quiz"), url: "/prof/quiz", icon: BookType },
+      { title: t("prof.sidebar.messaging"), url: "/prof/chat", icon: MessageCircleMore },
+      { title: t("prof.sidebar.settings"), url: "/prof/settings", icon: Settings2 },
+    ],
+  };
 
   React.useEffect(()=>{
     fetchData()
@@ -131,7 +145,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <img src={logo} alt="logo_du_site" width={50}/>
             <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
               <span className="truncate font-medium">9ralibre</span>
-              <span className="truncate text-xs">{data?.role === "Professeur" ? 'Espace Professeur' : 'Espace Admin'}</span>
+              <span className="truncate text-xs">{data?.role === "Professeur" ? t("prof.sidebar.teacherSpace") : t("prof.sidebar.adminSpace")}</span>
             </div>
           </div>
         </Collapsible>

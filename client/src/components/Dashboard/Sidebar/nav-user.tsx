@@ -31,8 +31,10 @@ import { Switch } from "@/components/ui/switch"
 import { useTheme } from "@/context/ThemeContext"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next";
 
 export function NavUser() {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { isMobile } = useSidebar()
@@ -96,7 +98,7 @@ export function NavUser() {
               <DropdownMenuItem className="flex cursor-pointer items-center justify-between">
                 <div className="flex items-center gap-2">
                 <Moon size={16} />
-                <span>Mode sombre</span>
+                <span>{t("nav.darkMode")}</span>
               </div>
 
               <Switch
@@ -107,7 +109,7 @@ export function NavUser() {
               {data?.role === "Professeur" && (
                 <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/prof/settings')}>
                   <Settings />
-                  Paramètre
+                  {t("nav.settings")}
                 </DropdownMenuItem>
               )}
               
@@ -115,7 +117,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={()=>handleLogout()} variant='destructive' className="cursor-pointer">
               <LogOut />
-              Se déconnecter 
+              {t("nav.logout")} 
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

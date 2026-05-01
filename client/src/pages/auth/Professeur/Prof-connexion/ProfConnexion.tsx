@@ -12,8 +12,10 @@ import {
   messagesFromApiData,
   type ProfApiErrorBody,
 } from "@/utils/profApiErrors"
+import { useTranslation } from "react-i18next";
 
 const ProfConnexion = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL
   const [formData, setFormData] = useState({
     email: "",
@@ -49,8 +51,8 @@ const ProfConnexion = () => {
       password: ""
     }
 
-    if (!formData.email) errors.email = "Email requis"
-    if (!formData.password) errors.password = "Mot de passe requis"
+    if (!formData.email) errors.email = t("prof.login.requiredEmail")
+    if (!formData.password) errors.password = t("prof.login.requiredPassword")
 
     seterrFormData(errors)
 
@@ -75,7 +77,7 @@ const ProfConnexion = () => {
 
     } catch (err) {
       if (!axios.isAxiosError(err)) {
-        setErrorMsg("Une erreur est survenue");
+        setErrorMsg(t("prof.common.errorOccurred"));
         return;
       }
       const data = err.response?.data as ProfApiErrorBody | undefined;
@@ -90,7 +92,7 @@ const ProfConnexion = () => {
         const msg =
           typeof data?.message === "string" && data.message.trim()
             ? data.message.trim()
-            : messagesFromApiData(data).join(" · ") || "Erreur serveur";
+            : messagesFromApiData(data).join(" · ") || t("prof.common.serverError");
         setErrorMsg(msg);
       }
     } finally {
@@ -104,7 +106,7 @@ const ProfConnexion = () => {
       <Link to={'/'}>
         <img
           src={logo}
-          alt="logo"
+          alt={t("prof.auth.logoAlt")}
           className="absolute top-4 left-4 w-20 object-contain"
         />
       </Link>
@@ -115,7 +117,7 @@ const ProfConnexion = () => {
         <div className="hidden items-center justify-center bg-blue-50/50 p-6 md:flex">
           <img
             src={Teacher_img}
-            alt="professeur"
+            alt={t("prof.login.teacherImageAlt")}
             className="w-full max-w-md object-contain drop-shadow-lg"
           />
         </div>
@@ -124,20 +126,20 @@ const ProfConnexion = () => {
         <div className="flex flex-col justify-center p-8">
 
           <h2 className="mb-2 text-3xl font-bold text-gray-800">
-            Connexion
+            {t("prof.login.title")}
           </h2>
 
           <p className="mb-6 text-gray-500">
-            Connectez-vous à votre espace enseignant
+            {t("prof.login.subtitle")}
           </p>
 
           <span className="mb-4 text-sm dark:text-black">
-            Vous n'avez pas de compte professeur ?{" "}
+            {t("prof.login.noAccount")}{" "}
             <Link
               to={'/prof-inscription'}
               className="font-medium text-cyan-600 hover:underline"
             >
-              Créer un compte
+              {t("prof.login.createAccount")}
             </Link>
           </span>
 
@@ -146,7 +148,7 @@ const ProfConnexion = () => {
               <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100">
                 <CircleAlert className="size-4" />
                 <AlertTitle className="text-sm font-semibold">
-                  Connexion impossible
+                  {t("prof.login.impossibleTitle")}
                 </AlertTitle>
                 <AlertDescription className="text-sm text-red-800 dark:text-red-200">
                   {errorMsg}
@@ -157,9 +159,9 @@ const ProfConnexion = () => {
             {/* Email */}
             <Input
               type="email"
-              placeholder="Email"
+              placeholder={t("prof.settings.email")}
               id='email'
-              label='Email :'
+              label={t("prof.settings.email")}
               icon='mail'
               onChange={(val) => handleChange("email", val)}
               value={formData.email}
@@ -171,9 +173,9 @@ const ProfConnexion = () => {
             {/* Password */}
             <Input
               type="password"
-              placeholder="Mot de passe"
+              placeholder={t("prof.settings.newPassword")}
               id='password'
-              label='Mot de passe :'
+              label={t("prof.settings.newPassword")}
               onChange={(val) => handleChange("password", val)}
               value={formData.password}
               onFocus={() => handleFocus('password')}
@@ -187,7 +189,7 @@ const ProfConnexion = () => {
                 to="/prof/password/reset"
                 className="text-xs text-amber-600 hover:underline"
               >
-                Mot de passe oublié ?
+                {t("prof.login.forgotPassword")}
               </Link>
             </div>
 
@@ -197,7 +199,7 @@ const ProfConnexion = () => {
               disabled={loading}
               className='w-full cursor-pointer bg-amber-600 transition duration-300 hover:bg-amber-700'
             >
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? t("prof.login.loading") : t("prof.login.submit")}
             </Button>
 
           </form>

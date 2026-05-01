@@ -4,9 +4,11 @@ import axios from "axios";
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import ralibre_logo from '@/assets/images/9ralibre.png';
+import { useTranslation } from "react-i18next";
 
 
 const ProfForgotPassword = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [step, setStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,7 +23,7 @@ const ProfForgotPassword = () => {
         let valid = true;
 
         if (!email.trim() || !regexEmail.test(email)) {
-        setErrEmail('Adresse e-mail invalide');
+        setErrEmail(t("auth.errors.invalidEmail"));
         valid = false;
         } else {
         setErrEmail('');
@@ -51,30 +53,29 @@ const ProfForgotPassword = () => {
     <div className="min-h-screen bg-amber-500">
         <div className="mx-auto max-w-xl">
         <header>
-            <Link to={'/'}><img src={ralibre_logo} alt="9ralibre_logo" width={200} /></Link>
+            <Link to={'/'}><img src={ralibre_logo} alt={t("prof.auth.logoAlt")} width={200} /></Link>
         </header>
 
         {step === 1 && (
             <div className="rounded-lg bg-white shadow">
             <div className="rounded-t-lg bg-gray-100 px-6 py-4 text-center">
                 <h2 className="mb-0 flex items-center justify-center text-xl font-semibold text-[#3F3F3F]">
-                <span>Mot de passe oublié ?</span>
+                <span>{t("prof.forgotPassword.title")}</span>
                 </h2>
             </div>
             <div className="p-8">
             <form onSubmit={handleSubmit}>
                 <div className="mb-6">
                     <label htmlFor="monemail" className="mb-4 block text-base dark:text-gray-700">
-                    Entrez simplement l’adresse e-mail avec laquelle vous vous êtes inscrit·e et nous vous enverrons un lien
-                    pour réinitialiser votre mot de passe.
+                    {t("prof.forgotPassword.instruction")}
                     </label>
                     <Input
                     id="monemail"
                     onFocus={() => setErrEmail('')}
                     type="email"
-                    label="Email :"
+                    label={t("prof.settings.email")}
                     icon='mail'
-                    placeholder="Saisissez votre adresse e-mail"
+                    placeholder={t("prof.forgotPassword.emailPlaceholder")}
                     value={email}
                     onChange={setEmail}
                     error={errEmail}
@@ -90,14 +91,14 @@ const ProfForgotPassword = () => {
                 >
                     {loading && <Loadering />}
                     <span className="cursor-pointer text-[#3F3F3F]">
-                    Envoyer le lien de réinitialisation de mot de passe
+                    {t("prof.forgotPassword.submit")}
                     </span>
                 </button>
             </form>
             <hr className="my-8" />
                 <div className="text-right">
                 <Link to={'/prof-connexion'} className="border-b border-b-sky-400 dark:text-gray-700">
-                    Finalement, je m’en rappelle !
+                    {t("prof.forgotPassword.rememberLink")}
                 </Link>
                 </div>
             </div>
@@ -107,15 +108,14 @@ const ProfForgotPassword = () => {
         {step === 2 && (
                 <div className="rounded-lg bg-white p-8 text-center shadow">
                 <h2 className="mb-4 text-xl font-semibold text-[#3F3F3F]">
-                    📧 Vérifiez votre boîte mail
+                    {t("prof.forgotPassword.checkInbox")}
                 </h2>
                 <p className="text-gray-600">
-                    Si un compte existe avec <span className="font-semibold">{email}</span>, vous recevrez un lien de
-                    réinitialisation dans quelques instants.
+                    {t("prof.forgotPassword.confirmationText")} <span className="font-semibold">{email}</span>, {t("prof.forgotPassword.confirmationSuffix")}
                 </p>
                 <div className="mt-6">
                     <Link to="/prof-connexion" className="text-blue-500 underline">
-                        Retour à la connexion
+                        {t("prof.forgotPassword.backToLogin")}
                     </Link>
                 </div>
                 </div>

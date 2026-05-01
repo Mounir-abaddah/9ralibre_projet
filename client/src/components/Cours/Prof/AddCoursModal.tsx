@@ -32,6 +32,7 @@ import {
   messagesFromApiData,
   type ProfApiErrorBody,
 } from "@/utils/profApiErrors";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -44,6 +45,7 @@ interface typeModal {
 }
 
 const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) => {
+  const { t } = useTranslation();
   const { data, fetchData } = useProfProtectedRoutes();
 
   const [type, setType] = useState("");
@@ -157,10 +159,10 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
           formData,
           { withCredentials: true }
         );
-        toast.success("Cours modifié ✏️");
+        toast.success(t("prof.coursModal.updated"));
       } else {
         if (!file) {
-          setBannerError("Ajoutez un fichier PDF pour publier le cours.");
+          setBannerError(t("prof.coursModal.requiredPdf"));
           return;
         }
 
@@ -169,7 +171,7 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
           formData,
           { withCredentials: true }
         );
-        toast.success("Cours ajouté 🎉");
+        toast.success(t("prof.coursModal.added"));
       }
 
       setOpen(false);
@@ -187,13 +189,13 @@ const AddCoursModal = ({ open, setOpen, matiere, onSuccess,cours }: typeModal) =
             ? data.message.trim()
             : messagesFromApiData(data).join(" · ");
         if (!issues?.length) {
-          setBannerError(msg || "Une erreur est survenue");
+          setBannerError(msg || t("prof.common.errorOccurred"));
         }
         if (error.response?.status && error.response.status >= 500) {
-          toast.error("Erreur serveur. Réessayez plus tard.");
+          toast.error(t("prof.common.serverErrorRetry"));
         }
       } else {
-        setBannerError("Une erreur est survenue");
+        setBannerError(t("prof.common.errorOccurred"));
       }
     }
   };
@@ -383,9 +385,9 @@ const filiereMatiereMap: Record<string, string[]> = {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-full max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Modifier cours" : "Ajouter cours"}</DialogTitle>
+          <DialogTitle>{isEdit ? t("prof.coursModal.editTitle") : t("prof.coursModal.addTitle")}</DialogTitle>
           <DialogDescription>
-            Remplissez les informations
+            {t("prof.coursModal.fillInfo")}
           </DialogDescription>
         </DialogHeader>
 
@@ -393,7 +395,7 @@ const filiereMatiereMap: Record<string, string[]> = {
           {bannerError && (
             <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900">
               <CircleAlert className="size-4 shrink-0" />
-              <AlertTitle className="text-sm font-semibold">Publication impossible</AlertTitle>
+              <AlertTitle className="text-sm font-semibold">{t("prof.coursModal.publishImpossible")}</AlertTitle>
               <AlertDescription className="text-sm text-red-800">
                 {bannerError}
               </AlertDescription>
@@ -403,20 +405,20 @@ const filiereMatiereMap: Record<string, string[]> = {
           {Object.keys(fieldErrors).length > 0 && !bannerError && (
             <Alert variant="destructive" className="border-amber-200 bg-amber-50 text-amber-950">
               <CircleAlert className="size-4 shrink-0 text-amber-700" />
-              <AlertTitle className="text-sm font-semibold">Champs à corriger</AlertTitle>
+              <AlertTitle className="text-sm font-semibold">{t("prof.coursModal.fieldsToFix")}</AlertTitle>
               <AlertDescription className="text-sm text-amber-900">
-                Vérifiez les champs indiqués ci-dessous.
+                {t("prof.coursModal.checkFields")}
               </AlertDescription>
             </Alert>
           )}
 
           <div className="flex w-full items-center justify-between gap-2">
             <div className="w-full space-y-2">
-              <Label>Niveau</Label>
-              <Input value={niveaux || "Non renseigné"} disabled />
+              <Label>{t("prof.common.level")}</Label>
+              <Input value={niveaux || t("prof.common.notProvided")} disabled />
             </div>
             <div className="w-full space-y-2">
-              <Label>Filière</Label>
+              <Label>{t("prof.common.stream")}</Label>
               <Select
                 value={filiere}
                 onValueChange={(v) => {
@@ -434,7 +436,7 @@ const filiereMatiereMap: Record<string, string[]> = {
                     fieldErrors.filiere && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Filière" />
+                  <SelectValue placeholder={t("prof.common.stream")} />
                 </SelectTrigger>
                 <SelectContent>
                   {(filiereByNiveau[niveaux] ?? []).map((f) => (
@@ -451,7 +453,7 @@ const filiereMatiereMap: Record<string, string[]> = {
           </div>
 
           <div className="space-y-2">
-            <Label>Titre</Label>
+            <Label>{t("prof.common.title")}</Label>
             <Input
               value={title}
               onChange={(e) => {
@@ -471,7 +473,7 @@ const filiereMatiereMap: Record<string, string[]> = {
 
           <div className="flex w-full items-center justify-between gap-2">
             <div className="w-full space-y-2">
-              <Label>Type</Label>
+              <Label>{t("prof.common.type")}</Label>
               <Select
                 value={type}
                 onValueChange={(v) => {
@@ -489,7 +491,7 @@ const filiereMatiereMap: Record<string, string[]> = {
                     fieldErrors.type && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Type" />
+                  <SelectValue placeholder={t("prof.common.type")} />
                 </SelectTrigger>
                 <SelectContent>
                   {typeOptions.map((t) => (
@@ -505,7 +507,7 @@ const filiereMatiereMap: Record<string, string[]> = {
             </div>
 
             <div className="w-full space-y-2 ">
-              <Label>Semestre</Label>
+              <Label>{t("prof.common.semester")}</Label>
               <Select
                 value={semestre}
                 onValueChange={(v) => {
@@ -523,17 +525,17 @@ const filiereMatiereMap: Record<string, string[]> = {
                     fieldErrors.semestre && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Semestre" />
+                  <SelectValue placeholder={t("prof.common.semester")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Non renseigné">
-                    Non renseigné
+                    {t("prof.common.notProvided")}
                   </SelectItem>
                   <SelectItem value="Premier Semestre">
-                    Premier Semestre
+                    {t("courseFilters.firstSemester")}
                   </SelectItem>
                   <SelectItem value="Deuxième Semestre">
-                    Deuxième Semestre
+                    {t("courseFilters.secondSemester")}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -543,7 +545,7 @@ const filiereMatiereMap: Record<string, string[]> = {
             </div>
           </div>
             <div className="w-full space-y-2">
-              <Label>Matière</Label>
+              <Label>{t("prof.common.subject")}</Label>
               <Select
                 value={matiereSelected}
                 onValueChange={(v) => {
@@ -562,7 +564,7 @@ const filiereMatiereMap: Record<string, string[]> = {
                     fieldErrors.matiere && "border-destructive ring-1 ring-destructive/30"
                   )}
                 >
-                  <SelectValue placeholder="Choisir une matière"/>
+                  <SelectValue placeholder={t("prof.modal.chooseSubject")}/>
                 </SelectTrigger>
                 <SelectContent position="popper">
                   {filteredMatieres.map((mat) => (
@@ -596,10 +598,10 @@ const filiereMatiereMap: Record<string, string[]> = {
           {/* Buttons */}
           <div className="flex items-end justify-end gap-2">
             <Button variant="outline" onClick={() => setOpen(false)} className="cursor-pointer">
-              Annuler
+              {t("common.cancel")}
             </Button>
             <Button onClick={handleSubmit} className="cursor-pointer bg-amber-500 hover:bg-amber-600">
-              Publier <Send />
+              {t("prof.coursModal.publish")} <Send />
             </Button>
           </div>
 

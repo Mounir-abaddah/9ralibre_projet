@@ -5,6 +5,7 @@ import { useState, type FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ralibre_logo from '@/assets/images/9ralibre.png';
+import { useTranslation } from 'react-i18next';
 
 interface ApiResponse {
   success: boolean;
@@ -12,6 +13,7 @@ interface ApiResponse {
 }
 
 const ProfResetPassword = () => {
+  const { t } = useTranslation();
   const { token } = useParams();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -50,7 +52,7 @@ const ProfResetPassword = () => {
 
     if (!regexPassword.test(form.password)) {
       newErrors.password =
-        'Le mot de passe doit contenir au minimum 8 caractères, avec une majuscule, une minuscule, un chiffre et un caractère spécial.';
+        t("auth.errors.weakPasswordLong");
       valid = false;
     }
 
@@ -69,7 +71,7 @@ const ProfResetPassword = () => {
 
       if (data.success) {
         toast.success(data.message);
-        navigate('/connexion');
+        navigate('/prof-connexion');
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -87,12 +89,12 @@ const ProfResetPassword = () => {
     <div className='min-h-screen bg-amber-500'>
         <div className="mx-auto max-w-xl">
             <header>
-                <Link to={'/'}><img src={ralibre_logo} alt="9ralibre_logo" width={200} loading='lazy'/></Link>
+                <Link to={'/'}><img src={ralibre_logo} alt={t("prof.auth.logoAlt")} width={200} loading='lazy'/></Link>
             </header>
 
             <div className="rounded-t-lg bg-gray-100 px-6 py-4 text-center">
                 <h2 className="mb-0 flex items-center justify-center text-xl font-semibold text-[#3F3F3F]">
-                <span>Nouveau mot de passe</span>
+                <span>{t("prof.resetPassword.title")}</span>
                 </h2>
             </div>
 
@@ -107,8 +109,8 @@ const ProfResetPassword = () => {
                 <div className="mb-6">
                     <Input
                     id="password"
-                    label="Nouveau mot de passe"
-                    placeholder="Tapez votre nouveau mot de passe"
+                    label={t("prof.resetPassword.label")}
+                    placeholder={t("prof.resetPassword.placeholder")}
                     type="password"
                     value={form.password}
                     onFocus={() => handleFocus('password')}
@@ -126,7 +128,7 @@ const ProfResetPassword = () => {
                     ${loading ? 'cursor-not-allowed bg-slate-300' : 'cursor-pointer bg-amber-400'} transition duration-300 ease-in hover:bg-amber-500`}
                 >
                     {loading && <Loadering />}
-                    <span className="text-[#3f3f3f]">Réinitialiser le mot de passe</span>
+                    <span className="text-[#3f3f3f]">{t("prof.resetPassword.submit")}</span>
                 </button>
                 </form>
 
@@ -134,7 +136,7 @@ const ProfResetPassword = () => {
 
                 <div className="text-right">
                 <Link to="/" className="border-b border-b-sky-400 dark:text-gray-700">
-                    Retour au site
+                    {t("auth.backToSite")}
                 </Link>
                 </div>
             </div>

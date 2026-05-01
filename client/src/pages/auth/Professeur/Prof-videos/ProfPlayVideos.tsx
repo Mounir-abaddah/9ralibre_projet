@@ -13,9 +13,11 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { fr } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
 
 const ProfPlayVideos = () => {
+  const { t } = useTranslation();
   const { videoId } = useParams<{ videoId: string }>();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [videos, setVideos] = useState<TypeProfVideos | null>(null);
@@ -26,7 +28,7 @@ const ProfPlayVideos = () => {
 
   const getVideosById = async () => {
     if (!videoId) {
-      setError("Video introuvable.");
+      setError(t("prof.playVideo.notFound"));
       setLoading(false);
       return;
     }
@@ -42,7 +44,7 @@ const ProfPlayVideos = () => {
       setLikesCount(res.data.likesCount);
       setViewsCount(res.data.viewsCount);
     } catch {
-      setError("Impossible de charger cette video pour le moment.");
+      setError(t("prof.playVideo.loadError"));
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,7 @@ const ProfPlayVideos = () => {
     return (
       <div className="flex min-h-[50vh] items-center justify-center gap-3 text-zinc-500">
         <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
-        <p>Chargement de la video...</p>
+        <p>{t("prof.playVideo.loading")}</p>
       </div>
     );
   }
@@ -70,12 +72,12 @@ const ProfPlayVideos = () => {
     return (
       <div className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center gap-4 px-4 text-center">
         <p className="text-zinc-600 dark:text-zinc-400">
-          {error || "Video introuvable."}
+          {error || t("prof.playVideo.notFound")}
         </p>
         <Button asChild variant="outline">
           <Link to="/prof/videos">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Retour aux videos
+            {t("prof.playVideo.backToVideos")}
           </Link>
         </Button>
       </div>
@@ -111,10 +113,10 @@ const ProfPlayVideos = () => {
 
           <div className="flex flex-wrap gap-2">
             <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-              Niveau: {videos.niveaux?.nom || "-"}
+              {t("prof.playVideo.level")}: {videos.niveaux?.nom || "-"}
             </span>
             <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-              Matiere: {videos.matiere.nom || "-"}
+              {t("prof.playVideo.subject")}: {videos.matiere.nom || "-"}
             </span>
             <span
               className={`rounded-full px-3 py-1 text-xs font-medium ${
@@ -123,14 +125,14 @@ const ProfPlayVideos = () => {
                   : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
               }`}
             >
-              Visibilite: {videos.visibility}
+              {t("prof.playVideo.visibility")}: {videos.visibility}
             </span>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
               <span className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                <Eye className="h-4 w-4" /> Vues
+                <Eye className="h-4 w-4" /> {t("prof.common.views")}
               </span>
               <p className="mt-1 text-xl font-semibold">{viewsCount}</p>
             </div>
@@ -142,7 +144,7 @@ const ProfPlayVideos = () => {
             </div>
             <div className="rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
               <span className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                <MessageCircle className="h-4 w-4" /> Commentaires
+                <MessageCircle className="h-4 w-4" /> {t("prof.common.comments")}
               </span>
               <p className="mt-1 text-xl font-semibold">{videos.comments.length}</p>
             </div>
@@ -150,10 +152,10 @@ const ProfPlayVideos = () => {
 
           <div className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
             <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              Description
+              {t("prof.common.description")}
             </p>
             <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">
-              {videos.description || "Aucune description"}
+              {videos.description || t("prof.playVideo.noDescription")}
             </p>
           </div>
         </div>

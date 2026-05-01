@@ -247,9 +247,18 @@
       "savesDesc": "Favoris"
     },
     "stats": {
-      "levels": { "label": "niveaux", "sub": "Du collège au bac" },
-      "formats": { "label": "formats", "sub": "Cours, vidéos, quiz" },
-      "account": { "label": "compte", "sub": "Tout au même endroit" }
+      "levels": {
+        "label": "niveaux",
+        "sub": "Du collège au bac"
+      },
+      "formats": {
+        "label": "formats",
+        "sub": "Cours, vidéos, quiz"
+      },
+      "account": {
+        "label": "compte",
+        "sub": "Tout au même endroit"
+      }
     },
     "features": {
       "sectionTitle": "Tout ce dont vous avez besoin pour réviser",
@@ -758,5 +767,277 @@
     "chooseSubject": "Choisir une matière",
     "visibility": "Visibilité",
     "private": "Privé"
+  },
+  "prof": {
+    "dashboard": {
+      "pageTitle": "Tableau de bord professeur | 9ralibre",
+      "greeting": "Bonjour, {{name}}",
+      "summary": "Voici un résumé de votre activité",
+      "heroTitle": "Votre parcours commence ici",
+      "heroDescription": "Gérez facilement vos cours, suivez les progrès de vos élèves, publiez du contenu éducatif et optimisez votre enseignement grâce à un tableau de bord conçu pour accompagner votre réussite pédagogique.",
+      "heroImageAlt": "Dashboard professeur",
+      "calendar": "Calendrier",
+      "addEvent": "Ajouter un événement",
+      "upcomingEvents": "Prochains événements",
+      "noEvents": "Aucun événement planifié",
+      "cards": {
+        "videos": "Vidéos",
+        "views": "Vues",
+        "subscribers": "Abonnés",
+        "quiz": "Quiz"
+      }
+    },
+    "activities": {
+      "title": "Activité récente",
+      "coursePublished": "Cours publié",
+      "videoPublished": "Vidéo publiée",
+      "quizCreated": "Quiz créé"
+    },
+    "chart": {
+      "title": "Statistiques de la semaine",
+      "views": "Vues"
+    },
+    "chat": {
+      "welcomeImageAlt": "Bienvenue",
+      "welcomeTitle": "Bienvenue dans votre espace de discussion",
+      "welcomeDescription": "Sélectionnez une conversation dans la liste à gauche pour commencer à échanger avec vos étudiants en temps réel.",
+      "realtimeMessagesTitle": "Messages en temps réel",
+      "realtimeMessagesDescription": "Discutez instantanément avec vos étudiants",
+      "onlinePresenceTitle": "Présence en ligne",
+      "onlinePresenceDescription": "Voir qui est connecté en direct",
+      "fastSendTitle": "Envoi rapide",
+      "fastSendDescription": "Messages fluides et instantanés",
+      "latestMessages": "Derniers messages",
+      "new": "nouveaux",
+      "viewAll": "Voir tous",
+      "searchInMessaging": "Rechercher dans les messageries",
+      "you": "Vous"
+    },
+    "courses": {
+      "title": "Mes cours",
+      "publishedDocuments": "{{count}} documents publiés",
+      "add": "Ajouter",
+      "searchPlaceholder": "Rechercher par titre...",
+      "deletedSuccess": "Cours supprimé avec succès",
+      "deletedError": "Erreur lors de la suppression",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce cours ? Cette action est irréversible.",
+      "empty": "Aucun cours"
+    },
+    "videos": {
+      "title": "Mes vidéos",
+      "availableCount": "{{count}} vidéos disponibles",
+      "searchPlaceholder": "Rechercher une vidéo...",
+      "caption": "Liste de vos vidéos publiées",
+      "deleteConfirm": "Voulez-vous vraiment supprimer cette vidéo ?",
+      "addVideo": "Ajouter une vidéo"
+    },
+    "playVideo": {
+      "notFound": "Vidéo introuvable.",
+      "loadError": "Impossible de charger cette vidéo pour le moment.",
+      "loading": "Chargement de la vidéo...",
+      "backToVideos": "Retour aux vidéos",
+      "level": "Niveau",
+      "subject": "Matière",
+      "visibility": "Visibilité",
+      "noDescription": "Aucune description"
+    },
+    "quiz": {
+      "title": "Mes quiz",
+      "availableCount": "{{count}} quiz disponibles",
+      "addQuiz": "Ajouter un quiz",
+      "searchPlaceholder": "Rechercher un quiz...",
+      "questions": "Questions",
+      "students": "Étudiants",
+      "studentsTooltip": "Étudiants ayant passé le quiz",
+      "loadError": "Erreur lors du chargement",
+      "deletedSuccess": "Quiz supprimé avec succès",
+      "deletedError": "Erreur lors de la suppression",
+      "deleteConfirmPrefix": "Voulez-vous vraiment supprimer :",
+      "deleteConfirmSuffix": "Cette action est irréversible.",
+      "empty": "Aucun quiz"
+    },
+    "sidebar": {
+      "platform": "Plateforme",
+      "dashboard": "Dashboard",
+      "calendar": "Calendrier",
+      "courses": "Cours",
+      "videos": "Vidéos",
+      "quiz": "Quiz",
+      "messaging": "Messagerie",
+      "settings": "Paramètres",
+      "teacherSpace": "Espace Professeur",
+      "adminSpace": "Espace Admin"
+    },
+    "common": {
+      "title": "Titre",
+      "type": "Type",
+      "subject": "Matière",
+      "semester": "Semestre",
+      "stream": "Filière",
+      "date": "Date",
+      "actions": "Actions",
+      "confirmDelete": "Confirmer la suppression",
+      "confirmDeleteAction": "Oui, supprimer",
+      "video": "Vidéo",
+      "visibility": "Visibilité",
+      "views": "Vues",
+      "comments": "Commentaires",
+      "description": "Description",
+      "level": "Niveau",
+      "notDefined": "Non défini",
+      "errorOccurred": "Une erreur est survenue",
+      "serverError": "Erreur serveur",
+      "serverErrorRetry": "Erreur serveur. Réessayez plus tard.",
+      "notProvided": "Non renseigné"
+    },
+    "modal": {
+      "chooseSubjectAndStream": "Choisir matière et filière",
+      "chooseStream": "Choisir une filière",
+      "chooseSubject": "Choisir une matière",
+      "confirm": "Confirmer"
+    },
+    "auth": {
+      "logoAlt": "logo 9ralibre"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "profile": "Profil",
+      "photo": "Photo",
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "email": "Email :",
+      "levels": "Niveaux",
+      "levelWarning": "⚠️ Ce niveau ne peut pas être modifié. Pour toute modification, veuillez contacter l’administration. 9ralibre@gmail.com",
+      "save": "Sauvegarder",
+      "security": "Sécurité",
+      "oldPassword": "Ancien mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "changePassword": "Modifier mot de passe",
+      "googlePasswordUnavailable": "Compte connecté avec Google — mot de passe non disponible",
+      "preferences": "Préférence",
+      "profileUpdated": "Profil mis à jour ✅",
+      "updateError": "Erreur lors de la mise à jour",
+      "requiredFields": "Tous les champs sont obligatoires",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "passwordChanged": "Mot de passe changé ✅",
+      "passwordError": "Erreur mot de passe"
+    },
+    "login": {
+      "requiredEmail": "Email requis",
+      "requiredPassword": "Mot de passe requis",
+      "teacherImageAlt": "professeur",
+      "title": "Connexion",
+      "subtitle": "Connectez-vous à votre espace enseignant",
+      "noAccount": "Vous n'avez pas de compte professeur ?",
+      "createAccount": "Créer un compte",
+      "impossibleTitle": "Connexion impossible",
+      "forgotPassword": "Mot de passe oublié ?",
+      "loading": "Connexion...",
+      "submit": "Se connecter"
+    },
+    "register": {
+      "requiredLastName": "Nom requis",
+      "requiredFirstName": "Prénom requis",
+      "requiredEmail": "Email requis",
+      "requiredPassword": "Mot de passe requis",
+      "requiredLevel": "Niveau requis",
+      "teacherImageAlt": "illustration enseignant",
+      "title": "Inscription",
+      "subtitle": "Créer votre compte enseignant",
+      "alreadyAccount": "Déjà un compte ?",
+      "loginLink": "Se connecter",
+      "successTitle": "Succès",
+      "impossibleTitle": "Inscription impossible",
+      "creating": "Création...",
+      "createAccount": "Créer un compte",
+      "footerNote": "Après votre inscription, vous recevrez un email avec les détails. Nous pourrons vous contacter pour confirmer votre compte si nécessaire."
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié ?",
+      "instruction": "Entrez simplement l’adresse e-mail avec laquelle vous vous êtes inscrit·e et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "emailPlaceholder": "Saisissez votre adresse e-mail",
+      "submit": "Envoyer le lien de réinitialisation de mot de passe",
+      "rememberLink": "Finalement, je m’en rappelle !",
+      "checkInbox": "📧 Vérifiez votre boîte mail",
+      "confirmationText": "Si un compte existe avec",
+      "confirmationSuffix": "vous recevrez un lien de réinitialisation dans quelques instants.",
+      "backToLogin": "Retour à la connexion"
+    },
+    "resetPassword": {
+      "title": "Nouveau mot de passe",
+      "label": "Nouveau mot de passe",
+      "placeholder": "Tapez votre nouveau mot de passe",
+      "submit": "Réinitialiser le mot de passe"
+    },
+    "calendar": {
+      "pageTitle": "Calendrier professeur | 9ralibre",
+      "fetchError": "Impossible de récupérer les événements",
+      "requiredFields": "Date, type et titre sont obligatoires",
+      "added": "Événement ajouté",
+      "addError": "Échec de l'ajout de l'événement",
+      "deleted": "Événement supprimé",
+      "deleteError": "Impossible de supprimer l'événement",
+      "editRequired": "Type et titre sont obligatoires",
+      "updated": "Événement modifié",
+      "updateError": "Impossible de modifier l'événement",
+      "title": "Calendrier",
+      "subtitle": "Planifie tes examens, devoirs et rappels importants.",
+      "plannedDates": "Dates planifiées",
+      "events": "Événements",
+      "monthView": "Vue mensuelle",
+      "markedDates": "Dates marquées",
+      "addEvent": "Ajouter un événement",
+      "selectedDate": "Date sélectionnée :",
+      "none": "Aucune",
+      "typePlaceholder": "Type (ex: Examen)",
+      "titlePlaceholder": "Titre de l'événement...",
+      "descriptionPlaceholder": "Description (optionnelle)",
+      "adding": "Ajout...",
+      "add": "Ajouter",
+      "dayEvents": "Événements du jour",
+      "noDate": "Aucune date",
+      "noEventsForDate": "Aucun événement pour cette date.",
+      "type": "Type",
+      "eventTitle": "Titre",
+      "description": "Description"
+    },
+    "addQuiz": {
+      "requiredTitle": "Titre requis",
+      "openSettingsError": "Ouvrez le bouton Paramètres et renseignez la matière{{needStream}}.",
+      "andStream": " ainsi que la filière",
+      "emptyQuestion": "Question vide",
+      "fillAllAnswers": "Remplir toutes les réponses",
+      "chooseCorrectAnswer": "Choisir la bonne réponse",
+      "created": "✅ Quiz créé !",
+      "addError": "Impossible d’ajouter le quiz.",
+      "settingsAria": "Paramètres : choisir la matière et la filière",
+      "settings": "Paramètres",
+      "settingsTooltip": "Cliquez ici pour choisir la matière et la filière du quiz.",
+      "requiredSubjectStream": "Matière et filière obligatoires",
+      "requiredInfoText": "Avant d’enregistrer le quiz, cliquez sur le bouton Paramètres (icône engrenage) en haut à droite, puis renseignez la matière et la filière dans la fenêtre qui s’ouvre.",
+      "selected": "choisie {{value}}",
+      "notProvidedOpenSettings": "non renseignée — ouvrir Paramètres",
+      "quizTitlePlaceholder": "Titre du quiz",
+      "question": "Question {{count}}",
+      "questionPlaceholder": "Saisissez votre question ici",
+      "selectCorrectTooltip": "Sélectionner votre réponse correcte",
+      "answerPlaceholder": "Saisissez votre réponse ici",
+      "addQuestion": "Ajouter une question",
+      "saving": "Enregistrement...",
+      "saveQuiz": "Enregistrer le Quiz"
+    },
+    "coursModal": {
+      "updated": "Cours modifié ✏️",
+      "requiredPdf": "Ajoutez un fichier PDF pour publier le cours.",
+      "added": "Cours ajouté 🎉",
+      "editTitle": "Modifier cours",
+      "addTitle": "Ajouter cours",
+      "fillInfo": "Remplissez les informations",
+      "publishImpossible": "Publication impossible",
+      "fieldsToFix": "Champs à corriger",
+      "checkFields": "Vérifiez les champs indiqués ci-dessous.",
+      "publish": "Publier"
+    }
   }
 }

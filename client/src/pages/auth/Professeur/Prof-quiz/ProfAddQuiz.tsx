@@ -12,6 +12,7 @@ import MatiereModal from "@/components/Quiz/Prof/MatiereModal";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";
 import { useProfProtectedRoutes } from "@/store/userStore";
+import { useTranslation } from "react-i18next";
 
 const colors = [
 "bg-cyan-500",
@@ -21,6 +22,7 @@ const colors = [
 ];
 
 const ProfAddQuiz = () => {
+const { t } = useTranslation();
 const apiUrl = import.meta.env.VITE_API_URL;
 const [text, setText] = useState("");
 const {data} = useProfProtectedRoutes();
@@ -83,18 +85,18 @@ const deleteQuestion = (index: number) => {
 // 🚀 SUBMIT
 const handleSubmit = async () => {
     try {
-        if (!text) return toast.error("Titre requis");
+        if (!text) return toast.error(t("prof.addQuiz.requiredTitle"));
         const isCollege = data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
         if (!selectedMatiere || (!isCollege && !selectedFiliere)) {
-            return toast.error("Ouvrez le bouton Paramètres et renseignez la matière" +(!isCollege ? " ainsi que la filière." : "."),);
+            return toast.error(t("prof.addQuiz.openSettingsError", { needStream: !isCollege ? t("prof.addQuiz.andStream") : "" }));
         }
         for (const q of questions) {
-            if (!q.question) return toast.error("Question vide");
+            if (!q.question) return toast.error(t("prof.addQuiz.emptyQuestion"));
 
             if (q.options.some((o) => !o))
-            return toast.error("Remplir toutes les réponses");
+            return toast.error(t("prof.addQuiz.fillAllAnswers"));
 
-            if (q.correctAnswer === null) return toast.error("Choisir la bonne réponse");
+            if (q.correctAnswer === null) return toast.error(t("prof.addQuiz.chooseCorrectAnswer"));
         }
 
         setLoading(true);
@@ -107,7 +109,7 @@ const handleSubmit = async () => {
         },{ withCredentials: true },
         );
 
-        toast.success("✅ Quiz créé !");
+        toast.success(t("prof.addQuiz.created"));
         navigate("/prof/quiz");
         setText("");
         setQuestions([
@@ -120,7 +122,7 @@ const handleSubmit = async () => {
     } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
         toast.error(
-            axiosError.response?.data?.message || "Impossible d’ajouter le quiz.",
+            axiosError.response?.data?.message || t("prof.addQuiz.addError"),
         );
     } finally {
     setLoading(false);
@@ -138,14 +140,14 @@ return (
                             onClick={() => setOpenModal(true)}
                             variant={!selectedMatiere || !selectedFiliere ? "default" : "outline"}
                             className={`shrink-0 cursor-pointer ${!selectedMatiere || !selectedFiliere ? "bg-amber-500 hover:bg-amber-600" : ""}`}
-                            aria-label="Paramètres : choisir la matière et la filière"
+                            aria-label={t("prof.addQuiz.settingsAria")}
                         >
                             <Settings className="size-4" />
-                            <span className="ml-2 hidden sm:inline">Paramètres</span>
+                            <span className="ml-2 hidden sm:inline">{t("prof.addQuiz.settings")}</span>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-xs text-center">
-                        <p>Cliquez ici pour choisir la matière et la filière du quiz.</p>
+                        <p>{t("prof.addQuiz.settingsTooltip")}</p>
                     </TooltipContent>
                 </Tooltip>
             </div>
@@ -154,14 +156,10 @@ return (
                 <Alert className="w-full border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-50">
                     <Info className="size-4 text-amber-700 dark:text-amber-300" />
                     <AlertTitle className="text-sm font-semibold">
-                        Matière et filière obligatoires
+                        {t("prof.addQuiz.requiredSubjectStream")}
                     </AlertTitle>
                     <AlertDescription className="w-full text-sm text-amber-900 dark:text-amber-100">
-                        Avant d’enregistrer le quiz, cliquez sur le bouton{" "}
-                        <strong className="w-full font-semibold">Paramètres</strong>{" "}
-                        (icône engrenage) en haut à droite, puis renseignez la{" "}
-                        matière  et la{" "}
-                        filière  dans la fenêtre qui s’ouvre.
+                        {t("prof.addQuiz.requiredInfoText")}
                     </AlertDescription>
                 </Alert>
             )}
@@ -169,12 +167,12 @@ return (
 {            // eslint-disable-next-line tailwindcss/no-custom-classname
 }            <p className="text-muted-foreground w-full text-sm">
                 <span className={selectedMatiere ? "" : "font-medium text-amber-700 dark:text-amber-300"}>
-                    Matière : {selectedMatiere ? `choisie ${selectedMatiere}` : "non renseignée — ouvrir Paramètres"}
+                    {t("prof.common.subject")} : {selectedMatiere ? t("prof.addQuiz.selected", { value: selectedMatiere }) : t("prof.addQuiz.notProvidedOpenSettings")}
                 </span>
                 {" · "}
                 {!["1AC", "2AC", "3AC"].includes(data?.niveaux || "") && (
                     <span className={selectedFiliere ? "" : "font-medium text-amber-700 dark:text-amber-300"}>
-                        Filière : {selectedFiliere || "non renseignée — ouvrir Paramètres"}
+                        {t("prof.common.stream")} : {selectedFiliere || t("prof.addQuiz.notProvidedOpenSettings")}
                     </span>
                 )}
                 
@@ -182,7 +180,7 @@ return (
         
         {/* TITLE */}
         <Input
-            placeholder="Titre du quiz"
+            placeholder={t("prof.addQuiz.quizTitlePlaceholder")}
             className="w-full bg-white text-black dark:text-white"
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -193,7 +191,7 @@ return (
             <div key={qIndex} className="space-y-4 rounded-md border p-6">
             {/* HEADER */}
             <div className="flex items-center justify-between">
-                <h2 className="font-bold">Question {qIndex + 1}</h2>
+                <h2 className="font-bold">{t("prof.addQuiz.question", { count: qIndex + 1 })}</h2>
 
                 {questions.length > 1 && (
                 <Button
@@ -201,14 +199,14 @@ return (
                     variant="destructive"
                     className="cursor-pointer"
                 >
-                    <Trash /> Supprimer
+                    <Trash /> {t("common.delete")}
                 </Button>
                 )}
             </div>
 
             {/* QUESTION */}
             <Textarea
-                placeholder="Saisissez votre question ici"
+                placeholder={t("prof.addQuiz.questionPlaceholder")}
                 value={q.question}
                 onChange={(e) => handleQuestionChange(qIndex, e.target.value)}
             />
@@ -231,7 +229,7 @@ return (
                             />
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>Selectionner votre Réponse correctes</p>
+                            <p>{t("prof.addQuiz.selectCorrectTooltip")}</p>
                         </TooltipContent>
                     </Tooltip>
 
@@ -240,7 +238,7 @@ return (
                         onChange={(e) =>
                             handleOptionChange(qIndex, oIndex, e.target.value)
                         }
-                        placeholder="Saisissez votre reponse ici "
+                        placeholder={t("prof.addQuiz.answerPlaceholder")}
                         className="w-full bg-transparent p-2 text-center text-white outline-none placeholder:text-white"
                     />
                 </div>
@@ -251,7 +249,7 @@ return (
 
         {/* ADD */}
         <Button onClick={addQuestion} className="cursor-pointer bg-amber-500 text-white hover:bg-amber-600">
-            <Plus /> Ajouter une question
+            <Plus /> {t("prof.addQuiz.addQuestion")}
         </Button>
 
         {/* SAVE */}
@@ -261,7 +259,7 @@ return (
             className="w-full cursor-pointer bg-cyan-600 text-white hover:bg-cyan-700"
         >
             <Save />
-            {loading ? "Enregistrement..." : "Enregistrer le Quiz"}
+            {loading ? t("prof.addQuiz.saving") : t("prof.addQuiz.saveQuiz")}
         </Button>
         </div>
         {openModal && (

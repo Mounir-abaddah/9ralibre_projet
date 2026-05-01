@@ -1,8 +1,10 @@
 import ChatProfAside from "@/components/Chat/Prof/ChatProfAside";
 import Bienvenu_Prof from "@/assets/images/Professeur_Bienvenue.png";
 import { MessageCircle, Users, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ProfChat = () => {
+const { t } = useTranslation();
 return (
     <div className="flex h-[calc(96vh-64px)] w-full overflow-hidden">
 
@@ -19,18 +21,18 @@ return (
         {/* Image */}
         <img
             src={Bienvenu_Prof}
-            alt="welcome"
+            alt={t("prof.chat.welcomeImageAlt")}
             className="w-64 object-contain drop-shadow-lg md:w-80"
         />
 
         {/* Title */}
         <h1 className="text-2xl font-bold text-gray-800 md:text-3xl dark:text-white">
-            Bienvenue dans votre espace de discussion 👋
+            {t("prof.chat.welcomeTitle")} 👋
         </h1>
 
         {/* Subtitle */}
         <p className="max-w-md text-sm text-gray-500 md:text-base dark:text-gray-400">
-            Sélectionnez une conversation dans la liste à gauche pour commencer à échanger avec vos étudiants en temps réel.
+            {t("prof.chat.welcomeDescription")}
         </p>
 
         {/* Feature cards */}
@@ -38,25 +40,25 @@ return (
 
             <div className="flex flex-col items-center gap-2 rounded-2xl border bg-white p-4 shadow-sm dark:bg-gray-800">
             <MessageCircle className="h-6 w-6 text-pink-500" />
-            <p className="text-sm font-medium">Messages en temps réel</p>
+            <p className="text-sm font-medium">{t("prof.chat.realtimeMessagesTitle")}</p>
             <span className="text-center text-xs text-gray-400">
-                Discutez instantanément avec vos étudiants
+                {t("prof.chat.realtimeMessagesDescription")}
             </span>
             </div>
 
             <div className="flex flex-col items-center gap-2 rounded-2xl border bg-white p-4 shadow-sm dark:bg-gray-800">
             <Users className="h-6 w-6 text-cyan-500" />
-            <p className="text-sm font-medium">Présence en ligne</p>
+            <p className="text-sm font-medium">{t("prof.chat.onlinePresenceTitle")}</p>
             <span className="text-center text-xs text-gray-400">
-                Voir qui est connecté en direct
+                {t("prof.chat.onlinePresenceDescription")}
             </span>
             </div>
 
             <div className="flex flex-col items-center gap-2 rounded-2xl border bg-white p-4 shadow-sm dark:bg-gray-800">
             <Send className="h-6 w-6 text-amber-500" />
-            <p className="text-sm font-medium">Envoi rapide</p>
+            <p className="text-sm font-medium">{t("prof.chat.fastSendTitle")}</p>
             <span className="text-center text-xs text-gray-400">
-                Messages fluides et instantanés
+                {t("prof.chat.fastSendDescription")}
             </span>
             </div>
         </div>

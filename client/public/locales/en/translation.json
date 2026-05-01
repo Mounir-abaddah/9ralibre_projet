@@ -247,9 +247,18 @@
       "savesDesc": "Favourites"
     },
     "stats": {
-      "levels": { "label": "levels", "sub": "From middle to high school" },
-      "formats": { "label": "formats", "sub": "Courses, videos, quizzes" },
-      "account": { "label": "account", "sub": "Everything in one place" }
+      "levels": {
+        "label": "levels",
+        "sub": "From middle to high school"
+      },
+      "formats": {
+        "label": "formats",
+        "sub": "Courses, videos, quizzes"
+      },
+      "account": {
+        "label": "account",
+        "sub": "Everything in one place"
+      }
     },
     "features": {
       "sectionTitle": "Everything you need to study",
@@ -758,5 +767,277 @@
     "chooseSubject": "Choose a subject",
     "visibility": "Visibility",
     "private": "Private"
+  },
+  "prof": {
+    "dashboard": {
+      "pageTitle": "Teacher Dashboard | 9ralibre",
+      "greeting": "Hello, {{name}}",
+      "summary": "Here is a summary of your activity",
+      "heroTitle": "Your journey starts here",
+      "heroDescription": "Easily manage your courses, track your students progress, publish educational content, and optimize your teaching with a dashboard designed to support your pedagogical success.",
+      "heroImageAlt": "Teacher dashboard",
+      "calendar": "Calendar",
+      "addEvent": "Add an event",
+      "upcomingEvents": "Upcoming events",
+      "noEvents": "No planned events",
+      "cards": {
+        "videos": "Videos",
+        "views": "Views",
+        "subscribers": "Subscribers",
+        "quiz": "Quiz"
+      }
+    },
+    "activities": {
+      "title": "Recent activity",
+      "coursePublished": "Course published",
+      "videoPublished": "Video published",
+      "quizCreated": "Quiz created"
+    },
+    "chart": {
+      "title": "Weekly statistics",
+      "views": "Views"
+    },
+    "chat": {
+      "welcomeImageAlt": "Welcome",
+      "welcomeTitle": "Welcome to your discussion space",
+      "welcomeDescription": "Select a conversation in the list on the left to start chatting with your students in real time.",
+      "realtimeMessagesTitle": "Real-time messages",
+      "realtimeMessagesDescription": "Chat instantly with your students",
+      "onlinePresenceTitle": "Online presence",
+      "onlinePresenceDescription": "See who is online live",
+      "fastSendTitle": "Fast sending",
+      "fastSendDescription": "Fluid and instant messages",
+      "latestMessages": "Latest messages",
+      "new": "new",
+      "viewAll": "View all",
+      "searchInMessaging": "Search in messages",
+      "you": "You"
+    },
+    "courses": {
+      "title": "My courses",
+      "publishedDocuments": "{{count}} published documents",
+      "add": "Add",
+      "searchPlaceholder": "Search by title...",
+      "deletedSuccess": "Course deleted successfully",
+      "deletedError": "Error while deleting",
+      "deleteConfirm": "Are you sure you want to delete this course? This action is irreversible.",
+      "empty": "No courses"
+    },
+    "videos": {
+      "title": "My videos",
+      "availableCount": "{{count}} videos available",
+      "searchPlaceholder": "Search for a video...",
+      "caption": "List of your published videos",
+      "deleteConfirm": "Do you really want to delete this video?",
+      "addVideo": "Add a video"
+    },
+    "playVideo": {
+      "notFound": "Video not found.",
+      "loadError": "Unable to load this video for now.",
+      "loading": "Loading video...",
+      "backToVideos": "Back to videos",
+      "level": "Level",
+      "subject": "Subject",
+      "visibility": "Visibility",
+      "noDescription": "No description"
+    },
+    "quiz": {
+      "title": "My quizzes",
+      "availableCount": "{{count}} quizzes available",
+      "addQuiz": "Add a quiz",
+      "searchPlaceholder": "Search for a quiz...",
+      "questions": "Questions",
+      "students": "Students",
+      "studentsTooltip": "Students who passed the quiz",
+      "loadError": "Error while loading",
+      "deletedSuccess": "Quiz deleted successfully",
+      "deletedError": "Error while deleting",
+      "deleteConfirmPrefix": "Do you really want to delete:",
+      "deleteConfirmSuffix": "This action is irreversible.",
+      "empty": "No quiz"
+    },
+    "sidebar": {
+      "platform": "Platform",
+      "dashboard": "Dashboard",
+      "calendar": "Calendar",
+      "courses": "Courses",
+      "videos": "Videos",
+      "quiz": "Quiz",
+      "messaging": "Messaging",
+      "settings": "Settings",
+      "teacherSpace": "Teacher Space",
+      "adminSpace": "Admin Space"
+    },
+    "common": {
+      "title": "Title",
+      "type": "Type",
+      "subject": "Subject",
+      "semester": "Semester",
+      "stream": "Stream",
+      "date": "Date",
+      "actions": "Actions",
+      "confirmDelete": "Confirm deletion",
+      "confirmDeleteAction": "Yes, delete",
+      "video": "Video",
+      "visibility": "Visibility",
+      "views": "Views",
+      "comments": "Comments",
+      "description": "Description",
+      "level": "Level",
+      "notDefined": "Not defined",
+      "errorOccurred": "An error occurred",
+      "serverError": "Server error",
+      "serverErrorRetry": "Server error. Try again later.",
+      "notProvided": "Not provided"
+    },
+    "modal": {
+      "chooseSubjectAndStream": "Choose subject and stream",
+      "chooseStream": "Choose a stream",
+      "chooseSubject": "Choose a subject",
+      "confirm": "Confirm"
+    },
+    "auth": {
+      "logoAlt": "9ralibre logo"
+    },
+    "settings": {
+      "title": "Settings",
+      "profile": "Profile",
+      "photo": "Photo",
+      "lastName": "Last name",
+      "firstName": "First name",
+      "email": "Email",
+      "levels": "Levels",
+      "levelWarning": "⚠️ This level cannot be modified. For any changes, contact administration. 9ralibre@gmail.com",
+      "save": "Save",
+      "security": "Security",
+      "oldPassword": "Old password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "changePassword": "Change password",
+      "googlePasswordUnavailable": "Google-connected account — password unavailable",
+      "preferences": "Preferences",
+      "profileUpdated": "Profile updated ✅",
+      "updateError": "Error while updating",
+      "requiredFields": "All fields are required",
+      "passwordMismatch": "Passwords do not match",
+      "passwordChanged": "Password changed ✅",
+      "passwordError": "Password error"
+    },
+    "login": {
+      "requiredEmail": "Email required",
+      "requiredPassword": "Password required",
+      "teacherImageAlt": "teacher",
+      "title": "Login",
+      "subtitle": "Sign in to your teacher space",
+      "noAccount": "No teacher account?",
+      "createAccount": "Create an account",
+      "impossibleTitle": "Login failed",
+      "forgotPassword": "Forgot password?",
+      "loading": "Logging in...",
+      "submit": "Log in"
+    },
+    "register": {
+      "requiredLastName": "Last name required",
+      "requiredFirstName": "First name required",
+      "requiredEmail": "Email required",
+      "requiredPassword": "Password required",
+      "requiredLevel": "Level required",
+      "teacherImageAlt": "teacher illustration",
+      "title": "Sign up",
+      "subtitle": "Create your teacher account",
+      "alreadyAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "successTitle": "Success",
+      "impossibleTitle": "Sign up failed",
+      "creating": "Creating...",
+      "createAccount": "Create an account",
+      "footerNote": "After registration, you will receive an email with details. We may contact you to confirm your account if needed."
+    },
+    "forgotPassword": {
+      "title": "Forgot password?",
+      "instruction": "Enter the email address used during sign up and we will send you a link to reset your password.",
+      "emailPlaceholder": "Enter your email address",
+      "submit": "Send password reset link",
+      "rememberLink": "Actually, I remember it!",
+      "checkInbox": "📧 Check your inbox",
+      "confirmationText": "If an account exists with",
+      "confirmationSuffix": "you will receive a reset link shortly.",
+      "backToLogin": "Back to login"
+    },
+    "resetPassword": {
+      "title": "New password",
+      "label": "New password",
+      "placeholder": "Type your new password",
+      "submit": "Reset password"
+    },
+    "calendar": {
+      "pageTitle": "Teacher calendar | 9ralibre",
+      "fetchError": "Unable to fetch events",
+      "requiredFields": "Date, type and title are required",
+      "added": "Event added",
+      "addError": "Failed to add event",
+      "deleted": "Event deleted",
+      "deleteError": "Unable to delete event",
+      "editRequired": "Type and title are required",
+      "updated": "Event updated",
+      "updateError": "Unable to update event",
+      "title": "Calendar",
+      "subtitle": "Plan your exams, homework and reminders.",
+      "plannedDates": "Planned dates",
+      "events": "Events",
+      "monthView": "Monthly view",
+      "markedDates": "Marked dates",
+      "addEvent": "Add an event",
+      "selectedDate": "Selected date:",
+      "none": "None",
+      "typePlaceholder": "Type (e.g. Exam)",
+      "titlePlaceholder": "Event title...",
+      "descriptionPlaceholder": "Description (optional)",
+      "adding": "Adding...",
+      "add": "Add",
+      "dayEvents": "Day events",
+      "noDate": "No date",
+      "noEventsForDate": "No events for this date.",
+      "type": "Type",
+      "eventTitle": "Title",
+      "description": "Description"
+    },
+    "addQuiz": {
+      "requiredTitle": "Title required",
+      "openSettingsError": "Open the Settings button and set the subject{{needStream}}.",
+      "andStream": " and stream",
+      "emptyQuestion": "Empty question",
+      "fillAllAnswers": "Fill all answers",
+      "chooseCorrectAnswer": "Choose the correct answer",
+      "created": "✅ Quiz created!",
+      "addError": "Unable to add quiz.",
+      "settingsAria": "Settings: choose subject and stream",
+      "settings": "Settings",
+      "settingsTooltip": "Click here to choose quiz subject and stream.",
+      "requiredSubjectStream": "Subject and stream are required",
+      "requiredInfoText": "Before saving the quiz, click the Settings button (gear icon) at top right, then fill subject and stream in the modal.",
+      "selected": "selected {{value}}",
+      "notProvidedOpenSettings": "not provided — open Settings",
+      "quizTitlePlaceholder": "Quiz title",
+      "question": "Question {{count}}",
+      "questionPlaceholder": "Type your question here",
+      "selectCorrectTooltip": "Select the correct answer",
+      "answerPlaceholder": "Type your answer here",
+      "addQuestion": "Add a question",
+      "saving": "Saving...",
+      "saveQuiz": "Save Quiz"
+    },
+    "coursModal": {
+      "updated": "Course updated ✏️",
+      "requiredPdf": "Add a PDF file to publish the course.",
+      "added": "Course added 🎉",
+      "editTitle": "Edit course",
+      "addTitle": "Add course",
+      "fillInfo": "Fill in the information",
+      "publishImpossible": "Publish failed",
+      "fieldsToFix": "Fields to fix",
+      "checkFields": "Check the highlighted fields below.",
+      "publish": "Publish"
+    }
   }
 }

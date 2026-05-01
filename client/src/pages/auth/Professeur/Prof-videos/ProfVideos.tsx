@@ -21,8 +21,10 @@ import Pagination from "@/components/Pagination/Pagination";
 import {useSearchParams } from "react-router-dom";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 const ProfVideos = () => {
+    const { t, i18n } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
     const [searchParams, setSearchParams] = useSearchParams();
     const [videos,setVideos] = useState<TypeProfVideos[]>([]);
@@ -117,13 +119,13 @@ const ProfVideos = () => {
     <div className="p-2">
         <div className="flex flex-col items-start justify-between md:flex-row md:items-start lg:flex-row lg:items-center">
             <div>
-                <h1 className="text-2xl font-bold">Mes Vidéos</h1>
-                <span className="pl-2 text-xs">{totalVideos} videos disponible</span>
+                <h1 className="text-2xl font-bold">{t("prof.videos.title")}</h1>
+                <span className="pl-2 text-xs">{t("prof.videos.availableCount", { count: totalVideos })}</span>
             </div>
             <div className="relative w-full max-w-md">
                 <Input
                     type="text"
-                    placeholder="Rechercher une vidéo..."
+                    placeholder={t("prof.videos.searchPlaceholder")}
                     value={search}
                     onChange={(e) => {
                     setSearch(e.target.value)
@@ -146,16 +148,16 @@ const ProfVideos = () => {
             </div>
         </div>
     <Table>
-        <TableCaption>Liste de vos vidéos publiées</TableCaption>
+        <TableCaption>{t("prof.videos.caption")}</TableCaption>
         <TableHeader>
             <TableRow>
-                <TableHead>Vidéo</TableHead>
-                <TableHead>Visibilité</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-center">Vues</TableHead>
-                <TableHead className="text-center">Commentaires</TableHead>
+                <TableHead>{t("prof.common.video")}</TableHead>
+                <TableHead>{t("prof.common.visibility")}</TableHead>
+                <TableHead>{t("prof.common.date")}</TableHead>
+                <TableHead className="text-center">{t("prof.common.views")}</TableHead>
+                <TableHead className="text-center">{t("prof.common.comments")}</TableHead>
                 <TableHead className="text-center">Likes</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">{t("prof.common.actions")}</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -190,7 +192,7 @@ const ProfVideos = () => {
 
             {/* DATE */}
             <TableCell className="text-sm text-gray-500">
-                {new Date(vid.createdAt).toLocaleDateString("fr-FR",options)}
+                {new Date(vid.createdAt).toLocaleDateString(i18n.language === "en" ? "en-US" : "fr-FR",options)}
             </TableCell>
 
             {/* VIEWS */}
@@ -220,7 +222,7 @@ const ProfVideos = () => {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="size-8">
                         <MoreHorizontalIcon />
-                        <span className="sr-only">Open menu</span>
+                        <span className="sr-only">{t("nav.openMenu")}</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -231,7 +233,7 @@ const ProfVideos = () => {
                                 setOpen(true);
                             }}
                             >
-                            <Pen /> Modifier
+                            <Pen /> {t("common.edit")}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <AlertDialog>
@@ -240,29 +242,29 @@ const ProfVideos = () => {
                                 className="cursor-pointer text-red-600 focus:text-red-600"
                                 onSelect={(e) => e.preventDefault()}
                                 >
-                                <Trash /> Supprimer
+                                <Trash /> {t("common.delete")}
                                 </DropdownMenuItem>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                 <AlertDialogTitle>
-                                    Confirmer la suppression
+                                    {t("prof.common.confirmDelete")}
                                 </AlertDialogTitle>
 
                                 <AlertDialogDescription>
-                                    Voulez-vous vraiment supprimer cette vidéo ?
+                                    {t("prof.videos.deleteConfirm")}
                                     <span className="font-semibold"> {vid.title} </span>
                                 </AlertDialogDescription>
                                 </AlertDialogHeader>
 
                                 <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Annuler</AlertDialogCancel>
+                                <AlertDialogCancel className="cursor-pointer">{t("common.cancel")}</AlertDialogCancel>
 
                                 <AlertDialogAction
                                     onClick={() => handleDelete(vid._id)}
                                     className="cursor-pointer bg-red-600 text-white hover:bg-red-700"
                                 >
-                                    Oui, supprimer
+                                    {t("prof.common.confirmDeleteAction")}
                                 </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
@@ -292,7 +294,7 @@ const ProfVideos = () => {
                 </Button>
             </TooltipTrigger>
             <TooltipContent>
-                Ajouter une vidéo
+                {t("prof.videos.addVideo")}
             </TooltipContent>
         </div>
     </Tooltip>

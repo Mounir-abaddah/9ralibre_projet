@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, Video, BookType } from "lucide-react"
+import { useTranslation } from "react-i18next";
 
 interface Activity {
 type: "cours" | "video" | "quiz"
@@ -12,6 +13,7 @@ activities: Activity[]
 }
 
 const Activite = ({ activities }: Props) => {
+const { t, i18n } = useTranslation();
 
 const getIcon = (type: string) => {
     switch(type){
@@ -25,15 +27,15 @@ const getIcon = (type: string) => {
 }
 
 const getLabel = (type:string)=>{
-    if(type === "cours") return "Cours publié"
-    if(type === "video") return "Vidéo publiée"
-    if(type === "quiz") return "Quiz créé"
+    if(type === "cours") return t("prof.activities.coursePublished")
+    if(type === "video") return t("prof.activities.videoPublished")
+    if(type === "quiz") return t("prof.activities.quizCreated")
 }
 
 return (
     <Card className="w-full">
     <CardHeader>
-        <CardTitle>Activité récente</CardTitle>
+        <CardTitle>{t("prof.activities.title")}</CardTitle>
     </CardHeader>
 
     <CardContent className="space-y-3">
@@ -50,7 +52,7 @@ return (
                     {act.title}
                 </span>
                 <span className="text-xs text-gray-400">
-                    {new Date(act.createdAt).toLocaleString("fr-FR")}
+                    {new Date(act.createdAt).toLocaleString(i18n.language === "en" ? "en-US" : "fr-FR")}
                 </span>
             </div>
         </div>

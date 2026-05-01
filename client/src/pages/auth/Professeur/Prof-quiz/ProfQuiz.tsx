@@ -35,8 +35,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 const ProfQuiz = () => {
+    const { t, i18n } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
     const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState(() => {
@@ -69,7 +71,7 @@ const ProfQuiz = () => {
             setTotalQuiz(res.data.totalQuiz);
         } catch (error) {
             console.log(error);
-            toast.error("Erreur lors du chargement ❌");
+            toast.error(t("prof.quiz.loadError"));
         } finally {
             setLoading(false);
         }
@@ -87,10 +89,10 @@ const ProfQuiz = () => {
             } else {
                 await getQuiz(page);
             }
-            toast.success("Quiz supprimé avec succès ✅");
+            toast.success(t("prof.quiz.deletedSuccess"));
         } catch (error) {
             console.log(error);
-            toast.error("Erreur lors de la suppression ❌");
+            toast.error(t("prof.quiz.deletedError"));
         }
     };
 
@@ -128,19 +130,19 @@ const ProfQuiz = () => {
         {/* HEADER */}
         <div className="flex flex-col items-start justify-between lg:flex-row lg:items-center">
             <div>
-                <h2 className="text-2xl font-bold">Mes Quiz</h2>
+                <h2 className="text-2xl font-bold">{t("prof.quiz.title")}</h2>
                 <span className="pl-2 text-sm text-white">
-                    {totalQuiz} Quiz disponible
+                    {t("prof.quiz.availableCount", { count: totalQuiz })}
                 </span>
             </div>
             <div className="flex flex-row-reverse items-center gap-2">
                 <Link target="_blank" to={"/prof/add/quiz/questions"}>
-                    <Button variant="outline" className="flex items-center"><Plus />Ajouter un Quiz</Button>
+                    <Button variant="outline" className="flex items-center"><Plus />{t("prof.quiz.addQuiz")}</Button>
                 </Link>
                 <div className="relative w-full max-w-md">
                     <Input
                         type="text"
-                        placeholder="Rechercher un quiz..."
+                        placeholder={t("prof.quiz.searchPlaceholder")}
                         value={search}
                         onChange={(e) => {
                         setSearch(e.target.value)
@@ -170,20 +172,20 @@ const ProfQuiz = () => {
             <Table>
             <TableHeader className="bg-gray-100 dark:bg-slate-800">
                 <TableRow>
-                <TableHead>Titre</TableHead>
-                <TableHead>Questions</TableHead>
-                <TableHead>Filière</TableHead>
-                <TableHead>Matière</TableHead>
+                <TableHead>{t("prof.common.title")}</TableHead>
+                <TableHead>{t("prof.quiz.questions")}</TableHead>
+                <TableHead>{t("prof.common.stream")}</TableHead>
+                <TableHead>{t("prof.common.subject")}</TableHead>
                 <TableHead>
                     <Tooltip>
-                    <TooltipTrigger>Étudiants</TooltipTrigger>
+                    <TooltipTrigger>{t("prof.quiz.students")}</TooltipTrigger>
                     <TooltipContent>
-                        <p>Étudiants ayant passé le quiz</p>
+                        <p>{t("prof.quiz.studentsTooltip")}</p>
                     </TooltipContent>
                     </Tooltip>
                 </TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("prof.common.date")}</TableHead>
+                <TableHead className="text-right">{t("prof.common.actions")}</TableHead>
                 </TableRow>
             </TableHeader>
 
@@ -191,7 +193,7 @@ const ProfQuiz = () => {
                 {loading ? (
                 <TableRow>
                     <TableCell colSpan={7} className="py-10 text-center">
-                    Chargement...
+                    {t("common.loading")}
                     </TableCell>
                 </TableRow>
                 ) : quiz.length > 0 ? (
@@ -227,7 +229,7 @@ const ProfQuiz = () => {
 
                     <TableCell>
                         {new Date(q.createdAt).toLocaleDateString(
-                        "fr-FR",
+                        i18n.language === "en" ? "en-US" : "fr-FR",
                         options
                         )}
                     </TableCell>
@@ -246,29 +248,29 @@ const ProfQuiz = () => {
                         <AlertDialogContent>
                             <AlertDialogHeader>
                             <AlertDialogTitle>
-                                Confirmer la suppression
+                                {t("prof.common.confirmDelete")}
                             </AlertDialogTitle>
 
                             <AlertDialogDescription>
-                                Voulez-vous vraiment supprimer :
+                                {t("prof.quiz.deleteConfirmPrefix")}
                                 <span className="font-semibold">
                                 {" "}
                                 {q.text}{" "}
                                 </span>
-                                ? Cette action est irréversible.
+                                {t("prof.quiz.deleteConfirmSuffix")}
                             </AlertDialogDescription>
                             </AlertDialogHeader>
 
                             <AlertDialogFooter>
                             <AlertDialogCancel>
-                                Annuler
+                                {t("common.cancel")}
                             </AlertDialogCancel>
 
                             <AlertDialogAction
                                 onClick={() => handleDelete(q._id)}
                                 className="bg-red-600 hover:bg-red-700"
                             >
-                                Supprimer
+                                {t("common.delete")}
                             </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
@@ -282,7 +284,7 @@ const ProfQuiz = () => {
                     <div className="flex flex-col items-center justify-center py-10">
                         <img src={no_data} className="w-72" />
                         <p className="mt-4 text-gray-500">
-                        Aucun Quiz
+                        {t("prof.quiz.empty")}
                         </p>
                     </div>
                     </TableCell>
