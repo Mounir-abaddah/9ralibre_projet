@@ -1,8 +1,7 @@
-import { useRef, useState , useEffect} from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
-
 
 interface Props {
   value: string;
@@ -10,21 +9,30 @@ interface Props {
   onChange: (val: string) => void;
 }
 
-const RoleSelect = ({value,error,onChange}:Props) => {
-    const { t } = useTranslation();
-    const [show,setShow] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-      const handleClick = (e: MouseEvent) => {
-        if (ref.current && !ref.current.contains(e.target as Node)) setShow(false);
-      };
-      document.addEventListener("mousedown", handleClick);
-      return () => document.removeEventListener("mousedown", handleClick);
-    },[]);
-    const options = [
-      { value: "Etudiant", label: t("completeProfile.roleOptions.male"), icon: "👨‍🎓" },
-      { value: "Etudiante", label: t("completeProfile.roleOptions.female"), icon: "👩‍🎓" },
-    ];
+const RoleSelect = ({ value, error, onChange }: Props) => {
+  const { t } = useTranslation();
+  const [show, setShow] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setShow(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+  const options = [
+    {
+      value: "Etudiant",
+      label: t("completeProfile.roleOptions.male"),
+      icon: "👨‍🎓",
+    },
+    {
+      value: "Etudiante",
+      label: t("completeProfile.roleOptions.female"),
+      icon: "👩‍🎓",
+    },
+  ];
 
   return (
     <div ref={ref} className="flex flex-col gap-1">
@@ -66,7 +74,7 @@ const RoleSelect = ({value,error,onChange}:Props) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default RoleSelect
+export default RoleSelect;

@@ -46,7 +46,11 @@ const NiveauxSelect = ({ value, error, onChange }: Props) => {
           }`}
         >
           <span className={`text-sm ${!selectedCategory && "text-slate-400"}`}>
-            {selectedCategory ? t(`completeProfile.categories.${selectedCategory.toLowerCase()}`) : t("completeProfile.form.selectCategory")}
+            {selectedCategory
+              ? t(
+                  `completeProfile.categories.${selectedCategory.toLowerCase()}`,
+                )
+              : t("completeProfile.form.selectCategory")}
           </span>
           <ChevronDown
             size={16}

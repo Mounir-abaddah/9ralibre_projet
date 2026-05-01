@@ -31,16 +31,23 @@ const StepTwoUpload = ({ avatar, onChange, onRemove }: Props) => {
       <div className="flex items-start gap-3 rounded-lg border-l-4 border-amber-400 bg-gradient-to-r from-amber-50 to-amber-100 px-4 py-3 text-amber-800 shadow-sm">
         <span className="text-2xl leading-none">⚠️</span>
         <div>
-          <p className="font-semibold">{t("completeProfile.upload.warningTitle")}</p>
+          <p className="font-semibold">
+            {t("completeProfile.upload.warningTitle")}
+          </p>
           <p className="text-sm">
-            {t("completeProfile.upload.warningText")} <span className="font-semibold">{t("completeProfile.upload.warningStrong")}</span>.
+            {t("completeProfile.upload.warningText")}{" "}
+            <span className="font-semibold">
+              {t("completeProfile.upload.warningStrong")}
+            </span>
+            .
           </p>
         </div>
       </div>
 
       <div className="space-y-4">
         <Label htmlFor="picture" className="text-sm font-medium text-gray-700">
-          {t("completeProfile.upload.title")} <sup>{t("completeProfile.upload.optional")}</sup>
+          {t("completeProfile.upload.title")}{" "}
+          <sup>{t("completeProfile.upload.optional")}</sup>
         </Label>
 
         <div

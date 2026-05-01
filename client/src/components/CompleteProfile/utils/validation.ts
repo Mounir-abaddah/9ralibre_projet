@@ -15,11 +15,10 @@ export const validateForm = (
     nom: "",
     prenom: "",
     role: "",
-    niveaux:"",
+    niveaux: "",
   };
 
-   let valid = true;
-
+  let valid = true;
 
   if (step === 0) {
     if (!formData.nom.trim()) {
@@ -35,7 +34,6 @@ export const validateForm = (
       valid = false;
     }
   }
-
 
   if (step === 2) {
     if (!formData.niveaux.trim()) {
