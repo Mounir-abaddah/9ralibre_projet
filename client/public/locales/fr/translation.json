@@ -76,6 +76,236 @@
       }
     }
   },
+  "admin": {
+    "connexion": {
+      "pageTitle": "Connexion Admin | 9ralibre",
+      "title": "Connexion Admin",
+      "subtitle": "Accès réservé à l’administration.",
+      "emailPlaceholder": "Email admin",
+      "passwordPlaceholder": "Mot de passe",
+      "loading": "Connexion...",
+      "submit": "Se connecter",
+      "errors": {
+        "default": "Connexion admin impossible"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard Admin",
+      "subtitle": "Vue rapide sur la modération: signalements récents, nouveaux utilisateurs et accès direct aux outils admin.",
+      "toasts": {
+        "loadError": "Impossible de charger le dashboard admin",
+        "profApproved": "Professeur approuvé et email envoyé",
+        "profDeclined": "Professeur refusé et email envoyé",
+        "profStatusError": "Impossible de mettre à jour le statut du professeur"
+      },
+      "prompts": {
+        "approve": "Conditions / message pour le professeur (optionnel):",
+        "decline": "Motif / conditions du refus (optionnel):"
+      },
+      "cards": {
+        "users": "Utilisateurs",
+        "blockedAccounts": "Comptes bloqués",
+        "reports": "Signalements",
+        "newUsers": "Nouveaux (5 derniers)"
+      },
+      "latestReports": {
+        "title": "Derniers signalements reçus",
+        "viewAll": "Voir tout",
+        "empty": "Aucun signalement pour le moment."
+      },
+      "reportType": {
+        "video": "Vidéo",
+        "comment": "Commentaire"
+      },
+      "labels": {
+        "comment": "Commentaire",
+        "reason": "Raison",
+        "reportedBy": "Signalé par",
+        "status": "Statut"
+      },
+      "latestUsers": {
+        "title": "Derniers utilisateurs",
+        "manage": "Gérer les utilisateurs",
+        "empty": "Aucun utilisateur trouvé."
+      },
+      "status": {
+        "approved": "Approuvé",
+        "declined": "Refusé",
+        "pending": "En attente"
+      },
+      "actions": {
+        "approve": "Approuver",
+        "decline": "Refuser"
+      },
+      "state": {
+        "blocked": "Bloqué",
+        "active": "Actif"
+      },
+      "quickLinks": {
+        "usersTitle": "Utilisateurs",
+        "usersDesc": "Blocage/déblocage des comptes et suivi des statuts.",
+        "professorsTitle": "Professeurs",
+        "professorsDesc": "Approuver ou décliner les demandes professeurs.",
+        "signalsTitle": "Signalements",
+        "signalsDesc": "Analyse des signalements vidéo et commentaires.",
+        "appealsTitle": "Recours",
+        "appealsDesc": "Valider ou rejeter les demandes d'appel utilisateur."
+      }
+    },
+    "users": {
+      "title": "Gestion des utilisateurs",
+      "subtitle": "Liste des comptes (hors admins), avec blocage et déblocage rapide.",
+      "toasts": {
+        "loadError": "Impossible de charger les utilisateurs",
+        "unblocked": "Utilisateur débloqué",
+        "blocked": "Utilisateur bloqué",
+        "blockError": "Erreur pendant le blocage",
+        "invalidDays": "Nombre de jours invalide"
+      },
+      "cards": {
+        "total": "Total",
+        "blocked": "Bloqués",
+        "active": "Actifs"
+      },
+      "searchPlaceholder": "Rechercher par nom, email, rôle...",
+      "table": {
+        "user": "Utilisateur",
+        "email": "Email",
+        "role": "Rôle",
+        "level": "Niveau",
+        "status": "Statut",
+        "blockEnd": "Fin de blocage",
+        "action": "Action"
+      },
+      "empty": "Aucun utilisateur trouvé.",
+      "state": {
+        "blocked": "Bloqué",
+        "active": "Actif"
+      },
+      "actions": {
+        "block": "Bloquer",
+        "unblock": "Débloquer"
+      },
+      "dialog": {
+        "block": {
+          "title": "Bloquer un utilisateur",
+          "description": "Définis la durée du blocage.",
+          "descriptionUser": "Définis la durée du blocage pour {{firstName}} {{lastName}}.",
+          "daysLabel": "Nombre de jours",
+          "daysPlaceholder": "Ex: 20",
+          "reasonLabel": "Raison (optionnel)",
+          "reasonPlaceholder": "Ex: spam, insultes, non-respect des règles...",
+          "loading": "Blocage...",
+          "confirm": "Confirmer le blocage"
+        },
+        "unblock": {
+          "title": "Débloquer cet utilisateur ?",
+          "description": "Le compte redeviendra actif immédiatement.",
+          "descriptionUser": "Le compte de {{firstName}} {{lastName}} redeviendra actif immédiatement.",
+          "loading": "Déblocage...",
+          "confirm": "Débloquer"
+        }
+      }
+    },
+    "signals": {
+      "title": "Signalements",
+      "videoTitle": "Signalements vidéos ({{count}})",
+      "commentTitle": "Signalements commentaires ({{count}})",
+      "emptyVideo": "Aucun signalement vidéo.",
+      "emptyComment": "Aucun signalement commentaire.",
+      "toasts": {
+        "loadError": "Impossible de charger les signalements"
+      },
+      "table": {
+        "video": "Vidéo",
+        "professor": "Professeur",
+        "reportedBy": "Signalé par",
+        "reason": "Raison",
+        "date": "Date",
+        "comment": "Commentaire"
+      }
+    },
+    "professors": {
+      "title": "Validation des professeurs",
+      "subtitle": "Consulte tous les comptes professeurs et approuve/refuse les demandes avec notification email.",
+      "toasts": {
+        "loadError": "Impossible de charger la liste des professeurs",
+        "approved": "Professeur approuvé et email envoyé",
+        "declined": "Professeur refusé et email envoyé",
+        "statusError": "Impossible de mettre à jour le statut du professeur"
+      },
+      "cards": {
+        "total": "Total professeurs",
+        "pending": "En attente",
+        "approved": "Approuvés",
+        "declined": "Refusés"
+      },
+      "searchPlaceholder": "Rechercher un professeur par nom ou email...",
+      "filterPlaceholder": "Filtrer par statut",
+      "filters": {
+        "all": "Tous les statuts",
+        "pending": "En attente",
+        "approved": "Approuvé",
+        "declined": "Refusé"
+      },
+      "table": {
+        "professor": "Professeur",
+        "email": "Email",
+        "level": "Niveau",
+        "status": "Statut",
+        "createdAt": "Date inscription",
+        "actions": "Actions"
+      },
+      "empty": "Aucun professeur trouvé.",
+      "status": {
+        "approved": "Approuvé",
+        "declined": "Refusé",
+        "pending": "En attente"
+      },
+      "actions": {
+        "accept": "Accepter",
+        "decline": "Décliner"
+      },
+      "dialog": {
+        "titleApprove": "Accepter ce professeur",
+        "titleDecline": "Décliner ce professeur",
+        "description": "Ajoute un message optionnel envoyé par email.",
+        "descriptionUser": "Tu peux ajouter un message qui sera envoyé par email à {{firstName}} {{lastName}}.",
+        "conditionsLabel": "Conditions / motif (optionnel)",
+        "placeholderApprove": "Ex: Merci de respecter la charte pédagogique...",
+        "placeholderDecline": "Ex: Merci de compléter votre profil et vos informations...",
+        "sending": "Envoi...",
+        "confirmApprove": "Confirmer l'approbation",
+        "confirmDecline": "Confirmer le refus"
+      }
+    },
+    "appeals": {
+      "title": "Recours",
+      "empty": "Aucune demande pour le moment.",
+      "prompts": {
+        "reviewNote": "Note admin (optionnel):"
+      },
+      "toasts": {
+        "loadError": "Impossible de charger les demandes",
+        "approved": "Demande acceptée",
+        "rejected": "Demande rejetée",
+        "reviewError": "Erreur traitement demande"
+      },
+      "table": {
+        "user": "Utilisateur",
+        "email": "Email",
+        "message": "Message",
+        "status": "Statut",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "alreadyReviewed": "Déjà traité"
+      }
+    }
+  },
   "modal": {
     "title": "Je me connecte",
     "noAccount": "Pas encore membre ?",
