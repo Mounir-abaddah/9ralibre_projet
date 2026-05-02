@@ -1,6 +1,7 @@
 
 import {
   ChevronsUpDown,
+  Languages,
   LogOut,
   Moon,
   Settings,
@@ -32,6 +33,9 @@ import { useTheme } from "@/context/ThemeContext"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button"
 
 export function NavUser() {
   const { t } = useTranslation();
@@ -40,6 +44,12 @@ export function NavUser() {
   const { isMobile } = useSidebar()
   const {data} = useProtectedRoutes();
   const { theme, toggleTheme } = useTheme();
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "Fr");
+
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+    i18n.changeLanguage(lang.toLowerCase());
+  }, [lang]);
 
   const handleLogout = async()=>{
     await axios.post(`${apiUrl}/prof/logout`,{},{withCredentials:true})
@@ -95,6 +105,40 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem className="flex cursor-default items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Languages size={16} />
+                  <span>{t("nav.language")}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button
+                    size={'icon-sm'}
+                    variant={'outline'}
+                    type="button"
+                    className={`cursor-pointer rounded px-2 py-1 text-xs ${
+                      lang === "Fr"
+                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                        : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    }`}
+                    onClick={() => {setLang("Fr");window.location.reload()}}
+                  >
+                    FR
+                  </Button>
+                  <Button
+                    size={"icon-sm"}
+                    variant={'outline'}
+                    type="button"
+                    className={`rounded text-xs ${
+                      lang === "En"
+                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                        : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    }`}
+                    onClick={() => {setLang("En");window.location.reload()}}
+                  >
+                    EN
+                  </Button>
+                </div>
+              </DropdownMenuItem>
               <DropdownMenuItem className="flex cursor-pointer items-center justify-between">
                 <div className="flex items-center gap-2">
                 <Moon size={16} />
