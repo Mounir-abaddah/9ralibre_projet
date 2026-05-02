@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 type Appeal = {
   _id: string;
@@ -22,6 +23,7 @@ type Appeal = {
 };
 
 const AdminAppeals = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [appeals, setAppeals] = useState<Appeal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,7 @@ const AdminAppeals = () => {
       });
       setAppeals(response.data.appeals || []);
     } catch {
-      toast.error("Impossible de charger les demandes");
+      toast.error(t("admin.appeals.toasts.loadError"));
     } finally {
       setLoading(false);
     }
@@ -44,43 +46,43 @@ const AdminAppeals = () => {
   }, []);
 
   const reviewAppeal = async (appealId: string, status: "APPROVED" | "REJECTED") => {
-    const reviewNote = window.prompt("Note admin (optionnel):", "") || "";
+    const reviewNote = window.prompt(t("admin.appeals.prompts.reviewNote"), "") || "";
     try {
       await axios.patch(
         `${apiUrl}/admin/appeals/${appealId}/review`,
         { status, reviewNote },
         { withCredentials: true },
       );
-      toast.success(status === "APPROVED" ? "Demande acceptée" : "Demande rejetée");
+      toast.success(status === "APPROVED" ? t("admin.appeals.toasts.approved") : t("admin.appeals.toasts.rejected"));
       loadAppeals();
     } catch {
-      toast.error("Erreur traitement demande");
+      toast.error(t("admin.appeals.toasts.reviewError"));
     }
   };
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Appeals</h1>
+      <h1 className="text-2xl font-semibold">{t("admin.appeals.title")}</h1>
       {loading ? (
-        <p>Chargement...</p>
+        <p>{t("common.loading")}</p>
       ) : (
         <div className="rounded-xl border shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Utilisateur</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Message</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t("admin.appeals.table.user")}</TableHead>
+                <TableHead>{t("admin.appeals.table.email")}</TableHead>
+                <TableHead>{t("admin.appeals.table.message")}</TableHead>
+                <TableHead>{t("admin.appeals.table.status")}</TableHead>
+                <TableHead>{t("admin.appeals.table.date")}</TableHead>
+                <TableHead>{t("admin.appeals.table.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {appeals.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-zinc-500">
-                    Aucune demande pour le moment.
+                    {t("admin.appeals.empty")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -115,18 +117,18 @@ const AdminAppeals = () => {
                             className="bg-emerald-600 text-white hover:bg-emerald-700"
                             onClick={() => reviewAppeal(appeal._id, "APPROVED")}
                           >
-                            Approuver
+                            {t("admin.appeals.actions.approve")}
                           </Button>
                           <Button
                             size="sm"
                             variant="destructive"
                             onClick={() => reviewAppeal(appeal._id, "REJECTED")}
                           >
-                            Rejeter
+                            {t("admin.appeals.actions.reject")}
                           </Button>
                         </>
                       ) : (
-                        <span className="text-xs text-zinc-400">Déjà traité</span>
+                        <span className="text-xs text-zinc-400">{t("admin.appeals.actions.alreadyReviewed")}</span>
                       )}
                     </TableCell>
                   </TableRow>
