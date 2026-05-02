@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AlertTriangle, ShieldX, UserPlus, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 type AdminUser = {
   _id: string;
@@ -38,6 +39,7 @@ type UnifiedReport = {
 };
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [videoReports, setVideoReports] = useState<ReportItem[]>([]);
@@ -57,7 +59,7 @@ const AdminDashboard = () => {
         setVideoReports(reportsResponse.data.videoReports || []);
         setCommentReports(reportsResponse.data.commentReports || []);
       } catch {
-        toast.error("Impossible de charger le dashboard admin");
+        toast.error(t("admin.dashboard.toasts.loadError"));
       } finally {
         setLoading(false);
       }
@@ -120,8 +122,8 @@ const AdminDashboard = () => {
   ) => {
     const conditions = window.prompt(
       status === "approved"
-        ? "Conditions / message pour le professeur (optionnel):"
-        : "Motif / conditions du refus (optionnel):",
+        ? t("admin.dashboard.prompts.approve")
+        : t("admin.dashboard.prompts.decline"),
       "",
     );
 
@@ -148,11 +150,11 @@ const AdminDashboard = () => {
 
       toast.success(
         status === "approved"
-          ? "Professeur approuvé et email envoyé"
-          : "Professeur refusé et email envoyé",
+          ? t("admin.dashboard.toasts.profApproved")
+          : t("admin.dashboard.toasts.profDeclined"),
       );
     } catch {
-      toast.error("Impossible de mettre à jour le statut du professeur");
+      toast.error(t("admin.dashboard.toasts.profStatusError"));
     } finally {
       setUpdatingProfessorId(null);
     }
@@ -161,9 +163,9 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-5">
       <div className="rounded-xl border bg-zinc-900 p-5 text-white shadow-sm">
-        <h1 className="text-2xl font-semibold">Dashboard Admin</h1>
+        <h1 className="text-2xl font-semibold">{t("admin.dashboard.title")}</h1>
         <p className="text-sm text-zinc-300">
-          Vue rapide sur la modération: signalements récents, nouveaux utilisateurs et accès direct aux outils admin.
+          {t("admin.dashboard.subtitle")}
         </p>
       </div>
 
@@ -171,28 +173,28 @@ const AdminDashboard = () => {
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-zinc-500">
             <Users size={16} />
-            <span className="text-sm">Utilisateurs</span>
+            <span className="text-sm">{t("admin.dashboard.cards.users")}</span>
           </div>
           <p className="text-2xl font-bold">{users.length}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-red-600">
             <ShieldX size={16} />
-            <span className="text-sm">Comptes bloqués</span>
+            <span className="text-sm">{t("admin.dashboard.cards.blockedAccounts")}</span>
           </div>
           <p className="text-2xl font-bold">{blockedCount}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-amber-600">
             <AlertTriangle size={16} />
-            <span className="text-sm">Signalements</span>
+            <span className="text-sm">{t("admin.dashboard.cards.reports")}</span>
           </div>
           <p className="text-2xl font-bold">{totalReports}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-emerald-600">
             <UserPlus size={16} />
-            <span className="text-sm">Nouveaux (5 derniers)</span>
+            <span className="text-sm">{t("admin.dashboard.cards.newUsers")}</span>
           </div>
           <p className="text-2xl font-bold">{latestUsers.length}</p>
         </div>
@@ -201,22 +203,22 @@ const AdminDashboard = () => {
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="rounded-xl border p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-semibold">Derniers signalements reçus</h2>
+            <h2 className="font-semibold">{t("admin.dashboard.latestReports.title")}</h2>
             <Link to="/admin/signals" className="text-sm text-blue-600 hover:underline">
-              Voir tout
+              {t("admin.dashboard.latestReports.viewAll")}
             </Link>
           </div>
           {loading ? (
-            <p className="text-sm text-zinc-500">Chargement...</p>
+            <p className="text-sm text-zinc-500">{t("common.loading")}</p>
           ) : latestReports.length === 0 ? (
-            <p className="text-sm text-zinc-500">Aucun signalement pour le moment.</p>
+            <p className="text-sm text-zinc-500">{t("admin.dashboard.latestReports.empty")}</p>
           ) : (
             <div className="space-y-3">
               {latestReports.map((report) => (
                 <article key={report.id} className="rounded-lg border p-3">
                   <div className="mb-1 flex items-center gap-2">
                     <Badge variant={report.type === "video" ? "secondary" : "outline"}>
-                      {report.type === "video" ? "Vidéo" : "Commentaire"}
+                      {report.type === "video" ? t("admin.dashboard.reportType.video") : t("admin.dashboard.reportType.comment")}
                     </Badge>
                     <span className="text-xs text-zinc-500">
                       {new Date(report.createdAt).toLocaleString()}
@@ -224,10 +226,10 @@ const AdminDashboard = () => {
                   </div>
                   <p className="text-sm font-medium">{report.title}</p>
                   {report.commentText ? (
-                    <p className="truncate text-xs text-zinc-500">Commentaire: {report.commentText}</p>
+                    <p className="truncate text-xs text-zinc-500">{t("admin.dashboard.labels.comment")}: {report.commentText}</p>
                   ) : null}
-                  <p className="truncate text-xs text-zinc-600">Raison: {report.reason}</p>
-                  <p className="text-xs text-zinc-500">Signalé par: {report.reportedBy}</p>
+                  <p className="truncate text-xs text-zinc-600">{t("admin.dashboard.labels.reason")}: {report.reason}</p>
+                  <p className="text-xs text-zinc-500">{t("admin.dashboard.labels.reportedBy")}: {report.reportedBy}</p>
                 </article>
               ))}
             </div>
@@ -236,15 +238,15 @@ const AdminDashboard = () => {
 
         <section className="rounded-xl border p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-semibold">Derniers utilisateurs</h2>
+            <h2 className="font-semibold">{t("admin.dashboard.latestUsers.title")}</h2>
             <Link to="/admin/users" className="text-sm text-blue-600 hover:underline">
-              Gérer les utilisateurs
+              {t("admin.dashboard.latestUsers.manage")}
             </Link>
           </div>
           {loading ? (
-            <p className="text-sm text-zinc-500">Chargement...</p>
+            <p className="text-sm text-zinc-500">{t("common.loading")}</p>
           ) : latestUsers.length === 0 ? (
-            <p className="text-sm text-zinc-500">Aucun utilisateur trouvé.</p>
+            <p className="text-sm text-zinc-500">{t("admin.dashboard.latestUsers.empty")}</p>
           ) : (
             <div className="space-y-3">
               {latestUsers.map((user) => {
@@ -263,12 +265,12 @@ const AdminDashboard = () => {
                       </p>
                       {user.role === "Professeur" ? (
                         <p className="text-xs text-zinc-500">
-                          Statut:{" "}
+                          {t("admin.dashboard.labels.status")}:{" "}
                           {user.status === "approved"
-                            ? "Approuvé"
+                            ? t("admin.dashboard.status.approved")
                             : user.status === "declined"
-                              ? "Refusé"
-                              : "En attente"}
+                              ? t("admin.dashboard.status.declined")
+                              : t("admin.dashboard.status.pending")}
                         </p>
                       ) : null}
                     </div>
@@ -281,7 +283,7 @@ const AdminDashboard = () => {
                             disabled={updatingProfessorId === user._id}
                             className="rounded-md bg-emerald-600 px-2 py-1 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            Approuver
+                            {t("admin.dashboard.actions.approve")}
                           </button>
                           <button
                             type="button"
@@ -289,12 +291,12 @@ const AdminDashboard = () => {
                             disabled={updatingProfessorId === user._id}
                             className="rounded-md bg-red-600 px-2 py-1 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            Refuser
+                            {t("admin.dashboard.actions.decline")}
                           </button>
                         </>
                       )}
                       <Badge className={isBlocked ? "bg-red-600 text-white" : "bg-emerald-600 text-white"}>
-                        {isBlocked ? "Bloqué" : "Actif"}
+                        {isBlocked ? t("admin.dashboard.state.blocked") : t("admin.dashboard.state.active")}
                       </Badge>
                     </div>
                   </article>
@@ -307,20 +309,20 @@ const AdminDashboard = () => {
 
       <div className="grid gap-4 md:grid-cols-3">
         <Link to="/admin/users" className="rounded-lg border p-4 shadow-sm transition">
-          <h3 className="font-semibold">Utilisateurs</h3>
-          <p className="text-sm text-zinc-500">Blocage/déblocage des comptes et suivi des statuts.</p>
+          <h3 className="font-semibold">{t("admin.dashboard.quickLinks.usersTitle")}</h3>
+          <p className="text-sm text-zinc-500">{t("admin.dashboard.quickLinks.usersDesc")}</p>
         </Link>
         <Link to="/admin/professors" className="rounded-lg border p-4 shadow-sm transition">
-          <h3 className="font-semibold">Professeurs</h3>
-          <p className="text-sm text-zinc-500">Approuver ou décliner les demandes professeurs.</p>
+          <h3 className="font-semibold">{t("admin.dashboard.quickLinks.professorsTitle")}</h3>
+          <p className="text-sm text-zinc-500">{t("admin.dashboard.quickLinks.professorsDesc")}</p>
         </Link>
         <Link to="/admin/signals" className="rounded-lg border p-4 shadow-sm transition">
-          <h3 className="font-semibold">Signalements</h3>
-          <p className="text-sm text-zinc-500">Analyse des signalements vidéo et commentaires.</p>
+          <h3 className="font-semibold">{t("admin.dashboard.quickLinks.signalsTitle")}</h3>
+          <p className="text-sm text-zinc-500">{t("admin.dashboard.quickLinks.signalsDesc")}</p>
         </Link>
         <Link to="/admin/appeals" className="rounded-lg border p-4 shadow-sm transition">
-          <h3 className="font-semibold">Recours</h3>
-          <p className="text-sm text-zinc-500">Valider ou rejeter les demandes d'appel utilisateur.</p>
+          <h3 className="font-semibold">{t("admin.dashboard.quickLinks.appealsTitle")}</h3>
+          <p className="text-sm text-zinc-500">{t("admin.dashboard.quickLinks.appealsDesc")}</p>
         </Link>
       </div>
     </div>
