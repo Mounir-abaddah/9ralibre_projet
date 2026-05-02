@@ -10,7 +10,7 @@ i18n
   .init({
     debug: true,
     fallbackLng: 'fr',
-    lng: localStorage.getItem("lang")?.toLowerCase() || "Fr",
+    lng: localStorage.getItem("lang")?.toLowerCase() || "fr",
     backend:{
       loadPath: "/locales/{{lng}}/translation.json"
     },
