@@ -3,9 +3,11 @@ import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useProtectedRoutes } from "@/store/userStore";
+import { useTranslation } from "react-i18next";
 
 const AdminConnexion = () => {
-  document.title = "Connexion Admin | 9ralibre";
+  const { t } = useTranslation();
+  document.title = t("admin.connexion.pageTitle");
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { fetchData } = useProtectedRoutes();
@@ -30,7 +32,7 @@ const AdminConnexion = () => {
       }
     } catch (err) {
       const axiosErr = err as AxiosError<{ message: string }>;
-      setError(axiosErr.response?.data?.message || "Connexion admin impossible");
+      setError(axiosErr.response?.data?.message || t("admin.connexion.errors.default"));
     } finally {
       setLoading(false);
     }
@@ -39,14 +41,14 @@ const AdminConnexion = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-100 p-4 dark:bg-zinc-900">
       <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-zinc-800">
-        <h1 className="mb-2 text-2xl font-semibold">Connexion Admin</h1>
-        <p className="mb-5 text-sm text-zinc-500">Accès réservé à l’administration.</p>
+        <h1 className="mb-2 text-2xl font-semibold">{t("admin.connexion.title")}</h1>
+        <p className="mb-5 text-sm text-zinc-500">{t("admin.connexion.subtitle")}</p>
         {error && <p className="mb-4 rounded-md bg-red-100 p-2 text-sm text-red-700">{error}</p>}
         <form className="space-y-3" onSubmit={handleSubmit}>
           <input
             className="w-full rounded-md border p-2"
             type="email"
-            placeholder="Email admin"
+            placeholder={t("admin.connexion.emailPlaceholder")}
             value={form.email}
             onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
             required
@@ -54,7 +56,7 @@ const AdminConnexion = () => {
           <input
             className="w-full rounded-md border p-2"
             type="password"
-            placeholder="Mot de passe"
+            placeholder={t("admin.connexion.passwordPlaceholder")}
             value={form.password}
             onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
             required
@@ -64,7 +66,7 @@ const AdminConnexion = () => {
             disabled={loading}
             className="w-full rounded-md bg-amber-500 p-2 font-semibold text-black disabled:opacity-60"
           >
-            {loading ? "Connexion..." : "Se connecter"}
+            {loading ? t("admin.connexion.loading") : t("admin.connexion.submit")}
           </button>
         </form>
       </div>
