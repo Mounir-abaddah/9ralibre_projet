@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 type ProfessorUser = {
   _id: string;
@@ -42,6 +43,7 @@ type ProfessorUser = {
 };
 
 const AdminProfessors = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [professors, setProfessors] = useState<ProfessorUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ const AdminProfessors = () => {
       const allUsers: ProfessorUser[] = response.data.users || [];
       setProfessors(allUsers.filter((item) => item.role === "Professeur"));
     } catch {
-      toast.error("Impossible de charger la liste des professeurs");
+      toast.error(t("admin.professors.toasts.loadError"));
     } finally {
       setLoading(false);
     }
@@ -110,31 +112,31 @@ const AdminProfessors = () => {
       );
       toast.success(
         targetStatus === "approved"
-          ? "Professeur approuvé et email envoyé"
-          : "Professeur refusé et email envoyé",
+          ? t("admin.professors.toasts.approved")
+          : t("admin.professors.toasts.declined"),
       );
       setOpenDialog(false);
       setSelectedProfessor(null);
       await loadProfessors();
     } catch {
-      toast.error("Impossible de mettre à jour le statut du professeur");
+      toast.error(t("admin.professors.toasts.statusError"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const statusBadge = (status?: ProfessorUser["status"]) => {
-    if (status === "approved") return <Badge className="bg-emerald-600 text-white">Approuvé</Badge>;
-    if (status === "declined") return <Badge variant="destructive">Refusé</Badge>;
-    return <Badge variant="secondary">En attente</Badge>;
+    if (status === "approved") return <Badge className="bg-emerald-600 text-white">{t("admin.professors.status.approved")}</Badge>;
+    if (status === "declined") return <Badge variant="destructive">{t("admin.professors.status.declined")}</Badge>;
+    return <Badge variant="secondary">{t("admin.professors.status.pending")}</Badge>;
   };
 
   return (
     <div className="space-y-5">
       <div className="rounded-xl border bg-zinc-900  p-5 text-white shadow-sm">
-        <h1 className="text-2xl font-semibold">Validation des professeurs</h1>
+        <h1 className="text-2xl font-semibold">{t("admin.professors.title")}</h1>
         <p className="text-sm text-indigo-100">
-          Consulte tous les comptes professeurs et approuve/refuse les demandes avec notification email.
+          {t("admin.professors.subtitle")}
         </p>
       </div>
 
@@ -142,28 +144,28 @@ const AdminProfessors = () => {
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-zinc-500">
             <UserCheck size={16} />
-            <span className="text-sm">Total professeurs</span>
+            <span className="text-sm">{t("admin.professors.cards.total")}</span>
           </div>
           <p className="text-2xl font-bold">{professors.length}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-amber-600">
             <Clock3 size={16} />
-            <span className="text-sm">En attente</span>
+            <span className="text-sm">{t("admin.professors.cards.pending")}</span>
           </div>
           <p className="text-2xl font-bold">{pendingCount}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-emerald-600">
             <CheckCircle2 size={16} />
-            <span className="text-sm">Approuvés</span>
+            <span className="text-sm">{t("admin.professors.cards.approved")}</span>
           </div>
           <p className="text-2xl font-bold">{approvedCount}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-red-600">
             <XCircle size={16} />
-            <span className="text-sm">Refusés</span>
+            <span className="text-sm">{t("admin.professors.cards.declined")}</span>
           </div>
           <p className="text-2xl font-bold">{declinedCount}</p>
         </div>
@@ -174,7 +176,7 @@ const AdminProfessors = () => {
           <div className="relative md:col-span-2">
             <Search className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-zinc-400" size={16} />
             <Input
-              placeholder="Rechercher un professeur par nom ou email..."
+              placeholder={t("admin.professors.searchPlaceholder")}
               className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -187,38 +189,38 @@ const AdminProfessors = () => {
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Filtrer par statut" />
+              <SelectValue placeholder={t("admin.professors.filterPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous les statuts</SelectItem>
-              <SelectItem value="pending">En attente</SelectItem>
-              <SelectItem value="approved">Approuvé</SelectItem>
-              <SelectItem value="declined">Refusé</SelectItem>
+              <SelectItem value="all">{t("admin.professors.filters.all")}</SelectItem>
+              <SelectItem value="pending">{t("admin.professors.filters.pending")}</SelectItem>
+              <SelectItem value="approved">{t("admin.professors.filters.approved")}</SelectItem>
+              <SelectItem value="declined">{t("admin.professors.filters.declined")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       {loading ? (
-        <p className="text-sm text-zinc-500">Chargement...</p>
+        <p className="text-sm text-zinc-500">{t("common.loading")}</p>
       ) : (
         <div className="rounded-xl border shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Professeur</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Niveau</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Date inscription</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t("admin.professors.table.professor")}</TableHead>
+                <TableHead>{t("admin.professors.table.email")}</TableHead>
+                <TableHead>{t("admin.professors.table.level")}</TableHead>
+                <TableHead>{t("admin.professors.table.status")}</TableHead>
+                <TableHead>{t("admin.professors.table.createdAt")}</TableHead>
+                <TableHead>{t("admin.professors.table.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredProfessors.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-zinc-500">
-                    Aucun professeur trouvé.
+                    {t("admin.professors.empty")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -242,7 +244,7 @@ const AdminProfessors = () => {
                           onClick={() => openStatusDialog(prof, "approved")}
                           disabled={submitting}
                         >
-                          Accepter
+                          {t("admin.professors.actions.accept")}
                         </Button>
                         <Button
                           type="button"
@@ -251,7 +253,7 @@ const AdminProfessors = () => {
                           onClick={() => openStatusDialog(prof, "declined")}
                           disabled={submitting}
                         >
-                          Décliner
+                          {t("admin.professors.actions.decline")}
                         </Button>
                       </div>
                     </TableCell>
@@ -267,24 +269,29 @@ const AdminProfessors = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {targetStatus === "approved" ? "Accepter ce professeur" : "Décliner ce professeur"}
+              {targetStatus === "approved"
+                ? t("admin.professors.dialog.titleApprove")
+                : t("admin.professors.dialog.titleDecline")}
             </DialogTitle>
             <DialogDescription>
               {selectedProfessor
-                ? `Tu peux ajouter un message qui sera envoyé par email à ${selectedProfessor.prenom} ${selectedProfessor.nom}.`
-                : "Ajoute un message optionnel envoyé par email."}
+                ? t("admin.professors.dialog.descriptionUser", {
+                    firstName: selectedProfessor.prenom,
+                    lastName: selectedProfessor.nom,
+                  })
+                : t("admin.professors.dialog.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-1">
-            <label className="text-sm font-medium">Conditions / motif (optionnel)</label>
+            <label className="text-sm font-medium">{t("admin.professors.dialog.conditionsLabel")}</label>
             <Textarea
               value={conditions}
               onChange={(e) => setConditions(e.target.value)}
               rows={5}
               placeholder={
                 targetStatus === "approved"
-                  ? "Ex: Merci de respecter la charte pédagogique..."
-                  : "Ex: Merci de compléter votre profil et vos informations..."
+                  ? t("admin.professors.dialog.placeholderApprove")
+                  : t("admin.professors.dialog.placeholderDecline")
               }
             />
           </div>
@@ -298,7 +305,7 @@ const AdminProfessors = () => {
               }}
               disabled={submitting}
             >
-              Annuler
+              {t("common.cancel")}
             </Button>
             <Button
               type="button"
@@ -308,10 +315,10 @@ const AdminProfessors = () => {
               variant={targetStatus === "declined" ? "destructive" : "default"}
             >
               {submitting
-                ? "Envoi..."
+                ? t("admin.professors.dialog.sending")
                 : targetStatus === "approved"
-                  ? "Confirmer l'approbation"
-                  : "Confirmer le refus"}
+                  ? t("admin.professors.dialog.confirmApprove")
+                  : t("admin.professors.dialog.confirmDecline")}
             </Button>
           </DialogFooter>
         </DialogContent>
