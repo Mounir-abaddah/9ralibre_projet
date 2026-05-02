@@ -152,81 +152,100 @@ const Navbar = () => {
     };
   }, [isCompactNav, open]);
 
-  // ─── Shared Notifications Popover Content ───────────────────────────────────
-  const NotificationsPopoverContent = ({
+  const bellBtnClass =
+    "relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white";
+
+  // ─── Popover notifications (Tooltip uniquement sur le déclencheur, pas sur Popover.Root)
+  const NotificationsBellPopover = ({
     align,
+    side,
   }: {
     align: "end" | "center";
+    side?: "top" | "right" | "bottom" | "left";
   }) => (
-    <PopoverContent
-      align={align}
-      sideOffset={10}
-      className="z-[999999] w-92 p-0 shadow-2xl"
-    >
-      <div className="flex items-center justify-between border-b p-3">
-        <p className="text-sm font-semibold">{t("nav.notifications")}</p>
-        <button
-          className="text-xs text-cyan-600 hover:underline"
-          onClick={() => navigate(`/Chat/${data?.niveaux}`)}
-          type="button"
-        >
-          {t("nav.openMessaging")}
-        </button>
-      </div>
-      <div className="max-h-80 overflow-y-auto p-2">
-        {conversations.filter((c) => c.unreadCount > 0).length === 0 ? (
-          <div className="p-3 text-sm text-gray-500">
-            {t("nav.noNotifications")}
-          </div>
-        ) : (
-          conversations
-            .filter((c) => c.unreadCount > 0)
-            .slice(0, 8)
-            .map((conv) => {
-              const otherUser = conv.members.find((m) => m._id !== data?.id);
-              const title = otherUser
-                ? `${otherUser.nom} ${otherUser.prenom}`
-                : t("nav.conversation");
-              const preview = conv.lastMessage?.text ?? "";
-              return (
-                <button
-                  key={conv._id}
-                  type="button"
-                  onClick={() => navigate(`/Chat/start/${conv._id}`)}
-                  className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{title}</p>
-                    <p className="line-clamp-2 text-xs text-gray-500">
-                      {preview}
-                    </p>
-                  </div>
-                  <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
-                    {conv.unreadCount}
-                  </span>
-                </button>
-              );
-            })
-        )}
-      </div>
-    </PopoverContent>
-  );
-
-  // ─── Shared Bell Button ──────────────────────────────────────────────────────
-  const BellButton = () => (
-    <Button
-      variant={"outline"}
-      size={"icon"}
-      className="relative flex cursor-pointer items-center justify-center rounded-lg border text-gray-800 dark:text-white"
-      aria-label={t("nav.notifications")}
-    >
-      <Bell />
-      {unreadTotal > 0 && (
-        <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
-          {unreadTotal > 99 ? "99+" : unreadTotal}
-        </span>
-      )}
-    </Button>
+    <Popover>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              size={"icon"}
+              className={bellBtnClass}
+              aria-label={t("nav.notifications")}
+            >
+              <Bell />
+              {unreadTotal > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
+                  {unreadTotal > 99 ? "99+" : unreadTotal}
+                </span>
+              )}
+            </Button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent className="z-[99999999999999]">
+          <p>{t("nav.notification")}</p>
+        </TooltipContent>
+      </Tooltip>
+      <PopoverContent
+        align={align}
+        side={side}
+        sideOffset={10}
+        className="z-[999999] w-[min(calc(100vw-2rem),23rem)] max-w-[92vw] p-0 shadow-2xl sm:w-92 sm:max-w-none"
+      >
+        <div className="flex items-center justify-between border-b p-3">
+          <p className="text-sm font-semibold">{t("nav.notifications")}</p>
+          <button
+            className="text-xs text-cyan-600 hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/Chat/${data?.niveaux}`);
+            }}
+            type="button"
+          >
+            {t("nav.openMessaging")}
+          </button>
+        </div>
+        <div className="max-h-80 overflow-y-auto overflow-x-hidden p-2">
+          {conversations.filter((c) => c.unreadCount > 0).length === 0 ? (
+            <div className="p-3 text-sm text-gray-500">
+              {t("nav.noNotifications")}
+            </div>
+          ) : (
+            conversations
+              .filter((c) => c.unreadCount > 0)
+              .slice(0, 8)
+              .map((conv) => {
+                const otherUser = conv.members.find((m) => m._id !== data?.id);
+                const title = otherUser
+                  ? `${otherUser.nom} ${otherUser.prenom}`
+                  : t("nav.conversation");
+                const preview = conv.lastMessage?.text ?? "";
+                return (
+                  <button
+                    key={conv._id}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/Chat/start/${conv._id}`);
+                    }}
+                    className="flex w-full items-start justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{title}</p>
+                      <p className="line-clamp-2 text-xs text-gray-500">
+                        {preview}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                      {conv.unreadCount}
+                    </span>
+                  </button>
+                );
+              })
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 
   // ─── Shared Language Select ──────────────────────────────────────────────────
@@ -310,19 +329,7 @@ const Navbar = () => {
                 </Tooltip>
 
                 {/* Notifications */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <BellButton />
-                      </PopoverTrigger>
-                      <NotificationsPopoverContent align="end" />
-                    </Popover>
-                  </TooltipTrigger>
-                  <TooltipContent className="z-[99999999999999]">
-                    <p>{t("nav.notification")}</p>
-                  </TooltipContent>
-                </Tooltip>
+                <NotificationsBellPopover align="end" />
 
                 {/* Calendar */}
                 <Tooltip>
@@ -413,73 +420,28 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          // ── MOBILE NAV ──
-          <div className="flex items-center gap-2">
-            {!data ? (
+          // ── MOBILE NAV ── uniquement cloche + hamburger (reste dans le sheet)
+          <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+            {!data && (
               <Link to="/connexion">
                 <Button variant={"outline"} className="h-9 cursor-pointer px-3">
                   <Lock size={16} />
                   {t("nav.connexion")}
                 </Button>
               </Link>
-            ) : (
-              <>
-                {/* Theme toggle (mobile) */}
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  onClick={toggleTheme}
-                  className="cursor-pointer"
-                >
-                  {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-                </Button>
-
-                {/* Notifications (mobile) */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <BellButton />
-                      </PopoverTrigger>
-                      <NotificationsPopoverContent align="center" />
-                    </Popover>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("nav.notification")}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                {/* Calendar (mobile) */}
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  className="cursor-pointer"
-                  onClick={() => navigate(`/Calendrier/${data?.niveaux}`)}
-                >
-                  <Calendar />
-                </Button>
-
-                {/* Drawing (mobile) */}
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  onClick={() => navigate("/Drawing")}
-                  className="cursor-pointer"
-                >
-                  <DraftingCompass size={18} />
-                </Button>
-              </>
             )}
 
-            {/* Hamburger */}
-            <Button
-              variant={"outline"}
-              onClick={() => setOpen(true)}
-              className="cursor-pointer rounded-md p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800"
-              aria-label={t("nav.openMenu")}
-            >
-              <Menu size={26} />
-            </Button>
+            <div className="flex shrink-0 items-center gap-1">
+              {data && <NotificationsBellPopover align="end" side="bottom" />}
+              <Button
+                variant={"outline"}
+                onClick={() => setOpen(true)}
+                className="cursor-pointer rounded-md p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label={t("nav.openMenu")}
+              >
+                <Menu size={26} />
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -539,6 +501,7 @@ const MobileMenu = ({
   toggleTheme,
 }: MobileMenuProps) => {
   const { t } = useTranslation();
+  const navigateMenu = useNavigate();
 
   return (
     <div className="flex h-full flex-col justify-between p-3">
@@ -609,6 +572,35 @@ const MobileMenu = ({
             </span>
           </Button>
         </div>
+
+        {data && (
+          <div className="mt-3 flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-11 flex-1 cursor-pointer"
+              aria-label={t("nav.calendar")}
+              onClick={() => {
+                navigateMenu(`/Calendrier/${data.niveaux}`);
+                onNavigate();
+              }}
+            >
+              <Calendar size={20} />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-11 flex-1 cursor-pointer"
+              aria-label={t("nav.paint")}
+              onClick={() => {
+                navigateMenu("/Drawing");
+                onNavigate();
+              }}
+            >
+              <DraftingCompass size={20} />
+            </Button>
+          </div>
+        )}
       </div>
 
       {!data ? (
