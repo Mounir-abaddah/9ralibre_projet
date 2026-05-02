@@ -32,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 type AdminUser = {
   _id: string;
@@ -45,6 +46,7 @@ type AdminUser = {
 };
 
 const AdminUsers = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +63,7 @@ const AdminUsers = () => {
       const response = await axios.get(`${apiUrl}/admin/prof/users`, { withCredentials: true });
       setUsers(response.data.users || []);
     } catch {
-      toast.error("Impossible de charger les utilisateurs");
+      toast.error(t("admin.users.toasts.loadError"));
     } finally {
       setLoading(false);
     }
@@ -82,10 +84,10 @@ const AdminUsers = () => {
         { days, reason },
         { withCredentials: true },
       );
-      toast.success(days === 0 ? "Utilisateur débloqué" : "Utilisateur bloqué");
+      toast.success(days === 0 ? t("admin.users.toasts.unblocked") : t("admin.users.toasts.blocked"));
       await loadUsers();
     } catch {
-      toast.error("Erreur pendant le blocage");
+      toast.error(t("admin.users.toasts.blockError"));
     } finally {
       setSubmitting(false);
     }
@@ -106,7 +108,7 @@ const AdminUsers = () => {
     if (!selectedUser) return;
     const days = Number(blockDays);
     if (!Number.isFinite(days) || days <= 0) {
-      toast.error("Nombre de jours invalide");
+      toast.error(t("admin.users.toasts.invalidDays"));
       return;
     }
     await updateUserBlockStatus(selectedUser, days, blockReason.trim());
@@ -136,9 +138,9 @@ const AdminUsers = () => {
   return (
     <div className="space-y-5">
       <div className="rounded-xl border  bg-zinc-900  p-5 text-white shadow-sm">
-        <h1 className="text-2xl font-semibold">Gestion des utilisateurs</h1>
+        <h1 className="text-2xl font-semibold">{t("admin.users.title")}</h1>
         <p className="text-sm text-zinc-500">
-          Liste des comptes (hors admins), avec blocage et déblocage rapide.
+          {t("admin.users.subtitle")}
         </p>
       </div>
 
@@ -146,21 +148,21 @@ const AdminUsers = () => {
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-zinc-500">
             <Users size={16} />
-            <span className="text-sm">Total</span>
+            <span className="text-sm">{t("admin.users.cards.total")}</span>
           </div>
           <p className="text-2xl font-bold">{users.length}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-red-500">
             <ShieldX size={16} />
-            <span className="text-sm">Bloqués</span>
+            <span className="text-sm">{t("admin.users.cards.blocked")}</span>
           </div>
           <p className="text-2xl font-bold">{blockedCount}</p>
         </div>
         <div className="rounded-xl border p-4 shadow-sm">
           <div className="mb-1 flex items-center gap-2 text-emerald-600">
             <ShieldCheck size={16} />
-            <span className="text-sm">Actifs</span>
+            <span className="text-sm">{t("admin.users.cards.active")}</span>
           </div>
           <p className="text-2xl font-bold">{unblockedCount}</p>
         </div>
@@ -168,33 +170,33 @@ const AdminUsers = () => {
 
       <div className="rounded-xl border  p-4 shadow-sm">
         <Input
-          placeholder="Rechercher par nom, email, rôle..."
+          placeholder={t("admin.users.searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
       {loading ? (
-        <p>Chargement...</p>
+        <p>{t("common.loading")}</p>
       ) : (
         <div className="rounded-xl border  shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Utilisateur</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Rôle</TableHead>
-                <TableHead>Niveau</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Fin de blocage</TableHead>
-                <TableHead>Action</TableHead>
+                <TableHead>{t("admin.users.table.user")}</TableHead>
+                <TableHead>{t("admin.users.table.email")}</TableHead>
+                <TableHead>{t("admin.users.table.role")}</TableHead>
+                <TableHead>{t("admin.users.table.level")}</TableHead>
+                <TableHead>{t("admin.users.table.status")}</TableHead>
+                <TableHead>{t("admin.users.table.blockEnd")}</TableHead>
+                <TableHead>{t("admin.users.table.action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center text-zinc-500">
-                    Aucun utilisateur trouvé.
+                    {t("admin.users.empty")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -210,9 +212,9 @@ const AdminUsers = () => {
                       <TableCell>{user.niveaux || "-"}</TableCell>
                       <TableCell>
                         {blocked ? (
-                          <Badge variant="destructive">Bloqué</Badge>
+                          <Badge variant="destructive">{t("admin.users.state.blocked")}</Badge>
                         ) : (
-                          <Badge className="bg-emerald-600 text-white">Actif</Badge>
+                          <Badge className="bg-emerald-600 text-white">{t("admin.users.state.active")}</Badge>
                         )}
                       </TableCell>
                       <TableCell>
@@ -228,7 +230,7 @@ const AdminUsers = () => {
                           onClick={() => handleActionClick(user)}
                           className={blocked ? "border-emerald-500 text-emerald-700 hover:bg-emerald-50" : ""}
                         >
-                          {blocked ? "Débloquer" : "Bloquer"}
+                          {blocked ? t("admin.users.actions.unblock") : t("admin.users.actions.block")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -243,30 +245,33 @@ const AdminUsers = () => {
       <Dialog open={openBlockDialog} onOpenChange={setOpenBlockDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Bloquer un utilisateur</DialogTitle>
+            <DialogTitle>{t("admin.users.dialog.block.title")}</DialogTitle>
             <DialogDescription>
               {selectedUser
-                ? `Définis la durée du blocage pour ${selectedUser.prenom} ${selectedUser.nom}.`
-                : "Définis la durée du blocage."}
+                ? t("admin.users.dialog.block.descriptionUser", {
+                    firstName: selectedUser.prenom,
+                    lastName: selectedUser.nom,
+                  })
+                : t("admin.users.dialog.block.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1">
-              <label className="text-sm font-medium">Nombre de jours</label>
+              <label className="text-sm font-medium">{t("admin.users.dialog.block.daysLabel")}</label>
               <Input
                 type="number"
                 min={1}
                 value={blockDays}
                 onChange={(e) => setBlockDays(e.target.value)}
-                placeholder="Ex: 20"
+                placeholder={t("admin.users.dialog.block.daysPlaceholder")}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium">Raison (optionnel)</label>
+              <label className="text-sm font-medium">{t("admin.users.dialog.block.reasonLabel")}</label>
               <Textarea
                 value={blockReason}
                 onChange={(e) => setBlockReason(e.target.value)}
-                placeholder="Ex: spam, insultes, non-respect des règles..."
+                placeholder={t("admin.users.dialog.block.reasonPlaceholder")}
                 rows={4}
               />
             </div>
@@ -281,10 +286,10 @@ const AdminUsers = () => {
               }}
               disabled={submitting}
             >
-              Annuler
+              {t("common.cancel")}
             </Button>
             <Button type="button" variant="destructive" onClick={handleConfirmBlock} disabled={submitting}>
-              {submitting ? "Blocage..." : "Confirmer le blocage"}
+              {submitting ? t("admin.users.dialog.block.loading") : t("admin.users.dialog.block.confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -293,11 +298,14 @@ const AdminUsers = () => {
       <AlertDialog open={openUnblockDialog} onOpenChange={setOpenUnblockDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Débloquer cet utilisateur ?</AlertDialogTitle>
+            <AlertDialogTitle>{t("admin.users.dialog.unblock.title")}</AlertDialogTitle>
             <AlertDialogDescription>
               {selectedUser
-                ? `Le compte de ${selectedUser.prenom} ${selectedUser.nom} redeviendra actif immédiatement.`
-                : "Le compte redeviendra actif immédiatement."}
+                ? t("admin.users.dialog.unblock.descriptionUser", {
+                    firstName: selectedUser.prenom,
+                    lastName: selectedUser.nom,
+                  })
+                : t("admin.users.dialog.unblock.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -307,14 +315,14 @@ const AdminUsers = () => {
               }}
               disabled={submitting}
             >
-              Annuler
+              {t("common.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmUnblock}
               disabled={submitting}
               className="bg-emerald-600 text-white hover:bg-emerald-700"
             >
-              {submitting ? "Déblocage..." : "Débloquer"}
+              {submitting ? t("admin.users.dialog.unblock.loading") : t("admin.users.dialog.unblock.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
