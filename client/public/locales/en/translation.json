@@ -76,6 +76,236 @@
       }
     }
   },
+  "admin": {
+    "connexion": {
+      "pageTitle": "Admin Login | 9ralibre",
+      "title": "Admin Login",
+      "subtitle": "Access reserved for administration.",
+      "emailPlaceholder": "Admin email",
+      "passwordPlaceholder": "Password",
+      "loading": "Signing in...",
+      "submit": "Sign in",
+      "errors": {
+        "default": "Admin login failed"
+      }
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Quick moderation overview: latest reports, new users, and direct access to admin tools.",
+      "toasts": {
+        "loadError": "Unable to load admin dashboard",
+        "profApproved": "Professor approved and email sent",
+        "profDeclined": "Professor declined and email sent",
+        "profStatusError": "Unable to update professor status"
+      },
+      "prompts": {
+        "approve": "Conditions / message for professor (optional):",
+        "decline": "Reason / decline conditions (optional):"
+      },
+      "cards": {
+        "users": "Users",
+        "blockedAccounts": "Blocked accounts",
+        "reports": "Reports",
+        "newUsers": "New users (latest 5)"
+      },
+      "latestReports": {
+        "title": "Latest reports received",
+        "viewAll": "View all",
+        "empty": "No reports at the moment."
+      },
+      "reportType": {
+        "video": "Video",
+        "comment": "Comment"
+      },
+      "labels": {
+        "comment": "Comment",
+        "reason": "Reason",
+        "reportedBy": "Reported by",
+        "status": "Status"
+      },
+      "latestUsers": {
+        "title": "Latest users",
+        "manage": "Manage users",
+        "empty": "No users found."
+      },
+      "status": {
+        "approved": "Approved",
+        "declined": "Declined",
+        "pending": "Pending"
+      },
+      "actions": {
+        "approve": "Approve",
+        "decline": "Decline"
+      },
+      "state": {
+        "blocked": "Blocked",
+        "active": "Active"
+      },
+      "quickLinks": {
+        "usersTitle": "Users",
+        "usersDesc": "Block/unblock accounts and monitor statuses.",
+        "professorsTitle": "Professors",
+        "professorsDesc": "Approve or decline professor requests.",
+        "signalsTitle": "Reports",
+        "signalsDesc": "Analyze video and comment reports.",
+        "appealsTitle": "Appeals",
+        "appealsDesc": "Approve or reject user appeal requests."
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "List of accounts (excluding admins), with quick block/unblock actions.",
+      "toasts": {
+        "loadError": "Unable to load users",
+        "unblocked": "User unblocked",
+        "blocked": "User blocked",
+        "blockError": "Error while blocking user",
+        "invalidDays": "Invalid number of days"
+      },
+      "cards": {
+        "total": "Total",
+        "blocked": "Blocked",
+        "active": "Active"
+      },
+      "searchPlaceholder": "Search by name, email, role...",
+      "table": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "level": "Level",
+        "status": "Status",
+        "blockEnd": "Block end",
+        "action": "Action"
+      },
+      "empty": "No users found.",
+      "state": {
+        "blocked": "Blocked",
+        "active": "Active"
+      },
+      "actions": {
+        "block": "Block",
+        "unblock": "Unblock"
+      },
+      "dialog": {
+        "block": {
+          "title": "Block a user",
+          "description": "Set the block duration.",
+          "descriptionUser": "Set the block duration for {{firstName}} {{lastName}}.",
+          "daysLabel": "Number of days",
+          "daysPlaceholder": "Ex: 20",
+          "reasonLabel": "Reason (optional)",
+          "reasonPlaceholder": "Ex: spam, insults, policy violations...",
+          "loading": "Blocking...",
+          "confirm": "Confirm block"
+        },
+        "unblock": {
+          "title": "Unblock this user?",
+          "description": "The account will become active immediately.",
+          "descriptionUser": "The account of {{firstName}} {{lastName}} will become active immediately.",
+          "loading": "Unblocking...",
+          "confirm": "Unblock"
+        }
+      }
+    },
+    "signals": {
+      "title": "Reports",
+      "videoTitle": "Video reports ({{count}})",
+      "commentTitle": "Comment reports ({{count}})",
+      "emptyVideo": "No video reports.",
+      "emptyComment": "No comment reports.",
+      "toasts": {
+        "loadError": "Unable to load reports"
+      },
+      "table": {
+        "video": "Video",
+        "professor": "Professor",
+        "reportedBy": "Reported by",
+        "reason": "Reason",
+        "date": "Date",
+        "comment": "Comment"
+      }
+    },
+    "professors": {
+      "title": "Professor Validation",
+      "subtitle": "Review all professor accounts and approve/decline requests with email notification.",
+      "toasts": {
+        "loadError": "Unable to load professors list",
+        "approved": "Professor approved and email sent",
+        "declined": "Professor declined and email sent",
+        "statusError": "Unable to update professor status"
+      },
+      "cards": {
+        "total": "Total professors",
+        "pending": "Pending",
+        "approved": "Approved",
+        "declined": "Declined"
+      },
+      "searchPlaceholder": "Search professor by name or email...",
+      "filterPlaceholder": "Filter by status",
+      "filters": {
+        "all": "All statuses",
+        "pending": "Pending",
+        "approved": "Approved",
+        "declined": "Declined"
+      },
+      "table": {
+        "professor": "Professor",
+        "email": "Email",
+        "level": "Level",
+        "status": "Status",
+        "createdAt": "Sign-up date",
+        "actions": "Actions"
+      },
+      "empty": "No professors found.",
+      "status": {
+        "approved": "Approved",
+        "declined": "Declined",
+        "pending": "Pending"
+      },
+      "actions": {
+        "accept": "Accept",
+        "decline": "Decline"
+      },
+      "dialog": {
+        "titleApprove": "Accept this professor",
+        "titleDecline": "Decline this professor",
+        "description": "Add an optional message sent by email.",
+        "descriptionUser": "You can add a message that will be emailed to {{firstName}} {{lastName}}.",
+        "conditionsLabel": "Conditions / reason (optional)",
+        "placeholderApprove": "Ex: Please follow the teaching guidelines...",
+        "placeholderDecline": "Ex: Please complete your profile and details...",
+        "sending": "Sending...",
+        "confirmApprove": "Confirm approval",
+        "confirmDecline": "Confirm decline"
+      }
+    },
+    "appeals": {
+      "title": "Appeals",
+      "empty": "No requests at the moment.",
+      "prompts": {
+        "reviewNote": "Admin note (optional):"
+      },
+      "toasts": {
+        "loadError": "Unable to load requests",
+        "approved": "Request approved",
+        "rejected": "Request rejected",
+        "reviewError": "Request processing error"
+      },
+      "table": {
+        "user": "User",
+        "email": "Email",
+        "message": "Message",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "alreadyReviewed": "Already reviewed"
+      }
+    }
+  },
   "modal": {
     "title": "Log in",
     "noAccount": "Not a member yet?",
