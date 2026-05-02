@@ -29,52 +29,7 @@ import { Collapsible } from "@/components/ui/collapsible"
 import { useProtectedRoutes } from "@/store/userStore"
 import { useTranslation } from "react-i18next";
 
-const dataProfesseur = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/prof/dashboard",
-      icon: Table2,
-      isActive: true,
-    },
-    {
-      title: "Calendrier",
-      url: "/prof/calendrier",
-      icon: Calendar1 ,
-      isActive: true,
-    },
-    {
-      title: "Cours",
-      url: "/prof/cours",
-      icon: BookOpen,
-    },
-    {
-      title: "Videos",
-      url: "/prof/videos",
-      icon: Video,
-    },
-    {
-      title: "Quiz",
-      url: "/prof/quiz",
-      icon: BookType,
-    },
-    {
-      title: "Messagerie",
-      url: "/prof/chat",
-      icon: MessageCircleMore,
-    },
-    {
-      title: "Paramètre",
-      url: "/prof/settings",
-      icon: Settings2,
-    },
-  ],
-}
+
 
 const dataAdmin = {
    user: {
