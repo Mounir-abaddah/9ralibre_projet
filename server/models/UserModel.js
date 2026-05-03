@@ -39,6 +39,11 @@ const UserSchema = new mongoose.Schema(
       enum: ["Non renseigné", "1AC", "2AC", "3AC", "TC", "1BAC", "2BAC"],
       default: "Non renseigné",
     },
+    matiere: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "matiere",
+      default: null,
+    },
     completeProfile: {
       type: Boolean,
       default: false,
