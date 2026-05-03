@@ -2,7 +2,7 @@ import Teacher_img from '@/assets/images/Professeur_Bienvenue.png'
 import logo from '@/assets/images/9ralibre.png'
 import { Button } from "@/components/ui/button"
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Input from '@/components/Form/Input'
 import {
   Select,
@@ -26,6 +26,8 @@ import {
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next";
 
+type MatiereOpt = { _id: string; nom: string };
+
 const ProfInscription = () => {
     const { t } = useTranslation();
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -35,15 +37,20 @@ const ProfInscription = () => {
         prenom: "",
         email: "",
         password: "",
-        niveaux: ""
+        niveaux: "",
+        matiere: "",
     })
+
+    const [matieresList, setMatieresList] = useState<MatiereOpt[]>([])
+    const [loadingMatieres, setLoadingMatieres] = useState(false)
 
     const [errFormData, setErrFormData] = useState({
         nom: "",
         prenom: "",
         email: "",
         password: "",
-        niveaux: ""
+        niveaux: "",
+        matiere: "",
     })
 
     const [loading, setLoading] = useState(false)
@@ -51,9 +58,39 @@ const ProfInscription = () => {
     const [errorMsg, setErrorMsg] = useState("")
 
     const handleChange = (field: string, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }))
-        setErrFormData(prev => ({ ...prev, [field]: "" }))
+        setFormData((prev) => {
+            const next = { ...prev, [field]: value }
+            if (field === "niveaux") next.matiere = ""
+            return next
+        })
+        setErrFormData((prev) => ({ ...prev, [field]: "" }))
+        if (field === "niveaux") setErrFormData((prev) => ({ ...prev, matiere: "" }))
     }
+
+    useEffect(() => {
+        let cancelled = false
+        const run = async () => {
+            if (!formData.niveaux) {
+                setMatieresList([])
+                return
+            }
+            setLoadingMatieres(true)
+            try {
+                const res = await axios.get<MatiereOpt[]>(
+                    `${apiUrl}/prof/register/matieres/${encodeURIComponent(formData.niveaux)}`
+                )
+                if (!cancelled) setMatieresList(Array.isArray(res.data) ? res.data : [])
+            } catch {
+                if (!cancelled) setMatieresList([])
+            } finally {
+                if (!cancelled) setLoadingMatieres(false)
+            }
+        }
+        void run()
+        return () => {
+            cancelled = true
+        }
+    }, [formData.niveaux, apiUrl])
 
     const handleFocus = (field: string) => {
         setErrFormData(prev => ({ ...prev, [field]: "" }))
@@ -67,7 +104,8 @@ const ProfInscription = () => {
         prenom: "",
         email: "",
         password: "",
-        niveaux: ""
+        niveaux: "",
+        matiere: "",
         }
 
         if (!formData.nom) errors.nom = t("prof.register.requiredLastName")
@@ -75,11 +113,18 @@ const ProfInscription = () => {
         if (!formData.email) errors.email = t("prof.register.requiredEmail")
         if (!formData.password) errors.password = t("prof.register.requiredPassword")
         if (!formData.niveaux) errors.niveaux = t("prof.register.requiredLevel")
+        if (formData.niveaux && !errors.niveaux) {
+            if (!loadingMatieres && matieresList.length === 0) {
+                errors.matiere = t("prof.register.noSubjectsForLevel")
+            } else if (!loadingMatieres && !formData.matiere) {
+                errors.matiere = t("prof.register.requiredSubject")
+            }
+        }
 
         setErrFormData(errors)
 
-        const hasError = Object.values(errors).some(e => e !== "")
-        if (hasError) return
+        const hasError = Object.values(errors).some((e) => e !== "")
+        if (hasError || loadingMatieres) return
 
         try {
         setLoading(true)
@@ -94,7 +139,8 @@ const ProfInscription = () => {
                 prenom: "",
                 email: "",
                 password: "",
-                niveaux: ""
+                niveaux: "",
+                matiere: "",
             })
             navigate('/prof-connexion')
         }
@@ -212,47 +258,94 @@ return (
                 error={errFormData.email}
                 className='text-black dark:text-black'
                 />
+                <div className='flex w-full items-center space-x-2'>
+                    {/* Niveaux */}
+                    <div className='w-full space-y-1'>
+                    <Label className='dark:text-black'>{t("prof.settings.levels")}</Label>
 
-                {/* Niveaux */}
-                <div className='space-y-1'>
-                <Label className='dark:text-black'>{t("prof.settings.levels")}</Label>
-
-                <Select
-                    value={formData.niveaux || undefined}
-                    onValueChange={(value) => handleChange("niveaux", value)}
-                >
-                    <SelectTrigger
-                        className={cn(
-                            "w-full rounded-md border p-2 dark:border-gray-300 dark:font-semibold dark:text-black",
-                            errFormData.niveaux && "border-red-400 bg-red-50 dark:bg-red-950/30"
-                        )}
+                    <Select
+                        value={formData.niveaux || undefined}
+                        onValueChange={(value) => handleChange("niveaux", value)}
                     >
-                    <SelectValue placeholder={t("prof.settings.levels")}/>
-                    </SelectTrigger>
+                        <SelectTrigger
+                            className={cn(
+                                "w-full rounded-md border p-2 dark:border-gray-300 dark:font-semibold dark:text-black",
+                                errFormData.niveaux && "border-red-400 bg-red-50 dark:bg-red-950/30"
+                            )}
+                        >
+                        <SelectValue placeholder={t("prof.settings.levels")}/>
+                        </SelectTrigger>
 
-                    <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>{t("settings.fields.middleSchool")}</SelectLabel>
-                        <SelectItem value="1AC">1AC</SelectItem>
-                        <SelectItem value="2AC">2AC</SelectItem>
-                        <SelectItem value="3AC">3AC</SelectItem>
-                    </SelectGroup>
+                        <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>{t("settings.fields.middleSchool")}</SelectLabel>
+                            <SelectItem value="1AC">1AC</SelectItem>
+                            <SelectItem value="2AC">2AC</SelectItem>
+                            <SelectItem value="3AC">3AC</SelectItem>
+                        </SelectGroup>
 
-                    <SelectSeparator />
+                        <SelectSeparator />
 
-                    <SelectGroup>
-                        <SelectLabel>{t("settings.fields.highSchool")}</SelectLabel>
-                        <SelectItem value="TC">TC</SelectItem>
-                        <SelectItem value="1BAC">1BAC</SelectItem>
-                        <SelectItem value="2BAC">2BAC</SelectItem>
-                    </SelectGroup>
-                    </SelectContent>
-                </Select>
+                        <SelectGroup>
+                            <SelectLabel>{t("settings.fields.highSchool")}</SelectLabel>
+                            <SelectItem value="TC">TC</SelectItem>
+                            <SelectItem value="1BAC">1BAC</SelectItem>
+                            <SelectItem value="2BAC">2BAC</SelectItem>
+                        </SelectGroup>
+                        </SelectContent>
+                    </Select>
 
-                {errFormData.niveaux && (
-                    <p className="text-sm text-red-500">{errFormData.niveaux}</p>
-                )}
+                    {errFormData.niveaux && (
+                        <p className="text-sm text-red-500">{errFormData.niveaux}</p>
+                    )}
+                    </div>
+                    {/* Matière (liée au niveau) */}
+                    <div className="space-y-1">
+                        <Label className="dark:text-black">{t("prof.common.subject")}</Label>
+                        <Select
+                            value={formData.matiere || undefined}
+                            onValueChange={(value) => handleChange("matiere", value)}
+                            disabled={
+                                !formData.niveaux ||
+                                loadingMatieres ||
+                                matieresList.length === 0
+                            }
+                        >
+                            <SelectTrigger
+                                className={cn(
+                                    "w-full rounded-md border p-2 dark:border-gray-300 dark:font-semibold dark:text-black",
+                                    errFormData.matiere &&
+                                        "border-red-400 bg-red-50 dark:bg-red-950/30"
+                                )}
+                            >
+                                <SelectValue
+                                    placeholder={
+                                        !formData.niveaux
+                                            ? t("prof.register.selectLevelFirstForSubject")
+                                            : loadingMatieres
+                                            ? t("prof.register.loadingMatieres")
+                                            : matieresList.length === 0
+                                                ? t("prof.register.noSubjectsForLevel")
+                                                : t("prof.modal.chooseSubject")
+                                    }
+                                />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {matieresList.map((m) => (
+                                        <SelectItem key={m._id} value={m._id}>
+                                            {m.nom}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        {errFormData.matiere && (
+                            <p className="text-sm text-red-500">{errFormData.matiere}</p>
+                        )}
+                    </div>
                 </div>
+                
 
                 {/* Password */}
                 <Input
@@ -270,7 +363,7 @@ return (
 
                 {/* Submit */}
                 <Button
-                disabled={loading}
+                disabled={loading || loadingMatieres}
                 className="w-full cursor-pointer bg-amber-600 hover:bg-amber-700"
                 >
                 {loading ? t("prof.register.creating") : t("prof.register.createAccount")}
