@@ -5,12 +5,44 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const passport = require('passport')
+const rateLimit = require('express-rate-limit');
 const {registerShema , loginSchema , messageOUblierSchema,passwordResetShema} = require('../validations/authValidation');
 const { sendVerificationEmail, oublierMotdepasse } = require('../services/emailServices');
 
+const registerLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: "Trop de créations de compte. Réessayez plus tard." },
+});
 
+const loginLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 5,
+    skipSuccessfulRequests: true,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: "Trop de tentatives de connexion. Réessayez dans 10 minutes." },
+});
 
-router.post('/register',async(req,res)=>{
+const forgotPasswordLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 3,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: "Trop de demandes de réinitialisation. Réessayez plus tard." },
+});
+
+const resetPasswordLimiter = rateLimit({
+    windowMs: 30 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: "Trop de tentatives de réinitialisation. Réessayez plus tard." },
+});
+
+router.post('/register', registerLimiter, async(req,res)=>{
     try{
         const registerValidation = registerShema.parse(req.body)
         const emailExists = await User.findOne({email:registerValidation.email})
@@ -64,7 +96,7 @@ router.get('/confirm-email/:token',async(req,res)=>{
     }
 })
 
-router.post('/connexion',async(req,res)=>{
+router.post('/connexion', loginLimiter, async(req,res)=>{
     try{
         const {email,password} = loginSchema.parse(req.body);
         const user = await User.findOne({email})
@@ -110,7 +142,7 @@ router.post('/connexion',async(req,res)=>{
 })
 
 
-router.post('/oublierMotdepasse',async(req,res)=>{
+router.post('/oublierMotdepasse', forgotPasswordLimiter, async(req,res)=>{
     try{
         const validationOublierPassword = messageOUblierSchema.parse(req.body);
         const user = await User.findOne({email:validationOublierPassword.email})
@@ -138,7 +170,7 @@ router.post('/oublierMotdepasse',async(req,res)=>{
 })
 
 
-router.put('/resetPassword/:token', async (req, res) => {
+router.put('/resetPassword/:token', resetPasswordLimiter, async (req, res) => {
   try{
     const {token} = req.params;
     const validationOublierPassword = passwordResetShema.parse(req.body);
