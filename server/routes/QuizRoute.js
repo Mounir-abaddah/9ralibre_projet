@@ -6,32 +6,6 @@ const ResultsQuiz = require('../models/ResultatQuizModel');
 const authMiddleware = require('../middlewares/authMiddleware');
 const UserModels = require('../models/UserModel');
 
-router.post('/add-quiz', authMiddleware, async (req, res) => {
-    try {
-        const {
-            text,
-            questions,
-            professeur,
-            filiere,
-            matiere,
-            niveaux
-        } = req.body;
-
-        const quiz = await Quiz.create({
-            text,
-            questions,
-            professeur,
-            filiere,
-            matiere,
-            niveaux
-        });
-
-        res.status(201).json(quiz);
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
 
 router.get('/get-quiz/:niveauxName', authMiddleware, async (req, res) => {
     const userId = req.user.userId
