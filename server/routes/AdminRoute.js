@@ -9,8 +9,18 @@ const User = require('../models/UserModel');
 const VideosModel = require('../models/VideosModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
+const rateLimit = require('express-rate-limit');
 
-router.post('/connexion', async (req, res) => {
+const adminLoginLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: "Trop de tentatives de connexion admin. Réessayez dans 10 minutes." },
+});
+
+router.post('/connexion', adminLoginLimiter, async (req, res) => {
   try {
     const { email, password } = loginSchema.parse(req.body);
     const user = await User.findOne({ email });
