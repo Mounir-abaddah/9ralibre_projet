@@ -229,7 +229,7 @@ router.get('/profile', authMiddlewares, profMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("matiere");
     const quiz = await Quiz.countDocuments({ professeur: user._id });
     const videos = await Videos.countDocuments({ professeur: user._id });
 
@@ -253,6 +253,10 @@ router.get('/profile', authMiddlewares, profMiddleware, async (req, res) => {
       completeProfile: user.completeProfile,
       provider:user.provider,
       followers: user.followers,
+      matiere:
+        user.matiere && typeof user.matiere === "object"
+          ? { _id: String(user.matiere._id), nom: user.matiere.nom }
+          : null,
     };
 
     return res.status(200).json({
@@ -879,6 +883,27 @@ router.put('/upload-avatar', authMiddlewares, profMiddleware, uploadImage.single
 
 
 {/***************************************************************Validation autheentfication Post */}
+const REGISTER_NIVEAU_NAMES = new Set(["1AC", "2AC", "3AC", "TC", "1BAC", "2BAC"]);
+
+router.get("/register/matieres/:niveau", async (req, res) => {
+  try {
+    const niveau =
+      typeof req.params.niveau === "string" ? req.params.niveau.trim() : "";
+    if (!REGISTER_NIVEAU_NAMES.has(niveau)) {
+      return res.status(400).json({ success: false, message: "Niveau invalide" });
+    }
+    const niveauDoc = await Niveaux.findOne({ nom: niveau });
+    if (!niveauDoc) {
+      return res.status(404).json({ success: false, message: "Niveau introuvable" });
+    }
+    const matieres = await Matiere.find({ niveaux: niveauDoc._id }).select("nom").sort({ nom: 1 }).lean();
+    res.status(200).json(matieres);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+});
+
 router.post("/register", async (req, res) => {
   try {
     // ✅ validation
@@ -892,6 +917,22 @@ router.post("/register", async (req, res) => {
       });
     }
 
+    const niveauDoc = await Niveaux.findOne({ nom: data.niveaux });
+    if (!niveauDoc) {
+      return res.status(400).json({
+        success: false,
+        message: "Niveau invalide",
+      });
+    }
+
+    const matiereDoc = await Matiere.findById(data.matiere);
+    if (!matiereDoc || String(matiereDoc.niveaux) !== String(niveauDoc._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Matière invalide ou incompatible avec ce niveau",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const newUser = new User({
@@ -900,6 +941,7 @@ router.post("/register", async (req, res) => {
       email: data.email,
       password: hashedPassword,
       niveaux: data.niveaux,
+      matiere: data.matiere,
       accountVerified: true,
       role: "Professeur",
       provider: "local",
