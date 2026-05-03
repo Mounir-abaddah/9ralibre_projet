@@ -343,6 +343,21 @@ const filiereMatiereMap: Record<string, string[]> = {
     "Histoire Géographie",
   ],
 
+  "Sciences Économiques et Gestion": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
   "Sciences de Gestion Comptable (SGC)": [
     "Mathématiques",
     "Économie générale et Statistiques",
@@ -378,6 +393,52 @@ const filiereMatiereMap: Record<string, string[]> = {
     "Education Islamique",
   ],
 };
+
+  /** Filière par défaut (collège ou inférée depuis la matière d’inscription), toujours modifiable. */
+  useEffect(() => {
+    if (!open || cours) return;
+    setFiliere((prev) => {
+      if (prev) return prev;
+      const isCollege =
+        niveaux === "1AC" || niveaux === "2AC" || niveaux === "3AC";
+      if (isCollege) return "Science";
+      const profNom =
+        data?.matiere && typeof data.matiere === "object"
+          ? data.matiere.nom
+          : "";
+      if (!profNom || !niveaux) return prev;
+      const filieresForNiveau = filiereByNiveau[niveaux] ?? [];
+      const match =
+        filieresForNiveau.find((f) =>
+          filiereMatiereMap[f]?.includes(profNom)
+        ) ?? "";
+      return match || prev;
+    });
+  }, [open, cours, niveaux, data?.matiere]);
+
+  /** Matière par défaut = celle du prof si elle fait partie du filtre filière, sinon laissée vide pour choix manuel. */
+  useEffect(() => {
+    if (!open || cours || !filiere || !matiere.length) return;
+    const filtered = matiere.filter((mat) =>
+      filiereMatiereMap[filiere]?.includes(mat.nom)
+    );
+    const profId =
+      data?.matiere && typeof data.matiere === "object"
+        ? String(data.matiere._id)
+        : "";
+    const profNom =
+      data?.matiere && typeof data.matiere === "object"
+        ? data.matiere.nom
+        : "";
+    setMatiereSelected((prev) => {
+      if (prev) return prev;
+      if (profId && filtered.some((m) => m._id === profId)) return profId;
+      const byName = profNom
+        ? filtered.find((m) => m.nom === profNom)
+        : undefined;
+      return byName?._id ?? prev;
+    });
+  }, [open, cours, filiere, matiere, data?.matiere]);
 
   const filteredMatieres = filiere? matiere.filter((mat) =>filiereMatiereMap[filiere]?.includes(mat.nom)): [];
 
