@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+/** Filtres des pages élève (liste cours / vidéos). Pour les formulaires prof, la matière par défaut vient du profil (`matiere` sur `/prof/profile`). */
 export interface CoursType{
     matiere:string|null,
     semestre:string|null,
