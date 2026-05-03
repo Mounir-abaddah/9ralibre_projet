@@ -26,6 +26,8 @@ const { t } = useTranslation();
 const apiUrl = import.meta.env.VITE_API_URL;
 const [text, setText] = useState("");
 const {data} = useProfProtectedRoutes();
+const isCollegeProf =
+  data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
 const [loading, setLoading] = useState(false);
 const [openModal,setOpenModal] = useState(false);
 const [selectedMatiere, setSelectedMatiere] = useState("");
@@ -86,9 +88,8 @@ const deleteQuestion = (index: number) => {
 const handleSubmit = async () => {
     try {
         if (!text) return toast.error(t("prof.addQuiz.requiredTitle"));
-        const isCollege = data?.niveaux === "1AC" || data?.niveaux === "2AC" || data?.niveaux === "3AC";
-        if (!selectedMatiere || (!isCollege && !selectedFiliere)) {
-            return toast.error(t("prof.addQuiz.openSettingsError", { needStream: !isCollege ? t("prof.addQuiz.andStream") : "" }));
+        if (!selectedMatiere || (!isCollegeProf && !selectedFiliere)) {
+            return toast.error(t("prof.addQuiz.openSettingsError", { needStream: !isCollegeProf ? t("prof.addQuiz.andStream") : "" }));
         }
         for (const q of questions) {
             if (!q.question) return toast.error(t("prof.addQuiz.emptyQuestion"));
@@ -105,7 +106,7 @@ const handleSubmit = async () => {
             text,
             questions,
             matiere: selectedMatiere,
-            filiere: isCollege ? 'Science' : selectedFiliere,
+            filiere: isCollegeProf ? 'Science' : selectedFiliere,
         },{ withCredentials: true },
         );
 
@@ -138,8 +139,8 @@ return (
                         <Button
                             type="button"
                             onClick={() => setOpenModal(true)}
-                            variant={!selectedMatiere || !selectedFiliere ? "default" : "outline"}
-                            className={`shrink-0 cursor-pointer ${!selectedMatiere || !selectedFiliere ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                            variant={!selectedMatiere || (!isCollegeProf && !selectedFiliere) ? "default" : "outline"}
+                            className={`shrink-0 cursor-pointer ${!selectedMatiere || (!isCollegeProf && !selectedFiliere) ? "bg-amber-500 hover:bg-amber-600" : ""}`}
                             aria-label={t("prof.addQuiz.settingsAria")}
                         >
                             <Settings className="size-4" />
@@ -152,7 +153,7 @@ return (
                 </Tooltip>
             </div>
 
-            {(!selectedMatiere || !selectedFiliere) && (
+            {(!selectedMatiere || (!isCollegeProf && !selectedFiliere)) && (
                 <Alert className="w-full border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-50">
                     <Info className="size-4 text-amber-700 dark:text-amber-300" />
                     <AlertTitle className="text-sm font-semibold">
@@ -170,7 +171,7 @@ return (
                     {t("prof.common.subject")} : {selectedMatiere ? t("prof.addQuiz.selected", { value: selectedMatiere }) : t("prof.addQuiz.notProvidedOpenSettings")}
                 </span>
                 {" · "}
-                {!["1AC", "2AC", "3AC"].includes(data?.niveaux || "") && (
+                {!isCollegeProf && (
                     <span className={selectedFiliere ? "" : "font-medium text-amber-700 dark:text-amber-300"}>
                         {t("prof.common.stream")} : {selectedFiliere || t("prof.addQuiz.notProvidedOpenSettings")}
                     </span>
