@@ -31,6 +31,8 @@ export interface typedataProf{
     email: string,
     niveaux:string,
     image:string
+    /** Matière d’enseignement choisie à l’inscription (pour pré-remplir les formulaires). */
+    matiere?: { _id: string; nom: string } | null;
     accountVerified: boolean
     completeProfile:boolean
     followers:string[]
