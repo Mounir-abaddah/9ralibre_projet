@@ -342,6 +342,21 @@ const filiereMatiereMap: Record<string, string[]> = {
     "Histoire Géographie",
   ],
 
+  "Sciences Économiques et Gestion": [
+    "Mathématiques",
+    "Économie générale et Statistiques",
+    "Comptabilité et Mathématiques financières",
+    "Économie et Organisation Administrative des Entreprises",
+    "Droit",
+    "Informatique de gestion",
+    "Arabe",
+    "Français",
+    "Anglais",
+    "Education Islamique",
+    "Philosophie",
+    "Histoire Géographie",
+  ],
+
   "Sciences de Gestion Comptable (SGC)": [
     "Mathématiques",
     "Économie générale et Statistiques",
@@ -377,6 +392,60 @@ const filiereMatiereMap: Record<string, string[]> = {
     "Education Islamique",
   ],
 };
+
+  useEffect(() => {
+    if (!open || videos) return;
+    setForm((prev) => {
+      if (prev.filiere) return prev;
+      const isCollege =
+        niveauxLabel === "1AC" ||
+        niveauxLabel === "2AC" ||
+        niveauxLabel === "3AC";
+      let nextFiliere = "";
+      if (isCollege) nextFiliere = "Science";
+      else {
+        const profNom =
+          data?.matiere && typeof data.matiere === "object"
+            ? data.matiere.nom
+            : "";
+        if (profNom && niveauxLabel) {
+          const filieresForNiveau = filiereByNiveau[niveauxLabel] ?? [];
+          nextFiliere =
+            filieresForNiveau.find((f) =>
+              filiereMatiereMap[f]?.includes(profNom)
+            ) ?? "";
+        }
+      }
+      if (!nextFiliere) return prev;
+      return { ...prev, filiere: nextFiliere };
+    });
+  }, [open, videos, niveauxLabel, data?.matiere]);
+
+  useEffect(() => {
+    if (!open || videos || !form.filiere || !matiere.length) return;
+    const filtered = matiere.filter((mat) =>
+      filiereMatiereMap[form.filiere]?.includes(mat.nom)
+    );
+    const profId =
+      data?.matiere && typeof data.matiere === "object"
+        ? String(data.matiere._id)
+        : "";
+    const profNom =
+      data?.matiere && typeof data.matiere === "object"
+        ? data.matiere.nom
+        : "";
+    setForm((prev) => {
+      if (prev.matiere) return prev;
+      let next = "";
+      if (profId && filtered.some((m) => m._id === profId)) next = profId;
+      else if (profNom) {
+        const byName = filtered.find((m) => m.nom === profNom);
+        if (byName) next = byName._id;
+      }
+      if (!next) return prev;
+      return { ...prev, matiere: next };
+    });
+  }, [open, videos, form.filiere, matiere, data?.matiere]);
 
 const filteredMatieres = form.filiere
   ? matiere.filter((mat) =>
