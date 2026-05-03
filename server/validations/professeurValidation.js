@@ -64,6 +64,7 @@ const registerSchema = z.object({
   email: z.string().email("Email invalide"),
 
   niveaux: z.string().min(1, "Niveau requis"),
+  matiere: objectId,
 
   password: z
     .string()
