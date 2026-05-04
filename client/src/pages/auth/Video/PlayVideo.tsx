@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import RelatedVideo from "@/components/Videos/RelatedVideo";
 import ReportModal from "@/components/Videos/ReportModal";
 import { useTranslation } from "react-i18next";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const PlayVideo = () => {
     const { t } = useTranslation();
@@ -60,6 +61,7 @@ const PlayVideo = () => {
     
     if(!videos) return <div>{t("common.loading")}</div>
     document.title = `Videos - ${videos?.title} | 9ralibre`
+    
 return (
     <div className="flex w-full flex-col gap-6 p-4 lg:flex-row">
         <div className="flex w-full flex-col space-y-4">
@@ -82,7 +84,13 @@ return (
             <div className="flex w-full flex-wrap justify-between space-y-4 md:space-y-0 lg:space-y-0">
                 {/*****Professeur(Follow,Followers) *****/}
                 <div className="flex gap-2">
-                    <img src={videos.professeur?.image} loading='lazy' alt="image_de_professeur" width={40} className="rounded-full"/>
+                    <Avatar size="lg" >
+                        <AvatarImage src={`${apiUrl}/uploads/images/${videos.professeur._id}/${videos.professeur?.image}`} loading="lazy" />
+                        <AvatarFallback>
+                            {videos.professeur.nom[0]}
+                            {videos.professeur.prenom[0]}
+                        </AvatarFallback>
+                    </Avatar>
                     <div className="flex flex-col items-start">
                         <span>{videos.professeur.nom} {videos.professeur.prenom}</span>
                         <span className="text-xs text-gray-400">{t("video.subscribersCount", { count: videos.professeur.followers.length })}</span>
