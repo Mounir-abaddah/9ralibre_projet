@@ -43,6 +43,7 @@ import About from './pages/About/About';
 import { CrispVisibilityController } from './utils/crispVisibilityController';
 import ProfPlayVideos from './pages/auth/Professeur/Prof-videos/ProfPlayVideos';
 import ProtectedRouteAdmin from './components/ProtectedRouteAdmin/ProtectedRouteAdmin';
+import PublicOnlyRoute from './components/PublicOnlyRoute/PublicOnlyRoute';
 import AdminDashboard from './pages/auth/Admin/Dashboard/AdminDashboard';
 import LayoutsAdmin from './components/LayoutsAdmin/LayoutsAdmin';
 import AdminConnexion from './pages/auth/Admin/Admin-connexion/AdminConnexion';
@@ -67,11 +68,13 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='*' element={<PagesNonTrouver />} />
         <Route path='/About' element={<About />} />
-        <Route path='/inscription' element={<Inscription />} />
-        <Route path='/prof-inscription' element={<ProfInscription />} />
-        <Route path='/connexion' element={<Connexion />} />
-        <Route path='/prof-connexion' element={<ProfConnexion />} />
-        <Route path='/admin-connexion' element={<AdminConnexion />} />
+        <Route element={<PublicOnlyRoute />}>
+          <Route path='/inscription' element={<Inscription />} />
+          <Route path='/prof-inscription' element={<ProfInscription />} />
+          <Route path='/connexion' element={<Connexion />} />
+          <Route path='/prof-connexion' element={<ProfConnexion />} />
+          <Route path='/admin-connexion' element={<AdminConnexion />} />
+        </Route>
         <Route path='/appeal' element={<AppealPage />} />
         <Route path='/password/reset' element={<OublierMotdepasse />} />
         <Route path='/prof/password/reset' element={<ProfForgotPassword />} />
