@@ -19,7 +19,7 @@ export default function DrawExcalidraw() {
   }
 
   return (
-    <div className="size-full" style={{ height: "590px" }}>
+    <div className="size-full" style={{ height: "100vh" }}>
       <Excalidraw
         theme={theme === "dark" ? "dark" : "light"}
         langCode="fr-FR"
