@@ -39,12 +39,12 @@ const Comments = ({videos,getVideos}:CommentsTypes) => {
 
 
     const handlePostComments = async()=>{
-        if (loading) return;
+        if (loading || !comments.trim()) return;
         try{
             setLoading(true);
             await axios.post(
                 `${apiUrl}/videos/post-videos-commentaires/${videoId}`,
-                { text: comments },
+                { text: comments.trim() },
                 { withCredentials: true }
             );
 
@@ -54,13 +54,8 @@ const Comments = ({videos,getVideos}:CommentsTypes) => {
         }catch(error){
             console.error(error);
         }finally{
-            setLoading(true)
+            setLoading(false)
         }
-
-        await axios.post(`${apiUrl}/videos/post-videos-commentaires/${videoId}`,{text:comments},{withCredentials:true});
-        setComments("");
-        setAfficherButtonComments(false)
-        await getVideos()
     }
 
     const handleDeleteComments = async(commentsId:string)=>{
@@ -95,9 +90,9 @@ return (
             </div>
             {/*************COMMENTAIRES (TEXT) ET EMOJIE *****************/}
             <div className='flex w-full space-x-2'>
-                <Avatar>
-                    <AvatarImage src={data?.image} alt='image_users'/>
-                    <AvatarFallback className={`${data?.role === "Etudiant" ? 'bg-sky-400' : 'bg-pink-400'}`}>
+                <Avatar size='lg'>
+                    <AvatarImage src={`${apiUrl}/uploads/images/${data?.id}/${data?.image}`} alt='image_users'/>
+                    <AvatarFallback className={`${data?.role === "Etudiant" ? 'bg-sky-400 text-white' : 'bg-pink-400  text-white'}`}>
                         {data?.nom[0].toUpperCase()}
                         {data?.prenom[0].toUpperCase()}
                     </AvatarFallback>
@@ -163,7 +158,7 @@ return (
                         {/************* COMMENTAIRES AVATAR *****************/}
                         <div className="flex w-full items-start gap-2 space-y-4">
                             <Avatar>
-                                <AvatarImage src={comments.user.image} alt='image_users'/>
+                                <AvatarImage src={`${apiUrl}/uploads/images/${comments.user._id}/${comments.user.image}`} alt='image_users'/>
                                 <AvatarFallback className={`${comments.user.role === "Etudiant" ? 'bg-sky-400' : 'bg-pink-400'}`}>
                                     {comments.user.nom[0].toUpperCase()}
                                     {comments.user.prenom[0].toUpperCase()}
