@@ -34,8 +34,6 @@ import {
   Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ReactPlayer from 'react-player';
-import Banner from '@/assets/images/banner.jpg';
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
@@ -134,7 +132,7 @@ function LandingPage({ user }: { user: typedata | null }) {
   const quickLinks = user && n
     ? [
         { to: `/Dashboard/${n}`,  label: t("home.quickLinks.dashboard"),     desc: t("home.quickLinks.dashboardDesc"),     icon: LayoutDashboard },
-        { to: `/Cours/${n}`,      label: t("home.quickLinks.courses"),        desc: t("home.quickLinks.coursesDesc"),        icon: BookOpen },
+        { to: `/Cours`,           label: t("home.quickLinks.courses"),        desc: t("home.quickLinks.coursesDesc"),        icon: BookOpen },
         { to: `/Videos/${n}`,     label: t("home.quickLinks.videos"),         desc: t("home.quickLinks.videosDesc"),         icon: PlayCircle },
         { to: `/Quiz/${n}`,       label: t("home.quickLinks.quiz"),           desc: t("home.quickLinks.quizDesc"),           icon: GraduationCap },
         { to: `/Chat/${n}`,       label: t("home.quickLinks.messaging"),      desc: t("home.quickLinks.messagingDesc"),      icon: MessageCircle },
@@ -214,7 +212,7 @@ function LandingPage({ user }: { user: typedata | null }) {
                     </Link>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="h-12 rounded-lg border-zinc-300 bg-white px-8 text-base font-semibold dark:border-zinc-600 dark:bg-zinc-900">
-                    <Link to={`/Cours/${n}`}>{t("home.hero.cta.courses")}</Link>
+                    <Link to="/Cours">{t("home.hero.cta.courses")}</Link>
                   </Button>
                 </>
               ) : (
@@ -235,17 +233,14 @@ function LandingPage({ user }: { user: typedata | null }) {
               </Link>
             </p>
           </div>
-          <div className="w-full">
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-              <ReactPlayer
-                light={<img src={Banner} alt="Thumbnail" />}
-                src="https://youtu.be/5OdVJbNCSso?si=eXdHCABtLMHq9CVm"
-                controls
-                width="100%"
-                height="100%"
-                className="absolute top-0 left-0"
+          <div className="relative w-full">
+            <img
+                src="/frame-3.png"
+                alt="Illustration 9ralibre"
+                loading="lazy"
+                width={300}
+                className=" inset-0 hidden h-full w-full object-cover md:block lg:block"
               />
-            </div>
           </div>
         </div>
       </section>
@@ -467,7 +462,7 @@ export function HomeFooter({ user }: { user: typedata | null }) {
               {user && n ? (
                 <>
                   <li><Link to={`/Dashboard/${n}`} className="text-zinc-600 transition-colors hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-500">{t("home.footer.nav.dashboard")}</Link></li>
-                  <li><Link to={`/Cours/${n}`}     className="text-zinc-600 transition-colors hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-500">{t("home.footer.nav.courses")}</Link></li>
+                  <li><Link to="/Cours"     className="text-zinc-600 transition-colors hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-500">{t("home.footer.nav.courses")}</Link></li>
                   <li><Link to={`/Videos/${n}`}    className="text-zinc-600 transition-colors hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-500">{t("home.footer.nav.videos")}</Link></li>
                   <li><Link to={`/Paramètre/${n}`} className="text-zinc-600 transition-colors hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-500">{t("home.footer.nav.settings")}</Link></li>
                 </>
