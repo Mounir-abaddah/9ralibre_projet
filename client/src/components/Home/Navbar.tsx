@@ -6,7 +6,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
-import logo from "@/assets/images/9ralibre_logo.png";
+import logo from "/assets/images/9ralibre_logo.png";
 import { useTheme } from "@/context/ThemeContext";
 import {
   Moon,

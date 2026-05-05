@@ -6,7 +6,7 @@ import ChatProf from "@/components/Dashboard/ChatProf/ChatProf";
 import axios from "axios";
 import Activite from "@/components/Dashboard/Activite/Activite";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import img_professeur_dash from "@/assets/images/Professor-cuate.png";
+import img_professeur_dash from "/assets/images/Professor-cuate.png";
 import { Calendar } from "@/components/ui/calendar";
 import { fr, enUS } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,9 @@ const ProfDashboard = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const locale = i18n.language?.startsWith("en") ? "en-US" : "fr-FR";
-  const calendarLocale = i18n.language?.toLowerCase().startsWith("en")? enUS : fr;
+  const calendarLocale = i18n.language?.toLowerCase().startsWith("en")
+    ? enUS
+    : fr;
 
   useEffect(() => {
     fetchData();

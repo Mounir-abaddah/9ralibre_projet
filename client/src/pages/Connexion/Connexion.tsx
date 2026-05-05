@@ -4,8 +4,8 @@ import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { RoughNotation } from "react-rough-notation";
 import { LogIn } from "lucide-react";
-import img_login from "@/assets/images/connexion/Thesis-pana.png";
-import logo from "@/assets/images/9ralibre.png";
+import img_login from "/assets/images/connexion/Thesis-pana.png";
+import logo from "/assets/images/9ralibre.png";
 import OAuth from "@/components/Oauth/OAuth";
 import Loadering from "@/components/Loadering/Loadering";
 import Input from "@/components/Form/Input";
@@ -34,7 +34,8 @@ const Connexion = () => {
   }, [searchParams, t]);
 
   const regexEmail = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const regexPassword =
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -72,7 +73,9 @@ const Connexion = () => {
     }
 
     try {
-      const reponse = await axios.post(`${apiUrl}/auth/connexion`, form, { withCredentials: true });
+      const reponse = await axios.post(`${apiUrl}/auth/connexion`, form, {
+        withCredentials: true,
+      });
       if (reponse.data.success) {
         await fetchData();
         toast.success(reponse.data.message);
@@ -94,7 +97,12 @@ const Connexion = () => {
   return (
     <div className="flex h-screen min-h-max w-full items-center justify-around gap-2 p-4 md:h-screen dark:text-black">
       <div className="hidden w-full lg:block">
-        <img src={img_login} alt="Connexion illustration" width={700} height={700} />
+        <img
+          src={img_login}
+          alt="Connexion illustration"
+          width={700}
+          height={700}
+        />
       </div>
 
       <div className="relative flex w-full flex-col items-start gap-3 rounded-md bg-white p-5 shadow-xl">
@@ -125,7 +133,12 @@ const Connexion = () => {
               to="/inscription"
               className="border-b border-sky-200 text-sm text-sky-300 transition-all duration-400 hover:text-sky-400 lg:text-base"
             >
-              <RoughNotation strokeWidth={5} type="highlight" show={true} color="oklch(82.8% 0.189 84.429)">
+              <RoughNotation
+                strokeWidth={5}
+                type="highlight"
+                show={true}
+                color="oklch(82.8% 0.189 84.429)"
+              >
                 {t("connexion.signUpLink")}
               </RoughNotation>
             </Link>
@@ -140,7 +153,10 @@ const Connexion = () => {
           <div className="w-full rounded-md border-l-2 border-red-500 bg-red-100 p-2 text-red-700">
             <p>{serverMessage}</p>
             {isBlockedNotice && (
-              <Link to="/appeal" className="mt-1 inline-block text-sm font-semibold underline">
+              <Link
+                to="/appeal"
+                className="mt-1 inline-block text-sm font-semibold underline"
+              >
                 {t("connexion.unblockRequest")}
               </Link>
             )}

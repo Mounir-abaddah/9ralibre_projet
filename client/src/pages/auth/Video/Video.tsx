@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import No_Data from "@/assets/images/cours/No data-cuate.png";
+import No_Data from "/assets/images/cours/No data-cuate.png";
 import { Badge } from "@/components/ui/badge";
 import Pagination from "@/components/Pagination/Pagination";
 import { useCoursFilter } from "@/store/useCoursFilter";
@@ -25,7 +25,11 @@ import AsideVideos from "@/components/Videos/AsideVideos";
 import { useDebounce } from "@/hooks/use-debounce";
 import ReportModal from "@/components/Videos/ReportModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
 
 const Videos = () => {
@@ -34,11 +38,12 @@ const Videos = () => {
   document.title = t("video.pageTitle");
   const navigate = useNavigate();
   const { niveaux } = useParams();
-  const [Fetchmatiere,setFetchMatiere] = useState<Matiere[]>([])
+  const [Fetchmatiere, setFetchMatiere] = useState<Matiere[]>([]);
   const [videos, setVideos] = useState<TypeVideos[]>([]);
   const [totalVideos, setTotalVideos] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { search, setSearch, filiere, setFiliere, matiere, setMatiere } =useCoursFilter();
+  const { search, setSearch, filiere, setFiliere, matiere, setMatiere } =
+    useCoursFilter();
   const debouncedSearch = useDebounce(search, 500);
   const [searchParams, setSearchParams] = useSearchParams();
   const [savedItems, setSavedItems] = useState<string[]>([]);
@@ -128,30 +133,31 @@ const Videos = () => {
     getSaves();
   }, [apiUrl]);
 
-
-  useEffect(()=>{
-    const getMatiere = async()=>{
-      const res = await axios.get(`${apiUrl}/user/fetch-matiere/${niveaux}`,{withCredentials:true}); 
-      setFetchMatiere(res.data); 
-    }
-    getMatiere()
-  },[])
+  useEffect(() => {
+    const getMatiere = async () => {
+      const res = await axios.get(`${apiUrl}/user/fetch-matiere/${niveaux}`, {
+        withCredentials: true,
+      });
+      setFetchMatiere(res.data);
+    };
+    getMatiere();
+  }, []);
 
   return (
     <>
-        <div className="mb-8 flex flex-col gap-2">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl dark:text-zinc-100">
-            Videos
-            {niveaux ? (
-              <span className="ml-2 text-base font-semibold text-amber-500 dark:text-amber-500">
-                · {niveaux}
-              </span>
-            ) : null}
-          </h1>
-          <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-            {t("video.description")}
-          </p>
-        </div>
+      <div className="mb-8 flex flex-col gap-2">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl dark:text-zinc-100">
+          Videos
+          {niveaux ? (
+            <span className="ml-2 text-base font-semibold text-amber-500 dark:text-amber-500">
+              · {niveaux}
+            </span>
+          ) : null}
+        </h1>
+        <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+          {t("video.description")}
+        </p>
+      </div>
       <div className="flex flex-col gap-4 lg:flex-row">
         {/* 🔹 Aside */}
         <aside className="w-full flex-shrink-0 lg:w-64">
@@ -188,7 +194,9 @@ const Videos = () => {
                       {/* Thumbnail */}
                       <div
                         className="group relative aspect-video w-full cursor-pointer overflow-hidden rounded-md"
-                        onClick={() => navigate(`/Videos/${niveaux}/${item._id}`)}
+                        onClick={() =>
+                          navigate(`/Videos/${niveaux}/${item._id}`)
+                        }
                       >
                         <img
                           src={item.thumbnail}
@@ -220,7 +228,10 @@ const Videos = () => {
                             to={`/Profile/${item.professeur.nom}-${item.professeur.prenom}`}
                           >
                             <Avatar size="lg">
-                              <AvatarImage src={`${apiUrl}/uploads/images/${item.professeur._id}/${item.professeur.image}`} alt="logo_professeur" />
+                              <AvatarImage
+                                src={`${apiUrl}/uploads/images/${item.professeur._id}/${item.professeur.image}`}
+                                alt="logo_professeur"
+                              />
                               <AvatarFallback>
                                 {item.professeur.nom[0]}
                                 {item.professeur.prenom[0]}
@@ -239,7 +250,7 @@ const Videos = () => {
                                 <p>{item.title}</p>
                               </TooltipContent>
                             </Tooltip>
-                            
+
                             <p className="text-sm font-semibold text-gray-500">
                               {item.professeur.nom} {item.professeur.prenom}
                             </p>
@@ -286,7 +297,9 @@ const Videos = () => {
                               <DropdownMenuItem>
                                 <Share /> {t("common.share")}
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => setReportVideoId(item._id)}>
+                              <DropdownMenuItem
+                                onClick={() => setReportVideoId(item._id)}
+                              >
                                 <Flag /> {t("common.report")}
                               </DropdownMenuItem>
                             </DropdownMenuGroup>
@@ -327,7 +340,6 @@ const Videos = () => {
         )}
       </div>
     </>
-    
   );
 };
 

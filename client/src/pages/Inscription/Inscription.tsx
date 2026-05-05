@@ -1,5 +1,5 @@
-import logo_inscription from "@/assets/images/inscription/Exams-rafiki.png";
-import gralibre from "@/assets/images/9ralibre.png";
+import logo_inscription from "/assets/images/inscription/Exams-rafiki.png";
+import gralibre from "/assets/images/9ralibre.png";
 import { LogIn } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,7 +12,8 @@ import { RoughNotation } from "react-rough-notation";
 import { useTranslation } from "react-i18next";
 
 const regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+const regexPassword =
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
 const Inscription = () => {
   const { t } = useTranslation();
@@ -56,7 +57,10 @@ const Inscription = () => {
       valid = false;
     }
 
-    if (formData.password !== formData.confirmPassword || !formData.confirmPassword) {
+    if (
+      formData.password !== formData.confirmPassword ||
+      !formData.confirmPassword
+    ) {
       newErrors.confirmPassword = t("auth.errors.passwordMismatch");
       valid = false;
     }
@@ -93,7 +97,13 @@ const Inscription = () => {
   return (
     <div className="flex h-screen min-h-max w-full items-center justify-center gap-2 p-4 lg:justify-around dark:text-black">
       <div className="hidden w-full lg:block">
-        <img src={logo_inscription} alt="logo_inscription" width={700} height={700} loading="lazy" />
+        <img
+          src={logo_inscription}
+          alt="logo_inscription"
+          width={700}
+          height={700}
+          loading="lazy"
+        />
       </div>
 
       <div className="relative flex w-full flex-col gap-3 rounded-md bg-white p-10 shadow-md">
@@ -119,8 +129,16 @@ const Inscription = () => {
 
         <p>
           {t("inscription.alreadyAccount")}{" "}
-          <Link to="/connexion" className="text-sm text-sky-300 hover:text-sky-400">
-            <RoughNotation strokeWidth={5} type="highlight" show={true} color="oklch(82.8% 0.189 84.429)">
+          <Link
+            to="/connexion"
+            className="text-sm text-sky-300 hover:text-sky-400"
+          >
+            <RoughNotation
+              strokeWidth={5}
+              type="highlight"
+              show={true}
+              color="oklch(82.8% 0.189 84.429)"
+            >
               {t("inscription.loginLink")}
             </RoughNotation>
           </Link>

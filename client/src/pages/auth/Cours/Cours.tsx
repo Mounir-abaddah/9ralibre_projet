@@ -1,65 +1,105 @@
-import CardAside from '@/components/Cours/CardAside';
-import Matiere from '@/components/Cours/Matiere';
-import Pagination from '@/components/Pagination/Pagination';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { useDebounce } from '@/hooks/use-debounce';
-import { useCoursFilter } from '@/store/useCoursFilter';
-import axios from 'axios';
-import { Bookmark, BookOpenText, Calendar, Download, EllipsisVertical, FileText, Globe2, Landmark, Loader2, SquareArrowOutUpRight, XCircle } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
-import No_Data_img from '@/assets/images/cours/No data-cuate.png'
-import type { CoursType} from './types/CoursType';
-import { useTranslation } from 'react-i18next';
-
-
+import CardAside from "@/components/Cours/CardAside";
+import Matiere from "@/components/Cours/Matiere";
+import Pagination from "@/components/Pagination/Pagination";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useCoursFilter } from "@/store/useCoursFilter";
+import axios from "axios";
+import {
+  Bookmark,
+  BookOpenText,
+  Calendar,
+  Download,
+  EllipsisVertical,
+  FileText,
+  Globe2,
+  Landmark,
+  Loader2,
+  SquareArrowOutUpRight,
+  XCircle,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import No_Data_img from "/assets/images/cours/No data-cuate.png";
+import type { CoursType } from "./types/CoursType";
+import { useTranslation } from "react-i18next";
 
 const Cours = () => {
-    const { t } = useTranslation();
-    document.title = t("courses.pageTitle")
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const {niveaux} = useParams();
-    const {matiere,semestre,type,filiere,setMatiere,setSemestre,setType,setFiliere,resetAll}=useCoursFilter();
-    const [loading,setLoading]=useState(false);
-    const [cours,setCours] = useState<CoursType[]>([]);
-    const [search,setSearch]= useState("");
-    const [savedCoursMap, setSavedCoursMap] = useState<Record<string, boolean>>({});
-    const debounceSearch = useDebounce(search , 500);
-    const isInitialMount = useRef(true);
-    const [searchParams,setSearchParams]=useSearchParams();
-    const [totalCours,setTotalCours]=useState(0);
-    const [currentPage,setCurrentPage]=useState(1);
-    const itemsPerPage = 16;
+  const { t } = useTranslation();
+  document.title = t("courses.pageTitle");
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const { niveaux } = useParams();
+  const {
+    matiere,
+    semestre,
+    type,
+    filiere,
+    setMatiere,
+    setSemestre,
+    setType,
+    setFiliere,
+    resetAll,
+  } = useCoursFilter();
+  const [loading, setLoading] = useState(false);
+  const [cours, setCours] = useState<CoursType[]>([]);
+  const [search, setSearch] = useState("");
+  const [savedCoursMap, setSavedCoursMap] = useState<Record<string, boolean>>(
+    {},
+  );
+  const debounceSearch = useDebounce(search, 500);
+  const isInitialMount = useRef(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalCours, setTotalCours] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 16;
 
   const buildPdfUrl = useCallback(
-    (professeurId: string, pdfUrl: string) => `${apiUrl}/uploads/files/${professeurId}/${pdfUrl}`,
-    [apiUrl]
+    (professeurId: string, pdfUrl: string) =>
+      `${apiUrl}/uploads/files/${professeurId}/${pdfUrl}`,
+    [apiUrl],
   );
 
-  const handleDownloadPdf = useCallback(async (url: string, filename?: string) => {
-    const safeName = (filename?.trim() ? filename.trim() : t("courses.defaultPdfName")).replace(/[\\/:*?"<>|]+/g, '-');
-    try {
-      const res = await axios.get(url, {
-        responseType: 'blob',
-        withCredentials: true,
-      });
+  const handleDownloadPdf = useCallback(
+    async (url: string, filename?: string) => {
+      const safeName = (
+        filename?.trim() ? filename.trim() : t("courses.defaultPdfName")
+      ).replace(/[\\/:*?"<>|]+/g, "-");
+      try {
+        const res = await axios.get(url, {
+          responseType: "blob",
+          withCredentials: true,
+        });
 
-      const blobUrl = window.URL.createObjectURL(res.data);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = safeName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(blobUrl);
-    } catch {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  }, []);
+        const blobUrl = window.URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = safeName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -69,23 +109,27 @@ const Cours = () => {
     setCurrentPage(1);
   }, [matiere, semestre, type, filiere, debounceSearch]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const params = new URLSearchParams();
-    params.append('page', currentPage.toString());
-    params.append('limit', itemsPerPage.toString());
-    if (matiere) params.append('matiere', matiere);
-    if (semestre) params.append('semestre', semestre);
-    if (type) params.append('type', type);
-    if (filiere) params.append('filiere', filiere);
-    if (debounceSearch.trim() !== '') params.append('search', debounceSearch.trim());
-  const getAllCours = async()=>{
-      try{
+    params.append("page", currentPage.toString());
+    params.append("limit", itemsPerPage.toString());
+    if (matiere) params.append("matiere", matiere);
+    if (semestre) params.append("semestre", semestre);
+    if (type) params.append("type", type);
+    if (filiere) params.append("filiere", filiere);
+    if (debounceSearch.trim() !== "")
+      params.append("search", debounceSearch.trim());
+    const getAllCours = async () => {
+      try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/cours/getCours/${niveaux}?${params.toString()}`,{withCredentials:true});
-        if(res.data.success){
+        const res = await axios.get(
+          `${apiUrl}/cours/getCours/${niveaux}?${params.toString()}`,
+          { withCredentials: true },
+        );
+        if (res.data.success) {
           const fetchedCours: CoursType[] = res.data.cours || [];
-          setCours(fetchedCours)
+          setCours(fetchedCours);
           setSavedCoursMap((prev) => {
             const updatedMap = { ...prev };
             fetchedCours.forEach((coursItem) => {
@@ -93,288 +137,365 @@ const Cours = () => {
             });
             return updatedMap;
           });
-          setTotalCours(res.data.totalCours)
+          setTotalCours(res.data.totalCours);
         }
-      }catch(err){
+      } catch (err) {
         console.log(err);
         setCours([]);
         setTotalCours(0);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
-    }
+    };
     getAllCours();
-  },[currentPage, debounceSearch, filiere, matiere, niveaux, semestre, type]);
+  }, [currentPage, debounceSearch, filiere, matiere, niveaux, semestre, type]);
 
   const bgItems = {
-    "Mathématiques":"bg-red-400",
-    "Physique et Chimie":"bg-cyan-400",
-    "SVT":"bg-teal-400",
-    "Informatique":"bg-sky-400",
-    "Arabe":"bg-orange-400",
-    "Français":"bg-orange-400",
-    "Anglais":"bg-orange-400",
-    "Histoire Géographie":"bg-amber-400",
-    "Education Islamique":"bg-blue-400",
-    "Sciences de la Vie et de la Terre (SVT)":"bg-teal-500",
-    "Philosophie":"bg-red-500",
-    "Sciences Végétales et Animales (SVA)":"bg-green-500",
-    "Sciences de l'ingénieur":"bg-violet-500",
-    "Économie et Organisation Administrative des Entreprises":"bg-blue-500",
-    "Comptabilité et Mathématiques financières":"bg-zinc-500",
-    "Économie générale et Statistiques":"bg-cyan-500",
-    "Droit":"bg-orange-500",
-    "Informatique de gestion":"bg-indigo-500"
-  }
+    Mathématiques: "bg-red-400",
+    "Physique et Chimie": "bg-cyan-400",
+    SVT: "bg-teal-400",
+    Informatique: "bg-sky-400",
+    Arabe: "bg-orange-400",
+    Français: "bg-orange-400",
+    Anglais: "bg-orange-400",
+    "Histoire Géographie": "bg-amber-400",
+    "Education Islamique": "bg-blue-400",
+    "Sciences de la Vie et de la Terre (SVT)": "bg-teal-500",
+    Philosophie: "bg-red-500",
+    "Sciences Végétales et Animales (SVA)": "bg-green-500",
+    "Sciences de l'ingénieur": "bg-violet-500",
+    "Économie et Organisation Administrative des Entreprises": "bg-blue-500",
+    "Comptabilité et Mathématiques financières": "bg-zinc-500",
+    "Économie générale et Statistiques": "bg-cyan-500",
+    Droit: "bg-orange-500",
+    "Informatique de gestion": "bg-indigo-500",
+  };
 
-  useEffect(()=>{
-    const params:Record<string,string> = {};
-    if(matiere) params.matiere = matiere
-    if(semestre) params.semestre = semestre
-    if(type) params.type = type
-    if(filiere) params.filiere = filiere
-    if(debounceSearch.trim() !== '') params.search = debounceSearch.trim()
-    if(currentPage > 1) params.page = currentPage.toString();
-    setSearchParams(params)
-  },[matiere, semestre, type, setSearchParams, search, filiere, currentPage, debounceSearch]);
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (matiere) params.matiere = matiere;
+    if (semestre) params.semestre = semestre;
+    if (type) params.type = type;
+    if (filiere) params.filiere = filiere;
+    if (debounceSearch.trim() !== "") params.search = debounceSearch.trim();
+    if (currentPage > 1) params.page = currentPage.toString();
+    setSearchParams(params);
+  }, [
+    matiere,
+    semestre,
+    type,
+    setSearchParams,
+    search,
+    filiere,
+    currentPage,
+    debounceSearch,
+  ]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const m = searchParams.get("matiere");
-    const s = searchParams.get('semestre');
-    const t = searchParams.get('type');
-    const f = searchParams.get('filiere');
-    const q = searchParams.get('search');
-    const p = searchParams.get('page');
+    const s = searchParams.get("semestre");
+    const t = searchParams.get("type");
+    const f = searchParams.get("filiere");
+    const q = searchParams.get("search");
+    const p = searchParams.get("page");
     setMatiere(m);
     setSemestre(s);
     setType(t);
     setFiliere(f);
-    setSearch(q || '')
-    setCurrentPage(p ?  parseInt(p) :  1)
-  },[searchParams, setMatiere, setSemestre, setType,setFiliere]);
+    setSearch(q || "");
+    setCurrentPage(p ? parseInt(p) : 1);
+  }, [searchParams, setMatiere, setSemestre, setType, setFiliere]);
 
   const iconeType = {
-    'Cours': <BookOpenText  />,
-    'Exercice': <FileText  />,
-    'Examen National': <Globe2  />,
-    'Examen Régional': <Landmark />,
-  }
+    Cours: <BookOpenText />,
+    Exercice: <FileText />,
+    "Examen National": <Globe2 />,
+    "Examen Régional": <Landmark />,
+  };
 
   const handleSaveCours = async (coursId: string) => {
     try {
       const res = await axios.post(
         `${apiUrl}/cours/save-cours/${coursId}`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      setSavedCoursMap(prev => ({
+      setSavedCoursMap((prev) => ({
         ...prev,
-        [coursId]: res.data.isSaved
+        [coursId]: res.data.isSaved,
       }));
     } catch (err) {
-      console.error('Erreur:', err);
+      console.error("Erreur:", err);
     }
   };
 
-  const handleResetAll = useCallback(()=>{
+  const handleResetAll = useCallback(() => {
     resetAll();
-    setSearch('')
-    setCurrentPage(1)
-  },[resetAll]);
+    setSearch("");
+    setCurrentPage(1);
+  }, [resetAll]);
 
   return (
-    <div className='flex w-full flex-col-reverse items-center justify-between gap-3 lg:flex-row lg:items-start'>
-      <div className='flex w-full flex-col gap-3'>
+    <div className="flex w-full flex-col-reverse items-center justify-between gap-3 lg:flex-row lg:items-start">
+      <div className="flex w-full flex-col gap-3">
         <div className="mb-2 flex flex-col gap-1">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-gray-600">
-            {t("courses.libraryTitle")} {niveaux ? <span className="text-amber-500 capitalize">- {niveaux}</span> : ''}
+            {t("courses.libraryTitle")}{" "}
+            {niveaux ? (
+              <span className="text-amber-500 capitalize">- {niveaux}</span>
+            ) : (
+              ""
+            )}
           </h1>
         </div>
-        <div className='flex w-full gap-4'>
-      <div className='flex w-full flex-col items-start justify-between gap-2'>
-        <div className='flex w-full flex-col gap-2'>
-          <Label htmlFor='mySearch' className='text-base font-semibold text-gray-700'>{t("courses.quickSearch")}</Label>
-          <Input id='mySearch' type='text' value={search} disabled={loading} onChange={(e)=>setSearch(e.target.value)} placeholder={t("courses.searchPlaceholder")} className='text-xs selection:bg-amber-500 focus-visible:ring-amber-500/50'/>
-        </div>
-          <Matiere
-          niveaux={niveaux}
-          selectedMatiere={matiere}
-          selectedSemestre={semestre}
-          selectedType={type}
-          selectedFiliere={filiere}
-          onChangeMatiere={setMatiere}
-          onChangeSemestre={setSemestre}
-          onChangeType={setType}
-          onChangeFiliere={setFiliere}
-        />
-      </div>
-      {(matiere || semestre || type || filiere || search) && (
-        <button onClick={handleResetAll} disabled={loading} className="flex cursor-pointer items-center justify-end gap-1 text-sm text-gray-600 transition-colors hover:text-red-600">
-          <XCircle size={16} />{t("courses.resetAll")}
-        </button>
-      )}
-    </div>
-    {totalCours > itemsPerPage && (
-      <div className="flex flex-col items-start justify-between">
-        <p className="text-sm text-gray-600">
-          {t("courses.resultsCount", { count: totalCours })}
-          {(matiere || semestre || type || filiere) && ` ${t("courses.filtered")}`}
-        </p>
-        <Pagination 
-          itemsPerPage={itemsPerPage} 
-          currentPage={currentPage} 
-          totalItems={totalCours} 
-          onPageChange={(page)=>setCurrentPage(page)}
-        />
-      </div>
-    )}
-
-    {loading && (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-        <span className="ml-2 text-gray-600">{t("courses.loading")}</span>
-      </div>
-    )}
-
-    {!loading && (
-      <div className='grid w-full grid-cols-1 items-center justify-center gap-2 md:grid-cols-2 lg:grid-cols-3'>
-        {cours.length > 0 ? 
-          cours.map((item)=>(
-          <Card key={item._id} className='group relative w-full shadow-md transition-all duration-500 hover:shadow-xl'>
-            <div className={`absolute top-0 left-0 flex items-center gap-2 rounded-br-2xl ${bgItems[item.matiere.nom as keyof typeof bgItems]} px-3 py-1 text-xs font-medium text-white shadow-sm`}>
-              <span className="flex items-center gap-1">
-                <IconeProfesseur />
-                {t("common.teacher")} : <Link to={`/Profile/${encodeURIComponent(`${item.professeur.nom}-${item.professeur.prenom}`)}`} className="text-xs font-semibold hover:underline">{`${item.professeur.nom} ${item.professeur.prenom}`.toUpperCase()}</Link>
-              </span>
+        <div className="flex w-full gap-4">
+          <div className="flex w-full flex-col items-start justify-between gap-2">
+            <div className="flex w-full flex-col gap-2">
+              <Label
+                htmlFor="mySearch"
+                className="text-base font-semibold text-gray-700"
+              >
+                {t("courses.quickSearch")}
+              </Label>
+              <Input
+                id="mySearch"
+                type="text"
+                value={search}
+                disabled={loading}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("courses.searchPlaceholder")}
+                className="text-xs selection:bg-amber-500 focus-visible:ring-amber-500/50"
+              />
             </div>
-            <CardHeader className='mt-2 flex items-center justify-between'>
-              <CardTitle className='leading-5'>{item.type}: {item.title}</CardTitle>
-              <DropdownMenu>
-                <DropdownMenuTrigger aria-label="Menu d'actions">
-                  <CardTitle className='cursor-pointer rounded-md p-2 transition-all duration-200 hover:bg-slate-200'>
-                    <EllipsisVertical size={14}/>
-                  </CardTitle>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent  align="center" className='fixed -right-2.5'>
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem 
-                        onClick={() => handleSaveCours(item._id)}
-                        className={`flex cursor-pointer items-center justify-between`}
+            <Matiere
+              niveaux={niveaux}
+              selectedMatiere={matiere}
+              selectedSemestre={semestre}
+              selectedType={type}
+              selectedFiliere={filiere}
+              onChangeMatiere={setMatiere}
+              onChangeSemestre={setSemestre}
+              onChangeType={setType}
+              onChangeFiliere={setFiliere}
+            />
+          </div>
+          {(matiere || semestre || type || filiere || search) && (
+            <button
+              onClick={handleResetAll}
+              disabled={loading}
+              className="flex cursor-pointer items-center justify-end gap-1 text-sm text-gray-600 transition-colors hover:text-red-600"
+            >
+              <XCircle size={16} />
+              {t("courses.resetAll")}
+            </button>
+          )}
+        </div>
+        {totalCours > itemsPerPage && (
+          <div className="flex flex-col items-start justify-between">
+            <p className="text-sm text-gray-600">
+              {t("courses.resultsCount", { count: totalCours })}
+              {(matiere || semestre || type || filiere) &&
+                ` ${t("courses.filtered")}`}
+            </p>
+            <Pagination
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              totalItems={totalCours}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          </div>
+        )}
+
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+            <span className="ml-2 text-gray-600">{t("courses.loading")}</span>
+          </div>
+        )}
+
+        {!loading && (
+          <div className="grid w-full grid-cols-1 items-center justify-center gap-2 md:grid-cols-2 lg:grid-cols-3">
+            {cours.length > 0 ? (
+              cours.map((item) => (
+                <Card
+                  key={item._id}
+                  className="group relative w-full shadow-md transition-all duration-500 hover:shadow-xl"
+                >
+                  <div
+                    className={`absolute top-0 left-0 flex items-center gap-2 rounded-br-2xl ${bgItems[item.matiere.nom as keyof typeof bgItems]} px-3 py-1 text-xs font-medium text-white shadow-sm`}
+                  >
+                    <span className="flex items-center gap-1">
+                      <IconeProfesseur />
+                      {t("common.teacher")} :{" "}
+                      <Link
+                        to={`/Profile/${encodeURIComponent(`${item.professeur.nom}-${item.professeur.prenom}`)}`}
+                        className="text-xs font-semibold hover:underline"
                       >
-                        {savedCoursMap[item._id] ? t("common.saved") : t("common.save")}
-                        <Bookmark fill={savedCoursMap[item._id] ? '#F49E0B' : 'none'} color={savedCoursMap[item._id] ? '#F49E0B' : '#6B7280'} />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className='flex cursor-pointer items-center justify-between'
-                        onClick={() => {
-                          const url = buildPdfUrl(item.professeur._id, item.pdfUrl);
-                          void handleDownloadPdf(url, `${item.title}.pdf`);
-                        }}
+                        {`${item.professeur.nom} ${item.professeur.prenom}`.toUpperCase()}
+                      </Link>
+                    </span>
+                  </div>
+                  <CardHeader className="mt-2 flex items-center justify-between">
+                    <CardTitle className="leading-5">
+                      {item.type}: {item.title}
+                    </CardTitle>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger aria-label="Menu d'actions">
+                        <CardTitle className="cursor-pointer rounded-md p-2 transition-all duration-200 hover:bg-slate-200">
+                          <EllipsisVertical size={14} />
+                        </CardTitle>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="center"
+                        className="fixed -right-2.5"
                       >
-                        {t("common.download")}
-                        <Download />
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-            </CardHeader>
-            <CardContent className='flex items-center gap-2'>
-              <div className={`rounded-full ${bgItems[item.matiere.nom as keyof typeof bgItems]} p-2 text-slate-200`}>
-                {iconeType[item.type as keyof typeof iconeType]}
-              </div>
-              <div className='flex flex-col items-start'>
-                <span className='text-sm font-bold'>{item.matiere.nom}</span>
-                <span className='text-xs text-gray-600'>{item.semestre}</span>
-                {item.filière && (
-                  <span className='text-xs font-medium text-blue-600'>📚 {item.filière}</span>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            onClick={() => handleSaveCours(item._id)}
+                            className={`flex cursor-pointer items-center justify-between`}
+                          >
+                            {savedCoursMap[item._id]
+                              ? t("common.saved")
+                              : t("common.save")}
+                            <Bookmark
+                              fill={
+                                savedCoursMap[item._id] ? "#F49E0B" : "none"
+                              }
+                              color={
+                                savedCoursMap[item._id] ? "#F49E0B" : "#6B7280"
+                              }
+                            />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="flex cursor-pointer items-center justify-between"
+                            onClick={() => {
+                              const url = buildPdfUrl(
+                                item.professeur._id,
+                                item.pdfUrl,
+                              );
+                              void handleDownloadPdf(url, `${item.title}.pdf`);
+                            }}
+                          >
+                            {t("common.download")}
+                            <Download />
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardHeader>
+                  <CardContent className="flex items-center gap-2">
+                    <div
+                      className={`rounded-full ${bgItems[item.matiere.nom as keyof typeof bgItems]} p-2 text-slate-200`}
+                    >
+                      {iconeType[item.type as keyof typeof iconeType]}
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-bold">
+                        {item.matiere.nom}
+                      </span>
+                      <span className="text-xs text-gray-600">
+                        {item.semestre}
+                      </span>
+                      {item.filière && (
+                        <span className="text-xs font-medium text-blue-600">
+                          📚 {item.filière}
+                        </span>
+                      )}
+                    </div>
+                  </CardContent>
+                  <Separator />
+                  <CardFooter className="flex w-full justify-between">
+                    <div className="flex items-center gap-1">
+                      <Calendar size={14} />
+                      <span className="text-xs">
+                        {new Date(item.createdAt).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          timeZone: "Africa/Casablanca",
+                        })}
+                      </span>
+                    </div>
+                    <Link
+                      to={`${apiUrl}/uploads/files/${item.professeur._id}/${item.pdfUrl}`}
+                      target="_blank"
+                    >
+                      <button
+                        className={`text-xs ${bgItems[item.matiere.nom as keyof typeof bgItems]} flex cursor-pointer items-center gap-2 rounded-md p-2 text-white transition-all hover:shadow-md`}
+                        aria-label={`Voir le PDF de ${item.title}`}
+                      >
+                        {t("courses.viewPdf")}
+                        <SquareArrowOutUpRight size={14} />
+                      </button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-full mt-6 flex w-full flex-col items-center justify-center gap-2 text-center">
+                <img
+                  src={No_Data_img}
+                  alt="no data"
+                  loading="lazy"
+                  width={300}
+                  height={400}
+                />
+                <p className="text-sm text-gray-500">
+                  {t("courses.noCoursesWithFilters")}
+                </p>
+                {(matiere || semestre || type || filiere || search) && (
+                  <button
+                    onClick={handleResetAll}
+                    className="text-xs text-amber-600 hover:underline"
+                  >
+                    {t("courses.resetFilters")}
+                  </button>
                 )}
               </div>
-            </CardContent>
-            <Separator />
-            <CardFooter className='flex w-full justify-between'>
-              <div className='flex items-center gap-1'>
-                <Calendar size={14}/>
-                <span className="text-xs">
-                  {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    timeZone: "Africa/Casablanca"
-                  })}
-                </span>         
-              </div>
-              <Link to={`${apiUrl}/uploads/files/${item.professeur._id}/${item.pdfUrl}`} target='_blank'>
-                <button 
-                  className={`text-xs ${bgItems[item.matiere.nom as keyof typeof bgItems]} flex cursor-pointer items-center gap-2 rounded-md p-2 text-white transition-all hover:shadow-md`}
-                  aria-label={`Voir le PDF de ${item.title}`}
-                >
-                  {t("courses.viewPdf")}<SquareArrowOutUpRight size={14}/>
-                </button>
-              </Link>
-            </CardFooter>
-          </Card>
-        ))
-        :
-          <div className="col-span-full mt-6 flex w-full flex-col items-center justify-center gap-2 text-center">
-            <img src={No_Data_img} alt="no data" loading='lazy'  width={300} height={400}/>
-            <p className="text-sm text-gray-500">
-              {t("courses.noCoursesWithFilters")}
-            </p>
-            {(matiere || semestre || type || filiere || search) && (
-              <button 
-                onClick={handleResetAll}
-                className="text-xs text-amber-600 hover:underline"
-              >
-                {t("courses.resetFilters")}
-              </button>
             )}
           </div>
-        }
+        )}
+        {!loading && totalCours > itemsPerPage && (
+          <div className="mt-4 flex justify-center">
+            <Pagination
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              totalItems={totalCours}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          </div>
+        )}
       </div>
-    )}
-    {!loading && totalCours > itemsPerPage && (
-      <div className="mt-4 flex justify-center">
-        <Pagination 
-          itemsPerPage={itemsPerPage} 
-          currentPage={currentPage} 
-          totalItems={totalCours} 
-          onPageChange={(page)=>setCurrentPage(page)}
-        />
-      </div>
-    )}
-      </div>
-      <div className='w-full lg:w-lg'>
+      <div className="w-full lg:w-lg">
         <CardAside />
       </div>
     </div>
-    
-  )
-}
+  );
+};
 
-export default Cours
+export default Cours;
 
-
-export const IconeProfesseur = ()=>{
+export const IconeProfesseur = () => {
   return (
     <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="19"
-    height="19"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-  <path d="M 12.8 15.6 A6 6 0 0 1 8 18" />
-  <path d="M 14 14 L 12.8 15.6" />
-  <path d="M 6 18 A4 4 0 0 0 2 22" />
-  <path d="M 8 18 L 6 18" />
-  <path d="M12 6h6" />
-  <path d="M14 10h4" />
-  <path d="M18 14h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2" />
-  <circle cx="7" cy="11" r="3" />
-  </svg>
-  )
-}
+      xmlns="http://www.w3.org/2000/svg"
+      width="19"
+      height="19"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M 12.8 15.6 A6 6 0 0 1 8 18" />
+      <path d="M 14 14 L 12.8 15.6" />
+      <path d="M 6 18 A4 4 0 0 0 2 22" />
+      <path d="M 8 18 L 6 18" />
+      <path d="M12 6h6" />
+      <path d="M14 10h4" />
+      <path d="M18 14h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2" />
+      <circle cx="7" cy="11" r="3" />
+    </svg>
+  );
+};
