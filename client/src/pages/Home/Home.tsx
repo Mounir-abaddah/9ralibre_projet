@@ -22,6 +22,7 @@ import {
   BookOpen,
   Calendar,
   Check,
+  ChevronDown,
   Facebook,
   GraduationCap,
   Instagram,
@@ -35,6 +36,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const Home = () => {
   const { t } = useTranslation();
@@ -69,15 +75,15 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="bg-background min-h-screen">
       {!data || data.completeProfile ? (
         <>
           <Navbar />
           <main className="w-full px-0 pb-0">
             {loading ? (
-              <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 px-4 text-zinc-500">
-                <Loader2 className="h-10 w-10 animate-spin text-amber-600" />
-                <p className="text-sm">{t("home.loading")}</p>
+              <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 px-4">
+                <Loader2 className="h-10 w-10 animate-spin" />
+                <p className="text-[13.44px]">{t("home.loading")}</p>
               </div>
             ) : (
               <LandingPage user={data ?? null} />
@@ -95,12 +101,12 @@ const Home = () => {
               }
             }}
           >
-            <DialogContent className="border-zinc-200 sm:max-w-md dark:border-zinc-800">
+            <DialogContent className="border-black/10 sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>{t("home.dialog.title")}</DialogTitle>
                 <DialogDescription className="text-left leading-relaxed">
                   {t("home.dialog.description1")}{" "}
-                  <span className="font-semibold text-amber-600 dark:text-amber-500">
+                  <span className="font-semibold">
                     9ralibre
                   </span>
                   . {t("home.dialog.description2")}
@@ -110,7 +116,6 @@ const Home = () => {
                 <Button
                   type="button"
                   onClick={handleClose}
-                  className="bg-amber-500 text-white hover:bg-amber-600"
                 >
                   {t("home.dialog.ok")}
                 </Button>
@@ -247,6 +252,25 @@ function LandingPage({ user }: { user: typedata | null }) {
     t("home.trust.point1"),
     t("home.trust.point2"),
     t("home.trust.point3"),
+  ];
+
+  const faqs = [
+    {
+      q: "Est-ce que 9ralibre est gratuit ?",
+      a: "Tu peux explorer la plateforme et accéder à plusieurs contenus gratuitement. Certains contenus et fonctionnalités peuvent dépendre de ton niveau et de ton compte.",
+    },
+    {
+      q: "Comment trouver mes cours, vidéos et quiz ?",
+      a: "Une fois connecté, utilise les accès rapides (Dashboard, Cours, Vidéos, Quiz) pour retrouver facilement tout ton contenu.",
+    },
+    {
+      q: "Je peux sauvegarder des contenus ?",
+      a: "Oui, tu peux enregistrer des cours et des ressources pour les retrouver plus tard dans “Mes sauvegardes”.",
+    },
+    {
+      q: "Un souci ou une question ?",
+      a: "Tu peux nous contacter via l’email indiqué en bas de page. On te répondra dès que possible.",
+    },
   ];
 
   return (
@@ -521,6 +545,50 @@ function LandingPage({ user }: { user: typedata | null }) {
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
+      <section className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="mx-auto max-w-6xl px-4 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+              Questions fréquentes
+            </h2>
+            <p className="mt-4 text-zinc-600 dark:text-zinc-400">
+              Les réponses aux questions qu’on reçoit le plus souvent.
+            </p>
+          </div>
+
+          <ul className="mx-auto mt-14 grid max-w-4xl gap-4">
+            {faqs.map((item) => (
+              <li key={item.q}>
+                <Collapsible
+                  className="group rounded-2xl border border-zinc-200 bg-white p-6 transition-colors hover:border-amber-400 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-amber-600"
+                >
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex w-full items-start justify-between gap-4 text-left"
+                    >
+                      <span className="min-h-11 font-semibold text-zinc-900 dark:text-zinc-100">
+                        {item.q}
+                      </span>
+                      <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-600 transition-all group-data-[state=open]:rotate-180 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                        <ChevronDown className="h-5 w-5" aria-hidden />
+                      </span>
+                    </button>
+                  </CollapsibleTrigger>
+
+                  <CollapsibleContent>
+                    <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                      {item.a}
+                    </p>
+                  </CollapsibleContent>
+                </Collapsible>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
