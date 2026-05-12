@@ -1,0 +1,46 @@
+name: 9ralibre
+
+version: "3"
+services:
+  client:
+    image:  9ralibre-client
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    env_file: 
+      - ./client/.env
+    networks:
+      - app-network
+
+
+  server:
+    image: 9ralibre-server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    env_file: 
+      - ./server/.env.production
+    networks:
+      - app-network
+
+
+  mongodb:
+    image:  mongo
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - db-data:/data/db
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
