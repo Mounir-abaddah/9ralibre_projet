@@ -21,15 +21,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@e0b5dd5f3b4d3cfdadf7b4b6924d68f7cbc0f6b1
+        uses: pnpm/action-setup@v4
         with:
           version: 10.33.2
 
       - name: Setup Node
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
@@ -59,15 +59,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@e0b5dd5f3b4d3cfdadf7b4b6924d68f7cbc0f6b1
+        uses: pnpm/action-setup@v4
         with:
           version: 10.33.2
 
       - name: Setup Node
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@v4
 
       - name: Validate docker-compose
         run: docker compose config
