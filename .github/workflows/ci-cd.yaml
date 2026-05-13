@@ -80,7 +80,7 @@ jobs:
         run: node --check index.js
 
       - name: Run tests
-        run: pnpm test 
+        run: pnpm test --if-present
 
       - name: Build Docker image
         run: docker build -t 9ralibre-server .
