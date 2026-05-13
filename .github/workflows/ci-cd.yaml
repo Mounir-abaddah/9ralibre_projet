@@ -144,7 +144,7 @@ jobs:
             username: root
             key: ${{ secrets.VPS_SSH_KEY }}
             script: |
-              cd 9ralibre || git clone https://github.com/YOUR_USER/YOUR_REPO.git 9ralibre
+              cd 9ralibre || git clone git@github.com:Mounir-abaddah/9ralibre_projet.git 9ralibre
               cd 9ralibre
               git pull
               docker compose up -d --build
