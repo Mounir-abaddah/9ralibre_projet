@@ -144,14 +144,14 @@ jobs:
             username: root
             key: ${{ secrets.VPS_SSH_KEY }}
             script: |
+              set -e
+
               cd ~
               rm -rf 9ralibre
 
-              git clone https://mounir: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@github.com/Mounir-abaddah/9ralibre_projet.git 9ralibre 
+              git clone https://github.com/Mounir-abaddah/9ralibre_projet.git 9ralibre
 
               cd 9ralibre
 
-              git pull origin develop
-
-              docker compose down || true
-              docker compose up -d --build
+              docker-compose down || true
+              docker-compose up -d --build
