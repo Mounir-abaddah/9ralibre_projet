@@ -108,8 +108,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Create client environment file
+      - name: Create client .env
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > client/.env
+          echo "VITE_OAUTH_URL=${{ secrets.VITE_OAUTH_URL }}" >> client/.env
+
+      # Create server production environment file
+      - name: Create server .env.production
+        run: |
+          echo "DOTENV_CONFIG_QUIET=${{ secrets.DOTENV_CONFIG_QUIET }}" > server/.env.production
+          echo "EMAIL_CLIENT=${{ secrets.EMAIL_CLIENT }}" >> server/.env.production
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> server/.env.production
+          echo "GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }}" >> server/.env.production
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> server/.env.production
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> server/.env.production
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env.production
+          echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> server/.env.production
+          echo "PASSWORD_CLIENT=${{ secrets.PASSWORD_CLIENT }}" >> server/.env.production
+          echo "PORT=${{ secrets.PORT }}" >> server/.env.production
+
+      # Validate docker-compose syntax
       - name: Validate docker-compose
         run: docker compose config
 
+      # Build all services
       - name: Build full stack
         run: docker compose build
