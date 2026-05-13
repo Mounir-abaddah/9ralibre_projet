@@ -15,6 +15,9 @@ jobs:
   client:
     name: Client (lint + build + docker)
     runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      VITE_OAUTH_URL: ${{ secrets.VITE_OAUTH_URL }}
     defaults:
       run:
         working-directory: client
@@ -53,6 +56,18 @@ jobs:
   server:
     name: Server (install + syntax + docker)
     runs-on: ubuntu-latest
+    env:
+      DOTENV_CONFIG_QUIET: ${{ secrets.DOTENV_CONFIG_QUIET }}
+      EMAIL_CLIENT: ${{ secrets.EMAIL_CLIENT }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+      GOOGLE_CALLBACK_URL: ${{ secrets.GOOGLE_CALLBACK_URL }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      PASSWORD_CLIENT: ${{ secrets.PASSWORD_CLIENT }}
+      PORT: ${{ secrets.PORT }}
+    
     defaults:
       run:
         working-directory: server
