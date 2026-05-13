@@ -1,0 +1,100 @@
+name: Secure CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  client:
+    name: Client (lint + build + docker)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@e0b5dd5f3b4d3cfdadf7b4b6924d68f7cbc0f6b1
+        with:
+          version: 10.33.2
+
+      - name: Setup Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint --if-present
+
+      - name: Run tests
+        run: pnpm test --if-present
+
+      - name: Build client
+        run: pnpm run build
+
+      - name: Build Docker image
+        run: docker build -t 9ralibre-client .
+
+  server:
+    name: Server (install + syntax + docker)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@e0b5dd5f3b4d3cfdadf7b4b6924d68f7cbc0f6b1
+        with:
+          version: 10.33.2
+
+      - name: Setup Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: server/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Syntax check
+        run: node --check index.js
+
+      - name: Run tests
+        run: pnpm test --if-present
+
+      - name: Build Docker image
+        run: docker build -t 9ralibre-server .
+
+  compose-validation:
+    name: Docker Compose Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+
+      - name: Validate docker-compose
+        run: docker compose config
+
+      - name: Build full stack
+        run: docker compose build
