@@ -145,29 +145,33 @@ jobs:
             key: ${{ secrets.VPS_SSH_KEY }}
             script: |
               set -e
+                cd ~
 
-              cd ~
-              rm -rf 9ralibre
+                docker login -u mounirsudiste -p ${{ secrets.DOCKERHUB_TOKEN }}
 
-              git clone https://mounir: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@github.com/Mounir-abaddah/9ralibre_projet.git 9ralibre
+                docker pull mounirsudiste/9ralibre-client:latest
+                docker pull mounirsudiste/9ralibre-server:latest
 
-              cd 9ralibre
+                docker stop client || true
+                docker stop server || true
 
-              mkdir -p client
-              echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > client/.env
-              echo "VITE_OAUTH_URL=${{ secrets.VITE_OAUTH_URL }}" >> client/.env
+                docker rm client || true
+                docker rm server || true
 
-              mkdir -p server
-                echo "EMAIL_CLIENT=${{ secrets.EMAIL_CLIENT }}" >> server/.env.production
-                echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> server/.env.production
-                echo "GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }}" >> server/.env.production
-                echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> server/.env.production
-                echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> server/.env.production
-                echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env.production
-                echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> server/.env.production
-                echo "PASSWORD_CLIENT=${{ secrets.PASSWORD_CLIENT }}" >> server/.env.production
-                echo "PORT=${{ secrets.PORT }}" >> server/.env.production
+                docker run -d --name client -p 5173:5173 \
+                  -e VITE_API_URL=${{ secrets.VITE_API_URL }} \
+                  -e VITE_OAUTH_URL=${{ secrets.VITE_OAUTH_URL }} \
+                  mounirsudiste/9ralibre-client:latest
 
-              docker-compose down || true
-              docker-compose up -d --build
-              timeout:  30m
+                docker run -d --name server -p 5000:5000 \
+                  -e DOTENV_CONFIG_QUIET=${{ secrets.DOTENV_CONFIG_QUIET }} \
+                  -e EMAIL_CLIENT=${{ secrets.EMAIL_CLIENT }} \
+                  -e FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
+                  -e GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }} \
+                  -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+                  -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+                  -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+                  -e MONGO_URL=${{ secrets.MONGO_URL }} \
+                  -e PASSWORD_CLIENT=${{ secrets.PASSWORD_CLIENT }} \
+                  -e PORT=${{ secrets.PORT }} \
+                  mounirsudiste/9ralibre-server:latest
