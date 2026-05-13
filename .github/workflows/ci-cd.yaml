@@ -153,5 +153,20 @@ jobs:
 
               cd 9ralibre
 
+              mkdir -p client
+              echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > client/.env
+              echo "VITE_OAUTH_URL=${{ secrets.VITE_OAUTH_URL }}" >> client/.env
+
+              mkdir -p server
+                echo "EMAIL_CLIENT=${{ secrets.EMAIL_CLIENT }}" >> server/.env.production
+                echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> server/.env.production
+                echo "GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }}" >> server/.env.production
+                echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> server/.env.production
+                echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> server/.env.production
+                echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> server/.env.production
+                echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> server/.env.production
+                echo "PASSWORD_CLIENT=${{ secrets.PASSWORD_CLIENT }}" >> server/.env.production
+                echo "PORT=${{ secrets.PORT }}" >> server/.env.production
+
               docker-compose down || true
               docker-compose up -d --build
