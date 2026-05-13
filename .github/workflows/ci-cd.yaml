@@ -147,7 +147,7 @@ jobs:
               cd ~
               rm -rf 9ralibre
 
-              git clone https://github.com/Mounir-abaddah/9ralibre_projet.git 9ralibre
+              git clone https://mounir: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@github.com/Mounir-abaddah/9ralibre_projet.git 9ralibre 
 
               cd 9ralibre
 
