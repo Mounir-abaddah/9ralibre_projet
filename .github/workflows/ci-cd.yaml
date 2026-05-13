@@ -108,13 +108,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Create client environment file
       - name: Create client .env
         run: |
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > client/.env
           echo "VITE_OAUTH_URL=${{ secrets.VITE_OAUTH_URL }}" >> client/.env
 
-      # Create server production environment file
       - name: Create server .env.production
         run: |
           echo "DOTENV_CONFIG_QUIET=${{ secrets.DOTENV_CONFIG_QUIET }}" > server/.env.production
@@ -128,10 +126,25 @@ jobs:
           echo "PASSWORD_CLIENT=${{ secrets.PASSWORD_CLIENT }}" >> server/.env.production
           echo "PORT=${{ secrets.PORT }}" >> server/.env.production
 
-      # Validate docker-compose syntax
       - name: Validate docker-compose
         run: docker compose config
 
-      # Build all services
       - name: Build full stack
         run: docker compose build
+
+  deploy:
+      runs-on: ubuntu-latest
+      needs: [client, server]
+
+      steps:
+        - name: Deploy to VPS via SSH
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.VPS_IP }}
+            username: root
+            key: ${{ secrets.VPS_SSH_KEY }}
+            script: |
+              cd 9ralibre || git clone https://github.com/YOUR_USER/YOUR_REPO.git 9ralibre
+              cd 9ralibre
+              git pull
+              docker compose up -d --build
