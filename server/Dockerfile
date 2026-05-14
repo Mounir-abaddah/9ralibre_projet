@@ -1,17 +1,18 @@
-FROM node:22-alpine
-
-RUN npm install -g pnpm@10.33.2
+FROM node:22
 
 WORKDIR /home/app
 
+RUN npm install -g pnpm@10.33.2
+
+RUN groupadd -r mounir && useradd -g mounir mounir
+
 COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm config set ignore-scripts false
-
 RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-EXPOSE 5000
+RUN chown -R mounir:mounir /home/app
+
+USER mounir
 
 CMD ["node","index.js"]
