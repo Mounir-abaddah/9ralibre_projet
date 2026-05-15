@@ -32,6 +32,7 @@ import {
   Landmark,
   Loader2,
   SquareArrowOutUpRight,
+  StickyNote,
   XCircle,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -151,23 +152,23 @@ const Cours = () => {
   }, [currentPage, debounceSearch, filiere, matiere, niveaux, semestre, type]);
 
   const bgItems = {
-    Mathématiques: "bg-red-400",
+    "Mathématiques": "bg-red-400",
     "Physique et Chimie": "bg-cyan-400",
-    SVT: "bg-teal-400",
-    Informatique: "bg-sky-400",
-    Arabe: "bg-orange-400",
-    Français: "bg-orange-400",
-    Anglais: "bg-orange-400",
+    "SVT": "bg-teal-400",
+    "Informatique": "bg-sky-400",
+    "Arabe": "bg-orange-400",
+    "Français": "bg-orange-400",
+    "Anglais": "bg-orange-400",
     "Histoire Géographie": "bg-amber-400",
     "Education Islamique": "bg-blue-400",
     "Sciences de la Vie et de la Terre (SVT)": "bg-teal-500",
-    Philosophie: "bg-red-500",
+    "Philosophie": "bg-red-500",
     "Sciences Végétales et Animales (SVA)": "bg-green-500",
     "Sciences de l'ingénieur": "bg-violet-500",
     "Économie et Organisation Administrative des Entreprises": "bg-blue-500",
     "Comptabilité et Mathématiques financières": "bg-zinc-500",
     "Économie générale et Statistiques": "bg-cyan-500",
-    Droit: "bg-orange-500",
+    "Droit": "bg-orange-500",
     "Informatique de gestion": "bg-indigo-500",
   };
 
@@ -207,8 +208,9 @@ const Cours = () => {
   }, [searchParams, setMatiere, setSemestre, setType, setFiliere]);
 
   const iconeType = {
-    Cours: <BookOpenText />,
-    Exercice: <FileText />,
+    "Cours": <BookOpenText />,
+    "Exercice": <FileText />,
+    "Examen":<StickyNote />,
     "Examen National": <Globe2 />,
     "Examen Régional": <Landmark />,
   };
