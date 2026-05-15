@@ -373,30 +373,26 @@ router.get("/stats-week", authMiddlewares, profMiddleware, async (req, res) => {
     const lastWeek = new Date();
     lastWeek.setDate(today.getDate() - 6);
 
-    const videos = await Videos.find({
-      professeur: userId,
-      createdAt: { $gte: lastWeek }
-    });
+    const [cours, videos, quiz] = await Promise.all([
+      Cours.find({ professeur: userId, createdAt: { $gte: lastWeek } }).select("createdAt"),
+      Videos.find({ professeur: userId, createdAt: { $gte: lastWeek } }).select("createdAt"),
+      Quiz.find({ professeur: userId, createdAt: { $gte: lastWeek } }).select("createdAt"),
+    ]);
 
     const days = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
-    const stats = days.map(day => ({
-      day,
-      views: 0,
-      likes: 0
-    }));
+    const stats = days.map(day => ({ day, cours: 0, videos: 0, quiz: 0 }));
 
-    videos.forEach(video => {
-      const d = new Date(video.createdAt);
-      let index = d.getDay() - 1;
-      if (index === -1) index = 6;
+    const getIndex = (date) => {
+      let i = new Date(date).getDay() - 1;
+      return i === -1 ? 6 : i;
+    };
 
-      stats[index].views += video.views || 0;
-      stats[index].likes += video.likes?.length || 0;
-    });
+    cours.forEach(c  => stats[getIndex(c.createdAt)].cours++);
+    videos.forEach(v => stats[getIndex(v.createdAt)].videos++);
+    quiz.forEach(q  => stats[getIndex(q.createdAt)].quiz++);
 
     res.json({ success: true, stats });
-
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
