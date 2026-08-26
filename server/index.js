@@ -17,7 +17,7 @@ const io = new Server(httpServer,{
     cors:{
         origin:process.env.FRONTEND_URL,
         credentials:true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"]
     }
 });
@@ -25,7 +25,7 @@ const io = new Server(httpServer,{
 app.use(cors({
     origin:process.env.FRONTEND_URL,
     credentials:true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
